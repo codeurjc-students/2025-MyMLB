@@ -28,41 +28,105 @@
 - [Entities](#entities)
 - [Types of Users and Browsing Permissions](#type-of-users-and-browsing-permissions)
 - [Entities with Images](#entities-with-images)
+- [Relations Between Entities](#relations-between-entities)
 - [Graphs](#graphs)
 - [User Stories](#user-stories)
 
 ## Entities
+- User
+- Team
+- Stadium
+- Player
+- Ticket
+- PasswordResetToken
+
+## Relations between Entities
+### User
 <table>
   <thead>
-    <th>Name</th>
-    <th>Purpose</th>
-    <th>Related To...</th>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Team</td>
+      <td>1..N</td>
+    </tr>
+    <tr>
+      <td>Ticket</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### Team
+<table>
+  <thead>
+    <th>Related with...</th>
     <th>Cardinality</th>
   </thead>
   <tbody>
     <tr>
       <td>User</td>
-      <td>TBD</td>
-      <td>TBD</td>
-      <td>TBD</td>
+      <td>N..1</td>
     </tr>
     <tr>
+      <td>Player</td>
+      <td>1..N</td>
+    </tr>
+    <tr>
+      <td>Stadium</td>
+      <td>1..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### Player
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
       <td>Team</td>
-      <td>TBD</td>
-      <td>TBD</td>
-      <td>TBD</td>
+      <td>1..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### Stadium
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Team</td>
+      <td>1..1</td>
     </tr>
     <tr>
       <td>Ticket</td>
-      <td>TBD</td>
-      <td>TBD</td>
-      <td>TBD</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### Ticket
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>User</td>
+      <td>N..1</td>
     </tr>
     <tr>
-      <td>PasswordResetToken</td>
-      <td>TBD</td>
-      <td>TBD</td>
-      <td>TBD</td>
+      <td>Stadium</td>
+      <td>N..1</td>
     </tr>
   </tbody>
 </table>
