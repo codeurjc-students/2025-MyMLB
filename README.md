@@ -142,7 +142,10 @@ TBD
 TBD
 
 ## Entities with Images
-TBD
+- User
+- Team
+- Stadium
+- Player
 
 ## Graphs
 TBD
