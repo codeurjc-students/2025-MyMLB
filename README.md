@@ -177,10 +177,10 @@ TBD
 **I want to:** See the information of every team.
 **So that:** I can inform myself about every team in the league.
 
-### Acceptance Criteria
+#### Acceptance Criteria
 TBD.
 
-### Dependencies
+#### Dependencies
 TBD.
 
 #### Tests
@@ -249,12 +249,12 @@ TBD.
 **I want to:** Remove a team as my "favourite".
 **So that:** I can udpate my preferences.
 
-### Acceptance Criteria
+#### Acceptance Criteria
 - The current ammount of favourite teams that exists on the list, must be updated.
 - After removal, the user can add a new favourite team.
 - A confirmation message may be shwown before the removal (TBD).
 
-### Dependencies
+#### Dependencies
 - The team must be currently present in the user´s list.
 
 #### Tests
