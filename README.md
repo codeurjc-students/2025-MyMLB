@@ -26,9 +26,9 @@
 
 ## Table of Contents
 - [Entities](#entities)
+- [Relations Between Entities](#relations-between-entities)
 - [Types of Users and Browsing Permissions](#type-of-users-and-browsing-permissions)
 - [Entities with Images](#entities-with-images)
-- [Relations Between Entities](#relations-between-entities)
 - [Graphs](#graphs)
 - [User Stories](#user-stories)
 
@@ -133,13 +133,21 @@
 
 ## Type of Users and Browsing Permissions
 ### Anonymous User
-TBD
+- See the general information provided by the application.
 
 ### Registered User
-TBD
+- See both general and personalized information provided by the application.
+- Access its profile settings.
+- Delete Account.
+- Add/Remove a team from the favourite list.
+- Buy tickets for a game.
+- Cancel ticket purchase.
 
 ### Administrator (Admin)
-TBD
+- Edit team information.
+- Edit player information.
+- Edit stadium information.
+- Add/Modify tickets.
 
 ## Entities with Images
 - User
