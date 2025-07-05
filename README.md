@@ -162,7 +162,9 @@ TBD
 
 ### User Register
 **As a:** Anonymous User.
+
 **I want to:** Create an account in the web application.
+
 **So that:** I can access exclusive features, such as buying tickets for a game.
 
 #### Acceptance Criteria
@@ -182,7 +184,9 @@ TBD
 <!-- ------------------------------------------------ See Team Information ------------------------------- -->
 ### See Team Information
 **As a:** Anonymous User.
+
 **I want to:** See the information of every team.
+
 **So that:** I can inform myself about every team in the league.
 
 #### Acceptance Criteria
@@ -197,7 +201,9 @@ TBD.
 <!-- ------------------------------------------------ Login ------------------------------- -->
 ### User Login
 **As a:** Registered User.
+
 **I want to:** Log into my account.
+
 **So that:** I can access my personal dashboard and features.
 
 #### Acceptance Criteria
@@ -219,7 +225,9 @@ TBD.
 <!-- ------------------------------------------------ Delete Account ------------------------------- -->
 ### Delete Account
 **As a:** Registered User.
+
 **I want to:** Delete my account from the application.
+
 **So that:** I can remove all my personal data and stop using the application services.
 
 #### Acceptance Criteria
@@ -239,7 +247,9 @@ TBD.
 <!-- ------------------------------------------------ Add favourite team ------------------------------- -->
 ### Add Favourite Team
 **As a:** Registered User.
+
 **I want to:** Select a team as my "favourite".
+
 **So that:** I can personalized the information that the application provides me.
 
 #### Acceptance Criteria
@@ -254,7 +264,9 @@ TBD.
 <!-- ------------------------------------------------ Remove Fav Team ------------------------------- -->
 ### Remove a Favourite Team
 **As a:** Registered User.
+
 **I want to:** Remove a team as my "favourite".
+
 **So that:** I can udpate my preferences.
 
 #### Acceptance Criteria
@@ -270,4 +282,78 @@ TBD.
 - Verify if the list is correctly updated after the removal.
 - Verify that removing a favourite allows a new one to be added within the limit.
 
-TO BE CONTINUED...
+<!-- ------------------------------------------------ Edit Profile Settings ------------------------------- -->
+### Edit Profile Settings
+**As a:** Registered User.
+
+**I want to:** Edit my account settings.
+
+**So that:** I personalize my personal settings.
+
+#### Acceptance Criteria
+- The user must be able to edit the following fields:
+  - Username.
+  - Password.
+  - Profile Picture.
+  - Favourite Team(s).
+- A confirmation message should appear before completing the operation.
+- A success message should be displayed after the operation completes successfully.
+
+#### Dependencies
+- The new password must be different from the current one.
+- The list of favourite teams must comply the defined requirements.
+
+#### Tests
+- Verify that profile changes are saved correctly in the database.
+- Verify that any invalid input should thrown an error message.
+- Verify that after saving, the new settings is correctly shown to the user.
+
+<!-- ------------------------------------------------ Ticket Purchase ------------------------------- -->
+### Ticket Purchase
+**As a:** Registered User.
+
+**I want to:** Purchase ticket(s).
+
+**So that:** I can attend matches played by my favourite teams.
+
+#### Acceptance Criteria
+- The user must complete the purchase form with valid inputs.
+- A success message should be displayed once the operation is successfully completed.
+- If any error occurr, an error message should inform the user of the issue.
+- After the purchase, the ticket(s) must be registered under its respective user (ticket list).
+- After the purchase, the tickets should appear in "My Tickets", within the user´s account settings.
+- The system must handle any oncurrency problems that might occur during the purchase process.
+
+#### Dependencies
+- The number of tickets requested must be less or equal to the number of tickets available.
+
+#### Tests
+- Verify that the user can purchase a ticket with a valid input.
+- Verify that attempting to purchase more tickets than are available results in an error.
+- Verify that a success message appear afte the purchase.
+- Verify that the ticket(s) are saved in the user`s ticket list after the purchase.
+- Verify that the ticket(s) purchased appear in the "My Tickets" section after the purchase.
+- Verify that the total number of available tickets for the respective type is updated correctly in the database after the purchase.
+
+<!-- ------------------------------------------------ Cancel Ticket Purchase ------------------------------- -->
+### Cancel Ticket Purchase
+**As a:** Registered User.
+
+**I want to:** Cancel my ticket purchase.
+
+**So that:** I can undo the operation if I change my mind.
+
+#### Acceptance Criteria
+- The cancellation option must be available to the user after selecting the ticket quantity.
+- Undoing the purchase of any ticket must not register any ticket under the respective user.
+- After the operation, a success message must be displayed.
+- The ammount of ticket of the selected type must restore accordingly.
+- The system must handle any oncurrency problems that might occur during the cancellation.
+
+#### Dependencies
+- The cancellation must happen before the purchase is confirmed.
+
+#### Tests
+- Verify that the ammount of tickets previously selected is never registered under the respective user.
+- Verify that the ammount of available tickets of the selected type is correctly restored.
+- Verify that after the operation is successfully completed, a success message is displayed.
