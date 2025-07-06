@@ -144,10 +144,10 @@
 - Cancel ticket purchase.
 
 ### Administrator (Admin)
-- Edit team information.
+- Update team information.
 - Edit player information.
 - Edit stadium information.
-- Add/Modify tickets.
+- Add/Modify tickets (TBD).
 
 ## Entities with Images
 - User
@@ -221,6 +221,27 @@ TBD.
 - Verify that the entered email and password are both correct.
 - Attempting to log in with an user that does not exists, should show an error message.
 - If the user selects the "Recover my Password" option; verify that the recovery email is sent successfully.
+
+<!-- ------------------------------------------------ Log out ------------------------------- -->
+### User Log out
+**As a:** Registered User.
+
+**I want to:** Log out from my account.
+
+**So that:** I can close my session and switch to another account.
+
+#### Acceptance Criteria
+- The user´s data must not be deleted during the log out process.
+- The current session must be properly terminated.
+- The user must be redirected to the login/register page.
+
+#### Dependencies
+- The system must have session/token management implemented.
+
+#### Tests
+- Verify that the user´s account still exists in the database after logging out.
+- Verify that the user is redirected to the login/register page once the session is closed.
+- Verify that accessing a restricted page once the session is closed, instantly redirects to the login/register page.
 
 <!-- ------------------------------------------------ Delete Account ------------------------------- -->
 ### Delete Account
@@ -357,3 +378,103 @@ TBD.
 - Verify that the ammount of tickets previously selected is never registered under the respective user.
 - Verify that the ammount of available tickets of the selected type is correctly restored.
 - Verify that after the operation is successfully completed, a success message is displayed.
+
+<!-- ------------------------------------------------ Update Team Information ------------------------------- -->
+### Update Team Information
+**As a:** Admin.
+
+**I want to:** Update the editable team information.
+
+**So that:** The team´s data remains up to date.
+
+#### Acceptance Criteria
+- The admin must be able to edit the following fields:
+  - Number of Wins.
+  - Number of Losses.
+- All other team stats must be automatically calculated based on the previously mentioned stats.
+- Once the information has been updated, a success message must be displayed.
+- Every quantity (except the run differential) must be a positive number.
+- The team`s position in the standings must be updated automatically based on the new data.
+
+#### Dependencies
+- The team must already exists in the database.
+
+#### Tests
+- Verify that the updated number of wins/losses of a team is correctly saved in the database.
+- Verify that the total number of games played by a team is correctly calculated.
+- Verify that the win percentage of a team is correctly calculated.
+- Verify that the games behind (if its not in the first position) of a team is correctly calculated.
+- Verify that the run differential is correctly calculated.
+- Verify that the team´s position within its division is correctly updated.
+- Verify that the success message is correctly displayed.
+- Verify that entering invalid values triggers an error message.
+
+<!-- ------------------------------------------------ Edit Player Information ------------------------------- -->
+### Edit Player Information
+**As a:** Admin.
+
+**I want to:** Edit the player information.
+
+**So that:** The player`s data can be updated whenever is needed.
+
+#### Acceptance Criteria
+- The admin must be able to edit the following fields:
+  - Player Picture.
+  - Team he plays.
+  - Position he plays.
+  - Total At Bats (AB).
+  - Number of Hits (H).
+  - Number of Run Batted In (RBI).
+  - Number of Home Runs (HR).
+- The Batting Average (Avg) must be automatically calculated from AB and H.
+- Once is finished, a success message must be displayed.
+- Every numeric value must be positive.
+- In case the player change teams, the new team must be a valid one (exists in the database).
+- In case the player change position, the new position must be a valid one (exists in the database).
+
+#### Dependencies
+- The player must already exists in the database.
+- The new team must exist in the database.
+- The new position must be a valid one.
+
+#### Tests
+- Verify that the new player´s picture is correctly saved in the database.
+- Verify that the new player´s team is correctly reflected in the player´s profile.
+- Verify that the new team correctly registers the new player in its roster.
+- Verify that the total ammount of ABs a player have are correctly updated.
+- Verify that the ammount of Hits of a player are correctly updated.
+- Verify that the ammount of RBIs are correctly updated.
+- Verify that the ammount of HR are correctly updated.
+- Verify that the Batting Avg is correctly calculated.
+- Verify that entering invalid values triggers an error message.
+- Verify that entering a non valid team triggers an error message.
+- Verify thah entering a non valid position triggers an error message.
+- Verify that a success message is displayed after a successfull operation.
+
+<!-- ------------------------------------------------ Edit Stadium Information ------------------------------- -->
+### Edit Stadium Information
+**As a:** Admin.
+
+**I want to:** Edit the stadium information.
+
+**So that:** The stadium`s data can be updated whenever is needed.
+
+#### Acceptance Criteria
+- The admin must be able to edit the following fields:
+  - Stadium Picture.
+  - Total ammount of tickets available for each type.
+  - Price for each type of ticket.
+- Once is finished, a success message must be displayed.
+- The ammount of tickets must be a positive integer.
+- The price of the ticket must be a positive number.
+
+#### Dependencies
+- The stadium must already exists in the database.
+
+#### Tests
+- Verify that the new stadium´s picture is correctly saved in the database.
+- Verify that the total ammount of tickets for each type is correctly updated and stored.
+- Verify that the price of the ticket is correctly updated and stored.
+- Verify that the success message is correctly displayed once the operation is completed.
+- Verify that entering invalid values for the tickets ammount triggers an error message.
+- Verify that entering invalid values for the ticket´s price triggers an error message.
