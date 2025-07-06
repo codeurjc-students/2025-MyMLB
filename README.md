@@ -207,6 +207,7 @@ TBD
 - It must be displayed on the main page (Home).
 - The home page must include an option to sign in/sign up.
 - The standings for each league and division must be correctly displayed.
+- The news around the league must be correctly displayed (TBD).
 - A dropdown menu listing every team in the league must be available for the user.
 - Selecting a team must redirect to that team´s detailed view.
 
