@@ -31,6 +31,19 @@
 - [Entities with Images](#entities-with-images)
 - [Graphs](#graphs)
 - [User Stories](#user-stories)
+  - [User Register](#user-register)
+  - [See Application General Information](#see-application-general-information)
+  - [User Login](#user-login)
+  - [User Logout](#user-logout)
+  - [Delete Account](#delete-account)
+  - [Add Favourite Team](#add-favourite-team)
+  - [Remove Favourite Team](#remove-favourite-team)
+  - [Edit Profile Settings](#edit-profile-settings)
+  - [Ticket Purchase](#ticket-purchase)
+  - [Cancel Ticket Purchase](#cancel-ticket-purchase)
+  - [Update Team Information](#update-team-information)
+  - [Edit Player Information](#edit-player-information)
+  - [Edit Stadium Information](#edit-stadium-information) 
 
 ## Entities
 - User
@@ -181,22 +194,29 @@ TBD
 - Verify that the entered email by the user does not exist before allowing the registration.
 - Attempting to register an user that already exist, should show an error message.
 
-<!-- ------------------------------------------------ See Team Information ------------------------------- -->
-### See Team Information
+<!-- ------------------------------------------------ See Application General Information ------------------------------- -->
+### See Application General Information
 **As a:** Anonymous User.
 
-**I want to:** See the information of every team.
+**I want to:** See the general information of the application.
 
 **So that:** I can inform myself about every team in the league.
 
 #### Acceptance Criteria
-TBD.
-
-#### Dependencies
-TBD.
+- This information must be accesible without login.
+- It must be displayed on the main page (Home).
+- The home page must include an option to sign in/sign up.
+- The standings for each league and division must be correctly displayed.
+- A dropdown menu listing every team in the league must be available for the user.
+- Selecting a team must redirect to that team´s detailed view.
 
 #### Tests
-TBD.
+- Verify that the home page is accessible without authentication.
+- Verify that the standings are correctly displayed.
+- Verify that selecting a team displays correctly its detailed information.
+- Verify that the news around the league are correctly displayed (TBD).
+- Verify that selecting the sign in/sign up option redirects to the login/register page.
+- Attempting to purchase a ticket for any game should redirect to the login/register page.
 
 <!-- ------------------------------------------------ Login ------------------------------- -->
 ### User Login
@@ -223,7 +243,7 @@ TBD.
 - If the user selects the "Recover my Password" option; verify that the recovery email is sent successfully.
 
 <!-- ------------------------------------------------ Log out ------------------------------- -->
-### User Log out
+### User Logout
 **As a:** Registered User.
 
 **I want to:** Log out from my account.
@@ -283,7 +303,7 @@ TBD.
 - Verify that favourite teams are stored correctly and can be retrieved/displayed.
 
 <!-- ------------------------------------------------ Remove Fav Team ------------------------------- -->
-### Remove a Favourite Team
+### Remove Favourite Team
 **As a:** Registered User.
 
 **I want to:** Remove a team as my "favourite".
