@@ -340,7 +340,7 @@ TBD.
 #### Acceptance Criteria
 - The user must complete the purchase form with valid inputs.
 - A success message should be displayed once the operation is successfully completed.
-- If any error occurr, an error message should inform the user of the issue.
+- If any error occur, an error message should inform the user of the issue.
 - After the purchase, the ticket(s) must be registered under its respective user (ticket list).
 - After the purchase, the tickets should appear in "My Tickets", within the user´s account settings.
 - The system must handle any oncurrency problems that might occur during the purchase process.
