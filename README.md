@@ -41,9 +41,12 @@
   - [Edit Profile Settings](#edit-profile-settings)
   - [Ticket Purchase](#ticket-purchase)
   - [Cancel Ticket Purchase](#cancel-ticket-purchase)
+  - [Notifications via Email](#notifications-via-email)
+  - [Contact Support via Email](#contact-support-via-email)
   - [Update Team Information](#update-team-information)
   - [Edit Player Information](#edit-player-information)
-  - [Edit Stadium Information](#edit-stadium-information) 
+  - [Edit Stadium Information](#edit-stadium-information)
+  - [Edit Ticket](#edit-ticket)
 
 ## Entities
 - User
@@ -105,6 +108,10 @@
       <td>Team</td>
       <td>1..1</td>
     </tr>
+    <tr>
+      <td>PasswordResetToken</td>
+      <td>1..1</td>
+    </tr>
   </tbody>
 </table>
 
@@ -144,6 +151,19 @@
   </tbody>
 </table>
 
+### PasswordResetToken
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>User</td>
+      <td>1..1</td>
+    </tr>
+</table>
+
 ## Type of Users and Browsing Permissions
 ### Anonymous User
 - See the general information provided by the application.
@@ -155,6 +175,8 @@
 - Add/Remove a team from the favourite list.
 - Buy tickets for a game.
 - Cancel ticket purchase.
+- Receive notifications via email.
+- Contact support via email.
 
 ### Administrator (Admin)
 - Update team information.
@@ -400,6 +422,48 @@ TBD
 - Verify that the ammount of available tickets of the selected type is correctly restored.
 - Verify that after the operation is successfully completed, a success message is displayed.
 
+<!-- ------------------------------------------------ Notifications ------------------------------- -->
+### Notifications via Email
+**As a:** Registered User.
+
+**I want to:** Receive notifications from the apllication via email.
+
+**So that:** I can be notified about importan events like tickets on sale, upcoming match dates, profile changes, etc.
+
+#### Acceptance Criteria
+- The user must be able to enable or disable email notifications from their settings.
+- The notifications are sent only if the user enabled them.
+- The notifications must cover important events/actions such as: purchase confirmation, change in any of the personal settings, etc.
+
+#### Dependencies
+- User preferences for notifications must be stored and accessible.
+
+#### Tests
+- Verify that emails are sent correctly when the notifications are enabled.
+- Verify that no emails are sent when the notifications are disabled.
+- Verify that the changes in the notifications preferences are correctly updated and stores.
+
+<!-- ------------------------------------------------ Contact Support ------------------------------- -->
+### Contact Support via Email
+**As a:** Registered User.
+
+**I want to:** Send a message to report a problem or asking for support.
+
+**So that:** I can get help regarding the issue from the application´s administrators.
+
+#### Acceptance Criteria
+- The user can fill out a contact form with the following fields:
+  - User´s email.
+  - Subject.
+  - Body.
+- The message must be sent to the application´s administrators via email.
+- A confirmation message must be displayed to the user after a successfull submission.  
+
+#### Tests
+- Verify that the contact form send the message correctly.
+- Verify that the confirmation message is correctly displays.
+- Verify that error messages appears when the required fields are empty or invalid.
+
 <!-- ------------------------------------------------ Update Team Information ------------------------------- -->
 ### Update Team Information
 **As a:** Admin.
@@ -499,3 +563,29 @@ TBD
 - Verify that the success message is correctly displayed once the operation is completed.
 - Verify that entering invalid values for the tickets ammount triggers an error message.
 - Verify that entering invalid values for the ticket´s price triggers an error message.
+
+<!-- ------------------------------------------------ Edit Ticket ------------------------------- -->
+### Edit Ticket
+**As a:** Admin.
+
+**I want to:** Edit the tickets information.
+
+**So that:** The ticket`s data can be modified whenever is needed.
+
+#### Acceptance Criteria
+- The admin must be able to edit the following fields:
+  - Type.
+  - Date or time.
+  - Status (Active or Inactive).
+- A sucess message must be displayed after a sucessfull update. 
+
+#### Dependencies
+- The ticket must already exists in the system.
+- The associated user or stadium must remain untouchable.
+
+#### Tests
+- Verify that invalid values displays an error message.
+- Verify that the updated information is correctly reflected.
+- Verify that a sucess message appears after a sucessfull operation.
+- Verify that the updated information persist in the database.
+- Verify that inactive tickets no longer appears on the user´s ticket list or in the public purchase view.
