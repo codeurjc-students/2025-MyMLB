@@ -55,7 +55,7 @@
 - Team
 - Stadium
 - Player
-- Game (TBD)
+- Game
 - Ticket
 - PasswordResetToken
 
