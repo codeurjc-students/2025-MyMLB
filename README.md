@@ -29,7 +29,7 @@
 - [Relations Between Entities](#relations-between-entities)
 - [Types of Users and Browsing Permissions](#type-of-users-and-browsing-permissions)
 - [Entities with Images](#entities-with-images)
-- [Graphs](#graphs)
+- [Charts](#charts)
 - [User Stories](#user-stories)
   - [User Register](#user-register)
   - [See Application General Information](#see-application-general-information)
@@ -221,8 +221,34 @@
 - Stadium
 - Player
 
-## Graphs
-A graph that reflects the last 10 games of the team (TBD).
+## Charts
+<table>
+  <thead>
+    <th>Chart Topic</th>
+    <th>Type of Chart</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Standings (Dynamic)</td>
+      <td>Table</td>
+    </tr>
+    <tr>
+      <td>Last 10 Games of a Team</td>
+      <td>Line</td>
+    </tr>
+    <tr>
+      <td>Ticket Selling for Each Team</td>
+      <td>Bar</td>
+    </tr>
+    <tr>
+      <td>User´s Favourite Teams</td>
+      <td>Horizontal Bar</td>
+    </tr>
+  </tbody>
+</table>
+
+> ![NOTE]
+> The information described above is subject to change. Both the chart types and topics may be updated as needed.
 
 ## User Stories
 
