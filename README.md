@@ -133,6 +133,10 @@
       <td>Team</td>
       <td>1..1</td>
     </tr>
+    <tr>
+      <td>Game</td>
+      <td>1..N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -150,6 +154,10 @@
     <tr>
       <td>Ticket</td>
       <td>1..N</td>
+    </tr>
+    <tr>
+      <td>Stadium</td>
+      <td>N..1</td>
     </tr>
   </tbody>
 </table>
@@ -499,7 +507,6 @@ A graph that reflects the last 10 games of the team (TBD).
 - The admin must be able to edit the following fields:
   - Number of Wins.
   - Number of Losses.
-  - Last 10 Games.
 - All other team stats must be automatically calculated based on the previously mentioned stats.
 - Once the information has been updated, a success message must be displayed.
 - Every quantity (except the run differential) must be a positive number.
