@@ -49,6 +49,8 @@
   - [Edit Ticket](#edit-ticket)
   - [Create and Edit a Game](#create-and-edit-a-game)
   - [Update Game Score](#update-game-score)
+  - [User´s Favourite Teams Statistics](#users-favourite-teams-statistics)
+  - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
 
 ## Entities
 - User
@@ -58,6 +60,9 @@
 - Game
 - Ticket
 - PasswordResetToken
+
+> [!IMPORTANT]
+> The `PaswordResetToken` entity will be used to give the user an opportunity to create a new password (in case the user have forgotten the previous one, and clicks the "Forgot My Password" option).
 
 ## Relations between Entities
 ### User
@@ -214,6 +219,8 @@
 - Add/Modify tickets.
 - Create and Edit a Game.
 - Update Game score.
+- User´s favourite teams statistics.
+- Ticket selling per team statistics.
 
 ## Entities with Images
 - User
@@ -247,8 +254,11 @@
   </tbody>
 </table>
 
-> ![NOTE]
+> [!NOTE]
 > The information described above is subject to change. Both the chart types and topics may be updated as needed.
+
+### Library To Use
+Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
 
 ## User Stories
 
@@ -530,6 +540,7 @@
 **So that:** The team´s data remains up to date.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
   - Number of Wins.
   - Number of Losses.
@@ -542,6 +553,7 @@
 - The team must already exists in the database.
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that the updated number of wins/losses of a team is correctly saved in the database.
 - Verify that the total number of games played by a team is correctly calculated.
 - Verify that the win percentage of a team is correctly calculated.
@@ -560,6 +572,7 @@
 **So that:** The player`s data can be updated whenever is needed.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
   - Player Picture.
   - Team he plays.
@@ -580,6 +593,7 @@
 - The new position must be a valid one.
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that the new player´s picture is correctly saved in the database.
 - Verify that the new player´s team is correctly reflected in the player´s profile.
 - Verify that the new team correctly registers the new player in its roster.
@@ -602,6 +616,7 @@
 **So that:** The stadium`s data can be updated whenever is needed.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
   - Stadium Picture.
 - Once is finished, a success message must be displayed.
@@ -610,6 +625,7 @@
 - The stadium must already exists in the database.
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that the new stadium´s picture is correctly saved in the database.
 - Verify that the success message is correctly displayed once the operation is completed.
 
@@ -622,6 +638,7 @@
 **So that:** The ticket`s data can be modified whenever is needed.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
   - Type.
   - Price.
@@ -635,6 +652,7 @@
 - The associated user or stadium must remain untouchable.
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that invalid values displays an error message.
 - Verify that the updated information is correctly reflected.
 - Verify that a sucess message appears after a sucessfull operation.
@@ -652,6 +670,7 @@
 **So that:** A match is establish between two teams, and modify any information if needed.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The administrator must be able to create a game by selecting:
   - Home Team.
   - Away Team.
@@ -665,6 +684,7 @@
 - A game must not overlap in schedule with another game at the same stadium.
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that a game can be created successfully.
 - Verify that a success message appears after a successfull operation.
 - Verify that an error message appears when attempting to create a game with invalid data.
@@ -681,6 +701,7 @@
 **So that:** I can keep the game information up to date.
 
 #### Acceptance Criteria
+- An admin-only section must be available for this operation.
 - The administrator must be able to update the following fields:
   - Runs scored by home and away teams.
   - Current inning.
@@ -693,7 +714,42 @@
 - The game must already started (the current date is the same or later than the scheduled date).  
 
 #### Tests
+- Verify that this section is only visible to admins.
 - Verify that the score and inning are correctly updated.
 - Verify that the score and inning are valid inputs.
 - Verify that an invalid input triggers an error message.
 - Verify that the transition of the status are valid (forwards).
+
+<!-- ------------------------------------------------ User´s favourite teams statistics ------------------------------- -->
+### User´s Favourite Teams Statistics
+**As a:** Admin.
+
+**I want to:** See the statistics about which teams are most frequently selected as "favourite" for the users.
+
+**So that:** I can identify which teams are the most beloved according to the users.
+
+#### Acceptance Criteria
+- An admin-only section must be available to display this data.
+- The data will be display through a horizontal bar chart.
+- The chart must update dynamically based on the user´s preferences.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the data updates when the users modify their favoruite teams.
+
+<!-- ------------------------------------------------ Ticket Selling per Team Statistics ------------------------------- -->
+### Ticket Selling per Team Statistics
+**As a:** Admin.
+
+**I want to:** See the statistics about which teams have sold the most tickets.
+
+**So that:** I can identify which teams are the most entertaining and interesting to watch according to the users.
+
+#### Acceptance Criteria
+- An admin-only section must be available to display this data.
+- The data will be display through a bar chart.
+- The chart must update dynamically as ticket sales occur.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the data updates when the users purchases tickets.
