@@ -47,12 +47,15 @@
   - [Edit Player Information](#edit-player-information)
   - [Edit Stadium Information](#edit-stadium-information)
   - [Edit Ticket](#edit-ticket)
+  - [Create and Edit a Game](#create-and-edit-a-game)
+  - [Update Game Score](#update-game-score)
 
 ## Entities
 - User
 - Team
 - Stadium
 - Player
+- Game (TBD)
 - Ticket
 - PasswordResetToken
 
@@ -71,6 +74,10 @@
     <tr>
       <td>Ticket</td>
       <td>1..N</td>
+    </tr>
+    <tr>
+      <td>PasswordResetToken</td>
+      <td>1..1</td>
     </tr>
   </tbody>
 </table>
@@ -94,6 +101,10 @@
       <td>Stadium</td>
       <td>1..1</td>
     </tr>
+    <tr>
+      <td>Game</td>
+      <td>1..N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -106,10 +117,6 @@
   <tbody>
     <tr>
       <td>Team</td>
-      <td>1..1</td>
-    </tr>
-    <tr>
-      <td>PasswordResetToken</td>
       <td>1..1</td>
     </tr>
   </tbody>
@@ -125,6 +132,20 @@
     <tr>
       <td>Team</td>
       <td>1..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### Game
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Team</td>
+      <td>N..1</td>
     </tr>
     <tr>
       <td>Ticket</td>
@@ -145,7 +166,7 @@
       <td>N..1</td>
     </tr>
     <tr>
-      <td>Stadium</td>
+      <td>Game</td>
       <td>N..1</td>
     </tr>
   </tbody>
@@ -182,7 +203,9 @@
 - Update team information.
 - Edit player information.
 - Edit stadium information.
-- Add/Modify tickets (TBD).
+- Add/Modify tickets.
+- Create and Edit a Game.
+- Update Game score.
 
 ## Entities with Images
 - User
@@ -191,7 +214,7 @@
 - Player
 
 ## Graphs
-TBD
+A graph that reflects the last 10 games of the team (TBD).
 
 ## User Stories
 
@@ -476,6 +499,7 @@ TBD
 - The admin must be able to edit the following fields:
   - Number of Wins.
   - Number of Losses.
+  - Last 10 Games.
 - All other team stats must be automatically calculated based on the previously mentioned stats.
 - Once the information has been updated, a success message must be displayed.
 - Every quantity (except the run differential) must be a positive number.
@@ -547,22 +571,14 @@ TBD
 #### Acceptance Criteria
 - The admin must be able to edit the following fields:
   - Stadium Picture.
-  - Total ammount of tickets available for each type.
-  - Price for each type of ticket.
 - Once is finished, a success message must be displayed.
-- The ammount of tickets must be a positive integer.
-- The price of the ticket must be a positive number.
 
 #### Dependencies
 - The stadium must already exists in the database.
 
 #### Tests
 - Verify that the new stadium´s picture is correctly saved in the database.
-- Verify that the total ammount of tickets for each type is correctly updated and stored.
-- Verify that the price of the ticket is correctly updated and stored.
 - Verify that the success message is correctly displayed once the operation is completed.
-- Verify that entering invalid values for the tickets ammount triggers an error message.
-- Verify that entering invalid values for the ticket´s price triggers an error message.
 
 <!-- ------------------------------------------------ Edit Ticket ------------------------------- -->
 ### Edit Ticket
@@ -575,9 +591,11 @@ TBD
 #### Acceptance Criteria
 - The admin must be able to edit the following fields:
   - Type.
+  - Price.
   - Date or time.
   - Status (Active or Inactive).
-- A sucess message must be displayed after a sucessfull update. 
+- A sucess message must be displayed after a sucessfull update.
+- The price must be a positive number.
 
 #### Dependencies
 - The ticket must already exists in the system.
@@ -588,4 +606,61 @@ TBD
 - Verify that the updated information is correctly reflected.
 - Verify that a sucess message appears after a sucessfull operation.
 - Verify that the updated information persist in the database.
+- Verify that the price is a valid value.
+- Verify that if any field have an invalid value, an error message is displayed.
 - Verify that inactive tickets no longer appears on the user´s ticket list or in the public purchase view.
+
+<!-- ------------------------------------------------ Create and Edit a Game ------------------------------- -->
+### Create and Edit a Game
+**As a:** Admin.
+
+**I want to:** Create and Edit a match.
+
+**So that:** A match is establish between two teams, and modify any information if needed.
+
+#### Acceptance Criteria
+- The administrator must be able to create a game by selecting:
+  - Home Team.
+  - Away Team.
+  - Date and Time.
+  - Stadium.
+- A team cannot play again itself.
+- The stadium must be the one of the Home Team.
+- A success message must appear after the operation.
+
+#### Dependencies
+- A game must not overlap in schedule with another game at the same stadium.
+
+#### Tests
+- Verify that a game can be created successfully.
+- Verify that a success message appears after a successfull operation.
+- Verify that an error message appears when attempting to create a game with invalid data.
+- Verify that a game cannot be created in a stadium that is already booked at the same time.
+- Verify that the stadium the game is being held, is the Home Team stadium.
+- Verify that the updated data is correctly stored.
+
+<!-- ------------------------------------------------ Update Game Score ------------------------------- -->
+### Update Game Score
+**As a:** Admin.
+
+**I want to:** Update the score and inning of the game.
+
+**So that:** I can keep the game information up to date.
+
+#### Acceptance Criteria
+- The administrator must be able to update the following fields:
+  - Runs scored by home and away teams.
+  - Current inning.
+  - Game status (Scheduled, In Progress, Finished).
+- Scores and innings must be positive integers.
+- The game status can only progress forwards (ej: Not going back from "In Progress" to "Scheduled").
+
+#### Dependencies
+- The game must exists.
+- The game must already started (the current date is the same or later than the scheduled date).  
+
+#### Tests
+- Verify that the score and inning are correctly updated.
+- Verify that the score and inning are valid inputs.
+- Verify that an invalid input triggers an error message.
+- Verify that the transition of the status are valid (forwards).
