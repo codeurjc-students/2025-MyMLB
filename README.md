@@ -146,7 +146,7 @@ The defense of the Final Degree Project will take place.
 
 Below is a **Gantt Chart** that graphically reflects the planning mentioned above.
 
-![Gantt Diagram](#images/Diagrams/Gantt.png)
+![Gantt Diagram](#images/diagrams/Gantt.png)
 
 ## Objectives
 
