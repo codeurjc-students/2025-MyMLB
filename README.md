@@ -1,6 +1,8 @@
 # 2025-MyMLB
 
 ## Author and Tutor Information
+This web application was developed as a final degree project in Computer Engineering at the Rey Juan Carlos University, within the Higher Technical School of Computer Engineering (ETSII), in Madrid, Spain.
+
 <table>
   <thead>
     <th>Name</th>
@@ -25,6 +27,11 @@
 </table>
 
 ## Table of Contents
+- [Application Functionality](#application-functionality)
+- [Methodology](#methodology)
+- [Objectives](#objectives)
+  - [Functionals](#functionals)
+  - [Technicals](#technicals)
 - [Entities](#entities)
 - [Relations Between Entities](#relations-between-entities)
 - [Types of Users and Browsing Permissions](#type-of-users-and-browsing-permissions)
@@ -51,6 +58,24 @@
   - [Update Game Score](#update-game-score)
   - [User´s Favourite Teams Statistics](#users-favourite-teams-statistics)
   - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
+- [Page Layouts and Navigation](#page-layouts-and-navigation)
+
+## Application Functionality
+The app is a portal dedicated to Major League Baseball (MLB), offering general league information, as well as detailed information on teams, players, standings, and other relevant aspects.
+
+In addition to these basic functions, users can register to access exclusive features, such as purchasing tickets for their favorite games, selecting favorite teams to customize the information displayed, and the ability to enable or disable email notifications with the latest league news from their profile.
+
+The platform also has administrator users, responsible for the internal management of the app, including updating information on teams, players, and other content.
+
+The main objective of this app is to offer baseball fans a comprehensive and up-to-date space to follow MLB and the performance of their favorite teams throughout the season.
+
+## Methodology
+
+## Objectives
+
+### Functionals
+
+### Technicals
 
 ## Entities
 - User
@@ -753,3 +778,5 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 #### Tests
 - Verify that this section is only visible to admins.
 - Verify that the data updates when the users purchases tickets.
+
+## Page Layouts and Navigation
