@@ -929,3 +929,7 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 - Verify that the data updates when the users purchases tickets.
 
 ## Page Layouts and Navigation
+
+### Login
+
+![Login Screen](images/screens/Login.png)
