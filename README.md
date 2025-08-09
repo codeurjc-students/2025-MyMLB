@@ -930,6 +930,84 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 ## Page Layouts and Navigation
 
-### Login
+### 1: Login, Register and Password Recovery
 
 ![Login Screen](images/screens/Login.png)
+
+
+![Register Screen](images/screens/Register.png)
+
+
+![PasswordRecovery Screen](images/screens/PasswordRecovery.png)
+
+### 2: Headers
+
+![Headers](images/screens/Headers.png)
+
+### 3: Footer
+
+![Footer](images/screens/Footer.png)
+
+### 4: Home
+
+![Home](images/screens/Home.png)
+
+### 5: Teams
+
+![Teams Screen](images/screens/Teams.png)
+
+### 6: Standings
+
+![Standings Screen](images/screens/Standings.png)
+
+### 7: Profile
+
+![Profile Screen](images/screens/Profile.png)
+
+### 8: MyTickets
+
+![MyTickets Screen](images/screens/MyTickets.png)
+
+### 9: MyFavTeams
+
+![MyFavTeams Screen](images/screens/MyFavTeams.png)
+
+### 10: Ticket Selection
+
+![TicketSelection Screen](images/screens/SelectTicket.png)
+
+### 11: Ticket Purchase
+
+![TicketPurchase Screen](images/screens/TicketPurchase.png)
+
+### 12: Contact Support
+
+![Support Screen](images/screens/ContactSupport.png)
+
+### 13: Team Information
+
+![TeamInfo Screen](images/screens/TeamInfo.png)
+
+### 14: Player Information
+
+![PlayerInfo Screen](images/screens/PlayerInfo.png)
+
+### 15: Edit Menu
+
+![EditMenu Screen](images/screens/EditMenu.png)
+
+### 16: Create Match
+
+![CreateMatch Screen](images/screens/CreateMatch.png)
+
+### 17: Update Scoreboard
+
+![UpdateMatch Screen](images/screens/UpdateMatch.png)
+
+### 18: Matches
+
+![Matches Screen](images/screens/Matches.png)
+
+### 19: Statistics
+
+![Statistics Screen](images/screens/Statistics.png)
