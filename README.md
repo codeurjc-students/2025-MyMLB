@@ -930,23 +930,38 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 ## Page Layouts and Navigation
 
-### 1: Login, Register and Password Recovery
+> [!WARNING]
+> The drafts that are shown below may look a bit plain, as their purpose is to show the structure of each page and how the main elements will be displayed. As you can see, the background and the images are not shown in this draft, and the color tones shown in certain elements are not definitve. These will be refinede using CSS to achieve the desired look.
+
+### 1: Login, Registration and Password Recovery
 
 ![Login Screen](images/screens/Login.png)
 
+A classic login form where the user, in order to access the application, must enter their username and password. In case the user has forgotten their password, they can establish a new one by clicking the "Forgot Your Password?" link. If the user does not have an account, they have the option to create one by clicking the "SIGN UP" button, which redirects them to the registration form.
 
 ![Register Screen](images/screens/Register.png)
 
+A classic registration form where the user, in order to create an account, must enter a username, email and password. If everything goes well, the success message will be displayed. In case the user already has an account, they can go to the login form by clicking the "SIGN IN" button.
+
+As you can see, these forms are very similar, with the main difference being that the blue panel switches sides depending on the form (left or right). When the user switches between the sign-in and sign-up forms, this change is displayed as an animation, where the blue panel smoothly slides to the opposite side while the form panel moves accordingly.
 
 ![PasswordRecovery Screen](images/screens/PasswordRecovery.png)
+
+These pages will be displayed sequentially on the same screen, with transitions between each step. In the first layout, the user will need to enter their email address to receive a verification code. After clicking 'SEND', the user will enter this code, and finally, in the last layout, they will set a new password. If everything is successful, a confirmation message will be shown, and the user will be able to log in to their account with the new password.
 
 ### 2: Headers
 
 ![Headers](images/screens/Headers.png)
 
+> [!NOTE]
+> To avoid repetition, the headers are not shown on every page of the draft. However, this does not mean that these pages will be without headers in the final design.
+
 ### 3: Footer
 
 ![Footer](images/screens/Footer.png)
+
+> [!NOTE]
+> To avoid repetition, the footer is not shown on every page of the draft. However, this does not mean that these pages will be without footer in the final design.
 
 ### 4: Home
 
