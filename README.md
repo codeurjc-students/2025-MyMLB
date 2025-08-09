@@ -402,6 +402,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can access exclusive features, such as buying tickets for a game.
 
+**Feature Type:** Basic.
+
 #### Acceptance Criteria
 - The registration form must ask for:
   - Full name (first and last name).
@@ -423,6 +425,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** See the general information of the application.
 
 **So that:** I can inform myself about every team in the league.
+
+**Feature Type:** Basic.
 
 #### Acceptance Criteria
 - This information must be accesible without login.
@@ -449,6 +453,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can access my personal dashboard and features.
 
+**Feature Type:** Basic.
+
 #### Acceptance Criteria
 - The login form must ask for:
   - Email.
@@ -473,6 +479,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can close my session and switch to another account.
 
+**Feature Type:** Basic.
+
 #### Acceptance Criteria
 - The user´s data must not be deleted during the log out process.
 - The current session must be properly terminated.
@@ -493,6 +501,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Delete my account from the application.
 
 **So that:** I can remove all my personal data and stop using the application services.
+
+**Feature Type:** Intermediate.
 
 #### Acceptance Criteria
 - The "delete account" option is available from the user account settings.
@@ -516,6 +526,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can personalized the information that the application provides me.
 
+**Feature Type:** Basic.
+
 #### Acceptance Criteria
 - The selected team must not already be in the list of favourites.
 - The number of favourites team must not exceed the maximun allowed (3 (can change)).
@@ -532,6 +544,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Remove a team as my "favourite".
 
 **So that:** I can udpate my preferences.
+
+**Feature Type:** Basic.
 
 #### Acceptance Criteria
 - The current ammount of favourite teams that exists on the list, must be updated.
@@ -553,6 +567,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Edit my account settings.
 
 **So that:** I personalize my personal settings.
+
+**Feature Type:** Intermediate.
 
 #### Acceptance Criteria
 - The user must be able to edit the following fields:
@@ -579,6 +595,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Purchase ticket(s).
 
 **So that:** I can attend matches played by my favourite teams.
+
+**Feature Type:** Intermediate.
 
 #### Acceptance Criteria
 - The user must complete the purchase form with valid inputs.
@@ -607,6 +625,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can undo the operation if I change my mind.
 
+**Feature Type:** Intermediate.
+
 #### Acceptance Criteria
 - The cancellation option must be available to the user after selecting the ticket quantity.
 - Undoing the purchase of any ticket must not register any ticket under the respective user.
@@ -630,6 +650,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can be notified about importan events like tickets on sale, upcoming match dates, profile changes, etc.
 
+**Feature Type:** Intermediate.
+
 #### Acceptance Criteria
 - The user must be able to enable or disable email notifications from their settings.
 - The notifications are sent only if the user enabled them.
@@ -651,6 +673,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can get help regarding the issue from the application´s administrators.
 
+**Feature Type:** Intermediate.
+
 #### Acceptance Criteria
 - The user can fill out a contact form with the following fields:
   - User´s email.
@@ -671,6 +695,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Update the editable team information.
 
 **So that:** The team´s data remains up to date.
+
+**Feature Type:** Basic.
 
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
@@ -703,6 +729,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** Edit the player information.
 
 **So that:** The player`s data can be updated whenever is needed.
+
+**Feature Type:** Basic.
 
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
@@ -748,6 +776,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** The stadium`s data can be updated whenever is needed.
 
+**Feature Type:** Basic.
+
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
@@ -764,6 +794,9 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 <!-- ------------------------------------------------ Edit Ticket ------------------------------- -->
 ### Edit Ticket
+>  [!WARNING]
+> This feature might change, it is not completely guaranteed that it will be implemented.
+
 **As a:** Admin.
 
 **I want to:** Edit the tickets information.
@@ -802,6 +835,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** A match is establish between two teams, and modify any information if needed.
 
+**Feature Type:** Advanced.
+
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
 - The administrator must be able to create a game by selecting:
@@ -833,6 +868,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can keep the game information up to date.
 
+**Feature Type:** Advanced.
+
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
 - The administrator must be able to update the following fields:
@@ -861,6 +898,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 **So that:** I can identify which teams are the most beloved according to the users.
 
+**Feature Type:** Advanced.
+
 #### Acceptance Criteria
 - An admin-only section must be available to display this data.
 - The data will be display through a horizontal bar chart.
@@ -877,6 +916,8 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 **I want to:** See the statistics about which teams have sold the most tickets.
 
 **So that:** I can identify which teams are the most entertaining and interesting to watch according to the users.
+
+**Feature Type:** Advanced.
 
 #### Acceptance Criteria
 - An admin-only section must be available to display this data.
