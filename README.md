@@ -28,7 +28,15 @@ This web application was developed as a final degree project in Computer Enginee
 
 ## Table of Contents
 - [Application Functionality](#application-functionality)
+
 - [Methodology](#methodology)
+  - [Phase 1: Features and Screens Specification](#phase-1-features-and-screens-specification)
+  - [Phase 2: Repository, Tests and CI](#phase-2-repository-tests-and-ci)
+  - [Phase 3: Version 0.1 - Basic Features and Docker](#phase-3-version-01---basic-features-and-docker)
+  - [Phase 4: Version 0.2 - Intermediate Features](#phase-4-version-02---intermediate-features)
+  - [Phase 5: Version 1.0 - Advanced Features](#phase-5-version-10---advanced-features)
+  - [Phase 6: Report](#phase-6-report)
+  - [Phase 7: Defense of the Final Degree Project](#phase-7-defense-of-the-final-degree-project)
 - [Objectives](#objectives)
   - [Functionals](#functionals)
   - [Technicals](#technicals)
@@ -953,12 +961,39 @@ These pages will be displayed sequentially on the same screen, with transitions 
 
 ![Headers](images/screens/Headers.png)
 
+Depending on the type of user, a different header will displayed. These headers are:
+#### Anonymous User:
+- **Login:** Redirects the user to the login form, allowing them to access the exclusive features the application provide.
+- **Sign-Up:** Redirects the user to the registration form, allowing them to create an account.
+- **Teams:** Displays a list of all the teams in the league. By clicking on any of them, the user can view detailed information about that team.
+- **Standings:** Redirects the user to the [Standings Page](#6-standings), where all the standings for the different leagues and divisions are shown.
+- **Profile Icon:** Redirects the user to the [Login Form](#1-login-registration-and-password-recovery).
+
+#### Registered User:
+- **My Tickets:** Redirects the user to a page where all the tickets they have purchased are displayed.
+- **Fav Teams:** Redirects the user to a page dipslaying all the teams they have selected as favourites.
+- **Teams:** Displays a list of all the teams in the league. By clicking on any of them, the user can view detailed information about that team.
+- **Standings:** Redirects the user to the [Standings Page](#6-standings), where all the standings for the different leagues and divisions are shown.
+- **Profile Icon:** Redirects the user to the [Profile Settings Page](#7-profile), where all the user`s data is displayed and can be edited.
+
+#### Admin User:
+- **Edit Info:** Redirects the admin to the [Edit Menu](#15-edit-menu), where they can search for the team, player or stadium they want to edit.
+- **Matches:** Redirects the admin to the [Matches Page](#18-matches), where the matches of the day are displayed and the admin can select a match to edit.
+- **Create Match:** Redirects the admin to the [Create Match Form](#16-create-match).
+- **Statistics:** Redirects the admin to the [Statistics Page](#19-statistics), where the admin can see the statistical data of **"User´s Favourite Teams"** and **"Ticket Selling per Teams"** reflected graphically.
+- **Profile Icon:** Redirects the user to the [Profile Settings Page](#7-profile), where all the user`s data is displayed and can be edited.
+
 > [!NOTE]
 > To avoid repetition, the headers are not shown on every page of the draft. However, this does not mean that these pages will be without headers in the final design.
 
 ### 3: Footer
 
 ![Footer](images/screens/Footer.png)
+
+The footer shows the following information:
+- **Disclaimer:** Here there will be a brief paragraph stating that the information displayed in the application about teams, players and stadiums, is obtained from official MLB data.
+- **Address:** Address from which the application has been developed (in this case, the university`s address will appear).
+- **Contact Support:** Is a link that will redirect the user to the [Contact Support Form](#12-contact-support), in case the user has any problems while using of the application.
 
 > [!NOTE]
 > To avoid repetition, the footer is not shown on every page of the draft. However, this does not mean that these pages will be without footer in the final design.
