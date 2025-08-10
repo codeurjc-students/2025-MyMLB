@@ -1014,7 +1014,7 @@ When clicking **"Teams"** in the [headers](#2-headers), the home page will becom
 
 ![Standings Screen](images/screens/Standings.png)
 
-When clicking **"Standings"** in the [headers](#2-headers), the user will be redirected to this page, where the MLB standings are displayed. The standings are divided into two leagues: the American and the National League. Each of them consists of three divisions: East, Central and West.
+When clicking **"Standings"** in the [headers](#2-headers), the user will be redirected to this page, where the MLB standings are displayed. The standings are divided into two leagues: the American and the National League. Each of them consists of three divisions: East, Central and West. Aditionally, each team is displayed alongside its respective logo.
 
 ### 7: Profile
 
