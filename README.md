@@ -28,7 +28,6 @@ This web application was developed as a final degree project in Computer Enginee
 
 ## Table of Contents
 - [Application Functionality](#application-functionality)
-
 - [Methodology](#methodology)
   - [Phase 1: Features and Screens Specification](#phase-1-features-and-screens-specification)
   - [Phase 2: Repository, Tests and CI](#phase-2-repository-tests-and-ci)
@@ -1002,25 +1001,45 @@ The footer shows the following information:
 
 ![Home](images/screens/Home.png)
 
+In the home page, a welcome message will greet the user, following this, a dashboard with all the games that will take place throught a current day will be displayed. Finally, the standings of both leagues and the divisions will be displayed, this standings of the different divisions will rotate, showing the user in the form of a slide every x seconds, or the user will manually go through them with arrows that will appear (it is still being decided how this display will be done).
+
+If the registered user has selected favourite teams, the divisions that will appear first will be those in which those teams are part of.
 ### 5: Teams
 
 ![Teams Screen](images/screens/Teams.png)
+
+When clicking **"Teams"** in the [headers](#2-headers), the home page will become slightly opaque and a panel will appear in the center of the page, displaying a list of all the MLB teams. By clicking on any of them, the user will be redirected to the [Team Information Page](#13-team-information).
 
 ### 6: Standings
 
 ![Standings Screen](images/screens/Standings.png)
 
+When clicking **"Standings"** in the [headers](#2-headers), the user will be redirected to this page, where the MLB standings are displayed. The standings are divided into two leagues: the American and the National League. Each of them consists of three divisions: East, Central and West.
+
 ### 7: Profile
 
 ![Profile Screen](images/screens/Profile.png)
+
+On this page, the user can view the personal data used in the application. Aditionally, they can personalize their account by editing the following fields:
+- Username
+- Password
+- Enable/Disable notifications
+
+Furthermore, the user has the option to log out or delete their account by clicking on the respective buttons. After that, the corresponding confirmation layout will appear, centered on the same page, with the background becoming slightly opaque.
 
 ### 8: MyTickets
 
 ![MyTickets Screen](images/screens/MyTickets.png)
 
+When clicking **"My Tickets"** in the [headers](#2-headers), the user will be redirected to this page, displaying all the purchased ticket by the user.
+
+The tickets are displayed in a two-sided card layout. The front side shows an image (common for all tickets), while the back side reveals the ticket information such as the match, the stadium where it will held, and the date and time. This rotation will happen when the user hovers over the ticket.
+
 ### 9: MyFavTeams
 
 ![MyFavTeams Screen](images/screens/MyFavTeams.png)
+
+When clicking **"Fav Teams"** in the [headers](#2-headers), the user will be redirected to this page, displaying all the teams marked as favourite. Each team includes a button to remove it from the favourite list.
 
 ### 10: Ticket Selection
 
@@ -1030,9 +1049,13 @@ The footer shows the following information:
 
 ![TicketPurchase Screen](images/screens/TicketPurchase.png)
 
+Once the user has confirmed the ticket selection, they will be redirected to this page, where they must enter a credit card information to complete the pruchase of the ticket(s). The user also have the option to cancel the purchase at any time.
+
 ### 12: Contact Support
 
 ![Support Screen](images/screens/ContactSupport.png)
+
+By clicking the **Contact Support** link in the [footer](#3-footer), the user will be redirected to this form where they can report the issue to the application administrators.
 
 ### 13: Team Information
 
