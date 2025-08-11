@@ -45,7 +45,7 @@ This web application was developed as a final degree project in Computer Enginee
 - [Entities with Images](#-entities-with-images)
 - [Charts](#-charts)
 - [User Stories](#-user-stories)
-  - [User Register](#user-register)
+  - [User Registration](#user-registration)
   - [See Application General Information](#see-application-general-information)
   - [User Login](#user-login)
   - [User Logout](#user-logout)
@@ -421,7 +421,7 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 
 ## 👤 User Stories
 
-### User Register
+### User Registration
 **As a:** Anonymous User.
 
 **I want to:** Create an account in the web application.
