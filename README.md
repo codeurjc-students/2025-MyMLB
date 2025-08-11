@@ -416,7 +416,7 @@ To ensure the software quality, unit and integration testing will be performed u
 > [!NOTE]
 > The information described above is subject to change. Both the chart types and topics may be updated as needed.
 
-### Library To Use
+### 📚 Library To Use
 Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
 
 ## 👤 User Stories
