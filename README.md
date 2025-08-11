@@ -1,6 +1,6 @@
 # 2025-MyMLB
 
-## Author and Tutor Information
+## ✍️ Author and Tutor Information
 This web application was developed as a final degree project in Computer Engineering at the Rey Juan Carlos University, within the Higher Technical School of Computer Engineering (ETSII), in Madrid, Spain.
 
 <table>
@@ -26,9 +26,9 @@ This web application was developed as a final degree project in Computer Enginee
   </tbody>
 </table>
 
-## Table of Contents
-- [Application Functionality](#application-functionality)
-- [Methodology](#methodology)
+## 🧾 Table of Contents
+- [Application Functionality](#-application-functionality)
+- [Methodology](#-methodology)
   - [Phase 1: Features and Screens Specification](#phase-1-features-and-screens-specification)
   - [Phase 2: Repository, Tests and CI](#phase-2-repository-tests-and-ci)
   - [Phase 3: Version 0.1 - Basic Features and Docker](#phase-3-version-01---basic-features-and-docker)
@@ -36,15 +36,15 @@ This web application was developed as a final degree project in Computer Enginee
   - [Phase 5: Version 1.0 - Advanced Features](#phase-5-version-10---advanced-features)
   - [Phase 6: Report](#phase-6-report)
   - [Phase 7: Defense of the Final Degree Project](#phase-7-defense-of-the-final-degree-project)
-- [Objectives](#objectives)
+- [Objectives](#-objectives)
   - [Functionals](#functionals)
   - [Technicals](#technicals)
-- [Entities](#entities)
-- [Relations Between Entities](#relations-between-entities)
-- [Types of Users and Browsing Permissions](#type-of-users-and-browsing-permissions)
-- [Entities with Images](#entities-with-images)
-- [Charts](#charts)
-- [User Stories](#user-stories)
+- [Entities](#-entities)
+- [Relations Between Entities](#-relations-between-entities)
+- [Types of Users and Browsing Permissions](#-type-of-users-and-browsing-permissions)
+- [Entities with Images](#-entities-with-images)
+- [Charts](#-charts)
+- [User Stories](#-user-stories)
   - [User Register](#user-register)
   - [See Application General Information](#see-application-general-information)
   - [User Login](#user-login)
@@ -65,7 +65,7 @@ This web application was developed as a final degree project in Computer Enginee
   - [Update Game Score](#update-game-score)
   - [User´s Favourite Teams Statistics](#users-favourite-teams-statistics)
   - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
-- [Page Layouts and Navigation](#page-layouts-and-navigation)
+- [Page Layouts and Navigation](#-page-layouts-and-navigation)
   - [1: Login, Registration and Password Recovery](#1-login-registration-and-password-recovery)
   - [2: Headers](#2-headers)
   - [3: Footer](#3-footer)
@@ -86,7 +86,7 @@ This web application was developed as a final degree project in Computer Enginee
   - [18: Update Scoreboard](#18-update-scoreboard)
   - [19: Statistics](#19-statistics)
 
-## Application Functionality
+## ⚾ Application Functionality
 The app is a portal dedicated to Major League Baseball (MLB), offering general league information, as well as detailed information on teams, players, standings, and other relevant aspects.
 
 In addition to these basic functions, users can register to access exclusive features, such as purchasing tickets for their favorite games, selecting favorite teams to customize the information displayed, and the ability to enable or disable email notifications with the latest league news from their profile.
@@ -97,7 +97,7 @@ The main objective of this app is to offer baseball fans a comprehensive and up-
 
 At this time, the functional and technical objectives are only defined but not implemented.
 
-## Methodology
+## 📝 Methodology
 The development of the application will be divided in different phases, which are:
 
 ### Phase 1: Features and Screens Specification
@@ -174,7 +174,7 @@ Below is a **Gantt Chart** that graphically reflects the planning mentioned abov
 
 ![Gantt Diagram](images/diagrams/Gantt.png)
 
-## Objectives
+## 🎯 Objectives
 
 ### Functionals
 The main functional objective of this application is to offer baseball fans a complete and personalized portal for Major League Baseball (MLB), allowing them to have access to general league information, team and player data, standings and match results, as well as access interactive services such as purchasing tickets, personalizing content based on favorite teams, and allow the user to stay up to date on the latest that is happening around league by enabling email notifications.
@@ -186,7 +186,7 @@ The main functional objective of this application is to offer baseball fans a co
 4. Allow the registered users to mark a team as a favourite.
 
 > [!NOTE]
-> In the [User Stories](#user-stories) section you can find all of the features the application will provide.
+> In the [User Stories](#-user-stories) section you can find all of the features the application will provide.
 
 ### Technicals
 The application will be developed as a web platform with a client-server architecture using the **HTTPS** protocol to ensure application security, data protection, and secure communication. 
@@ -211,7 +211,7 @@ To ensure the software quality, unit and integration testing will be performed u
 9. Mockito and AssertJ for unit and integration testing.
 10. Selenium for system/end-to-end (e2e) testing.
 
-## Entities
+## 🧠 Entities
 - User
 - Team
 - Stadium
@@ -223,8 +223,8 @@ To ensure the software quality, unit and integration testing will be performed u
 > [!IMPORTANT]
 > The `PaswordResetToken` entity will be used to give the user an opportunity to create a new password (in case the user have forgotten the previous one, and clicks the "Forgot My Password" option).
 
-## Relations between Entities
-### User
+## 🪢 Relations between Entities
+### 🙍 User
 <table>
   <thead>
     <th>Related with...</th>
@@ -246,7 +246,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### Team
+### ⚾ Team
 <table>
   <thead>
     <th>Related with...</th>
@@ -272,7 +272,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### Player
+### 🏃 Player
 <table>
   <thead>
     <th>Related with...</th>
@@ -286,7 +286,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### Stadium
+### 🏟️ Stadium
 <table>
   <thead>
     <th>Related with...</th>
@@ -304,7 +304,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### Game
+### 🆚 Game
 <table>
   <thead>
     <th>Related with...</th>
@@ -326,7 +326,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### Ticket
+### 🎟️ Ticket
 <table>
   <thead>
     <th>Related with...</th>
@@ -344,7 +344,7 @@ To ensure the software quality, unit and integration testing will be performed u
   </tbody>
 </table>
 
-### PasswordResetToken
+### 🔐 PasswordResetToken
 <table>
   <thead>
     <th>Related with...</th>
@@ -357,11 +357,11 @@ To ensure the software quality, unit and integration testing will be performed u
     </tr>
 </table>
 
-## Type of Users and Browsing Permissions
-### Anonymous User
+## 🔒 Type of Users and Browsing Permissions
+### 🕵️‍♂️ Anonymous User
 - See the general information provided by the application.
 
-### Registered User
+### 🧑‍💻 Registered User
 - See both general and personalized information provided by the application.
 - Access its profile settings.
 - Delete Account.
@@ -371,7 +371,7 @@ To ensure the software quality, unit and integration testing will be performed u
 - Receive notifications via email.
 - Contact support via email.
 
-### Administrator (Admin)
+### 🔑 Administrator (Admin)
 - Update team information.
 - Edit player information.
 - Edit stadium information.
@@ -381,13 +381,13 @@ To ensure the software quality, unit and integration testing will be performed u
 - User´s favourite teams statistics.
 - Ticket selling per team statistics.
 
-## Entities with Images
+## 📷 Entities with Images
 - User
 - Team
 - Stadium
 - Player
 
-## Charts
+## 📊 Charts
 <table>
   <thead>
     <th>Chart Topic</th>
@@ -419,7 +419,7 @@ To ensure the software quality, unit and integration testing will be performed u
 ### Library To Use
 Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
 
-## User Stories
+## 👤 User Stories
 
 ### User Register
 **As a:** Anonymous User.
@@ -954,7 +954,7 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 - Verify that this section is only visible to admins.
 - Verify that the data updates when the users purchases tickets.
 
-## Page Layouts and Navigation
+## 🔀 Page Layouts and Navigation
 
 > [!WARNING]
 > The drafts that are shown below may look a bit plain, as their purpose is to show the structure of each page and how the main elements will be displayed. As you can see, the background and the images are not shown in this draft, and the color tones shown in certain elements are not definitve. These will be refinede using CSS to achieve the desired look.
