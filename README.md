@@ -1061,26 +1061,72 @@ By clicking the **Contact Support** link in the [footer](#3-footer), the user wi
 
 ![TeamInfo Screen](images/screens/TeamInfo.png)
 
+The team´s page will display the following information about the corresponding team:
+- **About the Team:** A brief paragraph on the team’s history.
+- **Next Match:** The next match that the team will play.
+- **Lineup:** The current lineup used by the team.
+- **Standings:** Displays the division in which the team competes.
+- **Pictures of the Stadium:** Displays a carousel of photos of the team's stadium.
+- **Pictures of the Position Players:** Displays a carousel of photos of the position players.
+- **Pictures of the Pitchers:** Displays a carousel of photos of the pitchers.
+- **Upcoming Matches:** Displays a list of upcoming home games, with the option to purchase tickets for any of these games.
+
+If the user clicks on a picture of any of the players (position players and pitchers), they will be redirected to the [Player Information Page](#14-player-information).
+
 ### 14: Player Information
 
 ![PlayerInfo Screen](images/screens/PlayerInfo.png)
+
+When the user clicks on a player's photo on the [team page](#13-team-information), the page background will become slightly opaque and the player's image will display in the center of the page, with a table of that player's stats displayed below. The stats shown will vary depending on whether the selected player is a position player or a pitcher (as illustrated in the sketch).
 
 ### 15: Edit Menu
 
 ![EditMenu Screen](images/screens/EditMenu.png)
 
+When the admin clicks on [Edit Info](#2-headers), they will be redirected to this page, where they can search for a team, player, or stadium to edit. After selecting the entity, an specific form to that entity will appear. In these forms, the admin can edit any information they wish.
+
+> [!NOTE]
+> In the player´s form, the admin will be able to edit the following fields:
+> - Picture.
+> - Team.
+> - Position.
+> - Total At Bats (AB).
+> - Number of Hits (H).
+> - Numbers of Runs Batted In (RBI)
+> - Number of Home Runs (HR)
+>
+> This last two, despite not being showed in the draft, will appear in the final design (hence the **"..."**)
+
+> [!NOTE]
+> In the team´s form, the stadium cannot be edited, therefore, only the stadium’s name is shown. The same applies in the stadium´s form with its respective team.
+
 ### 16: Create Match
 
 ![CreateMatch Screen](images/screens/CreateMatch.png)
 
-### 17: Update Scoreboard
+When the admin clicks on [Create Match](#2-headers), they will be redirected to this page, where they can create a match by filling out the form.
+
+### 17: Matches
+
+![Matches Screen](images/screens/Matches.png)
+
+When the admin clicks on [Matches](#2-headers), they will be redirected to this page, where all the matches scheduled for a specific date will be displayed. Additionally, if the admin clicks on the "UPDATE" button next to any match, they will be given the option to update the scoreboard of that match by being redirected to the [Update Scoreboard Page](#18-update-scoreboard)
+
+### 18: Update Scoreboard
 
 ![UpdateMatch Screen](images/screens/UpdateMatch.png)
 
-### 18: Matches
+In this page, the admin will have basic form that allows them to update any of the available fields for the selected match.
 
-![Matches Screen](images/screens/Matches.png)
+As a reminder, the **status** has only three possible values:
+- **Scheduled:** The match has not started.
+- **In Progress:** The match has already started.
+- **Finished:** The match is over.
 
 ### 19: Statistics
 
 ![Statistics Screen](images/screens/Statistics.png)
+
+When the admin clicks on [Statistics](#2-headers), they will be redirected to this page. This page is divided into two sections:
+- **User´s Favourite Teams:** In this section, it will display a chart with its legend, showing the most frequently selected “favourite” teams by users.
+- **Ticket Selling per Teams:** In this section, it will display a chart with its legend, showing the teams that sell the most tickets for their games.
