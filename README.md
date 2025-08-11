@@ -66,6 +66,25 @@ This web application was developed as a final degree project in Computer Enginee
   - [User´s Favourite Teams Statistics](#users-favourite-teams-statistics)
   - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
 - [Page Layouts and Navigation](#page-layouts-and-navigation)
+  - [1: Login, Registration and Password Recovery](#1-login-registration-and-password-recovery)
+  - [2: Headers](#2-headers)
+  - [3: Footer](#3-footer)
+  - [4: Home](#4-home)
+  - [5: Teams](#5-teams)
+  - [6: Standings](#6-standings)
+  - [7: Profile](#7-profile)
+  - [8: My Tickets](#8-my-tickets)
+  - [9: Favourite Teams](#9-favourite-teams)
+  - [10: Ticket Selection](#10-ticket-selection)
+  - [11: Ticket Purchase](#11-ticket-purchase)
+  - [12: Contact Support](#12-contact-support)
+  - [13: Team Information](#13-team-information)
+  - [14: Player Information](#14-player-information)
+  - [15: Edit Menu](#15-edit-menu)
+  - [16: Create Match](#16-create-match)
+  - [17: Matches](#17-matches)
+  - [18: Update Scoreboard](#18-update-scoreboard)
+  - [19: Statistics](#19-statistics)
 
 ## Application Functionality
 The app is a portal dedicated to Major League Baseball (MLB), offering general league information, as well as detailed information on teams, players, standings, and other relevant aspects.
@@ -1027,7 +1046,7 @@ On this page, the user can view the personal data used in the application. Aditi
 
 Furthermore, the user has the option to log out or delete their account by clicking on the respective buttons. After that, the corresponding confirmation layout will appear, centered on the same page, with the background becoming slightly opaque.
 
-### 8: MyTickets
+### 8: My Tickets
 
 ![MyTickets Screen](images/screens/MyTickets.png)
 
@@ -1035,7 +1054,7 @@ When clicking **"My Tickets"** in the [headers](#2-headers), the user will be re
 
 The tickets are displayed in a two-sided card layout. The front side shows an image (common for all tickets), while the back side reveals the ticket information such as the match, the stadium where it will held, and the date and time. This rotation will happen when the user hovers over the ticket.
 
-### 9: MyFavTeams
+### 9: Favourite Teams
 
 ![MyFavTeams Screen](images/screens/MyFavTeams.png)
 
