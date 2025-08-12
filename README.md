@@ -1060,9 +1060,24 @@ The tickets are displayed in a two-sided card layout. The front side shows an im
 
 When clicking **"Fav Teams"** in the [headers](#2-headers), the user will be redirected to this page, displaying all the teams marked as favourite. Each team includes a button to remove it from the favourite list.
 
+If the user clicks on any of these teams, it will be redirected to the [Team Information Team](#13-team-information).
+
 ### 10: Ticket Selection
 
 ![TicketSelection Screen](images/screens/SelectTicket.png)
+
+On this page, the user will be able to select the ticket type and the amount of the tickets they wish to purchase. To help with this selection, a map of the stadium will be displayed on the left side of the page.
+
+> [!NOTE]
+> It has not yet been decided whether the stadium map will be a generic one or specific to each stadium.
+
+The possible seats that the user can choose are the following:
+- Home Plate
+- First Base
+- Third Base
+- Right Field
+- Center Field
+- Left Field
 
 ### 11: Ticket Purchase
 
