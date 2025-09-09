@@ -26,6 +26,8 @@ This web application was developed as a final degree project in Computer Enginee
   </tbody>
 </table>
 
+Aditionally, this project will be published in a blog on **Medium**, which you can find by clicking [here](https://medium.com/@a.rodriguezgu.2022).
+
 ## 🧾 Table of Contents
 - [Application Functionality](#-application-functionality)
 - [Methodology](#-methodology)
@@ -44,6 +46,7 @@ This web application was developed as a final degree project in Computer Enginee
 - [Types of Users and Browsing Permissions](#-type-of-users-and-browsing-permissions)
 - [Entities with Images](#-entities-with-images)
 - [Charts](#-charts)
+- [Algorithm or Advanced Query](#-algorithm-or-advanced-query)
 - [User Stories](#-user-stories)
   - [User Registration](#user-registration)
   - [See Application General Information](#see-application-general-information)
@@ -105,14 +108,14 @@ The development of the application will be divided in different phases, which ar
 
 **Due Date:** September 15
 
-**Real End Date:** TBD
+**Real End Date:** September 3
 
 The application features will be defined and categorized as basic, intermediate, or advanced. Alongside this, an initial overview of the screens will be provided, specifying their purpose, transitions, and navigation flow. 
 
 Additionally, the entities and their relationships will be defined, as well as the different user types and their corresponding permissions within the application.
 
 ### Phase 2: Repository, Tests and CI
-**Start Date:** TBD
+**Start Date:** September 9
 
 **Due Date:** October 15
 
@@ -418,6 +421,13 @@ To ensure the software quality, unit and integration testing will be performed u
 
 ### 📚 Library To Use
 Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
+
+## 🔍 Algorithm or Advanced Query
+This section will be reflected when updating the standings of every division in both leagues, as these will be updated automatically based on the following data:
+- A team’s number of wins.
+- A team’s number of losses.
+
+From these fields, all of the other team statistics will be calculated automatically, and the standings will be updated accordingly.
 
 ## 👤 User Stories
 
