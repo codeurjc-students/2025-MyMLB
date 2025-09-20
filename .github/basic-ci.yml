@@ -1,0 +1,77 @@
+name: Basic Quality Control
+
+on:
+  push:
+    branches:
+      - "feature/**"
+      - "fix/**"
+  workflow_dispatch:
+
+jobs:
+  build-backend:
+    name: Backend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Java 22 + GraalVM Configuration
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "graalvm"
+          java-version: "22"
+
+      - name: Backend Compile
+        run: mvn clean compile
+
+  backend-unit-tests:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    needs: build-backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Run Unit Tests
+        run: mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"
+
+  build-frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node.js 22 Configuration
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Install Angular Dependencies
+      - name: Install Dependencias
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Compile Frontend
+        run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+  frontend-unit-tests:
+    name: Unit Tests Frontend
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./frontend
+      - name: Run Unit Tests
+        run: npm test -- --watch=false
+        working-directory: ./frontend
