@@ -29,6 +29,7 @@
     <properties>
         <java.version>21</java.version>
         <spring.aot.enabled>true</spring.aot.enabled>
+        <sonar.organization>codeurjc-students</sonar.organization>
     </properties>
     <dependencies>
         <dependency>
