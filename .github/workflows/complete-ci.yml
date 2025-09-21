@@ -13,7 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Java 22 + GraalVM
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -22,6 +21,7 @@ jobs:
 
       - name: Server Compile
         run: mvn clean compile
+        working-directory: ./backend/MLBPortal
 
   backend-unit-tests:
     name: Unit Tests Backend
@@ -29,13 +29,16 @@ jobs:
     needs: build-backend
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - name: Run Unit Tests
         run: mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"
+        working-directory: ./backend/MLBPortal
 
   backend-integration-tests:
     name: Integration Tests Backend
@@ -43,13 +46,16 @@ jobs:
     needs: backend-unit-tests
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - name: Run Integration Tests
         run: mvn test -Dsurefire.excludes="**/unit/**,**/e2e/**"
+        working-directory: ./backend/MLBPortal
 
   backend-e2e-tests:
     name: E2E Tests Backend
@@ -57,13 +63,16 @@ jobs:
     needs: backend-integration-tests
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - name: Run E2E Tests
         run: mvn test -Dsurefire.excludes="**/integration/**,**/unit/**"
+        working-directory: ./backend/MLBPortal
 
   build-frontend:
     name: Frontend Build
