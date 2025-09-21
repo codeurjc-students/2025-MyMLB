@@ -23,6 +23,7 @@ jobs:
 
       - name: Backend Compile
         run: mvn clean compile
+        working-directory: ./backend/MLBPortal
 
   backend-unit-tests:
     name: Backend Unit Tests
@@ -37,6 +38,7 @@ jobs:
           java-version: 21
       - name: Run Unit Tests
         run: mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"
+        working-directory: ./backend/MLBPortal
 
   build-frontend:
     name: Frontend Build
