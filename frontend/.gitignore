@@ -43,5 +43,4 @@ testem.log
 Thumbs.db
 
 ## Config
-cypress.config.ts
 proxy.conf.json
