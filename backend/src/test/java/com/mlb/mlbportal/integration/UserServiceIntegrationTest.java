@@ -25,7 +25,8 @@ public class UserServiceIntegrationTest {
     private final UserEntity user2 = new UserEntity("armin@gmail.com", "armiin13");
 
     @BeforeEach
-    public void setUp() {
+    @SuppressWarnings("unused")
+    void setUp() {
         this.userRepository.deleteAll();
         this.userRepository.save(user1);
         this.userRepository.save(user2);
@@ -33,7 +34,7 @@ public class UserServiceIntegrationTest {
 
     @Test
     @DisplayName("getAllUsers should return all users from the database")
-    public void getAllUsersTest() {
+    void getAllUsersTest() {
         List<UserEntity> result = this.userService.getAllUsers();
 
         assertThat(result).hasSize(2).extracting(UserEntity::getUsername)

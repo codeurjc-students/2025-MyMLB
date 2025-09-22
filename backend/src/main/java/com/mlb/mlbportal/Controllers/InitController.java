@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.Controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.mlb.mlbportal.Models.UserEntity;
@@ -10,8 +9,12 @@ import jakarta.annotation.PostConstruct;
 
 @Controller
 public class InitController {
-    @Autowired
-    private UserRepository userRepository;
+    
+    private final UserRepository userRepository;
+
+    public InitController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostConstruct
     public void init() {

@@ -29,7 +29,8 @@ public class UserControllerTest {
     private final UserEntity user2 = new UserEntity("armin@gmail.com", "armiin13");
 
     @BeforeEach
-    public void setUp() {
+    @SuppressWarnings("unused")
+    void setUp() {
         this.userRepository.deleteAll();
         this.userRepository.save(user1);
         this.userRepository.save(user2);
@@ -38,7 +39,7 @@ public class UserControllerTest {
 
     @Test
     @DisplayName("E2E Test: GET /api/users returns all users with correct fields")
-    public void getAllUsersRESTMethodTest() {
+    void getAllUsersRESTMethodTest() {
         given().contentType(ContentType.JSON).when().get("/api/users").then()
             .statusCode(200)
             .body("size()", is(2))

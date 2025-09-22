@@ -32,20 +32,22 @@ public class UserServiceTest {
     private final UserEntity user2 = new UserEntity("armin@gmail.com", "armiin13");
 
     @BeforeEach
-    public void setUp() {
+    @SuppressWarnings("unused")
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         this.userRepository.save(user1);
         this.userRepository.save(user2);
     }
 
     @AfterEach
-    public void tearDown() {
+    @SuppressWarnings("unused")
+    void tearDown() {
         this.userRepository.deleteAll();
     }
 
     @Test
     @DisplayName("getAllUsers should return all users from the repository")
-    public void testGetAllUsers() {
+    void testGetAllUsers() {
         List<UserEntity> mockUsers = Arrays.asList(user1, user2);
         when(this.userRepository.findAll()).thenReturn(mockUsers);
 
