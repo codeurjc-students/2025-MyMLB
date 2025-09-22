@@ -62,7 +62,7 @@ jobs:
         working-directory: ./frontend
 
   frontend-unit-tests:
-    name: Unit Tests Frontend
+    name: Frontend Unit Tests
     runs-on: ubuntu-latest
     needs: build-frontend
     steps:
