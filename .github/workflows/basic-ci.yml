@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-backend:
-    name: Backend Build
+    name: Backend Build BC
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
         working-directory: ./backend
 
   build-frontend:
-    name: Frontend Build
+    name: Frontend Build BC
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
