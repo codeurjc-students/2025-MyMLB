@@ -211,8 +211,10 @@ To ensure the software quality, unit and integration testing will be performed u
 6. Responsive design to ensure compatibility with mobile devices, tablets and computers.
 7. Version control with Git.
 8. Docker for application containerization as part of the Continuous Integration (CI), Continuous Delivery (CD), and Continuous Deployment process.
-9. Mockito and AssertJ for unit and integration testing.
-10. Selenium for system/end-to-end (e2e) testing.
+9. Mockito and AssertJ for backend unit and integration testing.
+10. Karma and Jasmine for frontend unit and integration testing.
+11. REST Assured for backend system/end-to-end (e2e) testing.
+12. Cypress for frontend system/end-to-end (e2e) testing.
 
 ## 🧠 Entities
 - User
