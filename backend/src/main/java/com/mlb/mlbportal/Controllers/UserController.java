@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.Controllers;
+package com.mlb.mlbportal.controllers;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Services.UserService;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")

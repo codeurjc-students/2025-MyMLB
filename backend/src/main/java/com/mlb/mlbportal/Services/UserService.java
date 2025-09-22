@@ -1,11 +1,11 @@
-package com.mlb.mlbportal.Services;
+package com.mlb.mlbportal.services;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Repositories.UserRepository;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.UserRepository;
 
 @Service
 public class UserService {

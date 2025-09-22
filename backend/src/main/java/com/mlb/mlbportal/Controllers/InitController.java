@@ -1,9 +1,9 @@
-package com.mlb.mlbportal.Controllers;
+package com.mlb.mlbportal.controllers;
 
 import org.springframework.stereotype.Controller;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Repositories.UserRepository;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.UserRepository;
 
 import jakarta.annotation.PostConstruct;
 

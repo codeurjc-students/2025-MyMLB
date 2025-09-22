@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Repositories.UserRepository;
-import com.mlb.mlbportal.Services.UserService;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.UserService;
 
 @SpringBootTest
-public class UserServiceIntegrationTest {
+class UserServiceIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 

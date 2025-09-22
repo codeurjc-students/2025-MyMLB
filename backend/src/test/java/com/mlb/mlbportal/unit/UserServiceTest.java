@@ -17,11 +17,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Repositories.UserRepository;
-import com.mlb.mlbportal.Services.UserService;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.UserService;
 
-public class UserServiceTest {
+class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 

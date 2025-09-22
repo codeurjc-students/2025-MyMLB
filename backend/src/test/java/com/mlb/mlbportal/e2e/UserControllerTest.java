@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import com.mlb.mlbportal.Models.UserEntity;
-import com.mlb.mlbportal.Repositories.UserRepository;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.UserRepository;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -17,7 +17,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest {
+class UserControllerTest {
     
     @LocalServerPort
     private int port;

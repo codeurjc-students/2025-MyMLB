@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.Models;
+package com.mlb.mlbportal.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
