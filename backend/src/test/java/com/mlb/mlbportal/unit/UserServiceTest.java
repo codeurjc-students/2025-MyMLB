@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,6 +59,6 @@ class UserServiceTest {
         assertThat(result).extracting(UserEntity::getEmail)
             .contains("fonssi@gmail.com", "armin@gmail.com");
 
-        verify(this.userRepository, times(1)).findAll();
+        verify(this.userRepository, times(1)).findAll(); 
     }
 }
