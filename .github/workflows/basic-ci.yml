@@ -75,5 +75,5 @@ jobs:
         run: npm install
         working-directory: ./frontend
       - name: Run Unit Tests
-        run: npx ng test --no-watch --no-progress --browsers=ChromeHeadless
+        run: npm run test:unit
         working-directory: ./frontend
