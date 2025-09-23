@@ -10,25 +10,13 @@ module.exports = function (config) {
 			require('@angular-devkit/build-angular/plugins/karma')
 		],
 		client: {
-			clearContext: false
+			clearContext: false // leave Jasmine Spec Runner output visible in browser
 		},
 		reporters: ['progress', 'kjhtml'],
-		customLaunchers: {
-			ChromeHeadlessCI: {
-				base: 'ChromeHeadless',
-				flags: [
-					'--no-sandbox',
-					'--disable-gpu',
-					'--disable-dev-shm-usage',
-					'--disable-software-rasterizer',
-					'--disable-extensions'
-				]
-			}
-		},
-		browsers: ['ChromeHeadlessCI'],
+		browsers: ['ChromeHeadless'], //ChromeHeadless for non-GUI environments
 		restartOnFileChange: true,
 		proxies: {
 			'/api/': 'http://localhost:8080/api/'
 		},
 	});
-};
+}
