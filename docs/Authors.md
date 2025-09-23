@@ -24,3 +24,7 @@ in Madrid, Spain.
     </tr>
   </tbody>
 </table>
+
+<br>
+
+[👈 Return to README](../README.md)
