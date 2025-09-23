@@ -222,3 +222,6 @@ This section will be reflected when updating the standings of every division in 
 - A team’s number of losses.
 
 From these fields, all of the other team statistics will be calculated automatically, and the standings will be updated accordingly.
+
+---
+[👈 Return to README](../README.md)
