@@ -109,7 +109,7 @@ jobs:
         run: npm install
         working-directory: ./frontend
       - name: Run Unit + Integration Tests
-        run: CI=true npm run test:unit
+        run: npm run test:unit
         working-directory: ./frontend
 
   frontend-integration-tests:
@@ -126,7 +126,7 @@ jobs:
         run: npm install
         working-directory: ./frontend
       - name: Run Integration Tests
-        run: CI=true npm run test:integration
+        run: npm run test:integration
         working-directory: ./frontend
 
   frontend-e2e-tests:

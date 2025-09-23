@@ -1,4 +1,4 @@
-export default function (config) {
+module.exports = function (config) {
 	config.set({
 		basePath: '',
 		frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -25,7 +25,7 @@ export default function (config) {
 				]
 			}
 		},
-		browsers: process.env.CI ? ['ChromeHeadlessCI'] : ['Chrome'], // In CI dont show any IU, in Local yes
+		browsers: ['ChromeHeadlessCI'],
 		restartOnFileChange: true,
 		proxies: {
 			'/api/': 'http://localhost:8080/api/'
