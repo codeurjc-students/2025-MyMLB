@@ -28,6 +28,7 @@
   - [17: Matches](#17-matches)
   - [18: Update Scoreboard](#18-update-scoreboard)
   - [19: Statistics](#19-statistics)
+- [License](#-license) 
 
 ## ⚾ Application Functionality
 The app is a portal dedicated to Major League Baseball (MLB), offering general league information, as well as detailed information on teams, players, standings, and other relevant aspects.
@@ -250,3 +251,6 @@ As a reminder, the **status** has only three possible values:
 When the admin clicks on [Statistics](#2-headers), they will be redirected to this page. This page is divided into two sections:
 - **User´s Favourite Teams:** In this section, it will display a chart with its legend, showing the most frequently selected “favourite” teams by users.
 - **Ticket Selling per Teams:** In this section, it will display a chart with its legend, showing the teams that sell the most tickets for their games.
+
+## 📜 License
+This project follows the Apache 2.0 license regulations. For more information you can consult it [here](./LICENSE).
