@@ -40,3 +40,6 @@ To ensure the software quality, unit and integration testing will be performed u
 10. Karma and Jasmine for frontend unit and integration testing.
 11. REST Assured for backend system/end-to-end (e2e) testing.
 12. Cypress for frontend system/end-to-end (e2e) testing.
+
+---
+[👈 Return to README](../README.md)
