@@ -110,7 +110,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
         working-directory: ./frontend
-        
+
       - name: Run Unit Tests
         run: npm run test:unit
         working-directory: ./frontend
@@ -135,7 +135,7 @@ jobs:
   frontend-e2e-tests:
     name: E2E Tests Frontend
     runs-on: ubuntu-latest
-    needs: build-frontend
+    needs: frontend-integration-tests
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
