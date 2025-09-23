@@ -82,3 +82,6 @@ The defense of the Final Degree Project will take place.
 Below is a **Gantt Chart** that graphically reflects the planning mentioned above.
 
 ![Gantt Diagram](../images/diagrams/Gantt.png)
+
+---
+[👈 Return to README](../README.md)
