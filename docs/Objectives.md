@@ -1,10 +1,10 @@
 # 🎯 Objectives
 
 ## 🧾 Table of Contents
-- [Functionals](#functionals)
-- [Technicals](#technicals)
+- [Functionals](#-functionals)
+- [Technicals](#-technicals)
 
-## Functionals
+## 📌 Functionals
 The main functional objective of this application is to offer baseball fans a complete and personalized portal for Major League Baseball (MLB), allowing them to have access to general league information, team and player data, standings and match results, as well as access interactive services such as purchasing tickets, personalizing content based on favorite teams, and allow the user to stay up to date on the latest that is happening around league by enabling email notifications.
 
 ### Main Features
@@ -16,7 +16,7 @@ The main functional objective of this application is to offer baseball fans a co
 > [!NOTE]
 > In the [User Stories](#-user-stories) section you can find all of the features the application will provide.
 
-## Technicals
+## 💻 Technicals
 The application will be developed as a web platform with a client-server architecture using the **HTTPS** protocol to ensure application security, data protection, and secure communication. 
 
 The **backend** will be implemented with **Spring Boot** to manage the business logic, communication with the **MySQL database**, and the exposure of services through a REST API. 
