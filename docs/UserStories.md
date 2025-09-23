@@ -47,7 +47,7 @@
 - Verify that the entered email by the user does not exist before allowing the registration.
 - Attempting to register an user that already exist, should show an error message.
 
-
+---
 ### See Application General Information
 **As a:** Anonymous User.
 
@@ -72,6 +72,7 @@
 - Verify that selecting the sign in/sign up option redirects to the login/register page.
 - Attempting to purchase a ticket for any game should redirect to the login/register page.
 
+---
 ### User Login
 **As a:** Registered User.
 
@@ -95,6 +96,7 @@
 - Attempting to log in with an user that does not exists, should show an error message.
 - If the user selects the "Recover my Password" option; verify that the recovery email is sent successfully.
 
+---
 ### User Logout
 **As a:** Registered User.
 
@@ -115,6 +117,7 @@
 - Verify that the user is redirected to the login/register page once the session is closed.
 - Verify that accessing a restricted page once the session is closed, instantly redirects to the login/register page.
 
+---
 ### Add Favourite Team
 **As a:** Registered User.
 
@@ -131,7 +134,7 @@
 - Verify that adding a team beyond the allowed limit is prevented and shows a proper message.
 - Verify that favourite teams are stored correctly and can be retrieved/displayed.
 
-<!-- ------------------------------------------------ Remove Fav Team ------------------------------- -->
+---
 ### Remove Favourite Team
 **As a:** Registered User.
 
@@ -152,7 +155,7 @@
 - Verify if the list is correctly updated after the removal.
 - Verify that removing a favourite allows a new one to be added within the limit.
 
-<!-- ------------------------------------------------ Update Team Information ------------------------------- -->
+---
 ### Update Team Information
 **As a:** Admin.
 
@@ -184,7 +187,7 @@
 - Verify that the success message is correctly displayed.
 - Verify that entering invalid values triggers an error message.
 
-<!-- ------------------------------------------------ Edit Player Information ------------------------------- -->
+---
 ### Edit Player Information
 **As a:** Admin.
 
@@ -228,7 +231,7 @@
 - Verify thah entering a non valid position triggers an error message.
 - Verify that a success message is displayed after a successfull operation.
 
-<!-- ------------------------------------------------ Edit Stadium Information ------------------------------- -->
+---
 ### Edit Stadium Information
 **As a:** Admin.
 
@@ -250,6 +253,7 @@
 - Verify that the new stadium´s picture is correctly saved in the database.
 - Verify that the success message is correctly displayed once the operation is completed.
 
+---
 ## 🟡 Intermediate Features
 
 ### Delete Account
@@ -273,7 +277,7 @@
 - Verify that the deletion process removes all of the user related data from the database.
 - Verify that attempting to log in with deleted credentials returns an error message.
 
-<!-- ------------------------------------------------ Edit Profile Settings ------------------------------- -->
+---
 ### Edit Profile Settings
 **As a:** Registered User.
 
@@ -299,7 +303,7 @@
 - Verify that any invalid input should thrown an error message.
 - Verify that after saving, the new settings is correctly shown to the user.
 
-<!-- ------------------------------------------------ Ticket Purchase ------------------------------- -->
+---
 ### Ticket Purchase
 **As a:** Registered User.
 
@@ -326,7 +330,7 @@
 - Verify that the ticket(s) purchased appear in the "My Tickets" section after the purchase.
 - Verify that the total number of available tickets for the respective type is updated correctly in the database after the purchase.
 
-<!-- ------------------------------------------------ Cancel Ticket Purchase ------------------------------- -->
+---
 ### Cancel Ticket Purchase
 **As a:** Registered User.
 
@@ -349,7 +353,7 @@
 - Verify that the ammount of available tickets of the selected type is correctly restored.
 - Verify that after the operation is successfully completed, a success message is displayed.
 
-<!-- ------------------------------------------------ Notifications ------------------------------- -->
+---
 ### Notifications via Email
 **As a:** Registered User.
 
@@ -370,7 +374,7 @@
 - Verify that no emails are sent when the notifications are disabled.
 - Verify that the changes in the notifications preferences are correctly updated and stores.
 
-<!-- ------------------------------------------------ Contact Support ------------------------------- -->
+---
 ### Contact Support via Email
 **As a:** Registered User.
 
@@ -391,6 +395,7 @@
 - Verify that the confirmation message is correctly displays.
 - Verify that error messages appears when the required fields are empty or invalid.
 
+---
 ## 🔴 Advanced Features
 
 ### Create and Edit a Game
@@ -423,7 +428,7 @@
 - Verify that the stadium the game is being held, is the Home Team stadium.
 - Verify that the updated data is correctly stored.
 
-<!-- ------------------------------------------------ Update Game Score ------------------------------- -->
+---
 ### Update Game Score
 **As a:** Admin.
 
@@ -451,7 +456,7 @@
 - Verify that an invalid input triggers an error message.
 - Verify that the transition of the status are valid (forwards).
 
-<!-- ------------------------------------------------ User´s favourite teams statistics ------------------------------- -->
+---
 ### User´s Favourite Teams Statistics
 **As a:** Admin.
 
@@ -468,7 +473,7 @@
 - Verify that this section is only visible to admins.
 - Verify that the data updates when the users modify their favoruite teams.
 
-<!-- ------------------------------------------------ Ticket Selling per Team Statistics ------------------------------- -->
+---
 ### Ticket Selling per Team Statistics
 **As a:** Admin.
 
@@ -484,3 +489,7 @@
 #### Tests
 - Verify that this section is only visible to admins.
 - Verify that the data updates when the users purchases tickets.
+
+
+---
+[👉 Go back](../README.md)
