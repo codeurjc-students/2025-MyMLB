@@ -490,6 +490,5 @@
 - Verify that this section is only visible to admins.
 - Verify that the data updates when the users purchases tickets.
 
-
 ---
-[👉 Go back](../README.md)
+[👈 Return to README](../README.md)
