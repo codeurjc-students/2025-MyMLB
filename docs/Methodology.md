@@ -1,15 +1,13 @@
 # 📝 Methodology
 
 ## 🧾 Table of Contents
-- [📝 Methodology](#-methodology)
-  - [🧾 Table of Contents](#-table-of-contents)
-  - [Phase 1: Features and Screens Specification](#phase-1-features-and-screens-specification)
-  - [Phase 2: Repository, Tests and CI](#phase-2-repository-tests-and-ci)
-  - [Phase 3: Version 0.1 - Basic Features and Docker](#phase-3-version-01---basic-features-and-docker)
-  - [Phase 4: Version 0.2 - Intermediate Features](#phase-4-version-02---intermediate-features)
-  - [Phase 5: Version 1.0 - Advanced Features](#phase-5-version-10---advanced-features)
-  - [Phase 6: Report](#phase-6-report)
-  - [Phase 7: Defense of the Final Degree Project](#phase-7-defense-of-the-final-degree-project)
+- [Phase 1: Features and Screens Specification](#phase-1-features-and-screens-specification)
+- [Phase 2: Repository, Tests and CI](#phase-2-repository-tests-and-ci)
+- [Phase 3: Version 0.1 - Basic Features and Docker](#phase-3-version-01---basic-features-and-docker)
+- [Phase 4: Version 0.2 - Intermediate Features](#phase-4-version-02---intermediate-features)
+- [Phase 5: Version 1.0 - Advanced Features](#phase-5-version-10---advanced-features)
+- [Phase 6: Report](#phase-6-report)
+- [Phase 7: Defense of the Final Degree Project](#phase-7-defense-of-the-final-degree-project)
 
 ## Phase 1: Features and Screens Specification
 **Start Date:** June 26
