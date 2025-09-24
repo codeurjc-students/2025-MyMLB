@@ -3,10 +3,10 @@
 ## 🧾 Table of Contents
 - [Introduction](#-introduction)
 - [Technologies](#-technologies)
-- [Tools](#️-tools)
+- [Tools](#-tools)
 - [Architecture](#️-architecture)
-- [Quality Control](#️-quality-control)
-- [Development Process](#️-development-process)
+- [Quality Control](#-quality-control)
+- [Development Process](#-development-process)
 
 ## 📖 Introduction
 The MLB Portal application is built with a `SPA (Single Page Application)` architecture on the client side (frontend). A `SPA` is a web application which only loads a single HTML file and updates the content dynamically using JavaScript instead of loading entire pages from the server. This SPA was developed using `Angular 20`.
@@ -112,7 +112,47 @@ The following IDEs and auxiliary tools were used during the development of the a
 
 ---
 ## 🏗️ Architecture
-TBD
+### 🔄 Communication Flow
+1) The user interacts with the frontend (Angular).
+2) The frontend sends requests to the backend (Spring) through the REST API.
+3) The backend interacts with the MySQL database through JDBC to persist the data.
+
+```mermaid
+flowchart LR
+    A[User] -- "HTTP:4200" --> B[Angular Frontend]
+    B -- "API Request" --> C[Backend Spring Boot]
+    C -- "API Response" --> B
+    C -- "JDBC/SQL:3306" --> D[(MySQL)]
+    D -- "SQL Response:3306" --> C
+````
+
+### 🚀 Deployment
+The deployment of the application is divides into three different proceses:
+- **Frontend:** Runs in a development server on port `4200`.
+- **Backend:** Runs on port `8080`.
+- **Database:** Runs on port `3306`.
+
+> [!NOTE]
+> For now, the application uses `http (port: 8080)`, but in the future, this will switch to `https (port: 8443)`.
+
+### 🔗 Communication Protocols
+- **Frontend <--> Backend:** REST API over HTTPS.
+- **Backend <--> Database:** SQL queries over JDBC (TCP/IP).
+
+### 📡 REST API
+The backend exposes a `REST API` as communication method with the frontend.
+- This API have been decoumented using `OPEN API (Swagger)`.
+- OpenAPI documentation can be accessible without executing the application in a static HTML file format.
+
+👉 [View REST API Documentation](./path-to-openapi-doc.html)
+
+### 🧱 Project Architecture
+The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
+
+![Project Diagram](../images/diagrams/ProjectDiagram.png)
+
+> [!NOTE]
+> In case you want to interact with the diagram, you can access it directly through the [GitDiagram website](https://gitdiagram.com/codeurjc-students/2025-MyMLB).
 
 ---
 ## 🧪 Quality Control
