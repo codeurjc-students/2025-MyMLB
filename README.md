@@ -4,7 +4,7 @@
 - [Authors](./docs/Authors.md)
 - [Project Tracking](./docs/ProjectTracking.md)
 - [Application Functionality](#-application-functionality)
-- [Execution Instructions](./docs/ExecutionInstructions.md)
+- [Execution Instructions](./docs/Instructions.md)
 - [Methodology](./docs/Methodology.md)
 - [Objectives](./docs/Objectives.md)
 - [Application Analysis](./docs/AppAnalysis.md)
