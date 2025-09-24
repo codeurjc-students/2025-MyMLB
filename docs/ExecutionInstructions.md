@@ -6,7 +6,7 @@
 - [Database](#-database)
 - [Backend](#-backend)
 - [Frontend](#-frontend)
-- [Binary Generation](#-binary-generation)
+- [Executable Generation](#-executable-generation)
 
 ## 📂 Repository Cloning
 In order to clone this repository, you should use the following command:
@@ -33,6 +33,10 @@ cd 2025-MLB
       <td>Maven</td>
       <td>3.9</td>
     </tr>
+     <tr>
+      <td>Spring Boot</td>
+      <td>3.5</td>
+    </tr>
     <tr>
       <td>GraalVM</td>
       <td>21</td>
@@ -57,7 +61,7 @@ cd 2025-MLB
 </table>
 
 ---
-## 🗄️ Database
+## 💾 Database
 TBD
 
 ---
@@ -96,7 +100,7 @@ ng serve
 If everything goes as expected, you will be able to access it at: **http://localhost:4200**
 
 ---
-## 🛠️ Binary Generation
+## 📦 Executable Generation
 To generate the application executable, run the following command in the `backend` folder:
 ```bash
 mvn -Pnative native:compile
