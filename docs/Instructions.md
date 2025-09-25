@@ -138,6 +138,7 @@ Is the main IDE used during the development of the application. Its usage its si
 ### REST Client
 REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](./backend/src/main/java/com/mlb/mlbportal/Requests).
 
+---
 ## 🧪 Tests Execution
 
 ### Backend Tests
@@ -190,6 +191,7 @@ To execute the tests with UI feedback:
 npx cypress open
 ```
 
+---
 ## 🚀 Release Creation
 You can create a release directly from GitHub, the only thing yo need to do is go to the repository´s releases section, create a new release and publish it.
 
