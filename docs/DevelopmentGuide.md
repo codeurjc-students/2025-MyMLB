@@ -146,6 +146,9 @@ The backend exposes a `REST API` as communication method with the frontend.
 
 👉 [View REST API Documentation](./path-to-openapi-doc.html)
 
+> [!WARNING]
+> At the moment, the API documentation is not available.
+
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
 
