@@ -222,7 +222,56 @@ After selecting `E2E Test` and the preferred browser, it will show the result of
 
 ---
 ## 🔄 Development Process
-TBD
+The development process of the application follows an `itterative and incremental` process that follows the principles of the `Agile Manifesto` and incorporates some best practices from `Extreme Programming (XP) and Kanban` such as short development iterations, automated testing and continous integration (CI).
+
+### Task Management
+For managing the tasks during the development process, it was used `GitHub Issues and GitHub Projects`.
+- **GitHub Issues** --> Represent the tasks of each development phase, grouped by `milestones` which represent each phase.
+- **GitHub Project:** --> Provide a `Kanban view board` to organize all the `Issues`.
+
+#### GitHub Project Board
+
+![GH Project](../images/other/GHProjectBoard.png)
+
+### Git
+Git was used as the version control tool. This project follows `GitHub Flow` as the branching strategy, these branches are the following:
+
+- **main/master:** Stable branch and always ready to be deployed.
+- **feature:** These branches are where the features are implemented. Each branch represent a single feature with its corresponding tests.
+- **fix:** Branches where bug-fixing occurs. Each branch represent a single bug.
+- **documentation:** Branches to add project documentation.
+
+At the end, every branch is added to `main/master` with `Pull Requests`.
+
+### Continous Integration (CI)
+For CI, this project uses `GitHub Actions` in which two workflows were implemented to ensure the quality control:
+
+#### Basic Quality Control
+This workflow triggers on every commit made on the `feature/*` and `fix/*` branches.
+
+#### Jobs
+- **build-backend:** Set up and compile the backend.
+- **backend-unit-tests:** Execute the unit tests of the backend with `mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"`
+- **build-frontend:** Set up and compile the frontend.
+- **frontend-unit-tests:** Execute the unit tests of the frontend with `npm run test:unit`.
+
+#### Complete Quality Control
+This workflow triggers on every push to main.
+
+#### Jobs
+- **build-backend:** Set up and compile the backend.
+- **backend-unit-tests:** Execute the unit tests of the backend with `mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"`.
+- **backend-integration-tests:** Execute the integration tests of the backend with `mvn test -Dsurefire.excludes="**/integration/**,**/e2e/**"`.
+- **backend-e2e-tests:** Execute the e2e/system tests of the backend with `mvn test -Dsurefire.excludes="**/integration/**,**/unit/**"`.
+- **build-frontend:** Set up and compile the frontend.
+- **frontend-unit-tests:** Execute the unit tests of the frontend with `npm run test:unit`.
+- **frontend-unit-tests:** Execute the unit tests of the frontend with `npm run test:unit`.
+- **frontend-integration-tests** Execute the integration tests of the frontend with `npm run test:integration`.
+- **frontend-e2e-tests:** Serve Angular in the background with `npx ng serve --port 4200 --host 0.0.0.0 &`, then wait for it to be ready with `npx wait-on http://localhost:4200`, and finally executes the e2e tests with cypress `npx cypress run --config baseUrl=http://localhost:4200`.
+
+#### Continous Integration Diagram
+
+![CI Diagram](../images/diagrams/CI.jpg)
 
 ---
 [👈 Return to README](../README.md)
