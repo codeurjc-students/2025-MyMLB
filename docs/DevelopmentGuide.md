@@ -309,6 +309,9 @@ This workflow triggers on every push to main.
 - **frontend-integration-tests** Execute the integration tests of the frontend with `npm run test:integration`.
 - **frontend-e2e-tests:** Serve Angular in the background with `npx ng serve --port 4200 --host 0.0.0.0 &`, then wait for it to be ready with `npx wait-on http://localhost:4200`, and finally executes the e2e tests with cypress `npx cypress run --config baseUrl=http://localhost:4200`.
 
+#### Sonar Build
+This workflow enables the integration of `SonarCloud` with the repository, allowing it to run the corresponding `static code analysis`. Through this process, SonarCloud performs a set of quality checks such as code smells, bugs, vulnerabilities, and coverage metrics, and then links the results directly to the repository for easier tracking and continuous improvement.
+
 #### Continous Integration Diagram
 
 ![CI Diagram](../images/diagrams/CI.jpg)
