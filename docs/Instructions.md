@@ -155,7 +155,7 @@ mvn test
 > [!IMPORTANT]
 > Navigate to the `frontend` folder.
 
-To execute both unit and integration tests:
+To run both unit and integration tests:
 
 ```bash
 ng test
@@ -163,13 +163,13 @@ ng test
 npm run test
 ````
 
-To execute only the unit tests:
+To only run the unit tests:
 
 ```bash
 npm run test:unit
 ```
 
-To execute only the integration tests:
+To only run the integration tests:
 
 ```bash
 npm run test:integration
@@ -180,13 +180,14 @@ npm run test:integration
 > [!IMPORTANT]
 > Navigate to the `frontend` folder.
 
-To execute the tests without UI feedback:
+To run the tests without UI feedback:
 
 ```bash
 npx cypress run
 ```
 
-To execute the tests with UI feedback:
+To run the tests with UI feedback:
+
 ```bash
 npx cypress open
 ```
