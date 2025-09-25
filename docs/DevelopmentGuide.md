@@ -173,7 +173,47 @@ To generate this report, you only need to execute the following command:
 mvn test
 ````
 
-This will generate it in `backend/target/site/jacoco`. Opening the `index.html` file will show the report in the browser.
+By default, JaCoCo generates its reports in `backend/target/site/jacoco`. In this project, however, the plugin configuration in the `pom.xml` was adjusted so that the output is generated outside the `target` folder (which is included in `.gitignore`). This way, the coverage report remains accessible at any time directly from the repository.
+
+```xml
+<pluginManagement>
+  <plugins>
+    <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.11</version>
+     </plugin>
+  </plugins>
+</pluginManagement>
+<plugins>
+  <plugin>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>3.2.5</version>
+  </plugin>
+  <plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <executions>
+      <execution>
+        <goals>
+          <goal>prepare-agent</goal>
+        </goals>
+      </execution>
+      <execution>
+        <id>report</id>
+        <phase>test</phase>
+        <goals>
+          <goal>report</goal>
+        </goals>
+        <configuration>
+          <outputDirectory>${project.basedir}/coverage</outputDirectory>
+        </configuration>
+      </execution>
+    </executions>
+</plugin>
+````
+
+As shown in the snippet above, the coverage report is generated in `backend/coverage`. Opening the `index.html` file from that folder will display the report in the browser.
 
 ### Frontend Tests
 - **Unit Tests:** Their purpose is to `isolate the business logic` and validate it. This is achieved by using `Mocks` to "simulate" the behavior of dependencies. In this context, these tests are applied to `Services` and `Components` in order to verify the proper functionality of each service and component independently.
