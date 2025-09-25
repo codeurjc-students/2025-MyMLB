@@ -14,7 +14,7 @@ The main functional objective of this application is to offer baseball fans a co
 4. Allow the registered users to mark a team as a favourite.
 
 > [!NOTE]
-> In the [User Stories](./docs/UserStories.md) section you can find all of the features the application will provide.
+> In the [User Stories](./UserStories.md) section you can find all of the features the application will provide.
 
 ## 💻 Technicals
 The application will be developed as a web platform with a client-server architecture using the **HTTPS** protocol to ensure application security, data protection, and secure communication. 
