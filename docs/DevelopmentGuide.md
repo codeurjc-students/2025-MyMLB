@@ -224,7 +224,7 @@ After selecting `E2E Test` and the preferred browser, it will show the result of
 ## 🔄 Development Process
 The development process of the application follows an `itterative and incremental` process that follows the principles of the `Agile Manifesto` and incorporates some best practices from `Extreme Programming (XP) and Kanban` such as short development iterations, automated testing and continous integration (CI).
 
-### Task Management
+### 📋 Task Management
 For managing the tasks during the development process, it was used `GitHub Issues and GitHub Projects`.
 - **GitHub Issues** --> Represent the tasks of each development phase, grouped by `milestones` which represent each phase.
 - **GitHub Project:** --> Provide a `Kanban view board` to organize all the `Issues`.
@@ -233,7 +233,7 @@ For managing the tasks during the development process, it was used `GitHub Issue
 
 ![GH Project](../images/other/GHProjectBoard.png)
 
-### Git
+### 🗂️ Git
 Git was used as the version control tool. This project follows `GitHub Flow` as the branching strategy, these branches are the following:
 
 - **main/master:** Stable branch and always ready to be deployed.
@@ -243,7 +243,7 @@ Git was used as the version control tool. This project follows `GitHub Flow` as 
 
 At the end, every branch is added to `main/master` with `Pull Requests`.
 
-### Continous Integration (CI)
+### 🤖 Continous Integration (CI)
 For CI, this project uses `GitHub Actions` in which two workflows were implemented to ensure the quality control:
 
 #### Basic Quality Control
