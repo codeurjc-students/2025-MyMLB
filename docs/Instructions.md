@@ -136,7 +136,7 @@ cl
 Is the main IDE used during the development of the application. Its usage its simple, the only requirements are having a `JDK` in your system (for this project is recommended JDK21) and install the `Java Extension Pack` and the `Spring Boot Extension Pack` extensions for Visual Studio Code.
 
 ### REST Client
-REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](./backend/src/main/java/com/mlb/mlbportal/requests).
+REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](../backend/src/main/java/com/mlb/mlbportal/requests).
 
 ---
 ## 🧪 Tests Execution
