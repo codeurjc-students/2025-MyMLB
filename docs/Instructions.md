@@ -7,6 +7,9 @@
 - [Backend](#-backend)
 - [Frontend](#-frontend)
 - [Executable Generation](#-executable-generation)
+- [Tools Usage](#-tools-usage)
+- [Tests Execution](#-tests-execution)
+- [Release Creation](#-release-creation)
 
 ## 📂 Repository Cloning
 In order to clone this repository, you should use the following command:
@@ -125,6 +128,70 @@ cl
 > 3) Click on the `Individual Components` tab.
 > 4) Search for `MSVC v143-VS 2022 C++ Build Tools for x64/x86 (latest)`.
 > 5) Select it and click `Install`.
+
+---
+## 🔧 Tools Usage
+
+### Visual Studio Code
+Is the main IDE used during the development of the application. Its usage its simple, the only requirements are having a `JDK` in your system (for this project is recommended JDK21) and install the `Java Extension Pack` and the `Spring Boot Extension Pack` extensions for Visual Studio Code.
+
+### REST Client
+REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](./backend/src/main/java/com/mlb/mlbportal/Requests).
+
+## 🧪 Tests Execution
+
+### Backend Tests
+
+> [!IMPORTANT]
+> Navigate to the `backend` folder.
+
+```bash
+mvn test
+````
+
+### Frontend Unit and Integration Tests
+
+> [!IMPORTANT]
+> Navigate to the `frontend` folder.
+
+To execute both unit and integration tests:
+
+```bash
+ng test
+# or
+npm run test
+````
+
+To execute only the unit tests:
+
+```bash
+npm run test:unit
+```
+
+To execute only the integration tests:
+
+```bash
+npm run test:integration
+```
+
+### Frontend System Tests with Cypress
+
+> [!IMPORTANT]
+> Navigate to the `frontend` folder.
+
+To execute the tests without UI feedback:
+
+```bash
+npx cypress run
+```
+
+To execute the tests with UI feedback:
+```bash
+npx cypress open
+```
+
+## 🚀 Release Creation
+You can create a release directly from GitHub, the only thing yo need to do is go to the repository´s releases section, create a new release and publish it.
 
 ---
 [👈 Return to README](../README.md)
