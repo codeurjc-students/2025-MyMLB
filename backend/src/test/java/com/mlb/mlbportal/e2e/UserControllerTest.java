@@ -1,5 +1,7 @@
 package com.mlb.mlbportal.e2e;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +13,8 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
@@ -34,7 +34,10 @@ class UserControllerTest {
         this.userRepository.deleteAll();
         this.userRepository.save(user1);
         this.userRepository.save(user2);
+
+        RestAssured.baseURI = "https://localhost";
         RestAssured.port = this.port;
+        RestAssured.useRelaxedHTTPSValidation();
     }
 
     @Test
