@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
 
-// TODO
 @Service
 public class SecurityUserDetails implements UserDetailsService {
     private final  UserRepository userRepository;
