@@ -34,5 +34,5 @@ build/
 ../.vscode/*
 
 ## Keystore and Security
-./src/main/resources/keystore.p12
-./src/main/resources/application.properties
+src/main/resources/keystore.p12
+src/main/resources/application.properties
