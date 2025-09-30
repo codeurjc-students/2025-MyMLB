@@ -1,5 +1,7 @@
 package com.mlb.mlbportal.models;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,10 @@ public class UserEntity {
 
     @NotBlank
     private String username;
+
+    private String password;
+
+    private List<String> roles;
 
     public UserEntity() {}
 
