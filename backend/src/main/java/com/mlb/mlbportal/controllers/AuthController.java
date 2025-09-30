@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private UserLoginService userService;
+    private final UserLoginService userService;
+
+    public AuthController(UserLoginService userLoginService) {
+        this.userService = userLoginService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
