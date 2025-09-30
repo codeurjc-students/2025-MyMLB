@@ -25,12 +25,12 @@ Additionally, the entities and their relationships will be defined, as well as t
 
 **Due Date:** October 15
 
-**Real End Date:** TBD
+**Real End Date:** September 30
 
 In this phase, the repository will be created along with the basic implementation required to connect the client, the server and the database. Furthermore, the first automated tests will be implemented and the Continous Integration (CI) system will be configured.
 
 ## 🐳 Phase 3: Version 0.1 - Basic Features and Docker
-**Start Date:** TBD
+**Start Date:** September 30
 
 **Due Date:** December 15
 
