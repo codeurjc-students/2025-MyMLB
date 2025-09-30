@@ -33,7 +33,7 @@ describe('UserComponentIntegration', () => {
 	it('should create the component and fetch users', () => {
 		fixture.detectChanges(); // Triggers ngOnInit
 
-		const req = httpMock.expectOne('http://localhost:8080/api/users');
+		const req = httpMock.expectOne('https://localhost:8443/api/users');
 		expect(req.request.method).toBe('GET');
 
 		req.flush(mockUsers); // Mock the response from the backend
@@ -53,7 +53,7 @@ describe('UserComponentIntegration', () => {
 	it('should show error message on failed request', () => {
 		fixture.detectChanges();
 
-		const req = httpMock.expectOne('http://localhost:8080/api/users');
+		const req = httpMock.expectOne('https://localhost:8443/api/users');
 		req.error(new ErrorEvent('Network error'));
 
 		fixture.detectChanges();
