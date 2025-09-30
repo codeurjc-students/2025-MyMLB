@@ -40,7 +40,7 @@ describe('UserService', () => {
 			expect(users).toEqual(mockUsers);
 		});
 
-		const req = httpMock.expectOne('http://localhost:8080/api/users');
+		const req = httpMock.expectOne('https://localhost:8443/api/users');
 		expect(req.request.method).toBe('GET');
 		req.flush(mockUsers); // Simulate the Backend Response.
 	});
