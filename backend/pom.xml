@@ -31,11 +31,13 @@
     </scm>
 
     <properties>
-        <java.version>21</java.version>
-        <spring.aot.enabled>true</spring.aot.enabled>
-        <sonar.organization>codeurjc-students</sonar.organization>
-        <jjwt.version>0.12.6</jjwt.version>
-    </properties>
+	  <java.version>21</java.version>
+	  <spring.aot.enabled>true</spring.aot.enabled>
+	  <sonar.projectKey>codeurjc-students_2025-MyMLB</sonar.projectKey>
+	  <sonar.organization>codeurjc-students</sonar.organization>
+	  <sonar.projectName>MyMLB</sonar.projectName>
+	</properties>
+
 
     <dependencies>
         <dependency>
