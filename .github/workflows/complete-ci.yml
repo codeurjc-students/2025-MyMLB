@@ -75,7 +75,7 @@ jobs:
       
       - name: Dummy Keystore Creation
         run: |
-          keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore backend/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
+          keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
 
       # ENV
       - name: Run E2E Tests
