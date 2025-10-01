@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
@@ -17,6 +18,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("ci")
 class UserControllerTest {
     
     @LocalServerPort
