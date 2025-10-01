@@ -2,6 +2,7 @@ package com.mlb.mlbportal.e2e;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("ci")
+@ActiveProfiles("test")
 class UserControllerTest {
     
     @LocalServerPort
@@ -37,9 +38,8 @@ class UserControllerTest {
         this.userRepository.save(user1);
         this.userRepository.save(user2);
 
-        RestAssured.baseURI = "https://localhost";
+        RestAssured.baseURI = "http://localhost";
         RestAssured.port = this.port;
-        RestAssured.useRelaxedHTTPSValidation();
     }
 
     @Test

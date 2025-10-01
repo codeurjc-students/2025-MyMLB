@@ -73,18 +73,8 @@ jobs:
           distribution: temurin
           java-version: 21
       
-      - name: Create resources directory
-        run: mkdir -p src/test/resources
-        working-directory: ./backend
-      
-      - name: Dummy Keystore Creation
-        run: |
-          keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
-        working-directory: ./backend
-
-      # ENV
       - name: Run E2E Tests
-        run: mvn test -Dspring.profiles.active=ci -Dsurefire.excludes="**/integration/**,**/unit/**"
+        run: mvn test -Dsurefire.excludes="**/integration/**,**/unit/**"
         working-directory: ./backend
 
   build-frontend:
