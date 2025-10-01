@@ -1,4 +1,5 @@
 name: SonarQube
+
 on:
   push:
     branches:
@@ -14,6 +15,7 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,6 +40,15 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      # Create Dummy Keystore for testing
+      - name: Create resources directory
+        run: mkdir -p src/test/resources
+        working-directory: ./backend
+
+      - name: Dummy Keystore Creation
+        run: keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
+        working-directory: ./backend
 
       - name: Verificar que el informe de cobertura existe
         run: ls -l coverage/jacoco.xml
