@@ -73,6 +73,10 @@ jobs:
           distribution: temurin
           java-version: 21
       
+      - name: Create resources directory
+        run: mkdir -p src/test/resources
+        working-directory: ./backend
+      
       - name: Dummy Keystore Creation
         run: |
           keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
