@@ -1,0 +1,56 @@
+### Login
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "fonssi29",
+    "password": "123"
+}
+
+### Login with wrong password
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "fonssi29",
+    "password": "hkasjas"
+}
+
+### Login with wrong username
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "hola",
+    "password": "123"
+}
+
+### Register
+POST https://localhost:8443/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "prueba@gmail.com",
+    "username": "prueba1",
+    "password": "hola"
+}
+
+### Register with existing user
+POST https://localhost:8443/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "fonssi@gmail.com",
+    "username": "fonssi29",
+    "password": "hola"
+}
+
+### Register with invalid fields
+POST https://localhost:8443/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "invalidEmail",
+    "username": "",
+    "password": "hola"
+}

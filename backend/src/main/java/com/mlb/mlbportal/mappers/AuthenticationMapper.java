@@ -1,0 +1,22 @@
+package com.mlb.mlbportal.mappers;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.models.UserEntity;
+
+@Mapper(componentModel= "spring")
+public interface AuthenticationMapper {
+    RegisterRequest toRegisterRequest(UserEntity user);
+    List<RegisterRequest> toRegisterRequesta(Collection<UserEntity> user);
+
+    @Mapping(target= "id", ignore=true)
+    @Mapping(target= "email", ignore=true)
+    @Mapping(target= "name", ignore=true)
+    @Mapping(target= "roles", ignore=true)
+    UserEntity toDomain(RegisterRequest registerRequest);
+}

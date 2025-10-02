@@ -6,40 +6,24 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.mlb.mlbportal.models.UserEntity;
-import com.mlb.mlbportal.repositories.UserRepository;
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
-import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class UserControllerTest {
-    
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private final UserEntity user1 = new UserEntity("fonssi@gmail.com", "fonssi29");
-    private final UserEntity user2 = new UserEntity("armin@gmail.com", "armiin13");
+class UserControllerTest extends BaseE2ETest {
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        this.userRepository.deleteAll();
-        this.userRepository.save(user1);
-        this.userRepository.save(user2);
-
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = this.port;
+        cleanDatabase();
+        saveTestUser(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD);
+        saveTestUser(USER2_EMAIL, USER2_USERNAME, USER2_PASSWORD);
     }
 
     @Test
@@ -48,7 +32,7 @@ class UserControllerTest {
         given().contentType(ContentType.JSON).when().get("/api/users").then()
             .statusCode(200)
             .body("size()", is(2))
-            .body("username", hasItems("fonssi29", "armiin13"))
-            .body("email", hasItems("fonssi@gmail.com", "armin@gmail.com"));
+            .body("username", hasItems(USER1_USERNAME, USER2_USERNAME))
+            .body("email", hasItems(USER1_EMAIL, USER2_EMAIL));
     }
 }

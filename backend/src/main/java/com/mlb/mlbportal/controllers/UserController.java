@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.dto.User.ShowUser;
 import com.mlb.mlbportal.services.UserService;
 
 @RestController
@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserEntity> getUsers() {
+    public List<ShowUser> getUsers() {
         return this.userService.getAllUsers();
     }
 }
