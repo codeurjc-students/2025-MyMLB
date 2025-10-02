@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                         .anyRequest().permitAll());
 
         // Disable Form login Authentication
-        http.formLogin(formLogin -> formLogin.disable());
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         // Disable CSRF protection.
         http.csrf(AbstractHttpConfigurer::disable);
