@@ -17,9 +17,9 @@ describe('UserService', () => {
 		TestBed.configureTestingModule({
 			providers: [
 				UserService,
-				provideHttpClient(withFetch()), // Backend fetch
-				provideHttpClientTesting(), // HttpClient Mock
-			],
+				provideHttpClient(withFetch()),
+				provideHttpClientTesting()
+			]
 		});
 
 		service = TestBed.inject(UserService);
@@ -27,10 +27,10 @@ describe('UserService', () => {
 	});
 
 	afterEach(() => {
-		httpMock.verify(); // Verify that there arent any request remaining
+		httpMock.verify();
 	});
 
-	it('should be created', () => { // Verify that the service exists
+	it('should be created', () => {
 		expect(service).toBeTruthy();
 	});
 
@@ -42,6 +42,6 @@ describe('UserService', () => {
 
 		const req = httpMock.expectOne('https://localhost:8443/api/users');
 		expect(req.request.method).toBe('GET');
-		req.flush(mockUsers); // Simulate the Backend Response.
+		req.flush(mockUsers);
 	});
 });

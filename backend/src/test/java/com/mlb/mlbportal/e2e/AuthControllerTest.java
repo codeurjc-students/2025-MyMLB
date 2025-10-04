@@ -1,18 +1,21 @@
 package com.mlb.mlbportal.e2e;
 
+import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -71,6 +74,30 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("POST /api/auth/login with invalid fields should return 400 and validation messages")
+    void testLoginUserWithInvalidFields() {
+        String bodyRequest = """
+                {
+                    "username" : "",
+                    "password" : ""
+                }
+                """;
+
+        given()
+                .baseUri(RestAssured.baseURI)
+                .port(this.port)
+                .contentType(ContentType.JSON)
+                .body(bodyRequest)
+                .when()
+                .post(LOGIN_PATH)
+                .then()
+                .statusCode(400)
+                .body("status", equalTo("FAILURE"))
+                .body("username", equalTo("The username is required"))
+                .body("password", equalTo("The password is required"));
+    }
+
+    @Test
     @DisplayName("POST /api/auth/register should create a new user successfully")
     void testRegisterUserRequest() {
         String bodyRequest = """
@@ -95,7 +122,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/register should return 400 if user already exists")
+    @DisplayName("POST /api/auth/register should return 409 if user already exists")
     void testExistingUserRegistration() {
         String bodyRequest = """
                 {
@@ -113,7 +140,8 @@ class AuthControllerTest extends BaseE2ETest {
                 .when()
                 .post(REGISTER_PATH)
                 .then()
-                .statusCode(400)
+                .statusCode(409)
+                .body("status", equalTo("FAILURE"))
                 .body("error", equalTo("User Already Exists in the Database"))
                 .body("message", equalTo("The User Already Exists on the Database"));
     }
@@ -138,6 +166,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .post(REGISTER_PATH)
                 .then()
                 .statusCode(400)
+                .body("status", equalTo("FAILURE"))
                 .body("email", equalTo("The email is required"))
                 .body("username", equalTo("The username is required"))
                 .body("password", equalTo("The password is required"));

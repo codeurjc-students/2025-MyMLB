@@ -62,6 +62,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                     // Authentication Endpoints
                     .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                    
+                    // API Docs Endpoints
+                    .requestMatchers("/v3/api-docs*/**").permitAll()
+                    .requestMatchers("/swagger-ui.html").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
                 
                 
                     // PUBLIC ENDPOINTS:
