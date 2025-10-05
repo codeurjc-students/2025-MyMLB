@@ -32,5 +32,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 <span class="fc" id="L32">        body.put(&quot;error&quot;, &quot;User Already Exists in the Database&quot;);</span>
 <span class="fc" id="L33">        return new ResponseEntity&lt;&gt;(body, HttpStatus.CONFLICT);</span>
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserNotFound(UserNotFoundException ex) {
+<span class="fc" id="L38">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L39">        body.put(&quot;statusCode&quot;, HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L40">        body.put(&quot;status&quot;, &quot;FAILURE&quot;);</span>
+<span class="fc" id="L41">        body.put(&quot;message&quot;, ex.getMessage());</span>
+<span class="fc" id="L42">        body.put(&quot;error&quot;, &quot;User Not Found&quot;);</span>
+<span class="fc" id="L43">        return new ResponseEntity&lt;&gt;(body, HttpStatus.NOT_FOUND);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

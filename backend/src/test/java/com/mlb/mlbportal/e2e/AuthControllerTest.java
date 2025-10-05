@@ -1,9 +1,8 @@
 package com.mlb.mlbportal.e2e;
 
-import static org.hamcrest.Matchers.equalTo;
-
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,11 +18,22 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
+import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.RESET_PASSWORD_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 import io.restassured.RestAssured;
-
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
@@ -209,14 +219,32 @@ class AuthControllerTest extends BaseE2ETest {
                 .body("email", equalTo("Email is required"));
     }
 
+    @Test
+    @DisplayName("POST /api/auth/forgot-password should return 404 if the email is not registered")
+    void testForgotPasswordEmailNotFound() {
+        ForgotPasswordRequest request = new ForgotPasswordRequest(UNKNOWN_EMAIL);
+
+        given()
+                .baseUri(RestAssured.baseURI)
+                .port(this.port)
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(FORGOT_PASSWORD_PATH)
+                .then()
+                .statusCode(404)
+                .body("status", equalTo(FAILURE))
+                .body("message", equalTo("There is no user registered with this email"))
+                .body("error", equalTo("User Not Found"));
+    }
+
     private void setUpResetPasswordMethod(boolean isValid) {
         UserEntity user = this.userRepository.findByEmail(TEST_USER_EMAIL).orElseThrow();
         PasswordResetToken token;
-    
+
         if (isValid) {
             token = new PasswordResetToken(VALID_CODE, user);
-        }
-        else {
+        } else {
             token = new PasswordResetToken(VALID_CODE, user);
         }
         token.setExpirationDate(LocalDateTime.now().plusMinutes(10));

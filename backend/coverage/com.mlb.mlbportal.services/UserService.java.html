@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
+import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
 
@@ -20,27 +23,57 @@ public class UserService {
     private final AuthenticationMapper authenticationMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-<span class="fc" id="L24">    public UserService(UserRepository userRepo, AuthenticationMapper authenticationMapper, UserMapper userMapper, PasswordEncoder password) {</span>
-<span class="fc" id="L25">        this.userRepository = userRepo;</span>
-<span class="fc" id="L26">        this.authenticationMapper = authenticationMapper;</span>
-<span class="fc" id="L27">        this.userMapper = userMapper;</span>
-<span class="fc" id="L28">        this.passwordEncoder = password;</span>
-<span class="fc" id="L29">    }</span>
+<span class="fc" id="L28">    public UserService(UserRepository userRepo, AuthenticationMapper authenticationMapper, UserMapper userMapper, PasswordEncoder password, EmailService emailService) {</span>
+<span class="fc" id="L29">        this.userRepository = userRepo;</span>
+<span class="fc" id="L30">        this.authenticationMapper = authenticationMapper;</span>
+<span class="fc" id="L31">        this.userMapper = userMapper;</span>
+<span class="fc" id="L32">        this.passwordEncoder = password;</span>
+<span class="fc" id="L33">        this.emailService = emailService;</span>
+<span class="fc" id="L34">    }</span>
 
     public List&lt;ShowUser&gt; getAllUsers() {
-<span class="fc" id="L32">        return this.userMapper.toShowUsers(this.userRepository.findAll());</span>
+<span class="fc" id="L37">        return this.userMapper.toShowUsers(this.userRepository.findAll());</span>
     }
 
     public RegisterRequest createUser(RegisterRequest registerRequest) {
-<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (this.userRepository.findByUsername(registerRequest.username()).isPresent()) {</span>
-<span class="fc" id="L37">            throw new UserAlreadyExistsException();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (this.userRepository.findByUsername(registerRequest.username()).isPresent()) {</span>
+<span class="fc" id="L42">            throw new UserAlreadyExistsException();</span>
         }
-<span class="fc" id="L39">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
-<span class="fc" id="L40">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
-<span class="fc" id="L41">        newUser.getRoles().add(&quot;USER&quot;);</span>
-<span class="fc" id="L42">        this.userRepository.save(newUser);</span>
-<span class="fc" id="L43">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
+<span class="fc" id="L44">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
+<span class="fc" id="L45">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
+<span class="fc" id="L46">        newUser.getRoles().add(&quot;USER&quot;);</span>
+<span class="fc" id="L47">        this.userRepository.save(newUser);</span>
+<span class="fc" id="L48">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
+    }
+
+    public boolean resetPassword(String code, String newPassword) {
+<span class="fc" id="L52">        Optional&lt;PasswordResetToken&gt; optReset = this.emailService.getCode(code);</span>
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (optReset.isEmpty()) {</span>
+<span class="fc" id="L55">            return false;</span>
+        }
+        
+<span class="fc" id="L58">        PasswordResetToken passwordReset = optReset.get();</span>
+<span class="fc" id="L59">        UserEntity user = passwordReset.getUser();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L61">            this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L62">            return false;</span>
+        }
+        
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {</span>
+<span class="fc" id="L66">            passwordReset.getUser().setResetToken(null);</span>
+<span class="fc" id="L67">            this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L68">            return false;</span>
+        }
+
+<span class="fc" id="L71">        user.setPassword(this.passwordEncoder.encode(newPassword));</span>
+<span class="fc" id="L72">        this.userRepository.save(user);</span>
+
+<span class="fc" id="L74">        user.setResetToken(null);</span>
+<span class="fc" id="L75">        this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L76">        return true;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
