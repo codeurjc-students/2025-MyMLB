@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,8 +27,10 @@ import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
+import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
@@ -42,12 +48,17 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private UserService userService;
 
     private UserEntity user1;
     private UserEntity user2;
     private UserEntity testUser;
+    private PasswordResetToken validCode;
+    private PasswordResetToken invalidCode;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -57,6 +68,16 @@ class UserServiceTest {
         this.user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME);
         this.user2 = new UserEntity(USER2_EMAIL, USER2_USERNAME);
         this.testUser = new UserEntity(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
+
+        this.validCode = new PasswordResetToken(VALID_CODE, this.testUser);
+        this.validCode.setExpirationDate(LocalDateTime.now().plusMinutes(10));
+
+        this.invalidCode = new PasswordResetToken(INVALID_CODE, this.testUser);
+        this.invalidCode.setExpirationDate(LocalDateTime.now().minusMinutes(10));
+
+        this.validCode.setUser(this.testUser);
+        this.invalidCode.setUser(this.testUser);
+        this.testUser.setResetToken(this.validCode);
     }
 
     @Test
@@ -112,5 +133,41 @@ class UserServiceTest {
             () -> this.userService.createUser(registerRequest));
 
         assertThat(exception.getMessage()).isEqualTo("The User Already Exists on the Database");
+    }
+
+    @Test
+    @DisplayName("resetPassword should return true and update the password with a valid code")
+    void testResetPasswordWithValidToken() {
+        when(this.emailService.getCode(VALID_CODE)).thenReturn(Optional.of(this.validCode));
+        when(this.passwordEncoder.encode(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_ENCODED);
+
+        boolean result = this.userService.resetPassword(VALID_CODE, NEW_PASSWORD);
+
+        assertThat(result).isTrue();
+        assertThat(this.testUser.getPassword()).isEqualTo(NEW_PASSWORD_ENCODED);
+    }
+
+    @Test
+    @DisplayName("resetPassword should return false and not update the password with an invalid code")
+    void testResetPasswordWithInvalidToken() {
+        when(this.emailService.getCode(INVALID_CODE)).thenReturn(Optional.of(this.invalidCode));
+
+        boolean result = this.userService.resetPassword(INVALID_CODE, NEW_PASSWORD);
+
+        assertThat(result).isFalse();
+        verify(this.userRepository, never()).save(any());
+        verify(this.emailService, times(1)).deleteToken(this.invalidCode);
+    }
+
+    @Test
+    @DisplayName("resetPassword should return false and not update the password with an empty code")
+    void testResetPasswordWithEmptyToken() {
+        when(this.emailService.getCode(INVALID_CODE)).thenReturn(Optional.empty());
+
+        boolean result = this.userService.resetPassword(INVALID_CODE, NEW_PASSWORD);
+
+        assertThat(result).isFalse();
+        verify(this.userRepository, never()).save(any());
+        verify(this.emailService, never()).deleteToken(this.invalidCode);
     }
 }

@@ -30,10 +30,10 @@ public abstract class BaseE2ETest {
     }
 
     protected void cleanDatabase() {
-        userRepository.deleteAll();
+        this.userRepository.deleteAll();
     }
 
     protected void saveTestUser(String email, String username, String password) {
-        userRepository.save(new com.mlb.mlbportal.models.UserEntity(email, username, passwordEncoder.encode(password)));
+        this.userRepository.save(new com.mlb.mlbportal.models.UserEntity(email, username, passwordEncoder.encode(password)));
     }
 }

@@ -32,4 +32,14 @@ public class GlobalHandler {
         body.put("error", "User Already Exists in the Database");
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("statusCode", HttpStatus.NOT_FOUND.value());
+        body.put("status", "FAILURE");
+        body.put("message", ex.getMessage());
+        body.put("error", "User Not Found");
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
 }

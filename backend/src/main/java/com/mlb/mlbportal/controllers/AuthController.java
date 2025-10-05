@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.authentication.ResetPasswordRequest;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.security.jwt.AuthResponse.Status;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
 import com.mlb.mlbportal.security.jwt.UserLoginService;
+import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,10 +26,12 @@ public class AuthController {
 
     private final UserLoginService userLoginService;
     private final UserService userService;
+    private final EmailService emailService;
 
-    public AuthController(UserLoginService userLoginService, UserService userService) {
+    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {
         this.userLoginService = userLoginService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -50,4 +55,19 @@ public class AuthController {
     public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
         return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<AuthResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        this.emailService.sendEmail(request.email());
+        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, "Recovery email successfully sended"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<AuthResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        boolean success = this.userService.resetPassword(request.code(), request.newPassword());
+        if (success) {
+            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, "Password restored"));
+        }
+        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, "Invalid or expired code"));
+    } 
 }

@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.integration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.mlb.mlbportal.dto.User.ShowUser;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
+import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.UserService;
 
@@ -31,6 +34,9 @@ class UserServiceIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private PasswordResetTokenRepository passwordRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -39,20 +45,31 @@ class UserServiceIntegrationTest {
     private UserEntity user1;
     private UserEntity user2;
 
+    private PasswordResetToken validToken;
+    private PasswordResetToken invalidToken;
+
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
         userRepository.deleteAll();
 
-        user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME, passwordEncoder.encode(USER1_PASSWORD));
-        user2 = new UserEntity(USER2_EMAIL, USER2_USERNAME, passwordEncoder.encode(USER2_PASSWORD));
+        this.user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME, this.passwordEncoder.encode(USER1_PASSWORD));
+        this.user2 = new UserEntity(USER2_EMAIL, USER2_USERNAME, this.passwordEncoder.encode(USER2_PASSWORD));
 
         this.userRepository.saveAll(List.of(this.user1, this.user2));
+
+        this.validToken = new PasswordResetToken(VALID_CODE, this.user1);
+        this.validToken.setExpirationDate(LocalDateTime.now().plusMinutes(10));
+        this.passwordRepository.save(this.validToken);
+
+        this.invalidToken = new PasswordResetToken(INVALID_CODE, this.user2);
+        this.invalidToken.setExpirationDate(LocalDateTime.now().minusMinutes(10));
+        this.passwordRepository.save(this.invalidToken);
     }
 
     @Test
     @DisplayName("getAllUsers should return all users from the database")
-    void getAllUsersTest() {
+    void testGetAllUsers() {
         List<ShowUser> result = this.userService.getAllUsers();
 
         assertThat(result).hasSize(2).extracting(ShowUser::username)
@@ -62,27 +79,66 @@ class UserServiceIntegrationTest {
     @Test
     @DisplayName("createUser should persist a new user with encoded password")
     @Transactional
-    void createUserTest() {
+    void testCreateUser() {
         RegisterRequest request = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
-        RegisterRequest result = userService.createUser(request);
+        RegisterRequest result = this.userService.createUser(request);
 
         assertThat(result.username()).isEqualTo(TEST_USER_USERNAME);
         assertThat(result.email()).isEqualTo(TEST_USER_EMAIL);
         assertThat(passwordEncoder.matches(TEST_USER_PASSWORD, result.password())).isTrue();
 
-        UserEntity saved = userRepository.findByUsername(TEST_USER_USERNAME).orElseThrow();
+        UserEntity saved = this.userRepository.findByUsername(TEST_USER_USERNAME).orElseThrow();
         assertThat(saved.getEmail()).isEqualTo(TEST_USER_EMAIL);
     }
 
     @Test
     @DisplayName("createUser should throw exception if user already exists")
-    void createExistingUserTest() {
+    void testCreateExistingUser() {
         RegisterRequest request = new RegisterRequest(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD);
 
         UserAlreadyExistsException ex = assertThrows(UserAlreadyExistsException.class, () -> {
             userService.createUser(request);
         });
         assertThat(ex.getMessage()).isEqualTo("The User Already Exists on the Database");
+    }
+
+    /**
+     * To follow the DRY principle, this method sets the resetPassword method, 
+     * depending on whether the test uses a valid or invalid code.
+     * 
+     * @param isValid indicates whether the code is valid or not.
+     * @return the result of the method.
+     */
+    private boolean setUpUserService(boolean isValid) {
+        if (isValid) {
+            return this.userService.resetPassword(VALID_CODE, NEW_PASSWORD);
+        }
+        return this.userService.resetPassword(INVALID_CODE, NEW_PASSWORD);
+    }
+
+    @Test
+    @DisplayName("resetPassword should succeed with a valid code")
+    void testResetPassword() {
+        boolean result = this.setUpUserService(true);
+        
+        assertThat(result).isTrue();
+
+        UserEntity updatedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(this.passwordEncoder.matches(NEW_PASSWORD, updatedUser.getPassword())).isTrue();
+        // After the code is used, it should be deleted from the database
+        assertThat(this.passwordRepository.findByCode(VALID_CODE)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("resetPassword should fail with an invalid code")
+    void testResetPasswordWithInvalidCode() {
+        boolean result = this.setUpUserService(false);
+
+        assertThat(result).isFalse();
+
+        UserEntity user = this.userRepository.findByUsername(USER2_USERNAME).orElseThrow();
+        assertThat(this.passwordEncoder.matches(USER2_PASSWORD, user.getPassword())).isTrue();
+        assertThat(this.passwordRepository.findByCode(INVALID_CODE)).isEmpty();
     }
 }

@@ -21,7 +21,7 @@ public class InitController {
 
     @PostConstruct
     public void init() {
-        UserEntity fonssiUser = new UserEntity("fonssi@gmail.com", "fonssi29", this.passwordEncoder.encode("123"));
+        UserEntity fonssiUser = new UserEntity("fonssitorodriguezgutt@gmail.com", "fonssi29", this.passwordEncoder.encode("123"));
         UserEntity arminUser = new UserEntity("armin@gmail.com", "armiin13", this.passwordEncoder.encode("345"));
         
         fonssiUser.getRoles().add("ADMIN");
