@@ -32,10 +32,7 @@ import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
-import jakarta.transaction.Transactional;
-
 @SpringBootTest
-@Transactional
 class UserServiceIntegrationTest {
 
     @Autowired
@@ -86,7 +83,6 @@ class UserServiceIntegrationTest {
 
     @Test
     @DisplayName("createUser should persist a new user with encoded password")
-    @Transactional
     void testCreateUser() {
         RegisterRequest request = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
