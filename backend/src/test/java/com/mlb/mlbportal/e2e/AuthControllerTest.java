@@ -180,7 +180,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("status", equalTo(SUCCESS))
-                .body("message", equalTo("Recovery email successfully sended"));
+                .body("message", equalTo("Recovery email sent successfully"));
     }
 
     @Test

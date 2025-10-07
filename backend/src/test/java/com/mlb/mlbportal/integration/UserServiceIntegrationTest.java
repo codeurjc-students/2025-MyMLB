@@ -22,17 +22,8 @@ import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
 import jakarta.transaction.Transactional;
 
@@ -111,5 +102,44 @@ class UserServiceIntegrationTest {
             userService.createUser(request);
         });
         assertThat(ex.getMessage()).isEqualTo("The User Already Exists on the Database");
+    }
+
+    /**
+     * To follow the DRY principle, this method sets the resetPassword method, 
+     * depending on whether the test uses a valid or invalid code.
+     * 
+     * @param isValid indicates whether the code is valid or not.
+     * @return the result of the method.
+     */
+    private boolean setUpUserService(boolean isValid) {
+        if (isValid) {
+            return this.userService.resetPassword(VALID_CODE, NEW_PASSWORD);
+        }
+        return this.userService.resetPassword(INVALID_CODE, NEW_PASSWORD);
+    }
+
+    @Test
+    @DisplayName("resetPassword should succeed with a valid code")
+    void testResetPassword() {
+        boolean result = this.setUpUserService(true);
+        
+        assertThat(result).isTrue();
+
+        UserEntity updatedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(this.passwordEncoder.matches(NEW_PASSWORD, updatedUser.getPassword())).isTrue();
+        // After the code is used, it should be deleted from the database
+        assertThat(this.passwordRepository.findByCode(VALID_CODE)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("resetPassword should fail with an invalid code")
+    void testResetPasswordWithInvalidCode() {
+        boolean result = this.setUpUserService(false);
+
+        assertThat(result).isFalse();
+
+        UserEntity user = this.userRepository.findByUsername(USER2_USERNAME).orElseThrow();
+        assertThat(this.passwordEncoder.matches(USER2_PASSWORD, user.getPassword())).isTrue();
+        assertThat(this.passwordRepository.findByCode(INVALID_CODE)).isEmpty();
     }
 }
