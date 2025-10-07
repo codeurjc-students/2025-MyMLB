@@ -25,10 +25,10 @@
           }
 
           <div class="text-right">
-            <a href="#" class="text-sm text-blue-500 hover:underline">Forgot Your Password?</a>
+            <a class="text-sm text-blue-500 hover:underline cursor-pointer" (click)="redirectToForgotPassword()">Forgot Your Password?</a>
           </div>
 
-          <button type="submit" class="auth-button">SIGN IN</button>
+          <button type="submit" class="app-button">SIGN IN</button>
 
           @if (errorMessage) {
             <p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>

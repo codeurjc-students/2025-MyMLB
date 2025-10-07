@@ -20,6 +20,9 @@ export const HttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 	  else if (error.status === 403) {
 		message = 'Forbidden. You dont have access to this page'
 	  }
+	  else if (error.status === 404) {
+		message = "Resource Not Found";
+	  }
 	  else if (error.status === 409) {
         message = 'User already exists.';
       }

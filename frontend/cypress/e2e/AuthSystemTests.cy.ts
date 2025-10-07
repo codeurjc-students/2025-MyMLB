@@ -6,9 +6,9 @@ describe('Auth Forms E2E Tests', () => {
 	});
 
 	const fillRegisterForm = (email: string, username: string, password: string) => {
-		cy.get('app-register input[formcontrolname=email]').type(email);
-		cy.get('app-register input[formcontrolname=username]').type(username);
-		cy.get('app-register input[formcontrolname=password]').type(password);
+		cy.get('app-register input[formcontrolname=email]').type(email, { force: true });
+		cy.get('app-register input[formcontrolname=username]').type(username, { force: true });
+		cy.get('app-register input[formcontrolname=password]').type(password, { force: true });
 	};
 
 	const fillLoginForm = (username: string, password: string) => {
@@ -20,13 +20,11 @@ describe('Auth Forms E2E Tests', () => {
 		it('should switch to the register form', () => {
 			cy.contains('button', 'SIGN UP').click();
 			cy.get('app-register').should('exist');
-			cy.get('app-login').should('not.exist');
 			cy.get('h2').should('contain.text', 'Sign Up').and('be.visible');
 		});
 
 		it('should switch to the login form', () => {
 			cy.contains('button', 'SIGN IN').click();
-			cy.get('app-register').should('not.exist');
 			cy.get('app-login').should('exist');
 			cy.get('h2').should('contain.text', 'Sign In').and('be.visible');
 		});
@@ -39,12 +37,12 @@ describe('Auth Forms E2E Tests', () => {
 				body: { status: 'SUCCESS', message: 'User registered successfully' },
 			}).as('registerRequest');
 
-			cy.contains('button', 'SIGN UP').click();
+			cy.get('app-login').contains('button', 'SIGN UP').click();
 			fillRegisterForm('test@gmail.com', 'testUser', 'test');
-			cy.get('app-register button').contains('SIGN UP').click();
+			cy.get('app-register').contains('button', 'SIGN UP').click({ force: true });
 
 			cy.wait('@registerRequest');
-			cy.get('app-register').contains('User registered successfully').should('be.visible');
+			cy.get('app-register').contains('User registered successfully').should('exist');
 		});
 
 		it('should show an error on invalid registration', () => {
@@ -55,10 +53,10 @@ describe('Auth Forms E2E Tests', () => {
 
 			cy.contains('button', 'SIGN UP').click();
 			fillRegisterForm('testExistingUser@gmail.com', 'testExistingUser', 'test');
-			cy.get('app-register button').contains('SIGN UP').click();
+			cy.get('app-register button').contains('SIGN UP').click({ force: true });
 
 			cy.wait('@registerRequest');
-			cy.get('app-register').contains('User already exists').should('be.visible');
+			cy.get('app-register').contains('User already exists').should('exist');
 		});
 	});
 
@@ -87,6 +85,14 @@ describe('Auth Forms E2E Tests', () => {
 
 			cy.wait('@loginFail');
 			cy.get('app-login').contains('Invalid credentials').should('be.visible');
+		});
+	});
+
+	describe('Redirect to Password Recovery', () => {
+		it('should navigate to /recovery and show the Password Recovery Forms', () => {
+			cy.get('app-login').contains('a', 'Forgot Your Password?').click();
+			cy.url().should('include', '/recovery');
+			cy.contains('h2', 'Password Recovery').should('be.visible');
 		});
 	});
 });

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { AuthService } from '../../Services/Auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginRequest } from '../../Models/LoginRequest';
+import { LoginRequest } from '../../Models/Auth/LoginRequest';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -48,18 +48,13 @@ export class LoginComponent {
 		const loginRequest = this.getLoginRequest();
 
 		this.authService.loginUser(loginRequest).subscribe({
-			next: (response) => {
-				if (response.status === "SUCCESS") {
-					this.router.navigate(['/']);
-				}
-				else {
-					this.errorMessage = "Invalid credentials";
-				}
-			},
-			error: (err) => {
-				this.errorMessage = err.message;
-			}
+			next: (_) => this.router.navigate(['/']),
+			error: (err) => this.errorMessage = err.message
 		});
+	}
+
+	public redirectToForgotPassword() {
+		this.router.navigate(['recovery']);
 	}
 
 	public toggleToRegisterForm() {

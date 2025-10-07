@@ -1,12 +1,12 @@
-import { RegisterComponent } from '../../app/Components/Register/Register.component';
-import { AuthService } from '../../app/Services/Auth.service';
-import { AuthResponse } from '../../app/Models/AuthResponse';
+import { RegisterComponent } from '../../../app/Components/Register/Register.component';
+import { AuthService } from '../../../app/Services/Auth.service';
+import { AuthResponse } from '../../../app/Models/Auth/AuthResponse';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
-describe('RegisterComponent Unit', () => {
+describe('Register Component Tests', () => {
 	let fixture: ComponentFixture<RegisterComponent>;
 	let registerComponent: RegisterComponent;
 	let authServiceSpy: jasmine.SpyObj<AuthService>;

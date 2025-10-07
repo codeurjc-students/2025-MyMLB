@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { UserService } from '../../app/Services/User.service';
-import { User } from '../../app/Models/User';
+import { UserService } from '../../../app/Services/User.service';
+import { User } from '../../../app/Models/User';
 
-describe('UserService', () => {
+describe('User Service Tests', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
 
@@ -15,11 +15,7 @@ describe('UserService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [
-				UserService,
-				provideHttpClient(withFetch()),
-				provideHttpClientTesting()
-			]
+			providers: [UserService, provideHttpClient(withFetch()), provideHttpClientTesting()],
 		});
 
 		service = TestBed.inject(UserService);

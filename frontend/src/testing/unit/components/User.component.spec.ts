@@ -1,10 +1,10 @@
-import { User } from './../../app/Models/User';
-import { UserService } from './../../app/Services/User.service';
-import { UserComponent } from './../../app/Components/User/User.component';
+import { User } from './../../../app/Models/User';
+import { UserService } from './../../../app/Services/User.service';
+import { UserComponent } from './../../../app/Components/User/User.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
-describe('UserComponent', () => {
+describe('User Component Tests', () => {
 	let fixture: ComponentFixture<UserComponent>;
 	let component: UserComponent;
 	let mockUserService: jasmine.SpyObj<UserService>;

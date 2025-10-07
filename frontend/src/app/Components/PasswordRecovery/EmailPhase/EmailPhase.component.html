@@ -1,0 +1,19 @@
+<form [formGroup]="emailForm" (ngSubmit)="submitEmail()" class="space-y-4">
+	<input formControlName="email" type="email" placeholder="email" class="text-inputs" />
+
+	<div class="text-red-600 text-sm">
+		@if (getEmail()?.invalid && getEmail()?.touched) {
+			<small>The email is required</small>
+		}
+	</div>
+
+	<button type="submit" class="app-button">SEND</button>
+
+	@if (loading) {
+		<p>Sending email...</p>
+	}
+
+	@if (errorMessage) {
+		<p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>
+	}
+</form>
