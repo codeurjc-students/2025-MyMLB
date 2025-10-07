@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { UserService } from '../../app/Services/User.service';
-import { User } from '../../app/Models/User';
+import { UserService } from '../../../app/Services/User.service';
+import { User } from '../../../app/Models/User';
 
-describe('UserService', () => {
+describe('User Service Tests', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
 
@@ -15,11 +15,7 @@ describe('UserService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			providers: [
-				UserService,
-				provideHttpClient(withFetch()), // Backend fetch
-				provideHttpClientTesting(), // HttpClient Mock
-			],
+			providers: [UserService, provideHttpClient(withFetch()), provideHttpClientTesting()],
 		});
 
 		service = TestBed.inject(UserService);
@@ -27,10 +23,10 @@ describe('UserService', () => {
 	});
 
 	afterEach(() => {
-		httpMock.verify(); // Verify that there arent any request remaining
+		httpMock.verify();
 	});
 
-	it('should be created', () => { // Verify that the service exists
+	it('should be created', () => {
 		expect(service).toBeTruthy();
 	});
 
@@ -42,6 +38,6 @@ describe('UserService', () => {
 
 		const req = httpMock.expectOne('https://localhost:8443/api/users');
 		expect(req.request.method).toBe('GET');
-		req.flush(mockUsers); // Simulate the Backend Response.
+		req.flush(mockUsers);
 	});
 });

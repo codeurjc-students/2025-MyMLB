@@ -1,0 +1,14 @@
+<div>
+  <div
+    class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d]"
+    [class.rotate-y-180]="!loginForm">
+
+    <div class="absolute w-full h-full backface-hidden">
+      <app-login (toggleForm)="toggleForm()"></app-login>
+    </div>
+
+    <div class="absolute w-full h-full rotate-y-180 backface-hidden">
+      <app-register (toggleForm)="toggleForm()"></app-register>
+    </div>
+  </div>
+</div>

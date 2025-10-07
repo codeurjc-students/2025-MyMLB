@@ -3,6 +3,7 @@ package com.mlb.mlbportal.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -59,8 +60,17 @@ public class WebSecurityConfig {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // PUBLIC ENDPOINTS:
-                        .anyRequest().permitAll());
+                    // Authentication Endpoints
+                    .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                    
+                    // API Docs Endpoints
+                    .requestMatchers("/v3/api-docs*/**").permitAll()
+                    .requestMatchers("/swagger-ui.html").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                
+                
+                    // PUBLIC ENDPOINTS:
+                    .anyRequest().permitAll());
 
         // Disable Form login Authentication
         http.formLogin(AbstractHttpConfigurer::disable);

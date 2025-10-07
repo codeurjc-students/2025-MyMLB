@@ -19,9 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
       throws IOException {
-<span class="nc" id="L22">    logger.info(&quot;Unauthorized error: {}&quot;, authException.getMessage());</span>
+<span class="fc" id="L22">    logger.info(&quot;Unauthorized error: {}&quot;, authException.getMessage());</span>
 
-<span class="nc" id="L24">    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, &quot;message: %s, path: %s&quot;.formatted(authException.getMessage(), request.getServletPath()));</span>
-<span class="nc" id="L25">  }</span>
+<span class="fc" id="L24">    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, &quot;message: %s, path: %s&quot;.formatted(authException.getMessage(), request.getServletPath()));</span>
+<span class="fc" id="L25">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

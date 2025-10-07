@@ -233,7 +233,7 @@ The following picture illustrates the coverage report of the executed tests gene
 To generate this report, you only need to execute the following command:
 
 ```bash
-ng test --code-coverage
+ng test --watch=false --code-coverage
 ````
 
 This will generate it in `frontend/coverage/frontend`. Opening the `index.html` file will show the report in the browser.

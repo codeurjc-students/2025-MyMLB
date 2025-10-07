@@ -7,37 +7,68 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
+import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.authentication.ResetPasswordRequest;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.security.jwt.AuthResponse.Status;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
 import com.mlb.mlbportal.security.jwt.UserLoginService;
+import com.mlb.mlbportal.services.EmailService;
+import com.mlb.mlbportal.services.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(&quot;/api/auth&quot;)
 public class AuthController {
 
-    private final UserLoginService userService;
+    private final UserLoginService userLoginService;
+    private final UserService userService;
+    private final EmailService emailService;
 
-<span class="fc" id="L23">    public AuthController(UserLoginService userLoginService) {</span>
-<span class="fc" id="L24">        this.userService = userLoginService;</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L31">    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {</span>
+<span class="fc" id="L32">        this.userLoginService = userLoginService;</span>
+<span class="fc" id="L33">        this.userService = userService;</span>
+<span class="fc" id="L34">        this.emailService = emailService;</span>
+<span class="fc" id="L35">    }</span>
 
     @PostMapping(&quot;/login&quot;)
-    public ResponseEntity&lt;AuthResponse&gt; login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-<span class="nc" id="L29">        return userService.login(response, loginRequest);</span>
+    public ResponseEntity&lt;AuthResponse&gt; login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+<span class="fc" id="L39">        return this.userLoginService.login(response, loginRequest);</span>
+    }
+
+    @PostMapping(&quot;/register&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; register(@Valid @RequestBody RegisterRequest registerRequest) {
+<span class="fc" id="L44">        this.userService.createUser(registerRequest);</span>
+<span class="fc" id="L45">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
     }
 
     @PostMapping(&quot;/refresh&quot;)
     public ResponseEntity&lt;AuthResponse&gt; refreshToken(
             @CookieValue(name = &quot;RefreshToken&quot;, required = false) String refreshToken, HttpServletResponse response) {
-<span class="nc" id="L35">        return userService.refresh(response, refreshToken);</span>
+<span class="nc" id="L51">        return userLoginService.refresh(response, refreshToken);</span>
     }
 
     @PostMapping(&quot;/logout&quot;)
     public ResponseEntity&lt;AuthResponse&gt; logOut(HttpServletResponse response) {
-<span class="nc" id="L40">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userService.logout(response)));</span>
+<span class="nc" id="L56">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));</span>
     }
+
+    @PostMapping(&quot;/forgot-password&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+<span class="fc" id="L61">        this.emailService.sendEmail(request.email());</span>
+<span class="fc" id="L62">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
+    }
+
+    @PostMapping(&quot;/reset-password&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+<span class="fc" id="L67">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (success) {</span>
+<span class="fc" id="L69">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
+        }
+<span class="fc" id="L71">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
+    } 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

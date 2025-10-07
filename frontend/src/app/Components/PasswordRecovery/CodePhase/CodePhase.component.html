@@ -1,0 +1,46 @@
+<form [formGroup]="codeForm" (ngSubmit)="submitCode()" class="flex flex-col items-center gap-4">
+	<div class="flex gap-2">
+		<input
+			#first
+			type="text"
+			formControlName="firstDigit"
+			maxlength="1"
+			inputmode="numeric"
+			(input)="onDigitInput($event, second)"
+			class="code-input"
+		/>
+		<input
+			#second
+			type="text"
+			formControlName="secondDigit"
+			maxlength="1"
+			inputmode="numeric"
+			(input)="onDigitInput($event, third)"
+			class="code-input"
+		/>
+		<input
+			#third
+			type="text"
+			formControlName="thirdDigit"
+			maxlength="1"
+			inputmode="numeric"
+			(input)="onDigitInput($event, fourth)"
+			class="code-input"
+		/>
+		<input
+			#fourth
+			type="text"
+			formControlName="fourthDigit"
+			maxlength="1"
+			inputmode="numeric"
+			(input)="onDigitInput($event, null)"
+			class="code-input"
+		/>
+	</div>
+
+	<button type="submit" class="app-button">Confirm</button>
+
+	@if (errorMessage) {
+		<p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>
+	}
+</form>

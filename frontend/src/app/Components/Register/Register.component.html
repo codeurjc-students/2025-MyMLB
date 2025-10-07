@@ -1,0 +1,68 @@
+<div class="auth-container">
+  <div class="auth-inputs-panel">
+
+    <!-- Welcome Section -->
+    <div class="auth-panel">
+      <h2 class="text-3xl font-bold mb-4">Welcome Back!</h2>
+      <p class="mb-6 text-center text-2xl">Enter your personal details to use all of the site features</p>
+      <button class="auth-toggle-button" (click)="toggleToLoginForm()"> SIGN IN </button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="p-8 flex items-center justify-center">
+      <div class="w-full max-w-md">
+        <h2 class="auth-main-title">Sign Up</h2>
+        <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-4">
+
+          <input formControlName="email" type="email" placeholder="myEmail@gmail.com" class="text-inputs"/>
+          @if (getEmail()?.invalid && getEmail()?.touched) {
+            <div class="text-red-600 text-sm">
+              @if (getEmail()?.errors?.['required']) {
+                <small>The email is required</small>
+              }
+              @else if (getEmail()?.errors?.['email']) {
+                <small>Invalid email format</small>
+              }
+            </div>
+          }
+
+          <input formControlName="username" type="text" placeholder="Username" class="text-inputs"/>
+          @if (getUsername()?.invalid && getUsername()?.touched) {
+            <div class="text-red-600 text-sm">
+              @if (getUsername()?.errors?.['required']) {
+                <small>The username is required</small>
+              }
+            </div>
+          }
+
+          <input formControlName="password" type="password" placeholder="Password" class="text-inputs"/>
+          @if (getPassword()?.invalid && getPassword()?.touched) {
+            <div class="text-red-600 text-sm">
+              @if (getPassword()?.errors?.['required']) {
+                <small>The password is required</small>
+              }
+            </div>
+          }
+
+          <button type="submit" class="app-button">SIGN UP</button>
+
+          @if (showSuccess) {
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+              <p>{{ successMessage }}</p>
+              <button
+                class="mt-2 bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition"
+                (click)="toggleToLoginForm()"
+              >
+                Confirm
+              </button>
+            </div>
+          }
+
+          @if (errorMessage) {
+            <p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>
+          }
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
