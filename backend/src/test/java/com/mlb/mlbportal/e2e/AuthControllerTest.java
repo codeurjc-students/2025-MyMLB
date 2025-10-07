@@ -6,9 +6,15 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
@@ -19,6 +25,8 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
+import com.mlb.mlbportal.services.EmailService;
+
 import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
 import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
@@ -39,9 +47,17 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(MailMockConfig.class)
 @ActiveProfiles("test")
 class AuthControllerTest extends BaseE2ETest {
+
+    @TestConfiguration
+    static class MailMockConfig {
+        @Bean
+        @Primary
+        public JavaMailSender mailSender() {
+            return Mockito.mock(JavaMailSender.class);
+        }
+    }
 
     @Autowired
     private UserRepository userRepository;
