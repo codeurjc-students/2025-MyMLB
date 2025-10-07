@@ -59,7 +59,7 @@ public class AuthController {
     @PostMapping(&quot;/forgot-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
 <span class="fc" id="L61">        this.emailService.sendEmail(request.email());</span>
-<span class="fc" id="L62">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email successfully sended&quot;));</span>
+<span class="fc" id="L62">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
     }
 
     @PostMapping(&quot;/reset-password&quot;)
