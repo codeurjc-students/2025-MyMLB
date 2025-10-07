@@ -50,15 +50,6 @@ import io.restassured.http.ContentType;
 @ActiveProfiles("test")
 class AuthControllerTest extends BaseE2ETest {
 
-    @TestConfiguration
-    static class MailMockConfig {
-        @Bean
-        @Primary
-        public JavaMailSender mailSender() {
-            return Mockito.mock(JavaMailSender.class);
-        }
-    }
-
     @Autowired
     private UserRepository userRepository;
 
