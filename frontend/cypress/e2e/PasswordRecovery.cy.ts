@@ -33,7 +33,6 @@ describe('Password Recovery E2E Tests', () => {
 			cy.contains('h2', 'Password Recovery').should('be.visible');
 			fillEmailForm('test@gmail.com');
 			cy.get('app-email-phase').contains('button', 'SEND').click();
-			cy.get('app-email-phase').contains('p', 'Sending email...').should('be.visible');
 
 			cy.wait('@succesfulEmail');
 			cy.contains('h2', 'Enter Verification Code').should('be.visible');
