@@ -8,7 +8,8 @@
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
 		"test:unit": "ng test --include='src/testing/unit/**/*.spec.ts' --watch=false --browsers=ChromeHeadlessNoSandbox",
-		"test:integration": "ng test --include='src/testing/integration/*.spec.ts' --watch=false --browsers=ChromeHeadlessNoSandbox"
+		"test:integration": "ng test --include='src/testing/integration/*.spec.ts' --watch=false --browsers=ChromeHeadlessNoSandbox",
+		"test:coverage": "ng test --watch=false --code-coverage"
 	},
 	"prettier": {
 		"printWidth": 100,

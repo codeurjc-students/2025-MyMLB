@@ -8,7 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -16,23 +18,9 @@ import com.mlb.mlbportal.dto.authentication.ResetPasswordRequest;
 import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
-import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
 
-import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
-import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.RESET_PASSWORD_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -42,8 +30,9 @@ import io.restassured.http.ContentType;
 @ActiveProfiles("test")
 class AuthControllerTest extends BaseE2ETest {
 
-    @Autowired
-    private UserRepository userRepository;
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private JavaMailSender mailSender;
 
     @Autowired
     private PasswordResetTokenRepository passwordRepository;
@@ -179,6 +168,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .when()
                 .post(FORGOT_PASSWORD_PATH)
                 .then()
+                .log().all()
                 .statusCode(200)
                 .body("status", equalTo(SUCCESS))
                 .body("message", equalTo("Recovery email sent successfully"));

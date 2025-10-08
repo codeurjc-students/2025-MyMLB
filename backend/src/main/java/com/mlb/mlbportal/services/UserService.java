@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mlb.mlbportal.dto.User.ShowUser;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
