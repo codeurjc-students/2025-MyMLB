@@ -47,10 +47,6 @@ class UserServiceIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @MockitoBean
-    @SuppressWarnings("unused")
-    private EmailService emailService;
-
     private UserEntity user1;
     private UserEntity user2;
 
