@@ -5,17 +5,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.mlb.mlbportal.configuration.DummyEmailServiceConfig;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
@@ -28,10 +28,8 @@ import com.mlb.mlbportal.services.UserService;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
 
-import jakarta.transaction.Transactional;
-
 @SpringBootTest
-@Import(DummyEmailServiceConfig.class)
+@ActiveProfiles("test")
 @Transactional
 class UserServiceIntegrationTest {
 
@@ -46,6 +44,10 @@ class UserServiceIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private EmailService emailService;
 
     private UserEntity user1;
     private UserEntity user2;
@@ -77,7 +79,8 @@ class UserServiceIntegrationTest {
     void testGetAllUsers() {
         List<ShowUser> result = this.userService.getAllUsers();
 
-        assertThat(result).hasSize(2).extracting(ShowUser::username)
+        assertThat(result).hasSize(2)
+            .extracting(ShowUser::username)
             .containsExactlyInAnyOrder(USER1_USERNAME, USER2_USERNAME);
     }
 
