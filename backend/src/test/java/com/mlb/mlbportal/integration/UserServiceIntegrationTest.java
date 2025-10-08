@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -46,6 +47,14 @@ class UserServiceIntegrationTest {
     @MockitoBean
     @SuppressWarnings("unused")
     private EmailService emailService;
+
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private JavaMailSender mailSender;
+
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private PasswordResetTokenRepository passwordRepo;
 
     private UserEntity user1;
     private UserEntity user2;
