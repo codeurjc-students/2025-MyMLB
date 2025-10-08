@@ -18,5 +18,6 @@ public interface AuthenticationMapper {
     @Mapping(target= "email", ignore=true)
     @Mapping(target= "name", ignore=true)
     @Mapping(target= "roles", ignore=true)
+    @Mapping(target= "resetToken", ignore=true)
     UserEntity toDomain(RegisterRequest registerRequest);
 }

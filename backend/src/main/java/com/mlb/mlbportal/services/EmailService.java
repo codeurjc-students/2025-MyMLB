@@ -15,6 +15,8 @@ import com.mlb.mlbportal.repositories.UserRepository;
 
 @Service
 public class EmailService {
+    private static final Random RANDOM = new Random();
+
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
@@ -46,7 +48,7 @@ public class EmailService {
         
         this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);
         
-        String code = String.format("%04d", new Random().nextInt(10000));
+        String code = String.format("%04d", RANDOM.nextInt(10000));
         
         PasswordResetToken resetToken = new PasswordResetToken(code, user);
         this.passwordRepository.save(resetToken);

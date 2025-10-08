@@ -10,11 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.mlb.mlbportal.dto.User.ShowUser;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
 import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
@@ -29,7 +29,6 @@ import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @Transactional
-@MockBean(EmailService.class)
 class UserServiceIntegrationTest {
 
     @Autowired
@@ -43,6 +42,10 @@ class UserServiceIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    @SuppressWarnings("unused")
+    private EmailService emailService;
 
     private UserEntity user1;
     private UserEntity user2;
