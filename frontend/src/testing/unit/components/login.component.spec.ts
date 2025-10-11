@@ -4,7 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../../../app/services/auth.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 
 describe('Login Component Tests', () => {
 	let fixture: ComponentFixture<LoginComponent>;

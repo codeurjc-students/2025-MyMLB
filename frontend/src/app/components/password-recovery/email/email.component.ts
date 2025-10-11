@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { ForgotPasswordRequest } from '../../../Models/auth/forgot-password.model';
+import { ForgotPasswordRequest } from '../../../models/auth/forgot-password.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

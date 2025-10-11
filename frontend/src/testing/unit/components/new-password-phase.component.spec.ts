@@ -5,7 +5,7 @@ import { AuthService } from '../../../app/services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 
 describe('Password Phase Component Tests', () => {
 	let component: PasswordPhaseComponent;

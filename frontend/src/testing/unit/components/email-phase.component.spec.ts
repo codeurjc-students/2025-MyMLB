@@ -4,7 +4,7 @@ import { AuthService } from '../../../app/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 
 describe('Email Phase Component Tests', () => {
 	let component: EmailPhaseComponent;

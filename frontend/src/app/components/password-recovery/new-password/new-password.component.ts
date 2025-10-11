@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { ResetPasswordRequest } from '../../../Models/auth/reset-password-request.model';
+import { ResetPasswordRequest } from '../../../models/auth/reset-password-request.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 

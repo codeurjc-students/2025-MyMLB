@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../Models/auth/login-request.model';
+import { LoginRequest } from '../models/auth/login-request.model';
 import { Observable } from 'rxjs';
-import { AuthResponse } from '../Models/auth/auth-response.model';
-import { RegisterRequest } from '../Models/auth/register-request.model';
-import { ForgotPasswordRequest } from '../Models/auth/forgot-password.model';
-import { ResetPasswordRequest } from '../Models/auth/reset-password-request.model';
+import { AuthResponse } from '../models/auth/auth-response.model';
+import { RegisterRequest } from '../models/auth/register-request.model';
+import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
+import { ResetPasswordRequest } from '../models/auth/reset-password-request.model';
 
 @Injectable({
 	providedIn: 'root',

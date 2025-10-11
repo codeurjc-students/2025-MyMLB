@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../../app/services/auth.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../app/models/auth/auth-response.model';
 
 describe('New Password Phase Integration Tests', () => {
 	let fixture: ComponentFixture<PasswordPhaseComponent>;

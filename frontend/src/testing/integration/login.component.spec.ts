@@ -4,7 +4,7 @@ import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
 describe("LoginComponent Integration Test", () => {

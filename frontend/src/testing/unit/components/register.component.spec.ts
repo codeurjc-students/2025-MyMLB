@@ -1,6 +1,6 @@
 import { RegisterComponent } from '../../../app/components/register/register.component';
 import { AuthService } from '../../../app/services/auth.service';
-import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { of, throwError } from 'rxjs';

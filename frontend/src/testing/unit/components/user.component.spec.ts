@@ -1,4 +1,4 @@
-import { User } from './../../../app/Models/user.model';
+import { User } from './../../../app/models/user.model';
 import { UserService } from '../../../app/services/user.service';
 import { UserComponent } from '../../../app/components/user/user.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';

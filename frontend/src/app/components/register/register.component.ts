@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { RegisterRequest } from '../../Models/auth/register-request.model';
+import { RegisterRequest } from '../../models/auth/register-request.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
