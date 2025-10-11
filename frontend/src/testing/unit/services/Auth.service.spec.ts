@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { AuthService } from '../../../app/Services/Auth.service';
-import { LoginRequest } from '../../../app/Models/Auth/LoginRequest';
-import { RegisterRequest } from '../../../app/Models/Auth/RegisterRequest';
-import { AuthResponse } from '../../../app/Models/Auth/AuthResponse';
-import { ForgotPasswordRequest } from '../../../app/Models/Auth/ForgotPasswordRequest';
-import { ResetPasswordRequest } from '../../../app/Models/Auth/ResetPasswordRequest';
+import { AuthService } from '../../../app/services/auth.service';
+import { LoginRequest } from './../../../app/Models/auth/login-request.model';
+import { RegisterRequest } from '../../../app/Models/auth/register-request.model';
+import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
+import { ForgotPasswordRequest } from '../../../app/Models/auth/forgot-password.model';
+import { ResetPasswordRequest } from '../../../app/Models/auth/reset-password-request.model';
 
 describe('Auth Service Tests', () => {
 	let authService: AuthService;

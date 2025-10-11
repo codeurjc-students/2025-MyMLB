@@ -1,15 +1,15 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../Services/Auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { RegisterRequest } from '../../Models/Auth/RegisterRequest';
+import { RegisterRequest } from '../../Models/auth/register-request.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-register',
 	standalone: true,
 	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './Register.component.html'
+	templateUrl: './register.component.html'
 })
 export class RegisterComponent {
 	@Output() toggleForm = new EventEmitter<void>();

@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { EmailPhaseComponent } from '../../../app/Components/PasswordRecovery/EmailPhase/EmailPhase.component';
-import { AuthService } from '../../../app/Services/Auth.service';
+import { EmailPhaseComponent } from '../../../app/components/password-recovery/email/email.component';
+import { AuthService } from '../../../app/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { AuthResponse } from '../../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
 
 describe('Email Phase Component Tests', () => {
 	let component: EmailPhaseComponent;

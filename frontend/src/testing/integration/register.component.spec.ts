@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RegisterComponent } from '../../app/Components/Register/Register.component';
-import { AuthService } from '../../app/Services/Auth.service';
+import { RegisterComponent } from '../../app/components/register/register.component';
+import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../app/Models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
 describe("RegisterComponent Integration Test", () => {

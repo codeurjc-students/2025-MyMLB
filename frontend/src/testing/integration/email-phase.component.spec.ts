@@ -1,10 +1,10 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { EmailPhaseComponent } from '../../app/Components/PasswordRecovery/EmailPhase/EmailPhase.component';
-import { AuthService } from '../../app/Services/Auth.service';
+import { EmailPhaseComponent } from '../../app/components/password-recovery/email/email.component';
+import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
-import { AuthResponse } from '../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../app/Models/auth/auth-response.model';
 
 describe('Email Phase Component Integration Tests', () => {
 	let fixture: ComponentFixture<EmailPhaseComponent>;

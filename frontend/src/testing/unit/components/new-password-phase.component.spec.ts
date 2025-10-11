@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { PasswordPhaseComponent } from '../../../app/Components/PasswordRecovery/NewPasswordPhase/NewPasswordPhase.component';
+import { PasswordPhaseComponent } from '../../../app/components/password-recovery/new-password/new-password.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../app/Services/Auth.service';
+import { AuthService } from '../../../app/services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { AuthResponse } from '../../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
 
 describe('Password Phase Component Tests', () => {
 	let component: PasswordPhaseComponent;

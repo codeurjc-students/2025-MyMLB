@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../Services/Auth.service';
-import { ResetPasswordRequest } from '../../../Models/Auth/ResetPasswordRequest';
+import { AuthService } from '../../../services/auth.service';
+import { ResetPasswordRequest } from '../../../Models/auth/reset-password-request.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 	selector: 'app-password-phase',
 	standalone: true,
 	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './NewPasswordPhase.component.html',
+	templateUrl: './new-password.component.html',
 })
 export class PasswordPhaseComponent {
 	@Input() code: string = '';

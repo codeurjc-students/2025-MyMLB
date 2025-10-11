@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { PasswordPhaseComponent } from '../../app/Components/PasswordRecovery/NewPasswordPhase/NewPasswordPhase.component';
+import { PasswordPhaseComponent } from '../../app/components/password-recovery/new-password/new-password.component';
 import { FormBuilder } from '@angular/forms';
-import { AuthService } from '../../app/Services/Auth.service';
+import { AuthService } from '../../app/services/auth.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../app/Models/auth/auth-response.model';
 
 describe('New Password Phase Integration Tests', () => {
 	let fixture: ComponentFixture<PasswordPhaseComponent>;

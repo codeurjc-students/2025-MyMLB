@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../Services/User.service';
-import { User } from '../../Models/User';
+import { UserService } from '../../services/user.service';
+import { User } from '../../Models/user.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-user',
 	standalone: true,
 	imports: [CommonModule],
-	templateUrl: './User.component.html',
-	styleUrls: ['./User.component.css'],
+	templateUrl: './user.component.html'
 })
 export class UserComponent implements OnInit {
 	public allUsers : User[] = [];
@@ -20,7 +19,7 @@ export class UserComponent implements OnInit {
 		this.userService.getAllUsers().subscribe({
 			next: (users) => {
 				this.allUsers = users;
-			}, 
+			},
 			error: (err) => {
 				console.error("An error ocurred while obtaining the users ", err);
 				this.success = false;

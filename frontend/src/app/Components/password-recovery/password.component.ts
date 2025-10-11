@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmailPhaseComponent } from './EmailPhase/EmailPhase.component';
-import { CodePhaseComponent } from '././CodePhase/CodePhase.component';
-import { PasswordPhaseComponent } from '././NewPasswordPhase/NewPasswordPhase.component';
+import { EmailPhaseComponent } from './email/email.component';
+import { CodePhaseComponent } from './code/code.component';
+import { PasswordPhaseComponent } from './new-password/new-password.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-password',
 	standalone: true,
 	imports: [CommonModule, EmailPhaseComponent, CodePhaseComponent, PasswordPhaseComponent],
-	templateUrl: './Password.component.html'
+	templateUrl: './password.component.html'
 })
 export class PasswordComponent {
 	public currentStep: 'email' | 'code' | 'password' = 'email';

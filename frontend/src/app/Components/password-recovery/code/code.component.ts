@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 	selector: 'app-code-phase',
 	standalone: true,
 	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './CodePhase.component.html'
+	templateUrl: './code.component.html'
 })
 export class CodePhaseComponent {
 	@Output() codeConfirmed = new EventEmitter<string>();

@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from '../../../app/Components/Login/Login.component';
+import { LoginComponent } from '../../../app/components/login/login.component';
 import { FormBuilder } from '@angular/forms';
-import { AuthService } from '../../../app/Services/Auth.service';
+import { AuthService } from '../../../app/services/auth.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../../app/Models/Auth/AuthResponse';
+import { AuthResponse } from '../../../app/Models/auth/auth-response.model';
 
 describe('Login Component Tests', () => {
 	let fixture: ComponentFixture<LoginComponent>;

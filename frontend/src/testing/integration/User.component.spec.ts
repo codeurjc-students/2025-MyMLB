@@ -1,6 +1,6 @@
-import { UserComponent } from '../../app/Components/User/User.component';
-import { UserService } from '../../app/Services/User.service';
-import { User } from '../../app/Models/User';
+import { UserComponent } from '../../app/components/user/user.component';
+import { UserService } from '../../app/services/user.service';
+import { User } from '../../app/Models/user.model';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';

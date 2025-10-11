@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { LoginComponent } from "../Login/Login.component";
-import { RegisterComponent } from '../Register/Register.component';
+import { LoginComponent } from "../login/login.component";
+import { RegisterComponent } from '../register/register.component';
 
 @Component({
 	selector: 'app-Auth',
 	standalone: true,
 	imports: [LoginComponent, RegisterComponent],
-	templateUrl: './Auth.component.html',
+	templateUrl: './auth.component.html',
 })
 export class AuthComponent {
 	public loginForm = true;

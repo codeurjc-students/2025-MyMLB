@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export const HttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
+export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       let message = 'An unexpected error occurred';

@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../Services/Auth.service';
-import { ForgotPasswordRequest } from '../../../Models/Auth/ForgotPasswordRequest';
+import { AuthService } from '../../../services/auth.service';
+import { ForgotPasswordRequest } from '../../../Models/auth/forgot-password.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-email-phase',
 	standalone: true,
 	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './EmailPhase.component.html',
+	templateUrl: './email.component.html',
 })
 export class EmailPhaseComponent {
 	@Output() emailSent = new EventEmitter<void>();

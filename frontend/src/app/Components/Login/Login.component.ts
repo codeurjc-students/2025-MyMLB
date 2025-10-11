@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { AuthService } from '../../Services/Auth.service';
+import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginRequest } from '../../Models/Auth/LoginRequest';
+import { LoginRequest } from '../../Models/auth/login-request.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-login',
 	standalone: true,
 	imports: [ReactiveFormsModule, CommonModule],
-	templateUrl: './Login.component.html',
+	templateUrl: './login.component.html',
 })
 export class LoginComponent {
 

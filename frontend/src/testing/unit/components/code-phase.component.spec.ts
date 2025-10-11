@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CodePhaseComponent } from '../../../app/Components/PasswordRecovery/CodePhase/CodePhase.component';
+import { CodePhaseComponent } from '../../../app/components/password-recovery/code/code.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

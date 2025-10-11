@@ -1,6 +1,6 @@
-import { User } from './../../../app/Models/User';
-import { UserService } from './../../../app/Services/User.service';
-import { UserComponent } from './../../../app/Components/User/User.component';
+import { User } from './../../../app/Models/user.model';
+import { UserService } from '../../../app/services/user.service';
+import { UserComponent } from '../../../app/components/user/user.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 

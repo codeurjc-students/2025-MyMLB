@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { UserService } from '../../../app/Services/User.service';
-import { User } from '../../../app/Models/User';
+import { UserService } from '../../../app/services/user.service';
+import { User } from '../../../app/Models/user.model';
 
 describe('User Service Tests', () => {
 	let service: UserService;
