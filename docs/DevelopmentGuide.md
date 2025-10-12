@@ -144,7 +144,7 @@ The backend exposes a `REST API` as communication method with the frontend.
 - This API have been decoumented using `OPEN API (Swagger)`.
 - OpenAPI documentation can be accessible without executing the application in a static HTML file format.
 
-👉 [View REST API Documentation](./path-to-openapi-doc.html)
+👉 [View REST API Documentation](./api)
 
 > [!WARNING]
 > At the moment, the API documentation is not available.
