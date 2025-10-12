@@ -5,7 +5,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +24,17 @@ import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -107,6 +115,6 @@ class UserServiceIntegrationTest {
         UserAlreadyExistsException ex = assertThrows(UserAlreadyExistsException.class, () -> {
             userService.createUser(request);
         });
-        assertThat(ex.getMessage()).isEqualTo("The User Already Exists on the Database");
+        assertThat(ex.getMessage()).isEqualTo("The User Already Exists in the Database");
     }
 }

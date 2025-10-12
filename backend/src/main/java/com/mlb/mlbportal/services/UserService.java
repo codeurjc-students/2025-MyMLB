@@ -37,8 +37,14 @@ public class UserService {
         return this.userMapper.toShowUsers(this.userRepository.findAll());
     }
 
+    private boolean existsUser(RegisterRequest registerRequest) {
+        boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();
+        boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();
+        return usernameValidation || emailValidation; 
+    }
+
     public RegisterRequest createUser(RegisterRequest registerRequest) {
-        if (this.userRepository.findByUsername(registerRequest.username()).isPresent()) {
+        if (this.existsUser(registerRequest)) {
             throw new UserAlreadyExistsException();
         }
         String encodedPassword = this.passwordEncoder.encode(registerRequest.password());

@@ -144,10 +144,7 @@ The backend exposes a `REST API` as communication method with the frontend.
 - This API have been decoumented using `OPEN API (Swagger)`.
 - OpenAPI documentation can be accessible without executing the application in a static HTML file format.
 
-👉 [View REST API Documentation](./path-to-openapi-doc.html)
-
-> [!WARNING]
-> At the moment, the API documentation is not available.
+👉 [View REST API Documentation](./api)
 
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.

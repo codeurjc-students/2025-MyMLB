@@ -19,8 +19,20 @@ import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
+import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.RESET_PASSWORD_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -132,7 +144,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(409)
                 .body("status", equalTo(FAILURE))
                 .body("error", equalTo("User Already Exists in the Database"))
-                .body("message", equalTo("The User Already Exists on the Database"));
+                .body("message", equalTo("The User Already Exists in the Database"));
     }
 
     @Test

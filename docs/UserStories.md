@@ -35,9 +35,9 @@
 
 #### Acceptance Criteria
 - The registration form must ask for:
-  - Full name (first and last name).
-  - Password.
+  - Username.
   - Email.
+  - Password.
 - The email must be unique.
 
 #### Dependencies
@@ -82,7 +82,7 @@
 
 #### Acceptance Criteria
 - The login form must ask for:
-  - Email.
+  - Username.
   - Password.
 - If the credentials are valid, the user is redirected to the main page.
 - If the credentials are invalid, an error message is displayed.
