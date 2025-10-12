@@ -132,7 +132,7 @@ class UserServiceTest {
         UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class, 
             () -> this.userService.createUser(registerRequest));
 
-        assertThat(exception.getMessage()).isEqualTo("The User Already Exists on the Database");
+        assertThat(exception.getMessage()).isEqualTo("The User Already Exists in the Database");
     }
 
     @Test
