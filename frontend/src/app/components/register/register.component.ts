@@ -76,5 +76,6 @@ export class RegisterComponent {
 
 	public toggleToLoginForm() {
 		this.toggleForm.emit();
+		this.registerForm.reset();
 	}
 }
