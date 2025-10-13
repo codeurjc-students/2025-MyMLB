@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,8 +31,6 @@ public class SecurityUserDetails implements UserDetailsService {
         for (String role: user.getRoles()) {
             roles.add(new SimpleGrantedAuthority("ROLE_" + role));
         }
-
-        // Return the user
-        return new User(user.getUsername(), user.getPassword(),roles);
+        return new UserPrincipal(user, roles);
     }   
 }

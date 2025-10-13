@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.user.ShowUser;
+import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
@@ -169,5 +170,19 @@ class UserServiceTest {
         assertThat(result).isFalse();
         verify(this.userRepository, never()).save(any());
         verify(this.emailService, never()).deleteToken(this.invalidCode);
+    }
+
+    @Test
+    @DisplayName("getUserRole should successfully return the UserRole object")
+    void testGetUserRole() {
+        UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"));
+
+        when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
+        when(this.authenticationMapper.toUserRole(this.testUser)).thenReturn(mockUserRole);
+
+        UserRole result = this.userService.getUserRole(TEST_USER_USERNAME);
+
+        assertThat(result.username()).isEqualTo(TEST_USER_USERNAME);
+        assertThat(result.roles()).contains("USER");
     }
 }

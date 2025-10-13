@@ -17,6 +17,7 @@ public final class TestConstants {
     public static final String TEST_USER_PASSWORD = "test";
 
     public static final String BASE_URI = "http://localhost";
+    public static final String ME_PATH = "/api/auth/me";
     public static final String LOGIN_PATH = "/api/auth/login";
     public static final String REGISTER_PATH = "/api/auth/register";
     public static final String FORGOT_PASSWORD_PATH = "/api/auth/forgot-password";

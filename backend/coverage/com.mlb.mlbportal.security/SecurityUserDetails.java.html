@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,23 +17,21 @@ import com.mlb.mlbportal.repositories.UserRepository;
 public class SecurityUserDetails implements UserDetailsService {
     private final  UserRepository userRepository;
 
-<span class="fc" id="L21">    public SecurityUserDetails(UserRepository userRepository) {</span>
-<span class="fc" id="L22">        this.userRepository = userRepository;</span>
-<span class="fc" id="L23">    }</span>
+<span class="fc" id="L20">    public SecurityUserDetails(UserRepository userRepository) {</span>
+<span class="fc" id="L21">        this.userRepository = userRepository;</span>
+<span class="fc" id="L22">    }</span>
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         // Get the user
-<span class="pc" id="L28">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow( () -&gt; new UsernameNotFoundException(&quot;User not found&quot;));</span>
+<span class="pc" id="L27">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow( () -&gt; new UsernameNotFoundException(&quot;User not found&quot;));</span>
 
         // Add the user roles in the way Spring recognize them
-<span class="fc" id="L31">        List&lt;GrantedAuthority&gt; roles = new ArrayList&lt;&gt;();</span>
-<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        for (String role: user.getRoles()) {</span>
-<span class="nc" id="L33">            roles.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + role));</span>
-<span class="nc" id="L34">        }</span>
-
-        // Return the user
-<span class="fc" id="L37">        return new User(user.getUsername(), user.getPassword(),roles);</span>
+<span class="fc" id="L30">        List&lt;GrantedAuthority&gt; roles = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        for (String role: user.getRoles()) {</span>
+<span class="nc" id="L32">            roles.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + role));</span>
+<span class="nc" id="L33">        }</span>
+<span class="fc" id="L34">        return new UserPrincipal(user, roles);</span>
     }   
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

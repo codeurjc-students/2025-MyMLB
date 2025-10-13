@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 <span class="fc" id="L13">public class GlobalHandler {</span>
+<span class="fc" id="L14">    private final Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
     private static final String FAILURE = &quot;FAILURE&quot;;
     private static final String STATUS_CODE = &quot;statusCode&quot;;
     private static final String STATUS = &quot;status&quot;;
@@ -19,33 +20,50 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L22">        Map&lt;String, Object&gt; errors = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L23">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L24">            errors.put(error.getField(), error.getDefaultMessage())</span>
+<span class="fc" id="L23">        this.body.clear();</span>
+<span class="fc" id="L24">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="fc" id="L25">            this.body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L26">        errors.put(STATUS_CODE, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L27">        errors.put(STATUS, FAILURE);</span>
-<span class="fc" id="L28">        return new ResponseEntity&lt;&gt;(errors, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L27">        this.body.put(STATUS_CODE, HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc" id="L28">        this.body.put(STATUS, FAILURE);</span>
+<span class="fc" id="L29">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.BAD_REQUEST);</span>
     }
     
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserAlreadyExists(UserAlreadyExistsException ex) {
-<span class="fc" id="L33">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L34">        body.put(STATUS_CODE, HttpStatus.CONFLICT.value());</span>
-<span class="fc" id="L35">        body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L36">        body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L37">        body.put(ERROR, &quot;User Already Exists in the Database&quot;);</span>
-<span class="fc" id="L38">        return new ResponseEntity&lt;&gt;(body, HttpStatus.CONFLICT);</span>
+<span class="fc" id="L34">        this.body.clear();</span>
+<span class="fc" id="L35">        this.body.put(STATUS_CODE, HttpStatus.CONFLICT.value());</span>
+<span class="fc" id="L36">        this.body.put(STATUS, FAILURE);</span>
+<span class="fc" id="L37">        this.body.put(MESSAGE, ex.getMessage());</span>
+<span class="fc" id="L38">        this.body.put(ERROR, &quot;User Already Exists in the Database&quot;);</span>
+<span class="fc" id="L39">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.CONFLICT);</span>
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserNotFound(UserNotFoundException ex) {
-<span class="fc" id="L43">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L44">        body.put(STATUS_CODE, HttpStatus.NOT_FOUND.value());</span>
-<span class="fc" id="L45">        body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L46">        body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L47">        body.put(ERROR, &quot;User Not Found&quot;);</span>
-<span class="fc" id="L48">        return new ResponseEntity&lt;&gt;(body, HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L44">        this.body.clear();</span>
+<span class="fc" id="L45">        this.body.put(STATUS_CODE, HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L46">        this.body.put(STATUS, FAILURE);</span>
+<span class="fc" id="L47">        this.body.put(MESSAGE, ex.getMessage());</span>
+<span class="fc" id="L48">        this.body.put(ERROR, &quot;User Not Found&quot;);</span>
+<span class="fc" id="L49">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.NOT_FOUND);</span>
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity&lt;?&gt; handleNullPointer(NullPointerException ex) {
+<span class="fc" id="L54">        this.body.clear();</span>
+<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="fc" id="L56">            this.body.put(STATUS_CODE, HttpStatus.UNAUTHORIZED.value());</span>
+<span class="fc" id="L57">            this.body.put(STATUS, FAILURE);</span>
+<span class="fc" id="L58">            this.body.put(MESSAGE, ex.getMessage());</span>
+<span class="fc" id="L59">            this.body.put(ERROR, &quot;User Not Authenticated&quot;);</span>
+<span class="fc" id="L60">            return new ResponseEntity&lt;&gt;(this.body, HttpStatus.UNAUTHORIZED);</span>
+        }
+<span class="nc" id="L62">        this.body.put(STATUS_CODE, HttpStatus.INTERNAL_SERVER_ERROR.value());</span>
+<span class="nc" id="L63">        this.body.put(STATUS, FAILURE);</span>
+<span class="nc" id="L64">        this.body.put(MESSAGE, ex.getMessage());</span>
+<span class="nc" id="L65">        this.body.put(ERROR, &quot;Internal Server Error ocurred by a NullPointerException&quot;);</span>
+<span class="nc" id="L66">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

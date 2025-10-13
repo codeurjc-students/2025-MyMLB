@@ -7,7 +7,7 @@ servers:
   description: Generated server url
 tags:
 - name: Authentication
-  description: Endpoints related to user authentication and account management
+  description: Endpoints related to user authentication
 paths:
   /api/auth/reset-password:
     post:
@@ -181,6 +181,26 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ShowUser"
+  /api/auth/me:
+    get:
+      tags:
+      - Authentication
+      summary: Get theActive User
+      description: Obtain details of the currently authenticated user.
+      operationId: getActiveUser
+      responses:
+        "200":
+          description: User Successfully Authenticated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRole"
+        "401":
+          description: User Not Authenticated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRole"
 components:
   schemas:
     ResetPasswordRequest:
@@ -243,3 +263,14 @@ components:
           type: string
         email:
           type: string
+    UserRole:
+      type: object
+      properties:
+        username:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+      required:
+      - username

@@ -1,4 +1,12 @@
 package com.mlb.mlbportal.dto.user;
 
-public class UserRole {
-}
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record UserRole(
+    @NotBlank(message= "Username is required")
+    String username,
+
+    List<String> roles
+){}

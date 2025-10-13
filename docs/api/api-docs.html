@@ -913,6 +913,20 @@ ul.nav-tabs {
     }
   }
 };
+    defs["UserRole"] = {
+  "required" : [ "username" ],
+  "properties" : {
+    "username" : {
+      "type" : "string"
+    },
+    "roles" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    }
+  }
+};
 
 
     var errs = {};
@@ -935,6 +949,9 @@ ul.nav-tabs {
                   <li class="nav-header" data-group="Authentication"><a href="#api-Authentication">API Methods - Authentication</a></li>
                     <li data-group="Authentication" data-name="forgotPassword" class="">
                       <a href="#api-Authentication-forgotPassword">forgotPassword</a>
+                    </li>
+                    <li data-group="Authentication" data-name="getActiveUser" class="">
+                      <a href="#api-Authentication-getActiveUser">getActiveUser</a>
                     </li>
                     <li data-group="Authentication" data-name="logOut" class="">
                       <a href="#api-Authentication-logOut">logOut</a>
@@ -1516,6 +1533,410 @@ $(document).ready(function() {
                                   </script>
                                 </div>
                                 <input id='responses-Authentication-forgotPassword-404-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Authentication-getActiveUser">
+                      <article id="api-Authentication-getActiveUser-0" data-group="User" data-name="getActiveUser" data-version="0">
+                        <div class="pull-left">
+                          <h1>getActiveUser</h1>
+                          <p>Get theActive User</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtain details of the currently authenticated user.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/auth/me</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Authentication-getActiveUser-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Authentication-getActiveUser-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Authentication-getActiveUser-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Authentication-getActiveUser-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: */*" \
+ "https://localhost:8443/api/auth/me"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.AuthenticationApi;
+
+import java.io.File;
+import java.util.*;
+
+public class AuthenticationApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        AuthenticationApi apiInstance = new AuthenticationApi();
+
+        try {
+            UserRole result = apiInstance.getActiveUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AuthenticationApi#getActiveUser");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getActiveUser();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getActiveUser: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.AuthenticationApi;
+
+public class AuthenticationApiExample {
+    public static void main(String[] args) {
+        AuthenticationApi apiInstance = new AuthenticationApi();
+
+        try {
+            UserRole result = apiInstance.getActiveUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AuthenticationApi#getActiveUser");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Authentication-getActiveUser-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+AuthenticationApi *apiInstance = [[AuthenticationApi alloc] init];
+
+// Get theActive User
+[apiInstance getActiveUserWithCompletionHandler: 
+              ^(UserRole output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.AuthenticationApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getActiveUser(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Authentication-getActiveUser-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getActiveUserExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new AuthenticationApi();
+
+            try {
+                // Get theActive User
+                UserRole result = apiInstance.getActiveUser();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling AuthenticationApi.getActiveUser: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\AuthenticationApi();
+
+try {
+    $result = $api_instance->getActiveUser();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling AuthenticationApi->getActiveUser: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::AuthenticationApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::AuthenticationApi->new();
+
+eval {
+    my $result = $api_instance->getActiveUser();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling AuthenticationApi->getActiveUser: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.AuthenticationApi()
+
+try:
+    # Get theActive User
+    api_response = api_instance.get_active_user()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling AuthenticationApi->getActiveUser: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate AuthenticationApi;
+
+pub fn main() {
+
+    let mut context = AuthenticationApi::Context::default();
+    let result = client.getActiveUser(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Authentication-getActiveUser-title-200"></h3>
+                            <p id="examples-Authentication-getActiveUser-description-200" class="marked"></p>
+                            <script>
+                              var responseAuthentication200_description = `User Successfully Authenticated`;
+                              var responseAuthentication200_description_break = responseAuthentication200_description.indexOf('\n');
+                              if (responseAuthentication200_description_break == -1) {
+                                $("#examples-Authentication-getActiveUser-title-200").text("Status: 200 - " + responseAuthentication200_description);
+                              } else {
+                                $("#examples-Authentication-getActiveUser-title-200").text("Status: 200 - " + responseAuthentication200_description.substring(0, responseAuthentication200_description_break));
+                                $("#examples-Authentication-getActiveUser-description-200").html(responseAuthentication200_description.substring(responseAuthentication200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Authentication-getActiveUser-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Authentication-getActiveUser-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Authentication-getActiveUser-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Authentication-getActiveUser-200-schema">
+                                <div id="responses-Authentication-getActiveUser-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "User Successfully Authenticated",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserRole"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Authentication-getActiveUser-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Authentication-getActiveUser-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Authentication-getActiveUser-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Authentication-getActiveUser-title-401"></h3>
+                            <p id="examples-Authentication-getActiveUser-description-401" class="marked"></p>
+                            <script>
+                              var responseAuthentication401_description = `User Not Authenticated`;
+                              var responseAuthentication401_description_break = responseAuthentication401_description.indexOf('\n');
+                              if (responseAuthentication401_description_break == -1) {
+                                $("#examples-Authentication-getActiveUser-title-401").text("Status: 401 - " + responseAuthentication401_description);
+                              } else {
+                                $("#examples-Authentication-getActiveUser-title-401").text("Status: 401 - " + responseAuthentication401_description.substring(0, responseAuthentication401_description_break));
+                                $("#examples-Authentication-getActiveUser-description-401").html(responseAuthentication401_description.substring(responseAuthentication401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Authentication-getActiveUser-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Authentication-getActiveUser-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Authentication-getActiveUser-401-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Authentication-getActiveUser-401-schema">
+                                <div id="responses-Authentication-getActiveUser-schema-401" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "User Not Authenticated",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserRole"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Authentication-getActiveUser-401-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Authentication-getActiveUser-schema-401');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Authentication-getActiveUser-401-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
                         </article>

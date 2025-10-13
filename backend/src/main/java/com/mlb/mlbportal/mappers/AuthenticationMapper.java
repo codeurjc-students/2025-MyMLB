@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.models.UserEntity;
 
 @Mapper(componentModel= "spring")
@@ -20,4 +21,7 @@ public interface AuthenticationMapper {
     @Mapping(target= "roles", ignore=true)
     @Mapping(target= "resetToken", ignore=true)
     UserEntity toDomain(RegisterRequest registerRequest);
+
+    UserRole toUserRole(UserEntity user);
+    List<UserRole> toUserRoles(Collection<UserEntity> users);
 }
