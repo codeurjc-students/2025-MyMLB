@@ -1,6 +1,7 @@
 /* This css file is for common styles through the application */
 
 @import 'tailwindcss';
+@plugin "@midudev/tailwind-animations";
 
 /* Common Styles for the Application */
 .app-button {
