@@ -46,3 +46,13 @@
 .fade-in-leave-active {
 	@apply opacity-100 translate-y-0;
 }
+
+/* Navbar Styles */
+
+.nav-elems {
+	@apply py-2.5 px-3 text-xl text-gray-300 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03]
+}
+
+.active-nav {
+	@apply text-white font-bold bg-blue-700 rounded-md shadow-md px-4 py-2;
+}
