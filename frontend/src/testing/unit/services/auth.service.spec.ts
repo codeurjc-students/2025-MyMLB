@@ -1,3 +1,4 @@
+import { UserRole } from './../../../app/models/auth/user-role.model';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -41,6 +42,32 @@ describe('Auth Service Tests', () => {
 		}
 		req.flush(response);
 	};
+
+	// Active User Test
+	describe('Get Active User', () => {
+		let activeUserUrl: string;
+
+		beforeEach(() => {
+			activeUserUrl =`${authService['apiUrl']}/me`;
+		});
+
+		it('should successfully return the active user', () => {
+			const mockUserRole: UserRole = {
+				username: 'testUser',
+				roles: ['USER']
+			};
+
+			authService.getActiveUser().subscribe(response => {
+				expect(response).toEqual(mockUserRole);
+				expect(response.username).toEqual(mockUserRole.username);
+				expect(response.roles).toContain('USER');
+			});
+
+			const req = httpMock.expectOne(activeUserUrl);
+			expect(req.request.method).toBe('GET');
+			req.flush(mockUserRole);
+		});
+	});
 
 	// Login Tests
 	describe('Login User', () => {
