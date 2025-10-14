@@ -1,4 +1,4 @@
 @if (!hideNavbar) {
-	<app-navbar></app-navbar>
+	<app-navbar [isDarkMode] = "isDarkMode" (toggleDarkMode) = "toggleDarkMode()"></app-navbar>
 }
 <router-outlet>

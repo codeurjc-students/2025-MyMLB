@@ -3,9 +3,15 @@
 @import 'tailwindcss';
 @plugin "@midudev/tailwind-animations";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Common Styles for the Application */
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .app-button {
-	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg;
+	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
 }
 
 .text-inputs {
@@ -15,7 +21,7 @@
 /* Authentication Forms Styles */
 
 .auth-panel {
-	@apply bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white p-8 flex flex-col items-center justify-center;
+	@apply bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white p-8 flex flex-col items-center justify-center dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
 }
 
 .auth-toggle-button {

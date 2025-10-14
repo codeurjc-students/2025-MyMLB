@@ -1,19 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { initFlowbite } from "flowbite";
+import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ThemeService } from './services/Theme.service';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+	selector: 'app-root',
+	imports: [RouterOutlet, NavbarComponent],
+	templateUrl: './app.html',
 })
 export class AppComponent implements OnInit {
-	title = "web-app";
+	title = 'web-app';
 	public hideNavbar = false;
+	public isDarkMode = false;
 
-	constructor(private router: Router) {
+	constructor(
+		private router: Router,
+		private themeService: ThemeService,
+		private cdr: ChangeDetectorRef
+	) {
 		this.router.events.subscribe(() => {
 			const url = this.router.url;
 			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery');
@@ -22,5 +27,13 @@ export class AppComponent implements OnInit {
 
 	ngOnInit(): void {
 		initFlowbite();
+		this.themeService.initTheme();
+		this.isDarkMode = document.documentElement.classList.contains('dark');
+	}
+
+	public toggleDarkMode(): void {
+		this.themeService.toggleDarkMode();
+		this.isDarkMode = document.documentElement.classList.contains('dark');
+		this.cdr.detectChanges();
 	}
 }
