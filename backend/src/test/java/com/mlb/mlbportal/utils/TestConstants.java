@@ -20,6 +20,7 @@ public final class TestConstants {
     public static final String ME_PATH = "/api/auth/me";
     public static final String LOGIN_PATH = "/api/auth/login";
     public static final String REGISTER_PATH = "/api/auth/register";
+    public static final String LOGOUT_PATH = "/api/auth/logout";
     public static final String FORGOT_PASSWORD_PATH = "/api/auth/forgot-password";
     public static final String RESET_PASSWORD_PATH = "/api/auth/reset-password";
 

@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/user/user.component.ts</title>
+    <title>Code coverage report for components/navbar/navbar.component.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/user</a> user.component.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/navbar</a> navbar.component.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
@@ -92,7 +92,8 @@
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -104,53 +105,55 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
-import { CommonModule } from '@angular/common';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { RouterModule } from '@angular/router';
+import { ThemeService } from '../../services/Theme.service';
 &nbsp;
 @Component({
-	selector: 'app-user',
+	selector: 'app-navbar',
 	standalone: true,
-	imports: [CommonModule],
-	templateUrl: './user.component.html'
+	imports: [RouterModule],
+	templateUrl: './navbar.component.html',
 })
-export class UserComponent implements OnInit {
-	public allUsers : User[] = [];
-	public success: boolean = true;
+export class NavbarComponent implements OnInit {
+	@Input() isDarkMode: boolean = false;
+	@Output() toggleDarkMode: EventEmitter&lt;void&gt; = new EventEmitter();
 &nbsp;
-	constructor(private userService: UserService) {}
+	public roles: Array&lt;string&gt; = ['GUEST'];
+	public username: string = '';
 &nbsp;
-	ngOnInit(): void {
-		this.userService.getAllUsers().subscribe({
-			next: (users) =&gt; {
-				this.allUsers = users;
-			},
-			error: (err) =&gt; {
-				console.error("An error ocurred while obtaining the users ", err);
-				this.success = false;
-			}
-		})
+	constructor(private authService: AuthService, private themeService: ThemeService) {}
+&nbsp;
+	public ngOnInit() {
+		this.authService.getActiveUser().subscribe((response) =&gt; {
+			this.roles = response.roles;
+			this.username = response.username;
+		});
 	}
-}
-&nbsp;</pre></td></tr></table></pre>
+&nbsp;
+	public <span class="fstat-no" title="function not covered" >toggleDarkModeButton(</span>): void {
+<span class="cstat-no" title="statement not covered" >		this.toggleDarkMode.emit();</span>
+	}
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->

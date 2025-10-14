@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -64,5 +65,15 @@ public class GlobalHandler {
         this.body.put(MESSAGE, ex.getMessage());
         this.body.put(ERROR, "Internal Server Error ocurred by a NullPointerException");
         return new ResponseEntity<>(this.body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, Object>> handleMehtodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+        this.body.clear();
+        this.body.put(STATUS_CODE, HttpStatus.METHOD_NOT_ALLOWED.value());
+        this.body.put(STATUS, FAILURE);
+        this.body.put(MESSAGE, ex.getMessage());
+        this.body.put(ERROR, "HTTP method not allowed for this endpoint");
+        return new ResponseEntity<>(this.body, HttpStatus.METHOD_NOT_ALLOWED);
     }
 }

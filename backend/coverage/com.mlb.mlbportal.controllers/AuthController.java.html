@@ -90,7 +90,7 @@ public class AuthController {
     })
     @PostMapping(&quot;/logout&quot;)
     public ResponseEntity&lt;AuthResponse&gt; logOut(HttpServletResponse response) {
-<span class="nc" id="L93">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));</span>
+<span class="fc" id="L93">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));</span>
     }
 
     @Operation(summary = &quot;Request password recovery&quot;, description = &quot;Sends a recovery email to the user containing a reset link or verification code.&quot;, responses = {

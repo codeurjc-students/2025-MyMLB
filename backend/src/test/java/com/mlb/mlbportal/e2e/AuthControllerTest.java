@@ -26,6 +26,7 @@ import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.LOGOUT_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.ME_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
@@ -314,7 +315,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .body("status", equalTo(FAILURE))
                 .body("message", equalTo("Invalid or expired code"));
     }
-    
+
     @Test
     @DisplayName("GET /api/auth/me should with a non authenticated user should return a 401")
     void testMeUnauthorized() {
@@ -331,5 +332,35 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(401)
                 .body("status", equalTo(FAILURE))
                 .body("error", equalTo("User Not Authenticated"));
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/logout should return success response and clear cookies")
+    void testLogoutSuccess() {
+        given()
+                .baseUri(RestAssured.baseURI)
+                .port(this.port)
+                .accept(ContentType.JSON)
+                .when()
+                .post(LOGOUT_PATH)
+                .then()
+                .statusCode(200)
+                .body("status", equalTo(SUCCESS))
+                .body("message", equalTo("logout successfully"));
+    }
+
+    @Test
+    @DisplayName("GET /api/auth/logout should return 405 Method Not Allowed")
+    void testLogoutWrongMethod() {
+        given()
+                .baseUri(RestAssured.baseURI)
+                .port(this.port)
+                .accept(ContentType.JSON)
+                .when()
+                .get(LOGOUT_PATH)
+                .then()
+                .statusCode(405)
+                .body("status", equalTo(FAILURE))
+                .body("error", equalTo("HTTP method not allowed for this endpoint"));
     }
 }

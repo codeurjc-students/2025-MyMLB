@@ -1,8 +1,5 @@
 package com.mlb.mlbportal.mappers;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -13,7 +10,6 @@ import com.mlb.mlbportal.models.UserEntity;
 @Mapper(componentModel= "spring")
 public interface AuthenticationMapper {
     RegisterRequest toRegisterRequest(UserEntity user);
-    List<RegisterRequest> toRegisterRequesta(Collection<UserEntity> user);
 
     @Mapping(target= "id", ignore=true)
     @Mapping(target= "email", ignore=true)
@@ -23,5 +19,4 @@ public interface AuthenticationMapper {
     UserEntity toDomain(RegisterRequest registerRequest);
 
     UserRole toUserRole(UserEntity user);
-    List<UserRole> toUserRoles(Collection<UserEntity> users);
 }
