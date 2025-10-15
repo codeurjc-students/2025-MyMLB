@@ -30,7 +30,7 @@
   - [17: Matches](#17-matches)
   - [18: Update Scoreboard](#18-update-scoreboard)
   - [19: Statistics](#19-statistics)
-- [Bibliography](./docs/Bibliography) 
+- [Bibliography](./docs/Bibliography.md) 
 - [License](#-license) 
 
 ## ⚾ Application Functionality
