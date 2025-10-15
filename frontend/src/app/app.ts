@@ -2,10 +2,11 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { ThemeService } from './services/Theme.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
 	selector: 'app-root',
+	standalone: true,
 	imports: [RouterOutlet, NavbarComponent],
 	templateUrl: './app.html',
 })
@@ -14,11 +15,7 @@ export class AppComponent implements OnInit {
 	public hideNavbar = false;
 	public isDarkMode = false;
 
-	constructor(
-		private router: Router,
-		private themeService: ThemeService,
-		private cdr: ChangeDetectorRef
-	) {
+	constructor(private router: Router, private themeService: ThemeService, private cdr: ChangeDetectorRef) {
 		this.router.events.subscribe(() => {
 			const url = this.router.url;
 			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery');

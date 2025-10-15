@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
-import { ThemeService } from '../../services/Theme.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
 	selector: 'app-navbar',
