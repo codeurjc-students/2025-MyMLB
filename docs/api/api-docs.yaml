@@ -8,6 +8,8 @@ servers:
 tags:
 - name: Authentication
   description: Endpoints related to user authentication
+- name: Teams
+  description: Operations related to MLB teams and standings
 paths:
   /api/auth/reset-password:
     post:
@@ -181,6 +183,63 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ShowUser"
+  /api/teams:
+    get:
+      tags:
+      - Teams
+      summary: Get all teams
+      description: Returns a list of all MLB teams with calculated stats
+      operationId: getAllTeams
+      responses:
+        "200":
+          description: Successfully retrieved list of teams
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamDTO"
+  /api/teams/standings:
+    get:
+      tags:
+      - Teams
+      summary: Get team standings
+      description: "Returns standings grouped by league and division, ordered by win\
+        \ percentage"
+      operationId: getStandings
+      responses:
+        "200":
+          description: Successfully retrieved standings
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TeamDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TeamDTO"
   /api/auth/me:
     get:
       tags:
@@ -263,6 +322,61 @@ components:
           type: string
         email:
           type: string
+    TeamDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        abbreviation:
+          type: string
+        teamLogo:
+          type: string
+        league:
+          type: string
+          enum:
+          - AL
+          - NL
+        division:
+          type: string
+          enum:
+          - EAST
+          - CENTRAL
+          - WEST
+        totalGames:
+          type: integer
+          format: int32
+          maximum: 162
+          minimum: 0
+        wins:
+          type: integer
+          format: int32
+          maximum: 162
+          minimum: 0
+        losses:
+          type: integer
+          format: int32
+          maximum: 162
+          minimum: 0
+        pct:
+          type: number
+          format: double
+          maximum: 1.0
+          minimum: 0.0
+        gamesBehind:
+          type: number
+          format: double
+          minimum: 0.0
+        lastTen:
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 0
+      required:
+      - abbreviation
+      - division
+      - league
+      - name
+      - teamLogo
     UserRole:
       type: object
       properties:

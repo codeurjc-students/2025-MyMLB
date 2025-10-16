@@ -1,0 +1,37 @@
+[
+    { "name": "Toronto Blue Jays", "abbreviation": "TOR", "wins": 94, "losses": 68, "league": "AL", "division": "EAST" },
+    { "name": "New York Yankees", "abbreviation": "NYY", "wins": 94, "losses": 68, "league": "AL", "division": "EAST" },
+    { "name": "Boston Red Sox", "abbreviation": "BOS", "wins": 89, "losses": 73, "league": "AL", "division": "EAST" },
+    { "name": "Tampa Bay Rays", "abbreviation": "TB", "wins": 77, "losses": 85, "league": "AL", "division": "EAST" },
+    { "name": "Baltimore Orioles", "abbreviation": "BAL", "wins": 75, "losses": 87, "league": "AL", "division": "EAST" },
+
+    { "name": "Cleveland Guardians", "abbreviation": "CLE", "wins": 88, "losses": 74, "league": "AL", "division": "CENTRAL" },
+    { "name": "Detroit Tigers", "abbreviation": "DET", "wins": 87, "losses": 75, "league": "AL", "division": "CENTRAL" },
+    { "name": "Kansas City Royals", "abbreviation": "KC", "wins": 82, "losses": 80, "league": "AL", "division": "CENTRAL" },
+    { "name": "Minnesota Twins", "abbreviation": "MIN", "wins": 70, "losses": 92, "league": "AL", "division": "CENTRAL" },
+    { "name": "Chicago White Sox", "abbreviation": "CWS", "wins": 60, "losses": 102, "league": "AL", "division": "CENTRAL" },
+
+    { "name": "Seattle Mariners", "abbreviation": "SEA", "wins": 90, "losses": 72, "league": "AL", "division": "WEST" },
+    { "name": "Houston Astros", "abbreviation": "HOU", "wins": 87, "losses": 75, "league": "AL", "division": "WEST" },
+    { "name": "Texas Rangers", "abbreviation": "TEX", "wins": 81, "losses": 81, "league": "AL", "division": "WEST" },
+    { "name": "Oakland Athletics", "abbreviation": "OAK", "wins": 76, "losses": 86, "league": "AL", "division": "WEST" },
+    { "name": "Los Angeles Angels", "abbreviation": "LAA", "wins": 72, "losses": 90, "league": "AL", "division": "WEST" },
+
+    { "name": "Philadelphia Phillies", "abbreviation": "PHI", "wins": 96, "losses": 66, "league": "NL", "division": "EAST" },
+    { "name": "New York Mets", "abbreviation": "NYM", "wins": 83, "losses": 79, "league": "NL", "division": "EAST" },
+    { "name": "Atlanta Braves", "abbreviation": "ATL", "wins": 76, "losses": 86, "league": "NL", "division": "EAST" },
+    { "name": "Miami Marlins", "abbreviation": "MIA", "wins": 79, "losses": 83, "league": "NL", "division": "EAST" },
+    { "name": "Washington Nationals", "abbreviation": "WSH", "wins": 66, "losses": 96, "league": "NL", "division": "EAST" },
+
+    { "name": "Milwaukee Brewers", "abbreviation": "MIL", "wins": 97, "losses": 65, "league": "NL", "division": "CENTRAL" },
+    { "name": "Chicago Cubs", "abbreviation": "CHC", "wins": 92, "losses": 70, "league": "NL", "division": "CENTRAL" },
+    { "name": "Cincinnati Reds", "abbreviation": "CIN", "wins": 83, "losses": 79, "league": "NL", "division": "CENTRAL" },
+    { "name": "St. Louis Cardinals", "abbreviation": "STL", "wins": 78, "losses": 84, "league": "NL", "division": "CENTRAL" },
+    { "name": "Pittsburgh Pirates", "abbreviation": "PIT", "wins": 71, "losses": 91, "league": "NL", "division": "CENTRAL" },
+
+    { "name": "Los Angeles Dodgers", "abbreviation": "LAD", "wins": 93, "losses": 69, "league": "NL", "division": "WEST" },
+    { "name": "San Diego Padres", "abbreviation": "SD", "wins": 90, "losses": 72, "league": "NL", "division": "WEST" },
+    { "name": "San Francisco Giants", "abbreviation": "SF", "wins": 81, "losses": 81, "league": "NL", "division": "WEST" },
+    { "name": "Arizona Diamondbacks", "abbreviation": "ARI", "wins": 80, "losses": 82, "league": "NL", "division": "WEST" },
+    { "name": "Colorado Rockies", "abbreviation": "COL", "wins": 43, "losses": 119, "league": "NL", "division": "WEST" }
+]
