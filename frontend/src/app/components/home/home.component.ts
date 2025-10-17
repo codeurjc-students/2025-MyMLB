@@ -12,6 +12,8 @@ export class HomeComponent {
 	constructor(private router: Router) {}
 
 	public button() {
-		this.router.navigate(['auth']);
+		this.router.navigate(['/error'], {
+			state: { code: 403, message: 'Access Denied' }
+		});
 	}
 }
