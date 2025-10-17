@@ -914,7 +914,7 @@ ul.nav-tabs {
   }
 };
     defs["TeamDTO"] = {
-  "required" : [ "abbreviation", "division", "league", "name", "teamLogo" ],
+  "required" : [ "abbreviation", "division", "lastTen", "league", "name", "teamLogo" ],
   "properties" : {
     "name" : {
       "type" : "string"
@@ -963,10 +963,7 @@ ul.nav-tabs {
       "format" : "double"
     },
     "lastTen" : {
-      "maximum" : 10,
-      "minimum" : 0,
-      "type" : "integer",
-      "format" : "int32"
+      "type" : "string"
     }
   }
 };
@@ -1094,7 +1091,7 @@ ul.nav-tabs {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-forgotPassword-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/forgot-password" \
  -d '{
@@ -1404,9 +1401,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Recovery email sent successfully",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Recovery email sent successfully"
       }
     }
   }
@@ -1606,7 +1607,7 @@ $(document).ready(function() {
                       <article id="api-Authentication-getActiveUser-0" data-group="User" data-name="getActiveUser" data-version="0">
                         <div class="pull-left">
                           <h1>getActiveUser</h1>
-                          <p>Get theActive User</p>
+                          <p>Get the active user</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1637,7 +1638,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-getActiveUser-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  "https://localhost:8443/api/auth/me"
 </code></pre>
                           </div>
@@ -1711,7 +1712,7 @@ public class AuthenticationApiExample {
 // Create an instance of the API class
 AuthenticationApi *apiInstance = [[AuthenticationApi alloc] init];
 
-// Get theActive User
+// Get the active user
 [apiInstance getActiveUserWithCompletionHandler: 
               ^(UserRole output, NSError* error) {
     if (output) {
@@ -1761,7 +1762,7 @@ namespace Example
             var apiInstance = new AuthenticationApi();
 
             try {
-                // Get theActive User
+                // Get the active user
                 UserRole result = apiInstance.getActiveUser();
                 Debug.WriteLine(result);
             } catch (Exception e) {
@@ -1817,7 +1818,7 @@ from pprint import pprint
 api_instance = openapi_client.AuthenticationApi()
 
 try:
-    # Get theActive User
+    # Get the active user
     api_response = api_instance.get_active_user()
     pprint(api_response)
 except ApiException as e:
@@ -1854,7 +1855,7 @@ pub fn main() {
                             <h3 id="examples-Authentication-getActiveUser-title-200"></h3>
                             <p id="examples-Authentication-getActiveUser-description-200" class="marked"></p>
                             <script>
-                              var responseAuthentication200_description = `User Successfully Authenticated`;
+                              var responseAuthentication200_description = `User successfully authenticated`;
                               var responseAuthentication200_description_break = responseAuthentication200_description.indexOf('\n');
                               if (responseAuthentication200_description_break == -1) {
                                 $("#examples-Authentication-getActiveUser-title-200").text("Status: 200 - " + responseAuthentication200_description);
@@ -1882,11 +1883,15 @@ pub fn main() {
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "User Successfully Authenticated",
+  "description" : "User successfully authenticated",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/UserRole"
+      },
+      "example" : {
+        "username" : "johndoe",
+        "roles" : [ "USER" ]
       }
     }
   }
@@ -1930,7 +1935,7 @@ pub fn main() {
                             <h3 id="examples-Authentication-getActiveUser-title-401"></h3>
                             <p id="examples-Authentication-getActiveUser-description-401" class="marked"></p>
                             <script>
-                              var responseAuthentication401_description = `User Not Authenticated`;
+                              var responseAuthentication401_description = `User not authenticated`;
                               var responseAuthentication401_description_break = responseAuthentication401_description.indexOf('\n');
                               if (responseAuthentication401_description_break == -1) {
                                 $("#examples-Authentication-getActiveUser-title-401").text("Status: 401 - " + responseAuthentication401_description);
@@ -1958,7 +1963,7 @@ pub fn main() {
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "User Not Authenticated",
+  "description" : "User not authenticated",
   "content" : {
     "*/*" : {
       "schema" : {
@@ -2041,7 +2046,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-logOut-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json" \
  "https://localhost:8443/api/auth/logout"
 </code></pre>
                           </div>
@@ -2288,9 +2293,13 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Logout successful",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "logout successfully"
       }
     }
   }
@@ -2369,7 +2378,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-login-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/login" \
  -d '{
@@ -2680,9 +2689,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Login successful",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Auth successful. Tokens are created in cookie."
       }
     }
   }
@@ -2837,7 +2850,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-refreshToken-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  "https://localhost:8443/api/auth/refresh"
 </code></pre>
                           </div>
@@ -3097,9 +3110,13 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Token refreshed successfully",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Tokens refreshed"
       }
     }
   }
@@ -3254,7 +3271,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-register-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/register" \
  -d '{
@@ -3566,9 +3583,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "User successfully registered",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "User registered successfully"
       }
     }
   }
@@ -3799,7 +3820,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-resetPassword-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/reset-password" \
  -d '{
@@ -4110,9 +4131,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Password successfully reset",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Password restored"
       }
     }
   }
@@ -4244,7 +4269,7 @@ $(document).ready(function() {
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Returns a list of all MLB teams with calculated stats</p>
+                        <p class="marked">Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/teams</span></code></pre>
@@ -4270,7 +4295,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Teams-getAllTeams-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: */*" \
+ -H "Accept: application/json" \
  "https://localhost:8443/api/teams"
 </code></pre>
                           </div>
@@ -4290,7 +4315,7 @@ public class TeamsApiExample {
         TeamsApi apiInstance = new TeamsApi();
 
         try {
-            array[TeamDTO] result = apiInstance.getAllTeams();
+            TeamDTO result = apiInstance.getAllTeams();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TeamsApi#getAllTeams");
@@ -4325,7 +4350,7 @@ public class TeamsApiExample {
         TeamsApi apiInstance = new TeamsApi();
 
         try {
-            array[TeamDTO] result = apiInstance.getAllTeams();
+            TeamDTO result = apiInstance.getAllTeams();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TeamsApi#getAllTeams");
@@ -4346,7 +4371,7 @@ TeamsApi *apiInstance = [[TeamsApi alloc] init];
 
 // Get all teams
 [apiInstance getAllTeamsWithCompletionHandler: 
-              ^(array[TeamDTO] output, NSError* error) {
+              ^(TeamDTO output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -4395,7 +4420,7 @@ namespace Example
 
             try {
                 // Get all teams
-                array[TeamDTO] result = apiInstance.getAllTeams();
+                TeamDTO result = apiInstance.getAllTeams();
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling TeamsApi.getAllTeams: " + e.Message );
@@ -4517,13 +4542,23 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Successfully retrieved list of teams",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/components/schemas/TeamDTO"
-        }
-      }
+        "$ref" : "#/components/schemas/TeamDTO"
+      },
+      "example" : [ {
+        "name" : "Yankees",
+        "abbreviation" : "NYY",
+        "logo" : "url",
+        "league" : "AL",
+        "division" : "EAST",
+        "totalGames" : 162,
+        "wins" : 95,
+        "losses" : 67,
+        "pct" : 0.586,
+        "gamesBack" : 0.0,
+        "streak" : "W3"
+      } ]
     }
   }
 };
@@ -4578,11 +4613,6 @@ pub fn main() {
 
 
                             <ul id="responses-detail-Teams-getAllTeams-500" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Teams-getAllTeams-500-schema">Schema</a>
-                                </li>
-
-
 
 
                             </ul>
@@ -4596,14 +4626,7 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Internal server error",
   "content" : {
-    "*/*" : {
-      "schema" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/components/schemas/TeamDTO"
-        }
-      }
-    }
+    "application/json" : { }
   }
 };
                                       var schema = findNode('schema',schemaWrapper).schema;
@@ -4654,7 +4677,7 @@ pub fn main() {
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Returns standings grouped by league and division, ordered by win percentage</p>
+                        <p class="marked">Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/teams/standings</span></code></pre>
@@ -4680,7 +4703,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Teams-getStandings-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: */*" \
+ -H "Accept: application/json" \
  "https://localhost:8443/api/teams/standings"
 </code></pre>
                           </div>
@@ -4700,7 +4723,7 @@ public class TeamsApiExample {
         TeamsApi apiInstance = new TeamsApi();
 
         try {
-            map['String', map['String', array[TeamDTO]]] result = apiInstance.getStandings();
+            TeamDTO result = apiInstance.getStandings();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TeamsApi#getStandings");
@@ -4735,7 +4758,7 @@ public class TeamsApiExample {
         TeamsApi apiInstance = new TeamsApi();
 
         try {
-            map['String', map['String', array[TeamDTO]]] result = apiInstance.getStandings();
+            TeamDTO result = apiInstance.getStandings();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TeamsApi#getStandings");
@@ -4756,7 +4779,7 @@ TeamsApi *apiInstance = [[TeamsApi alloc] init];
 
 // Get team standings
 [apiInstance getStandingsWithCompletionHandler: 
-              ^(map['String', map['String', array[TeamDTO]]] output, NSError* error) {
+              ^(TeamDTO output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -4805,7 +4828,7 @@ namespace Example
 
             try {
                 // Get team standings
-                map['String', map['String', array[TeamDTO]]] result = apiInstance.getStandings();
+                TeamDTO result = apiInstance.getStandings();
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling TeamsApi.getStandings: " + e.Message );
@@ -4927,14 +4950,25 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Successfully retrieved standings",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
-        "additionalProperties" : {
-          "additionalProperties" : {
-            "items" : {
-              "$ref" : "#/components/schemas/TeamDTO"
-            }
-          }
+        "$ref" : "#/components/schemas/TeamDTO"
+      },
+      "example" : {
+        "AL" : {
+          "EAST" : [ {
+            "name" : "Yankees",
+            "abbreviation" : "NYY",
+            "logo" : "url",
+            "league" : "AL",
+            "division" : "EAST",
+            "totalGames" : 162,
+            "wins" : 95,
+            "losses" : 67,
+            "pct" : 0.586,
+            "gamesBack" : 0.0,
+            "streak" : "W3"
+          } ]
         }
       }
     }
@@ -4991,11 +5025,6 @@ pub fn main() {
 
 
                             <ul id="responses-detail-Teams-getStandings-500" class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-Teams-getStandings-500-schema">Schema</a>
-                                </li>
-
-
 
 
                             </ul>
@@ -5009,17 +5038,7 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Internal server error",
   "content" : {
-    "*/*" : {
-      "schema" : {
-        "additionalProperties" : {
-          "additionalProperties" : {
-            "items" : {
-              "$ref" : "#/components/schemas/TeamDTO"
-            }
-          }
-        }
-      }
-    }
+    "application/json" : { }
   }
 };
                                       var schema = findNode('schema',schemaWrapper).schema;

@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.TeamService;
 
@@ -27,12 +29,17 @@ class TeamServiceIntegrationTest {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private MatchRepository matchRepository;
+
     private Team team1, team2, team3;
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
+        this.matchRepository.deleteAll();
         this.teamRepository.deleteAll();
+
         this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL,
                 Division.EAST, TEST_TEAM1_LOGO);
         this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL,
@@ -41,6 +48,11 @@ class TeamServiceIntegrationTest {
                 Division.CENTRAL, TEST_TEAM3_LOGO);
 
         this.teamRepository.saveAll(List.of(this.team1, this.team2, this.team3));
+
+        Team persistedTeam1 = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+        Team persistedTeam2 = this.teamRepository.findByName(TEST_TEAM2_NAME).orElseThrow();
+
+        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3));
     }
 
     @Test
@@ -73,5 +85,19 @@ class TeamServiceIntegrationTest {
 
         assertThat(alEast.get(0).gamesBehind()).isEqualTo(0.0);
         assertThat(alEast.get(1).gamesBehind()).isEqualTo(14.0);
+    }
+
+    @Test
+    @DisplayName("Should handle empty divisions accordingly")
+    void testEmptyDivisions() {
+        this.matchRepository.deleteAll();
+        this.teamRepository.deleteAll(this.teamRepository.findAll());
+
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        Map<Division, List<TeamDTO>> nlDivisions = standings.get(League.NL);
+        Map<Division, List<TeamDTO>> alDivisions = standings.get(League.AL);
+
+        assertThat(nlDivisions.values()).allMatch(List::isEmpty);
+        assertThat(alDivisions.values()).allMatch(List::isEmpty);
     }
 }

@@ -4,17 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.mappers.TeamMapper;
@@ -22,14 +20,21 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.TeamService;
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
+@ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
     @Mock
     private TeamMapper teamMapper;
+
+    @Mock
+    @SuppressWarnings("unused")
+    private MatchService matchService;
 
     @InjectMocks
     private TeamService teamService;
@@ -41,7 +46,6 @@ class TeamServiceTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL,
                 Division.EAST, TEST_TEAM1_LOGO);
         this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.NL,
@@ -57,16 +61,12 @@ class TeamServiceTest {
 
         this.team3.setTotalGames(TEST_TEAM3_WINS + TEST_TEAM3_LOSSES);
         this.team3.setPct(TEST_TEAM3_WINS / this.team3.getTotalGames());
-
-        this.teamRepository.save(this.team1);
-        this.teamRepository.save(this.team2);
-        this.teamRepository.save(this.team3);
     }
 
     private List<TeamDTO> buildMockDTOs() {
-        TeamDTO dto1 = new TeamDTO(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_LOGO, this.team1.getLeague(), this.team1.getDivision(), this.team1.getTotalGames(), this.team1.getWins(), this.team1.getLosses(), this.team1.getPct(), 1.0, 0);
-        TeamDTO dto2 = new TeamDTO(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_LOGO, this.team2.getLeague(), this.team2.getDivision(), this.team2.getTotalGames(), this.team2.getWins(), this.team2.getLosses(), this.team2.getPct(), 0.0, 0);
-        TeamDTO dto3 = new TeamDTO(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_LOGO, this.team3.getLeague(), this.team3.getDivision(), this.team3.getTotalGames(), this.team3.getWins(), this.team3.getLosses(), this.team3.getPct(), 41.0, 0);
+        TeamDTO dto1 = new TeamDTO(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_LOGO, this.team1.getLeague(), this.team1.getDivision(), this.team1.getTotalGames(), this.team1.getWins(), this.team1.getLosses(), this.team1.getPct(), 1.0, "0-0");
+        TeamDTO dto2 = new TeamDTO(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_LOGO, this.team2.getLeague(), this.team2.getDivision(), this.team2.getTotalGames(), this.team2.getWins(), this.team2.getLosses(), this.team2.getPct(), 0.0, "0-0");
+        TeamDTO dto3 = new TeamDTO(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_LOGO, this.team3.getLeague(), this.team3.getDivision(), this.team3.getTotalGames(), this.team3.getWins(), this.team3.getLosses(), this.team3.getPct(), 41.0, "0-0");
         return Arrays.asList(dto1, dto2, dto3);
     }
 
@@ -116,5 +116,14 @@ class TeamServiceTest {
         assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(mockDTOs.get(0));
         assertThat(standings.get(League.NL).get(Division.CENTRAL)).containsExactly(mockDTOs.get(1));
         assertThat(standings.get(League.AL).get(Division.WEST)).containsExactly(mockDTOs.get(2));
+    }
+
+    @Test
+    @DisplayName("Should return empty standings when no teams exist")
+    void testGetEmptyStandings() {
+        when(this.teamRepository.findAll()).thenReturn(List.of());
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        assertThat(standings.get(League.AL).values()).allMatch(List::isEmpty);
+        assertThat(standings.get(League.NL).values()).allMatch(List::isEmpty);
     }
 }

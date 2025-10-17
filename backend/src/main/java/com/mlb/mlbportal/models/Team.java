@@ -1,14 +1,19 @@
 package com.mlb.mlbportal.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +39,7 @@ public class Team {
 
     private double gamesBehind;
 
-    private int lastTen;
+    private String lastTen;
 
     private String teamLogo;
 
@@ -43,6 +48,12 @@ public class Team {
 
     @Enumerated(EnumType.STRING)
     private Division division;
+
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.EAGER)
+    private List<Match> homeMatches = new ArrayList<>();
+
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.EAGER)
+    private List<Match> awayMatches = new ArrayList<>();
 
     public Team() {}
 
@@ -53,7 +64,7 @@ public class Team {
         this.losses = losses;
         this.league = league;
         this.division = division;
-        this.lastTen = 0;
+        this.lastTen = "0-0";
     }
 
     public Team(String name, String abbreviation, int wins, int losses, League league, Division division, String teamLogo) {
@@ -64,6 +75,19 @@ public class Team {
         this.league = league;
         this.division = division;
         this.teamLogo = teamLogo;
-        this.lastTen = 0;
+        this.lastTen = "0-0";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Team other = (Team) obj;
+        return name != null && name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 }

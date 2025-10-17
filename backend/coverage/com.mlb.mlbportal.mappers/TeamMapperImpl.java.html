@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-17T00:03:34+0200&quot;,
+    date = &quot;2025-10-17T17:47:27+0200&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L34">        int losses = 0;</span>
 <span class="fc" id="L35">        double pct = 0.0d;</span>
 <span class="fc" id="L36">        double gamesBehind = 0.0d;</span>
-<span class="fc" id="L37">        int lastTen = 0;</span>
+<span class="fc" id="L37">        String lastTen = null;</span>
 
 <span class="fc" id="L39">        name = team.getName();</span>
 <span class="fc" id="L40">        abbreviation = team.getAbbreviation();</span>

@@ -11,7 +11,7 @@ import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
-import com.mlb.mlbportal.handler.UserNotFoundException;
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
 import com.mlb.mlbportal.models.PasswordResetToken;

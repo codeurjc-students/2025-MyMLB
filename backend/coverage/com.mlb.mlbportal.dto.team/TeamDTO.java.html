@@ -45,8 +45,7 @@ import jakarta.validation.constraints.NotNull;
     @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Games Behind cannot be negative&quot;)
     double gamesBehind,
 
-    @Min(value = 0, message = &quot;LastTen cannot be negative&quot;)
-    @Max(value = 10, message = &quot;LastTen cannot be greater than 10&quot;)
-    int lastTen
+    @NotBlank(message = &quot;The record of the team in the last 10 games is required&quot;)
+    String lastTen
 ) {}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

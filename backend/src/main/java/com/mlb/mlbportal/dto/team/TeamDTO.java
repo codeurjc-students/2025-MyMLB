@@ -45,7 +45,6 @@ public record TeamDTO(
     @DecimalMin(value = "0.0", inclusive = true, message = "Games Behind cannot be negative")
     double gamesBehind,
 
-    @Min(value = 0, message = "LastTen cannot be negative")
-    @Max(value = 10, message = "LastTen cannot be greater than 10")
-    int lastTen
+    @NotBlank(message = "The record of the team in the last 10 games is required")
+    String lastTen
 ) {}

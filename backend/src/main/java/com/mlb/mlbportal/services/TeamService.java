@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.mappers.TeamMapper;
+import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -21,10 +22,12 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
+    private final MatchService matchService;
 
-    public TeamService(TeamRepository teamRepository, TeamMapper teamMapper) {
+    public TeamService(TeamRepository teamRepository, TeamMapper teamMapper, MatchService matchService) {
         this.teamRepository = teamRepository;
         this.teamMapper = teamMapper;
+        this.matchService = matchService;
     }
 
     public List<TeamDTO> getTeams() {
@@ -63,8 +66,10 @@ public class TeamService {
     }
 
     private void enrichTeamStats(Team team) {
-        recalculatePct(team);
-        calculateGamesBehind(team);
+        this.recalculatePct(team);
+        this.calculateGamesBehind(team);
+        this.calculateLast10Games(team);
+        this.teamRepository.save(team);
     }
 
     private void recalculatePct(Team team) {
@@ -88,5 +93,27 @@ public class TeamService {
         Team leader = divisionTeams.get(0);
         double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;
         team.setGamesBehind(gamesBehind);
+    }
+
+    private void calculateLast10Games(Team team) {
+        List<Match> last10Matches = this.matchService.getLast10Matches(team);
+        String record;
+        if (last10Matches.isEmpty()) {
+            record = "0 - 0";
+        }
+        else {
+            int numberOfWins = 0;
+            for (Match match : last10Matches) {
+                boolean isHomeTeam = team.equals(match.getHomeTeam());
+                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();
+                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();
+
+                if (teamScore > awayScore) {
+                    numberOfWins++;
+                }
+            }
+            record = numberOfWins + " - " + (last10Matches.size() - numberOfWins);
+        }
+        team.setLastTen(record);
     }
 }

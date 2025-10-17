@@ -28,9 +28,12 @@ paths:
         "200":
           description: Password successfully reset
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: Password restored
         "400":
           description: Invalid or expired recovery code
           content:
@@ -54,9 +57,12 @@ paths:
         "200":
           description: User successfully registered
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: User registered successfully
         "400":
           description: Invalid registration data
           content:
@@ -87,9 +93,12 @@ paths:
         "200":
           description: Token refreshed successfully
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: Tokens refreshed
         "401":
           description: Invalid or expired refresh token
           content:
@@ -107,9 +116,12 @@ paths:
         "200":
           description: Logout successful
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: logout successfully
   /api/auth/login:
     post:
       tags:
@@ -127,9 +139,12 @@ paths:
         "200":
           description: Login successful
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: Auth successful. Tokens are created in cookie.
         "401":
           description: Invalid credentials
           content:
@@ -154,9 +169,12 @@ paths:
         "200":
           description: Recovery email sent successfully
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              example:
+                status: SUCCESS
+                message: Recovery email sent successfully
         "400":
           description: Invalid email address
           content:
@@ -188,91 +206,92 @@ paths:
       tags:
       - Teams
       summary: Get all teams
-      description: Returns a list of all MLB teams with calculated stats
+      description: "Returns a list of all MLB teams with calculated stats, including\
+        \ wins, losses, total games, and win percentage."
       operationId: getAllTeams
       responses:
         "200":
           description: Successfully retrieved list of teams
           content:
-            '*/*':
+            application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TeamDTO"
+                $ref: "#/components/schemas/TeamDTO"
+              example:
+              - name: Yankees
+                abbreviation: NYY
+                logo: url
+                league: AL
+                division: EAST
+                totalGames: 162
+                wins: 95
+                losses: 67
+                pct: 0.586
+                gamesBack: 0.0
+                streak: W3
         "500":
           description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TeamDTO"
+            application/json: {}
   /api/teams/standings:
     get:
       tags:
       - Teams
       summary: Get team standings
       description: "Returns standings grouped by league and division, ordered by win\
-        \ percentage"
+        \ percentage. Each team includes stats such as total games, wins, losses,\
+        \ win percentage, games back, and current streak."
       operationId: getStandings
       responses:
         "200":
           description: Successfully retrieved standings
           content:
-            '*/*':
+            application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: object
-                  additionalProperties:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TeamDTO"
+                $ref: "#/components/schemas/TeamDTO"
+              example:
+                AL:
+                  EAST:
+                  - name: Yankees
+                    abbreviation: NYY
+                    logo: url
+                    league: AL
+                    division: EAST
+                    totalGames: 162
+                    wins: 95
+                    losses: 67
+                    pct: 0.586
+                    gamesBack: 0.0
+                    streak: W3
         "500":
           description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-                  additionalProperties:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/TeamDTO"
+            application/json: {}
   /api/auth/me:
     get:
       tags:
       - Authentication
-      summary: Get theActive User
+      summary: Get the active user
       description: Obtain details of the currently authenticated user.
       operationId: getActiveUser
       responses:
         "200":
-          description: User Successfully Authenticated
+          description: User successfully authenticated
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/UserRole"
+              example:
+                username: johndoe
+                roles:
+                - USER
         "401":
-          description: User Not Authenticated
+          description: User not authenticated
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/UserRole"
 components:
   schemas:
-    ResetPasswordRequest:
-      type: object
-      properties:
-        code:
-          type: string
-          pattern: "\\d{4}"
-        newPassword:
-          type: string
-      required:
-      - code
-      - newPassword
     AuthResponse:
       type: object
       properties:
@@ -285,6 +304,17 @@ components:
           type: string
         error:
           type: string
+    ResetPasswordRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: "\\d{4}"
+        newPassword:
+          type: string
+      required:
+      - code
+      - newPassword
     RegisterRequest:
       type: object
       properties:
@@ -367,13 +397,11 @@ components:
           format: double
           minimum: 0.0
         lastTen:
-          type: integer
-          format: int32
-          maximum: 10
-          minimum: 0
+          type: string
       required:
       - abbreviation
       - division
+      - lastTen
       - league
       - name
       - teamLogo

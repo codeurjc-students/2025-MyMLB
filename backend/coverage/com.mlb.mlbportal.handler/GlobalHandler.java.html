@@ -5,76 +5,74 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
+
 @ControllerAdvice
-<span class="fc" id="L14">public class GlobalHandler {</span>
-<span class="fc" id="L15">    private final Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L18">public class GlobalHandler {</span>
     private static final String FAILURE = &quot;FAILURE&quot;;
-    private static final String STATUS_CODE = &quot;statusCode&quot;;
-    private static final String STATUS = &quot;status&quot;;
-    private static final String MESSAGE = &quot;message&quot;;
-    private static final String ERROR = &quot;error&quot;;
+
+    private ResponseEntity&lt;Map&lt;String, Object&gt;&gt; buildResponse(HttpStatus status, String message, String error) {
+<span class="fc" id="L22">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L23">        body.put(&quot;statusCode&quot;, status.value());</span>
+<span class="fc" id="L24">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L25">        body.put(&quot;message&quot;, message);</span>
+<span class="fc" id="L26">        body.put(&quot;error&quot;, error);</span>
+<span class="fc" id="L27">        return new ResponseEntity&lt;&gt;(body, status);</span>
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L24">        this.body.clear();</span>
-<span class="fc" id="L25">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L26">            this.body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="fc" id="L32">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L33">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="fc" id="L34">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L28">        this.body.put(STATUS_CODE, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L29">        this.body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L30">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.BAD_REQUEST);</span>
-    }
-    
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserAlreadyExists(UserAlreadyExistsException ex) {
-<span class="fc" id="L35">        this.body.clear();</span>
-<span class="fc" id="L36">        this.body.put(STATUS_CODE, HttpStatus.CONFLICT.value());</span>
-<span class="fc" id="L37">        this.body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L38">        this.body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L39">        this.body.put(ERROR, &quot;User Already Exists in the Database&quot;);</span>
-<span class="fc" id="L40">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.CONFLICT);</span>
+<span class="fc" id="L36">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc" id="L37">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L38">        return new ResponseEntity&lt;&gt;(body, HttpStatus.BAD_REQUEST);</span>
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserNotFound(UserNotFoundException ex) {
-<span class="fc" id="L45">        this.body.clear();</span>
-<span class="fc" id="L46">        this.body.put(STATUS_CODE, HttpStatus.NOT_FOUND.value());</span>
-<span class="fc" id="L47">        this.body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L48">        this.body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L49">        this.body.put(ERROR, &quot;User Not Found&quot;);</span>
-<span class="fc" id="L50">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.NOT_FOUND);</span>
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @SuppressWarnings(&quot;null&quot;)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleResourceNotFound(ResourceNotFoundException ex) {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        String errorMsg = (ex instanceof UserNotFoundException) ? &quot;User Not Found&quot; : &quot;Team Not Found&quot;;</span>
+<span class="fc" id="L45">        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);</span>
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleUserAlreadyExists(UserAlreadyExistsException ex) {
+<span class="fc" id="L50">        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;User Already Exists in the Database&quot;);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity&lt;?&gt; handleNullPointer(NullPointerException ex) {
-<span class="fc" id="L55">        this.body.clear();</span>
-<span class="pc bpc" id="L56" title="2 of 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="fc" id="L57">            this.body.put(STATUS_CODE, HttpStatus.UNAUTHORIZED.value());</span>
-<span class="fc" id="L58">            this.body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L59">            this.body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L60">            this.body.put(ERROR, &quot;User Not Authenticated&quot;);</span>
-<span class="fc" id="L61">            return new ResponseEntity&lt;&gt;(this.body, HttpStatus.UNAUTHORIZED);</span>
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleNullPointer(NullPointerException ex) {
+<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="fc" id="L56">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L63">        this.body.put(STATUS_CODE, HttpStatus.INTERNAL_SERVER_ERROR.value());</span>
-<span class="nc" id="L64">        this.body.put(STATUS, FAILURE);</span>
-<span class="nc" id="L65">        this.body.put(MESSAGE, ex.getMessage());</span>
-<span class="nc" id="L66">        this.body.put(ERROR, &quot;Internal Server Error ocurred by a NullPointerException&quot;);</span>
-<span class="nc" id="L67">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L58">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMehtodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="fc" id="L72">        this.body.clear();</span>
-<span class="fc" id="L73">        this.body.put(STATUS_CODE, HttpStatus.METHOD_NOT_ALLOWED.value());</span>
-<span class="fc" id="L74">        this.body.put(STATUS, FAILURE);</span>
-<span class="fc" id="L75">        this.body.put(MESSAGE, ex.getMessage());</span>
-<span class="fc" id="L76">        this.body.put(ERROR, &quot;HTTP method not allowed for this endpoint&quot;);</span>
-<span class="fc" id="L77">        return new ResponseEntity&lt;&gt;(this.body, HttpStatus.METHOD_NOT_ALLOWED);</span>
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+<span class="fc" id="L64">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleAuthentication(AuthenticationException ex) {
+<span class="fc" id="L70">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(),&quot;Unauthorized&quot;);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleAllOtherExceptions(Exception ex) {
+<span class="nc" id="L75">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -24,6 +24,7 @@ import com.mlb.mlbportal.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,10 +45,10 @@ public class AuthController {
         this.userService = userService;
         this.emailService = emailService;
     }
-    
-    @Operation(summary = "Get theActive User", description = "Obtain details of the currently authenticated user.", responses = {
-            @ApiResponse(responseCode = "200", description= "User Successfully Authenticated", content = @Content(schema = @Schema(implementation = UserRole.class))),
-            @ApiResponse(responseCode = "401", description = "User Not Authenticated")
+
+    @Operation(summary = "Get the active user", description = "Obtain details of the currently authenticated user.", responses = {
+            @ApiResponse(responseCode = "200", description = "User successfully authenticated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRole.class), examples = @ExampleObject(value = "{\"username\":\"johndoe\",\"roles\":[\"USER\"]}"))),
+            @ApiResponse(responseCode = "401", description = "User not authenticated")
     })
     @GetMapping("/me")
     public ResponseEntity<UserRole> getActiveUser(@AuthenticationPrincipal UserPrincipal user) {
@@ -55,16 +56,17 @@ public class AuthController {
     }
 
     @Operation(summary = "User login", description = "Authenticates the user and returns JWT tokens (access and refresh).", responses = {
-            @ApiResponse(responseCode = "200", description = "Login successful", content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Login successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"Auth successful. Tokens are created in cookie.\"}"))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login( @Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest,
+            HttpServletResponse response) {
         return this.userLoginService.login(response, loginRequest);
     }
 
     @Operation(summary = "Register new user", description = "Creates a new user account in the system.", responses = {
-            @ApiResponse(responseCode = "200", description = "User successfully registered"),
+            @ApiResponse(responseCode = "200", description = "User successfully registered", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"User registered successfully\"}"))),
             @ApiResponse(responseCode = "400", description = "Invalid registration data"),
             @ApiResponse(responseCode = "409", description = "User already exists in the database")
     })
@@ -75,7 +77,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Refresh JWT token", description = "Generates new JWT tokens using the refresh token stored in cookies.", responses = {
-            @ApiResponse(responseCode = "200", description = "Token refreshed successfully"),
+            @ApiResponse(responseCode = "200", description = "Token refreshed successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"Tokens refreshed\"}"))),
             @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
     })
     @PostMapping("/refresh")
@@ -86,7 +88,7 @@ public class AuthController {
     }
 
     @Operation(summary = "User logout", description = "Clears authentication cookies and invalidates session tokens.", responses = {
-            @ApiResponse(responseCode = "200", description = "Logout successful")
+            @ApiResponse(responseCode = "200", description = "Logout successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"logout successfully\"}")))
     })
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
@@ -94,7 +96,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Request password recovery", description = "Sends a recovery email to the user containing a reset link or verification code.", responses = {
-            @ApiResponse(responseCode = "200", description = "Recovery email sent successfully"),
+            @ApiResponse(responseCode = "200", description = "Recovery email sent successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"Recovery email sent successfully\"}"))),
             @ApiResponse(responseCode = "400", description = "Invalid email address"),
             @ApiResponse(responseCode = "404", description = "There is no user registered with this email")
     })
@@ -105,7 +107,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Reset user password", description = "Allows the user to set a new password using a valid recovery code.", responses = {
-            @ApiResponse(responseCode = "200", description = "Password successfully reset"),
+            @ApiResponse(responseCode = "200", description = "Password successfully reset", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class), examples = @ExampleObject(value = "{\"status\":\"SUCCESS\",\"message\":\"Password restored\"}"))),
             @ApiResponse(responseCode = "400", description = "Invalid or expired recovery code")
     })
     @PostMapping("/reset-password")

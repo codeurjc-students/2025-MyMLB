@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -36,6 +37,7 @@ import com.mlb.mlbportal.services.UserService;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
@@ -64,8 +66,6 @@ class UserServiceTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         this.user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME);
         this.user2 = new UserEntity(USER2_EMAIL, USER2_USERNAME);
         this.testUser = new UserEntity(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
