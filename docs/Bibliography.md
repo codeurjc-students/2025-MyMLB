@@ -1,6 +1,6 @@
-# Bibliography
+# 📚 Bibliography
 
-## Documentation
+## 📄 Documentation
 - [Stack overflow](https://stackoverflow.com/questions)
 - [Angular](https://angular.dev/)
 - [TailwindCSS](https://tailwindcss.com/)
@@ -8,12 +8,12 @@
 - [Cypress](https://www.cypress.io/)
 - [Swagger](https://swagger.io/)
 
-## Design
+## 🎨 Design
 - [Flowbite (Custom Blocks)](https://flowbite.com/)
 - [Tailwind Animations](https://tailwindcss-animations.vercel.app/)
 - [Tailwind Gradient](https://tailwind-gradient-generator.vercel.app/)
 - [TailBlocks](https://tailblocks.cc/#google_vignette)
 
-## IA Tools
+## 🤖 IA Agents
 - GitHub Copilot
 - ChatGPT
