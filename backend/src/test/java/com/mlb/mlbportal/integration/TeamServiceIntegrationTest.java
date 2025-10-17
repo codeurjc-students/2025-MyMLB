@@ -3,6 +3,7 @@ package com.mlb.mlbportal.integration;
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,9 @@ class TeamServiceIntegrationTest {
         Team persistedTeam1 = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
         Team persistedTeam2 = this.teamRepository.findByName(TEST_TEAM2_NAME).orElseThrow();
 
-        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3));
+        LocalDateTime now = LocalDateTime.now();
+
+        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4)));
     }
 
     @Test

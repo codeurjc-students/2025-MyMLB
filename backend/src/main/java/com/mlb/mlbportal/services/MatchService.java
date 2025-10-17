@@ -17,6 +17,6 @@ public class MatchService {
     }
 
     public List<Match> getLast10Matches(Team team) {
-        return this.matchRepository.findTop10ByHomeTeamOrAwayTeam(team, team);
+        return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);
     }
 }

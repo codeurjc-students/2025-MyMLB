@@ -2,6 +2,7 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,36 +103,38 @@ public class InitController {
         Team dodgers = this.teamRepository.findByName("Los Angeles Dodgers").orElseThrow(TeamNotFoundException::new);
         Team detroit = this.teamRepository.findByName("Detroit Tigers").orElseThrow(TeamNotFoundException::new);
 
-         List<Match> matches = List.of(
-            new Match(yankees, toronto, 5, 3),
-            new Match(yankees, toronto, 2, 6),
-            new Match(yankees, toronto, 4, 1),
+        LocalDateTime now = LocalDateTime.now();
 
-            new Match(dodgers, yankees, 5, 2),
-            new Match(dodgers, yankees, 0, 2),
-            new Match(dodgers, yankees, 3, 4),
-
-            new Match(toronto, detroit, 0, 7),
-            new Match(toronto, detroit, 1, 2),
-            new Match(toronto, detroit, 5, 8),
-
-            new Match(detroit, yankees, 4, 6),
-            new Match(detroit, yankees, 4, 0),
-            new Match(detroit, yankees, 7, 4),
-
-            new Match(toronto, yankees, 7, 4),
-            new Match(toronto, yankees, 0, 4),
-            new Match(toronto, yankees, 2, 6),
-
-            new Match(dodgers, detroit, 3, 4),
-            new Match(dodgers, detroit, 6, 9),
-            new Match(dodgers, detroit, 0, 7),
-
-            new Match(toronto, dodgers, 0, 7),
-            new Match(toronto, dodgers, 5, 2),
-            new Match(toronto, dodgers, 4, 2)
+        List<Match> matches = List.of(
+            new Match(yankees, toronto, 3, 5, now.minusDays(21)),
+            new Match(yankees, toronto, 6, 2, now.minusDays(20)),
+            new Match(yankees, toronto, 1, 4, now.minusDays(19)),
+                
+            new Match(yankees, dodgers, 2, 5, now.minusDays(18)),
+            new Match(yankees, dodgers, 2, 0, now.minusDays(17)),
+            new Match(yankees, dodgers, 4, 3, now.minusDays(16)),
+                
+            new Match(detroit, toronto, 7, 0, now.minusDays(15)),
+            new Match(detroit, toronto, 2, 1, now.minusDays(14)),
+            new Match(detroit, toronto, 8, 5, now.minusDays(13)),
+                
+            new Match(yankees, detroit, 6, 4, now.minusDays(12)),
+            new Match(yankees, detroit, 0, 4, now.minusDays(11)),
+            new Match(yankees, detroit, 4, 7, now.minusDays(10)),
+                
+            new Match(yankees, toronto, 4, 7, now.minusDays(9)),
+            new Match(yankees, toronto, 4, 0, now.minusDays(8)),
+            new Match(yankees, toronto, 6, 2, now.minusDays(7)),
+                
+            new Match(detroit, dodgers, 4, 3, now.minusDays(6)),
+            new Match(detroit, dodgers, 9, 6, now.minusDays(5)),
+            new Match(detroit, dodgers, 7, 0, now.minusDays(4)),
+            
+            new Match(dodgers, toronto, 7, 0, now.minusDays(3)),
+            new Match(dodgers, toronto, 2, 5, now.minusDays(2)),
+            new Match(dodgers, toronto, 2, 4, now.minusDays(1))
         );
-        this.matchRepository.saveAll(matches.reversed());
+        this.matchRepository.saveAll(matches);
 
         yankees.getHomeMatches().addAll(matches.stream().filter(m -> m.getHomeTeam().equals(yankees)).toList());
         yankees.getAwayMatches().addAll(matches.stream().filter(m -> m.getAwayTeam().equals(yankees)).toList());
