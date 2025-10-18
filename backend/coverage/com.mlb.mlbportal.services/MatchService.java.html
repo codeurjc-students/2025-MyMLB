@@ -17,7 +17,7 @@ public class MatchService {
 <span class="fc" id="L17">    }</span>
 
     public List&lt;Match&gt; getLast10Matches(Team team) {
-<span class="fc" id="L20">        return this.matchRepository.findTop10ByHomeTeamOrAwayTeam(team, team);</span>
+<span class="fc" id="L20">        return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -2,6 +2,7 @@
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,116 +40,118 @@ public class InitController {
     @Value(&quot;${init.user2.password}&quot;)
     private String arminPassword;
 
-<span class="fc" id="L42">    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {</span>
-<span class="fc" id="L43">        this.userRepository = userRepository;</span>
-<span class="fc" id="L44">        this.passwordEncoder = passsEncoder;</span>
+<span class="fc" id="L43">    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {</span>
+<span class="fc" id="L44">        this.userRepository = userRepository;</span>
+<span class="fc" id="L45">        this.passwordEncoder = passsEncoder;</span>
 
-<span class="fc" id="L46">        this.teamRepository = teamRepo;</span>
-<span class="fc" id="L47">        this.matchRepository = matchRepo;</span>
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L47">        this.teamRepository = teamRepo;</span>
+<span class="fc" id="L48">        this.matchRepository = matchRepo;</span>
+<span class="fc" id="L49">    }</span>
 
     @PostConstruct
     public void init() {
-<span class="fc" id="L52">        this.createAdmins();</span>
-<span class="fc" id="L53">        this.setUpTeams();</span>
-<span class="fc" id="L54">        this.setUpMatches();</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L53">        this.createAdmins();</span>
+<span class="fc" id="L54">        this.setUpTeams();</span>
+<span class="fc" id="L55">        this.setUpMatches();</span>
+<span class="fc" id="L56">    }</span>
 
     private void createAdmins() {
-<span class="fc" id="L58">        UserEntity fonssiUser = new UserEntity(&quot;fonssitorodriguezgutt@gmail.com&quot;, &quot;fonssi29&quot;,</span>
-<span class="fc" id="L59">                this.passwordEncoder.encode(this.fonssiPassword));</span>
-<span class="fc" id="L60">        UserEntity arminUser = new UserEntity(&quot;armin@gmail.com&quot;, &quot;armiin13&quot;,</span>
-<span class="fc" id="L61">                this.passwordEncoder.encode(this.arminPassword));</span>
+<span class="fc" id="L59">        UserEntity fonssiUser = new UserEntity(&quot;fonssitorodriguezgutt@gmail.com&quot;, &quot;fonssi29&quot;,</span>
+<span class="fc" id="L60">                this.passwordEncoder.encode(this.fonssiPassword));</span>
+<span class="fc" id="L61">        UserEntity arminUser = new UserEntity(&quot;armin@gmail.com&quot;, &quot;armiin13&quot;,</span>
+<span class="fc" id="L62">                this.passwordEncoder.encode(this.arminPassword));</span>
 
-<span class="fc" id="L63">        fonssiUser.getRoles().add(&quot;ADMIN&quot;);</span>
-<span class="fc" id="L64">        arminUser.getRoles().add(&quot;ADMIN&quot;);</span>
+<span class="fc" id="L64">        fonssiUser.getRoles().add(&quot;ADMIN&quot;);</span>
+<span class="fc" id="L65">        arminUser.getRoles().add(&quot;ADMIN&quot;);</span>
 
-<span class="fc" id="L66">        this.userRepository.save(fonssiUser);</span>
-<span class="fc" id="L67">        this.userRepository.save(arminUser);</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L67">        this.userRepository.save(fonssiUser);</span>
+<span class="fc" id="L68">        this.userRepository.save(arminUser);</span>
+<span class="fc" id="L69">    }</span>
 
     private void setUpTeams() {
-<span class="fc" id="L71">        ObjectMapper mapper = new ObjectMapper();</span>
-<span class="fc" id="L72">        try (InputStream input = getClass().getResourceAsStream(&quot;/data/teams-2025.json&quot;)) {</span>
-<span class="fc" id="L73">            TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);</span>
+<span class="fc" id="L72">        ObjectMapper mapper = new ObjectMapper();</span>
+<span class="fc" id="L73">        try (InputStream input = getClass().getResourceAsStream(&quot;/data/teams-2025.json&quot;)) {</span>
+<span class="fc" id="L74">            TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);</span>
 
-<span class="fc" id="L75">            List&lt;Team&gt; teams = Arrays.stream(teamDtos)</span>
-<span class="fc" id="L76">                    .map(dto -&gt; {</span>
-<span class="fc" id="L77">                        League league = League.valueOf(dto.league().toUpperCase());</span>
-<span class="fc" id="L78">                        Division division = Division.valueOf(dto.division().toUpperCase());</span>
-<span class="fc" id="L79">                        String logo = dto.abbreviation() + &quot;.png&quot;;</span>
+<span class="fc" id="L76">            List&lt;Team&gt; teams = Arrays.stream(teamDtos)</span>
+<span class="fc" id="L77">                    .map(dto -&gt; {</span>
+<span class="fc" id="L78">                        League league = League.valueOf(dto.league().toUpperCase());</span>
+<span class="fc" id="L79">                        Division division = Division.valueOf(dto.division().toUpperCase());</span>
+<span class="fc" id="L80">                        String logo = dto.abbreviation() + &quot;.png&quot;;</span>
 
-<span class="fc" id="L81">                        Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division,</span>
+<span class="fc" id="L82">                        Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division,</span>
                                 logo);
-<span class="fc" id="L83">                        int totalGames = dto.wins() + dto.losses();</span>
-<span class="fc" id="L84">                        team.setTotalGames(totalGames);</span>
-<span class="fc" id="L85">                        team.setPct((double) dto.wins() / totalGames);</span>
-<span class="fc" id="L86">                        team.setGamesBehind(0);</span>
-<span class="fc" id="L87">                        team.setLastTen(&quot;0-0&quot;);</span>
+<span class="fc" id="L84">                        int totalGames = dto.wins() + dto.losses();</span>
+<span class="fc" id="L85">                        team.setTotalGames(totalGames);</span>
+<span class="fc" id="L86">                        team.setPct((double) dto.wins() / totalGames);</span>
+<span class="fc" id="L87">                        team.setGamesBehind(0);</span>
+<span class="fc" id="L88">                        team.setLastTen(&quot;0-0&quot;);</span>
 
-<span class="fc" id="L89">                        return team;</span>
+<span class="fc" id="L90">                        return team;</span>
                     })
-<span class="fc" id="L91">                    .collect(Collectors.toList());</span>
+<span class="fc" id="L92">                    .collect(Collectors.toList());</span>
 
-<span class="fc" id="L93">            this.teamRepository.saveAll(teams);</span>
-<span class="nc" id="L94">        } catch (IOException e) {</span>
-<span class="nc" id="L95">            throw new RuntimeException(&quot;Error loading team data from JSON&quot;, e);</span>
-<span class="fc" id="L96">        }</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L94">            this.teamRepository.saveAll(teams);</span>
+<span class="nc" id="L95">        } catch (IOException e) {</span>
+<span class="nc" id="L96">            throw new RuntimeException(&quot;Error loading team data from JSON&quot;, e);</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">    }</span>
 
     private void setUpMatches() {
-<span class="fc" id="L100">        Team yankees = this.teamRepository.findByName(&quot;New York Yankees&quot;).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L101">        Team toronto = this.teamRepository.findByName(&quot;Toronto Blue Jays&quot;).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L102">        Team dodgers = this.teamRepository.findByName(&quot;Los Angeles Dodgers&quot;).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L103">        Team detroit = this.teamRepository.findByName(&quot;Detroit Tigers&quot;).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L101">        Team yankees = this.teamRepository.findByName(&quot;New York Yankees&quot;).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L102">        Team toronto = this.teamRepository.findByName(&quot;Toronto Blue Jays&quot;).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L103">        Team dodgers = this.teamRepository.findByName(&quot;Los Angeles Dodgers&quot;).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L104">        Team detroit = this.teamRepository.findByName(&quot;Detroit Tigers&quot;).orElseThrow(TeamNotFoundException::new);</span>
 
-<span class="fc" id="L105">         List&lt;Match&gt; matches = List.of(</span>
-            new Match(yankees, toronto, 5, 3),
-            new Match(yankees, toronto, 2, 6),
-            new Match(yankees, toronto, 4, 1),
+<span class="fc" id="L106">        LocalDateTime now = LocalDateTime.now();</span>
 
-            new Match(dodgers, yankees, 5, 2),
-            new Match(dodgers, yankees, 0, 2),
-            new Match(dodgers, yankees, 3, 4),
-
-            new Match(toronto, detroit, 0, 7),
-            new Match(toronto, detroit, 1, 2),
-            new Match(toronto, detroit, 5, 8),
-
-            new Match(detroit, yankees, 4, 6),
-            new Match(detroit, yankees, 4, 0),
-            new Match(detroit, yankees, 7, 4),
-
-            new Match(toronto, yankees, 7, 4),
-            new Match(toronto, yankees, 0, 4),
-            new Match(toronto, yankees, 2, 6),
-
-            new Match(dodgers, detroit, 3, 4),
-            new Match(dodgers, detroit, 6, 9),
-            new Match(dodgers, detroit, 0, 7),
-
-            new Match(toronto, dodgers, 0, 7),
-            new Match(toronto, dodgers, 5, 2),
-            new Match(toronto, dodgers, 4, 2)
+<span class="fc" id="L108">        List&lt;Match&gt; matches = List.of(</span>
+<span class="fc" id="L109">            new Match(yankees, toronto, 3, 5, now.minusDays(21)),</span>
+<span class="fc" id="L110">            new Match(yankees, toronto, 6, 2, now.minusDays(20)),</span>
+<span class="fc" id="L111">            new Match(yankees, toronto, 1, 4, now.minusDays(19)),</span>
+                
+<span class="fc" id="L113">            new Match(yankees, dodgers, 2, 5, now.minusDays(18)),</span>
+<span class="fc" id="L114">            new Match(yankees, dodgers, 2, 0, now.minusDays(17)),</span>
+<span class="fc" id="L115">            new Match(yankees, dodgers, 4, 3, now.minusDays(16)),</span>
+                
+<span class="fc" id="L117">            new Match(detroit, toronto, 7, 0, now.minusDays(15)),</span>
+<span class="fc" id="L118">            new Match(detroit, toronto, 2, 1, now.minusDays(14)),</span>
+<span class="fc" id="L119">            new Match(detroit, toronto, 8, 5, now.minusDays(13)),</span>
+                
+<span class="fc" id="L121">            new Match(yankees, detroit, 6, 4, now.minusDays(12)),</span>
+<span class="fc" id="L122">            new Match(yankees, detroit, 0, 4, now.minusDays(11)),</span>
+<span class="fc" id="L123">            new Match(yankees, detroit, 4, 7, now.minusDays(10)),</span>
+                
+<span class="fc" id="L125">            new Match(yankees, toronto, 4, 7, now.minusDays(9)),</span>
+<span class="fc" id="L126">            new Match(yankees, toronto, 4, 0, now.minusDays(8)),</span>
+<span class="fc" id="L127">            new Match(yankees, toronto, 6, 2, now.minusDays(7)),</span>
+                
+<span class="fc" id="L129">            new Match(detroit, dodgers, 4, 3, now.minusDays(6)),</span>
+<span class="fc" id="L130">            new Match(detroit, dodgers, 9, 6, now.minusDays(5)),</span>
+<span class="fc" id="L131">            new Match(detroit, dodgers, 7, 0, now.minusDays(4)),</span>
+            
+<span class="fc" id="L133">            new Match(dodgers, toronto, 7, 0, now.minusDays(3)),</span>
+<span class="fc" id="L134">            new Match(dodgers, toronto, 2, 5, now.minusDays(2)),</span>
+<span class="fc" id="L135">            new Match(dodgers, toronto, 2, 4, now.minusDays(1))</span>
         );
-<span class="fc" id="L134">        this.matchRepository.saveAll(matches.reversed());</span>
+<span class="fc" id="L137">        this.matchRepository.saveAll(matches);</span>
 
-<span class="fc" id="L136">        yankees.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(yankees)).toList());</span>
-<span class="fc" id="L137">        yankees.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(yankees)).toList());</span>
+<span class="fc" id="L139">        yankees.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(yankees)).toList());</span>
+<span class="fc" id="L140">        yankees.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(yankees)).toList());</span>
 
-<span class="fc" id="L139">        toronto.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(toronto)).toList());</span>
-<span class="fc" id="L140">        toronto.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(toronto)).toList());</span>
+<span class="fc" id="L142">        toronto.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(toronto)).toList());</span>
+<span class="fc" id="L143">        toronto.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(toronto)).toList());</span>
 
-<span class="fc" id="L142">        detroit.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(detroit)).toList());</span>
-<span class="fc" id="L143">        detroit.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(detroit)).toList());</span>
+<span class="fc" id="L145">        detroit.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(detroit)).toList());</span>
+<span class="fc" id="L146">        detroit.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(detroit)).toList());</span>
 
-<span class="fc" id="L145">        dodgers.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(dodgers)).toList());</span>
-<span class="fc" id="L146">        dodgers.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(dodgers)).toList());</span>
+<span class="fc" id="L148">        dodgers.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(dodgers)).toList());</span>
+<span class="fc" id="L149">        dodgers.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(dodgers)).toList());</span>
 
-<span class="fc" id="L148">        this.teamRepository.save(yankees);</span>
-<span class="fc" id="L149">        this.teamRepository.save(toronto);</span>
-<span class="fc" id="L150">        this.teamRepository.save(detroit);</span>
-<span class="fc" id="L151">        this.teamRepository.save(dodgers);</span>
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L151">        this.teamRepository.save(yankees);</span>
+<span class="fc" id="L152">        this.teamRepository.save(toronto);</span>
+<span class="fc" id="L153">        this.teamRepository.save(detroit);</span>
+<span class="fc" id="L154">        this.teamRepository.save(dodgers);</span>
+<span class="fc" id="L155">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -27,13 +27,15 @@ MLBPortal,com.mlb.mlbportal.security.jwt,UnauthorizedHandlerJwt,23,7,0,0,3,2,1,2
 MLBPortal,com.mlb.mlbportal.security.jwt,TokenType,0,32,0,0,0,7,0,2,0,2
 MLBPortal,com.mlb.mlbportal.security.jwt,LoginRequest,6,12,0,0,1,5,1,2,1,2
 MLBPortal,com.mlb.mlbportal.security.jwt,JwtRequestFilter,31,15,0,0,7,7,0,2,0,2
+MLBPortal,com.mlb.mlbportal.controllers,CustomErrorController,2,3,0,0,1,1,1,1,1,1
+MLBPortal,com.mlb.mlbportal.controllers,SPAController,2,3,0,0,1,1,1,1,1,1
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,0,20,0,0,0,7,0,3,0,3
 MLBPortal,com.mlb.mlbportal.controllers,AuthController,13,77,0,2,2,15,2,7,2,6
 MLBPortal,com.mlb.mlbportal.controllers,UserController,0,10,0,0,0,4,0,2,0,2
-MLBPortal,com.mlb.mlbportal.controllers,InitController,7,542,0,0,2,57,0,14,0,14
+MLBPortal,com.mlb.mlbportal.controllers,InitController,7,606,0,0,2,79,0,14,0,14
 MLBPortal,com.mlb.mlbportal.dto.user,UserRole,0,9,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.user,ShowUser,0,9,0,0,0,1,0,1,0,1
-MLBPortal,com.mlb.mlbportal.models,Match,159,275,30,30,0,7,29,30,5,24
+MLBPortal,com.mlb.mlbportal.models,Match,187,296,34,32,0,8,33,31,6,25
 MLBPortal,com.mlb.mlbportal.models,Team,332,955,90,130,10,17,79,85,6,48
 MLBPortal,com.mlb.mlbportal.models,PasswordResetToken,115,241,14,26,0,6,15,32,5,22
 MLBPortal,com.mlb.mlbportal.models,UserEntity,162,546,36,70,6,13,34,58,6,33

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { StandingsComponent } from "../standings/standings.component";
 
 @Component({
 	selector: 'app-home',
 	standalone: true,
-	templateUrl: './home.component.html'
+	templateUrl: './home.component.html',
+ imports: [StandingsComponent]
 })
 export class HomeComponent {
 

@@ -15,9 +15,7 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			let message = 'An unexpected error occurred';
 			let code = error.status;
 
-			if (code === 0) {
-				message = 'Cannot connect to the server. Please check your internet connection.';
-			} else if (code === 400) {
+			if (code === 400) {
 				message = 'Invalid request. Please check the submitted data.';
 			} else if (code === 401) {
 				message = 'Invalid credentials';

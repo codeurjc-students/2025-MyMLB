@@ -11,12 +11,12 @@ export const routes: Routes = [
 	{ path: 'auth', component: AuthComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'recovery', component: PasswordComponent },
-	{ path: 'error', component: ErrorComponent },
+	//{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',
 		canActivate: [AuthGuard],
 		loadComponent: () =>
 			import('./components/profile/profile.component').then((m) => m.ProfileComponent),
 	},
-	{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
+	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];

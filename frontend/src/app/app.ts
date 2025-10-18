@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 	constructor(private router: Router, private themeService: ThemeService, private cdr: ChangeDetectorRef) {
 		this.router.events.subscribe(() => {
 			const url = this.router.url;
-			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery');
+			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery') || url.startsWith('/error');
 		});
 	}
 
