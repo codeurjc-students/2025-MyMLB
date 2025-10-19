@@ -86,7 +86,7 @@
 								[ngClass]="getBackgroundColor(team)"
 								>
 								<img
-									src="assets/team-logos/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
+									src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
 									alt="{{ team.abbreviation }}"
 									class="w-9 h-9 object-contain"
 								/>
@@ -114,8 +114,8 @@
 					<td
 						class="px-3 py-2 text-center font-mono bg-gray-50 rounded-md"
 						[ngClass]="{
-							'text-green-600': team.pct >= 0.5,
-							'text-red-600': team.pct < 0.5
+							'text-green-700': team.pct >= 0.5,
+							'text-red-700': team.pct < 0.5
 						}"
 					>
 						{{ team.pct }}
@@ -129,13 +129,7 @@
 					</td>
 					}
 
-					<td
-						class="px-3 py-2 text-center font-semibold"
-						[ngClass]="{
-							'text-green-600': team.lastTen.startsWith('W'),
-							'text-red-600': team.lastTen.startsWith('L')
-						}"
-					>
+					<td class="px-3 py-2 text-center font-semibold">
 						{{ team.lastTen }}
 					</td>
 				</tr>
