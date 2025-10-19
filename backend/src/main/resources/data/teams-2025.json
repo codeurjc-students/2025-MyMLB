@@ -14,7 +14,7 @@
     { "name": "Seattle Mariners", "abbreviation": "SEA", "wins": 90, "losses": 72, "league": "AL", "division": "WEST" },
     { "name": "Houston Astros", "abbreviation": "HOU", "wins": 87, "losses": 75, "league": "AL", "division": "WEST" },
     { "name": "Texas Rangers", "abbreviation": "TEX", "wins": 81, "losses": 81, "league": "AL", "division": "WEST" },
-    { "name": "Oakland Athletics", "abbreviation": "OAK", "wins": 76, "losses": 86, "league": "AL", "division": "WEST" },
+    { "name": "Sacramento Athletics", "abbreviation": "ATH", "wins": 76, "losses": 86, "league": "AL", "division": "WEST" },
     { "name": "Los Angeles Angels", "abbreviation": "LAA", "wins": 72, "losses": 90, "league": "AL", "division": "WEST" },
 
     { "name": "Philadelphia Phillies", "abbreviation": "PHI", "wins": 96, "losses": 66, "league": "NL", "division": "EAST" },
