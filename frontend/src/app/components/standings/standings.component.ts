@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService, StandingsResponse } from '../../services/team.service';
 import { StandingsData } from '../../models/standings-data.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-standings',
     standalone: true,
+	imports: [CommonModule],
     templateUrl: './standings.component.html',
 })
 export class StandingsComponent implements OnInit {

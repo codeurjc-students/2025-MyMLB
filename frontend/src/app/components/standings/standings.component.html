@@ -1,63 +1,141 @@
-<section class="rounded-md p-4 w-full max-w-md mx-auto bg-gradient-to-b from-blue-950 via-indigo-950 to-slate-950 shadow-md">
-    <div class="flex items-center justify-between mb-4">
-        <button
-            (click)="previous()"
-            class="text-lg px-2 py-1 bg-white/10 text-white rounded hover:bg-white/20 transition"
-            aria-label="Previous"
-        >
-            ←
-        </button>
-        <h2 class="text-lg px-3 py-2 font-semibold text-white text-center flex-1">
-            {{ standings[currentIndex].league }} - {{ standings[currentIndex].division }}
-        </h2>
-        <button
-            (click)="next()"
-            class="text-lg px-2 py-1 bg-white/10 text-white rounded hover:bg-white/20 transition"
-            aria-label="Next"
-        >
-            →
-        </button>
+<section
+  class="bg-gradient-to-b from-blue-800 via-blue-900 to-gray-900 rounded-2xl p-5 w-full max-w-lg mx-auto shadow-xl ring-1 ring-white/10 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-950"
+>
+  <!-- Encabezado -->
+  <div class="flex flex-col gap-3 mb-5">
+    <!-- Fila superior: logo a la izquierda y título centrado -->
+    <div class="relative flex items-center justify-center">
+      <!-- Logo (alineado al borde izquierdo, más grande) -->
+      <div class="absolute left-0 flex items-center">
+        @if (standings[currentIndex].league === 'AL') {
+          <img
+            src="assets/league-logos/AL.png"
+            alt="AL Logo"
+            class="w-14 h-14 object-contain bg-white/85 rounded-xl p-1.5 ml-1 shadow-md"
+          />
+        } @else {
+          <img
+            src="assets/league-logos/NL.png"
+            alt="NL Logo"
+            class="w-14 h-14 object-contain bg-white/85 rounded-xl p-1.5 ml-1 shadow-md"
+          />
+        }
+      </div>
+
+      <!-- Título centrado -->
+      <h2
+        class="text-3xl font-bold text-white tracking-wide uppercase text-center"
+      >
+        {{ standings[currentIndex].league }}
+        {{ standings[currentIndex].division }}
+      </h2>
     </div>
 
-    <div class="overflow-x-auto rounded-md bg-gray-100 shadow-sm">
-        <table class="w-full text-sm text-gray-800">
-            <thead class="bg-gray-200 text-gray-600">
-                <tr>
-                    <th class="px-2 py-1 text-left">Logo</th>
-                    <th class="px-2 py-1 text-left">Team</th>
-                    <th class="px-2 py-1 text-center">G</th>
-                    <th class="px-2 py-1 text-center">W</th>
-                    <th class="px-2 py-1 text-center">L</th>
-                    <th class="px-2 py-1 text-center">PCT</th>
-                    <th class="px-2 py-1 text-center">GB</th>
-                    <th class="px-2 py-1 text-center">L10</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-300">
-                @for (team of standings[currentIndex].teams; track team.abbreviation) {
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-2 py-1">
-                        <img
-                            src="assets/team-logos/{{ team.abbreviation }}.png"
-                            alt="{{ team.abbreviation }}"
-                            class="w-6 h-6 object-contain"
-                        />
-                    </td>
-                    <td class="px-2 py-1 font-medium">{{ team.abbreviation }}</td>
-                    <td class="px-2 py-1 text-center">{{ team.totalGames }}</td>
-                    <td class="px-2 py-1 text-center">{{ team.wins }}</td>
-                    <td class="px-2 py-1 text-center">{{ team.losses }}</td>
-                    <td class="px-2 py-1 text-center">{{ team.pct }}</td>
-					@if (team.gamesBehind === 0) {
-						<td class="px-2 py-1 text-center">-</td>
-					}
-					@else {
-						<td class="px-2 py-1 text-center">{{ team.gamesBehind }}</td>
-					}
-                    <td class="px-2 py-1 text-center">{{ team.lastTen }}</td>
-                </tr>
-                }
-            </tbody>
-        </table>
+    <!-- Fila inferior: botones -->
+    <div class="flex items-center justify-center gap-4 mt-1">
+      <button
+        (click)="previous()"
+        class="text-lg px-3 py-1.5 bg-white/10 text-white rounded-full hover:bg-white/20 transition-all duration-200 shadow-sm"
+        aria-label="Previous"
+      >
+        ←
+      </button>
+
+      <button
+        (click)="next()"
+        class="text-lg px-3 py-1.5 bg-white/10 text-white rounded-full hover:bg-white/20 transition-all duration-200 shadow-sm"
+        aria-label="Next"
+      >
+        →
+      </button>
     </div>
+  </div>
+
+  <!-- Tabla -->
+  <div
+    class="overflow-x-auto rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-inner"
+  >
+    <table class="w-full text-sm text-gray-800">
+      <thead
+        class="bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 text-xs uppercase tracking-wide"
+      >
+        <tr>
+          <th class="px-3 py-2 text-left font-semibold">Logo</th>
+          <th class="px-3 py-2 text-left font-semibold">Team</th>
+          <th class="px-3 py-2 text-center font-semibold">G</th>
+          <th class="px-3 py-2 text-center font-semibold">W</th>
+          <th class="px-3 py-2 text-center font-semibold">L</th>
+          <th class="px-3 py-2 text-center font-semibold">PCT</th>
+          <th class="px-3 py-2 text-center font-semibold">GB</th>
+          <th class="px-3 py-2 text-center font-semibold">L10</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-300">
+        @for (team of standings[currentIndex].teams; track team.abbreviation) {
+        <tr
+          class="hover:bg-blue-100/40 even:bg-white transition-colors duration-200"
+        >
+          <td class="px-3 py-2">
+            <div class="flex justify-center">
+              <img
+                src="assets/team-logos/{{ team.abbreviation }}.png"
+                alt="{{ team.abbreviation }}"
+                class="w-7 h-7 object-contain drop-shadow-sm"
+              />
+            </div>
+          </td>
+
+          <td class="px-3 py-2 font-semibold text-gray-800">
+            {{ team.abbreviation }}
+          </td>
+
+          <td class="px-3 py-2 text-center text-gray-700">
+            {{ team.totalGames }}
+          </td>
+
+          <td class="px-3 py-2 text-center font-bold text-green-700">
+            {{ team.wins }}
+          </td>
+
+          <td class="px-3 py-2 text-center font-bold text-red-700">
+            {{ team.losses }}
+          </td>
+
+          <td
+            class="px-3 py-2 text-center font-mono bg-gray-50 rounded-md"
+            [ngClass]="{
+              'text-green-600': team.pct >= 0.500,
+              'text-red-600': team.pct < 0.500
+            }"
+          >
+            {{ team.pct }}
+          </td>
+
+          @if (team.gamesBehind === 0) {
+          <td class="px-3 py-2 text-center text-gray-600 font-medium">–</td>
+          } @else {
+          <td class="px-3 py-2 text-center text-gray-700 font-medium">
+            {{ team.gamesBehind }}
+          </td>
+          }
+
+          <td
+            class="px-3 py-2 text-center font-semibold"
+            [ngClass]="{
+              'text-green-600': team.lastTen.startsWith('W'),
+              'text-red-600': team.lastTen.startsWith('L')
+            }"
+          >
+            {{ team.lastTen }}
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-xs text-gray-300 mt-4 text-center italic">
+    Last Update: October 2025
+  </p>
 </section>
