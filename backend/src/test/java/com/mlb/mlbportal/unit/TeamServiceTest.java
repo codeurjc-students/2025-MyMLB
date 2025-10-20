@@ -64,9 +64,9 @@ class TeamServiceTest {
     }
 
     private List<TeamDTO> buildMockDTOs() {
-        TeamDTO dto1 = new TeamDTO(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_LOGO, this.team1.getLeague(), this.team1.getDivision(), this.team1.getTotalGames(), this.team1.getWins(), this.team1.getLosses(), this.team1.getPct(), 1.0, "0-0");
-        TeamDTO dto2 = new TeamDTO(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_LOGO, this.team2.getLeague(), this.team2.getDivision(), this.team2.getTotalGames(), this.team2.getWins(), this.team2.getLosses(), this.team2.getPct(), 0.0, "0-0");
-        TeamDTO dto3 = new TeamDTO(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_LOGO, this.team3.getLeague(), this.team3.getDivision(), this.team3.getTotalGames(), this.team3.getWins(), this.team3.getLosses(), this.team3.getPct(), 41.0, "0-0");
+        TeamDTO dto1 = new TeamDTO(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, this.team1.getLeague(), this.team1.getDivision(), this.team1.getTotalGames(), this.team1.getWins(), this.team1.getLosses(), this.team1.getPct(), 1.0, "0-0");
+        TeamDTO dto2 = new TeamDTO(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, this.team2.getLeague(), this.team2.getDivision(), this.team2.getTotalGames(), this.team2.getWins(), this.team2.getLosses(), this.team2.getPct(), 0.0, "0-0");
+        TeamDTO dto3 = new TeamDTO(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, this.team3.getLeague(), this.team3.getDivision(), this.team3.getTotalGames(), this.team3.getWins(), this.team3.getLosses(), this.team3.getPct(), 41.0, "0-0");
         return Arrays.asList(dto1, dto2, dto3);
     }
 

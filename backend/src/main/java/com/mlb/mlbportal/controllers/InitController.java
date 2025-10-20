@@ -19,6 +19,7 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
@@ -106,33 +107,37 @@ public class InitController {
         LocalDateTime now = LocalDateTime.now();
 
         List<Match> matches = List.of(
-            new Match(yankees, toronto, 3, 5, now.minusDays(21)),
-            new Match(yankees, toronto, 6, 2, now.minusDays(20)),
-            new Match(yankees, toronto, 1, 4, now.minusDays(19)),
+            new Match(yankees, toronto, 3, 5, now.minusDays(21), MatchStatus.Finished),
+            new Match(yankees, toronto, 6, 2, now.minusDays(20), MatchStatus.Finished),
+            new Match(yankees, toronto, 1, 4, now.minusDays(19), MatchStatus.Finished),
                 
-            new Match(yankees, dodgers, 2, 5, now.minusDays(18)),
-            new Match(yankees, dodgers, 2, 0, now.minusDays(17)),
-            new Match(yankees, dodgers, 4, 3, now.minusDays(16)),
+            new Match(yankees, dodgers, 2, 5, now.minusDays(18), MatchStatus.Finished),
+            new Match(yankees, dodgers, 2, 0, now.minusDays(17), MatchStatus.Finished),
+            new Match(yankees, dodgers, 4, 3, now.minusDays(16), MatchStatus.Finished),
                 
-            new Match(detroit, toronto, 7, 0, now.minusDays(15)),
-            new Match(detroit, toronto, 2, 1, now.minusDays(14)),
-            new Match(detroit, toronto, 8, 5, now.minusDays(13)),
+            new Match(detroit, toronto, 7, 0, now.minusDays(15), MatchStatus.Finished),
+            new Match(detroit, toronto, 2, 1, now.minusDays(14), MatchStatus.Finished),
+            new Match(detroit, toronto, 8, 5, now.minusDays(13), MatchStatus.Finished),
                 
-            new Match(yankees, detroit, 6, 4, now.minusDays(12)),
-            new Match(yankees, detroit, 0, 4, now.minusDays(11)),
-            new Match(yankees, detroit, 4, 7, now.minusDays(10)),
+            new Match(yankees, detroit, 6, 4, now.minusDays(12), MatchStatus.Finished),
+            new Match(yankees, detroit, 0, 4, now.minusDays(11), MatchStatus.Finished),
+            new Match(yankees, detroit, 4, 7, now.minusDays(10), MatchStatus.Finished),
                 
-            new Match(yankees, toronto, 4, 7, now.minusDays(9)),
-            new Match(yankees, toronto, 4, 0, now.minusDays(8)),
-            new Match(yankees, toronto, 6, 2, now.minusDays(7)),
+            new Match(yankees, toronto, 4, 7, now.minusDays(9), MatchStatus.Finished),
+            new Match(yankees, toronto, 4, 0, now.minusDays(8), MatchStatus.Finished),
+            new Match(yankees, toronto, 6, 2, now.minusDays(7), MatchStatus.Finished),
                 
-            new Match(detroit, dodgers, 4, 3, now.minusDays(6)),
-            new Match(detroit, dodgers, 9, 6, now.minusDays(5)),
-            new Match(detroit, dodgers, 7, 0, now.minusDays(4)),
+            new Match(detroit, dodgers, 4, 3, now.minusDays(6), MatchStatus.Finished),
+            new Match(detroit, dodgers, 9, 6, now.minusDays(5), MatchStatus.Finished),
+            new Match(detroit, dodgers, 7, 0, now.minusDays(4), MatchStatus.Finished),
             
-            new Match(dodgers, toronto, 7, 0, now.minusDays(3)),
-            new Match(dodgers, toronto, 2, 5, now.minusDays(2)),
-            new Match(dodgers, toronto, 2, 4, now.minusDays(1))
+            new Match(dodgers, toronto, 7, 0, now.minusDays(3), MatchStatus.Finished),
+            new Match(dodgers, toronto, 2, 5, now.minusDays(2), MatchStatus.Finished),
+            new Match(dodgers, toronto, 2, 4, now.minusDays(1), MatchStatus.Finished),
+
+            new Match(yankees, dodgers, 0, 0, now, MatchStatus.Scheduled),
+            new Match(detroit, toronto, 1, 0, LocalDateTime.of(2025, 10, 20, 00, 00), MatchStatus.InProgress),
+            new Match(detroit, yankees, 3, 9, LocalDateTime.of(2025, 10, 20, 9, 30), MatchStatus.Finished)
         );
         this.matchRepository.saveAll(matches);
 

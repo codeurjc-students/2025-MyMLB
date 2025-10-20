@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -34,4 +35,6 @@ public interface TeamMapper {
     @Mapping(target = "gamesBehind", ignore = true)
     @Mapping(target = "totalGames", ignore = true)
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
+
+    TeamSummary toTeamSummaryDTO(Team team);
 }

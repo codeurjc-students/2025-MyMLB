@@ -18,6 +18,7 @@ import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.TeamService;
@@ -55,7 +56,7 @@ class TeamServiceIntegrationTest {
 
         LocalDateTime now = LocalDateTime.now();
 
-        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4)));
+        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.Finished));
     }
 
     @Test

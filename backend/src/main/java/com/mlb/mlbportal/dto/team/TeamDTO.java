@@ -17,9 +17,6 @@ public record TeamDTO(
     @NotBlank(message = "The abbreviation of the team is required")
     String abbreviation,
 
-    @NotBlank(message = "The team logo is required")
-    String teamLogo,
-
     @NotNull(message = "The team League is required")
     League league,
 

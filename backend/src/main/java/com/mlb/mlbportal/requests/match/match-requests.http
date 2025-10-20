@@ -1,0 +1,3 @@
+### Get Matches of the day
+GET https://localhost:8443/api/matches/today
+Content-Type: application/json

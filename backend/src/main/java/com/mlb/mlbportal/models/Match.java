@@ -2,7 +2,11 @@ package com.mlb.mlbportal.models;
 
 import java.time.LocalDateTime;
 
+import com.mlb.mlbportal.models.enums.MatchStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,13 +34,17 @@ public class Match {
 
     private LocalDateTime date;
 
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status;
+
     public Match() {}
 
-    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date) {
+    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
         this.date = date;
+        this.status = status;
     }
 }
