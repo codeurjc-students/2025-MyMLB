@@ -99,7 +99,7 @@ public class TeamService {
         List<Match> last10Matches = this.matchService.getLast10Matches(team);
         String record;
         if (last10Matches.isEmpty()) {
-            record = "0 - 0";
+            record = "0-0";
         }
         else {
             int numberOfWins = 0;
