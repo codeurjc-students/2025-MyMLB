@@ -10,6 +10,8 @@ tags:
   description: Endpoints related to user authentication
 - name: Teams
   description: Operations related to MLB teams and standings
+- name: Matches
+  description: Operations related to the matches
 paths:
   /api/auth/reset-password:
     post:
@@ -266,6 +268,47 @@ paths:
           description: Internal server error
           content:
             application/json: {}
+  /api/matches/today:
+    get:
+      tags:
+      - Matches
+      summary: Get the matches of the day
+      description: "Returns a list of matches scheduled for today. Each match includes\
+        \ the home and away teams, scores, scheduled date/time, and current status\
+        \ (Scheduled, InProgress, Finished)."
+      operationId: getMatchesOfTheDay
+      responses:
+        "200":
+          description: Successfully retrieved the matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchDTO"
+              example:
+              - homeTeam:
+                  name: Los Angeles Dodgers
+                  abbreviation: LAD
+                awayTeam:
+                  name: New York Yankees
+                  abbreviation: NYY
+                homeScore: 0
+                awayScore: 0
+                date: 2025-10-20 19:00
+                status: Scheduled
+              - homeTeam:
+                  name: Toronto Blue Jays
+                  abbreviation: TOR
+                awayTeam:
+                  name: Detroit Tigers
+                  abbreviation: DET
+                homeScore: 3
+                awayScore: 2
+                date: 2025-10-20 21:00
+                status: InProgress
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
   /api/auth/me:
     get:
       tags:
@@ -359,8 +402,6 @@ components:
           type: string
         abbreviation:
           type: string
-        teamLogo:
-          type: string
         league:
           type: string
           enum:
@@ -404,7 +445,42 @@ components:
       - lastTen
       - league
       - name
-      - teamLogo
+    MatchDTO:
+      type: object
+      properties:
+        homeTeam:
+          $ref: "#/components/schemas/TeamSummary"
+        awayTeam:
+          $ref: "#/components/schemas/TeamSummary"
+        homeScore:
+          type: integer
+          format: int32
+          minimum: 0
+        awayScore:
+          type: integer
+          format: int32
+          minimum: 0
+        date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - Scheduled
+          - InProgress
+          - Finished
+      required:
+      - awayTeam
+      - date
+      - homeTeam
+      - status
+    TeamSummary:
+      type: object
+      properties:
+        name:
+          type: string
+        abbreviation:
+          type: string
     UserRole:
       type: object
       properties:

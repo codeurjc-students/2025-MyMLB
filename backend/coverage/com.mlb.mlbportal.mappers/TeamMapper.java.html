@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -21,18 +22,20 @@ public interface TeamMapper {
 
     default Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; toGroupedStandings(
             Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
-<span class="nc" id="L24">        return groupedTeams.entrySet().stream()</span>
-<span class="nc" id="L25">                .collect(Collectors.toMap(</span>
+<span class="nc" id="L25">        return groupedTeams.entrySet().stream()</span>
+<span class="nc" id="L26">                .collect(Collectors.toMap(</span>
                         Map.Entry::getKey,
-<span class="nc" id="L27">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
-<span class="nc" id="L28">                                .collect(Collectors.toMap(</span>
+<span class="nc" id="L28">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
+<span class="nc" id="L29">                                .collect(Collectors.toMap(</span>
                                         Map.Entry::getKey,
-<span class="nc" id="L30">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
+<span class="nc" id="L31">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
     }
 
     @Mapping(target = &quot;id&quot;, ignore = true)
     @Mapping(target = &quot;gamesBehind&quot;, ignore = true)
     @Mapping(target = &quot;totalGames&quot;, ignore = true)
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
+
+    TeamSummary toTeamSummaryDTO(Team team);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

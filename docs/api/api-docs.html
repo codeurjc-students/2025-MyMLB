@@ -877,6 +877,35 @@ ul.nav-tabs {
     }
   }
 };
+    defs["MatchDTO"] = {
+  "required" : [ "awayTeam", "date", "homeTeam", "status" ],
+  "properties" : {
+    "homeTeam" : {
+      "$ref" : "#/components/schemas/TeamSummary"
+    },
+    "awayTeam" : {
+      "$ref" : "#/components/schemas/TeamSummary"
+    },
+    "homeScore" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "awayScore" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "date" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "Scheduled", "InProgress", "Finished" ]
+    }
+  }
+};
     defs["RegisterRequest"] = {
   "required" : [ "email", "password", "username" ],
   "properties" : {
@@ -914,15 +943,12 @@ ul.nav-tabs {
   }
 };
     defs["TeamDTO"] = {
-  "required" : [ "abbreviation", "division", "lastTen", "league", "name", "teamLogo" ],
+  "required" : [ "abbreviation", "division", "lastTen", "league", "name" ],
   "properties" : {
     "name" : {
       "type" : "string"
     },
     "abbreviation" : {
-      "type" : "string"
-    },
-    "teamLogo" : {
       "type" : "string"
     },
     "league" : {
@@ -963,6 +989,16 @@ ul.nav-tabs {
       "format" : "double"
     },
     "lastTen" : {
+      "type" : "string"
+    }
+  }
+};
+    defs["TeamSummary"] = {
+  "properties" : {
+    "name" : {
+      "type" : "string"
+    },
+    "abbreviation" : {
       "type" : "string"
     }
   }
@@ -1021,6 +1057,10 @@ ul.nav-tabs {
                     </li>
                     <li data-group="Authentication" data-name="resetPassword" class="">
                       <a href="#api-Authentication-resetPassword">resetPassword</a>
+                    </li>
+                  <li class="nav-header" data-group="Matches"><a href="#api-Matches">API Methods - Matches</a></li>
+                    <li data-group="Matches" data-name="getMatchesOfTheDay" class="">
+                      <a href="#api-Matches-getMatchesOfTheDay">getMatchesOfTheDay</a>
                     </li>
                   <li class="nav-header" data-group="Teams"><a href="#api-Teams">API Methods - Teams</a></li>
                     <li data-group="Teams" data-name="getAllTeams" class="">
@@ -4252,6 +4292,431 @@ $(document).ready(function() {
                                   </script>
                                 </div>
                                 <input id='responses-Authentication-resetPassword-400-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-Matches">
+                  <h1>Matches</h1>
+                    <div id="api-Matches-getMatchesOfTheDay">
+                      <article id="api-Matches-getMatchesOfTheDay-0" data-group="User" data-name="getMatchesOfTheDay" data-version="0">
+                        <div class="pull-left">
+                          <h1>getMatchesOfTheDay</h1>
+                          <p>Get the matches of the day</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns a list of matches scheduled for today. Each match includes the home and away teams, scores, scheduled date/time, and current status (Scheduled, InProgress, Finished).</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/matches/today</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Matches-getMatchesOfTheDay-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Matches-getMatchesOfTheDay-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/matches/today"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.MatchesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MatchesApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        MatchesApi apiInstance = new MatchesApi();
+
+        try {
+            MatchDTO result = apiInstance.getMatchesOfTheDay();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MatchesApi#getMatchesOfTheDay");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getMatchesOfTheDay();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getMatchesOfTheDay: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.MatchesApi;
+
+public class MatchesApiExample {
+    public static void main(String[] args) {
+        MatchesApi apiInstance = new MatchesApi();
+
+        try {
+            MatchDTO result = apiInstance.getMatchesOfTheDay();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MatchesApi#getMatchesOfTheDay");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+MatchesApi *apiInstance = [[MatchesApi alloc] init];
+
+// Get the matches of the day
+[apiInstance getMatchesOfTheDayWithCompletionHandler: 
+              ^(MatchDTO output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.MatchesApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getMatchesOfTheDay(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getMatchesOfTheDayExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new MatchesApi();
+
+            try {
+                // Get the matches of the day
+                MatchDTO result = apiInstance.getMatchesOfTheDay();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling MatchesApi.getMatchesOfTheDay: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\MatchesApi();
+
+try {
+    $result = $api_instance->getMatchesOfTheDay();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling MatchesApi->getMatchesOfTheDay: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::MatchesApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::MatchesApi->new();
+
+eval {
+    my $result = $api_instance->getMatchesOfTheDay();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling MatchesApi->getMatchesOfTheDay: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.MatchesApi()
+
+try:
+    # Get the matches of the day
+    api_response = api_instance.get_matches_of_the_day()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MatchesApi->getMatchesOfTheDay: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate MatchesApi;
+
+pub fn main() {
+
+    let mut context = MatchesApi::Context::default();
+    let result = client.getMatchesOfTheDay(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Matches-getMatchesOfTheDay-title-200"></h3>
+                            <p id="examples-Matches-getMatchesOfTheDay-description-200" class="marked"></p>
+                            <script>
+                              var responseMatches200_description = `Successfully retrieved the matches`;
+                              var responseMatches200_description_break = responseMatches200_description.indexOf('\n');
+                              if (responseMatches200_description_break == -1) {
+                                $("#examples-Matches-getMatchesOfTheDay-title-200").text("Status: 200 - " + responseMatches200_description);
+                              } else {
+                                $("#examples-Matches-getMatchesOfTheDay-title-200").text("Status: 200 - " + responseMatches200_description.substring(0, responseMatches200_description_break));
+                                $("#examples-Matches-getMatchesOfTheDay-description-200").html(responseMatches200_description.substring(responseMatches200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Matches-getMatchesOfTheDay-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Matches-getMatchesOfTheDay-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Matches-getMatchesOfTheDay-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Matches-getMatchesOfTheDay-200-schema">
+                                <div id="responses-Matches-getMatchesOfTheDay-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved the matches",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/MatchDTO"
+      },
+      "example" : [ {
+        "homeTeam" : {
+          "name" : "Los Angeles Dodgers",
+          "abbreviation" : "LAD"
+        },
+        "awayTeam" : {
+          "name" : "New York Yankees",
+          "abbreviation" : "NYY"
+        },
+        "homeScore" : 0,
+        "awayScore" : 0,
+        "date" : "2025-10-20 19:00",
+        "status" : "Scheduled"
+      }, {
+        "homeTeam" : {
+          "name" : "Toronto Blue Jays",
+          "abbreviation" : "TOR"
+        },
+        "awayTeam" : {
+          "name" : "Detroit Tigers",
+          "abbreviation" : "DET"
+        },
+        "homeScore" : 3,
+        "awayScore" : 2,
+        "date" : "2025-10-20 21:00",
+        "status" : "InProgress"
+      } ]
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Matches-getMatchesOfTheDay-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Matches-getMatchesOfTheDay-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Matches-getMatchesOfTheDay-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Matches-getMatchesOfTheDay-title-500"></h3>
+                            <p id="examples-Matches-getMatchesOfTheDay-description-500" class="marked"></p>
+                            <script>
+                              var responseMatches500_description = `Internal server error`;
+                              var responseMatches500_description_break = responseMatches500_description.indexOf('\n');
+                              if (responseMatches500_description_break == -1) {
+                                $("#examples-Matches-getMatchesOfTheDay-title-500").text("Status: 500 - " + responseMatches500_description);
+                              } else {
+                                $("#examples-Matches-getMatchesOfTheDay-title-500").text("Status: 500 - " + responseMatches500_description.substring(0, responseMatches500_description_break));
+                                $("#examples-Matches-getMatchesOfTheDay-description-500").html(responseMatches500_description.substring(responseMatches500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Matches-getMatchesOfTheDay-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Matches-getMatchesOfTheDay-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Matches-getMatchesOfTheDay-500-schema">
+                                <div id="responses-Matches-getMatchesOfTheDay-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Matches-getMatchesOfTheDay-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Matches-getMatchesOfTheDay-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Matches-getMatchesOfTheDay-500-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
                         </article>

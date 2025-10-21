@@ -77,7 +77,7 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should update match status to Finished if 3 hours have passed")
     void testMatchesOfTheDay_FinishedUpdate() {
-        Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(4), MatchStatus.InProgress);
+        Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.InProgress);
         this.matchRepository.save(match);
 
         List<MatchDTO> result = this.matchService.getMatchesOfTheDay();

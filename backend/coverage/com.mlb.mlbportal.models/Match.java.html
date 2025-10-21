@@ -2,7 +2,11 @@
 
 import java.time.LocalDateTime;
 
+import com.mlb.mlbportal.models.enums.MatchStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,14 +34,18 @@ public class Match {
 
     private LocalDateTime date;
 
-<span class="fc" id="L33">    public Match() {}</span>
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status;
 
-<span class="fc" id="L35">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date) {</span>
-<span class="fc" id="L36">        this.homeTeam = homeTeam;</span>
-<span class="fc" id="L37">        this.awayTeam = awayTeam;</span>
-<span class="fc" id="L38">        this.homeScore = homeScore;</span>
-<span class="fc" id="L39">        this.awayScore = awayScore;</span>
-<span class="fc" id="L40">        this.date = date;</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L40">    public Match() {}</span>
+
+<span class="fc" id="L42">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
+<span class="fc" id="L43">        this.homeTeam = homeTeam;</span>
+<span class="fc" id="L44">        this.awayTeam = awayTeam;</span>
+<span class="fc" id="L45">        this.homeScore = homeScore;</span>
+<span class="fc" id="L46">        this.awayScore = awayScore;</span>
+<span class="fc" id="L47">        this.date = date;</span>
+<span class="fc" id="L48">        this.status = status;</span>
+<span class="fc" id="L49">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

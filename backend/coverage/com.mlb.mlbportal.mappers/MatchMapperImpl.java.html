@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers</a> &gt; <span class="el_source">MatchMapperImpl.java</span></div><h1>MatchMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers;
+
+import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-10-21T09:05:33+0200&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+)
+@Component
+<span class="fc" id="L20">public class MatchMapperImpl implements MatchMapper {</span>
+
+    @Autowired
+    private TeamMapper teamMapper;
+
+    @Override
+    public MatchDTO toMatchDTO(Match match) {
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L28">            return null;</span>
+        }
+
+<span class="fc" id="L31">        TeamSummary homeTeam = null;</span>
+<span class="fc" id="L32">        TeamSummary awayTeam = null;</span>
+<span class="fc" id="L33">        int homeScore = 0;</span>
+<span class="fc" id="L34">        int awayScore = 0;</span>
+<span class="fc" id="L35">        LocalDateTime date = null;</span>
+<span class="fc" id="L36">        MatchStatus status = null;</span>
+
+<span class="fc" id="L38">        homeTeam = teamMapper.toTeamSummaryDTO( match.getHomeTeam() );</span>
+<span class="fc" id="L39">        awayTeam = teamMapper.toTeamSummaryDTO( match.getAwayTeam() );</span>
+<span class="fc" id="L40">        homeScore = match.getHomeScore();</span>
+<span class="fc" id="L41">        awayScore = match.getAwayScore();</span>
+<span class="fc" id="L42">        date = match.getDate();</span>
+<span class="fc" id="L43">        status = match.getStatus();</span>
+
+<span class="fc" id="L45">        MatchDTO matchDTO = new MatchDTO( homeTeam, awayTeam, homeScore, awayScore, date, status );</span>
+
+<span class="fc" id="L47">        return matchDTO;</span>
+    }
+
+    @Override
+    public List&lt;MatchDTO&gt; toMatchDTOList(List&lt;Match&gt; matchList) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if ( matchList == null ) {</span>
+<span class="nc" id="L53">            return null;</span>
+        }
+
+<span class="fc" id="L56">        List&lt;MatchDTO&gt; list = new ArrayList&lt;MatchDTO&gt;( matchList.size() );</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for ( Match match : matchList ) {</span>
+<span class="fc" id="L58">            list.add( toMatchDTO( match ) );</span>
+<span class="fc" id="L59">        }</span>
+
+<span class="fc" id="L61">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
