@@ -1,21 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavbarComponent } from "../navbar/navbar.component";
 import { StandingsComponent } from "../standings/standings.component";
+import { MatchService, ShowMatch, TeamSummary } from '../../services/match.service';
+import { CommonModule } from '@angular/common';
+import { BackgroundColorService } from '../../services/background-color.service';
 
 @Component({
 	selector: 'app-home',
 	standalone: true,
 	templateUrl: './home.component.html',
- imports: [StandingsComponent]
+ 	imports: [StandingsComponent, CommonModule]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+	public matches: ShowMatch[] = [];
+	public errorMessage = '';
 
-	constructor(private router: Router) {}
+	constructor(private router: Router, private matchService: MatchService, private backgroundService: BackgroundColorService) {}
 
-	public button() {
-		this.router.navigate(['/error'], {
-			state: { code: 403, message: 'Access Denied' }
+	ngOnInit(): void {
+		this.matchService.getMatchesOfTheDay().subscribe({
+			next: (response) => this.matches = response,
+			error: (_) => this.errorMessage = 'Error trying to show the matches'
 		});
+	}
+
+	public getBackgroundColor(team: TeamSummary) {
+		return this.backgroundService.getBackgroundColor(team);
 	}
 }

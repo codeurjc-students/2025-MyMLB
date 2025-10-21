@@ -7,7 +7,7 @@ export type StandingsResponse = {
 	[league: string]: {
 		[division: string]: Team[];
 	};
-};
+}
 
 @Injectable({
 	providedIn: 'root',

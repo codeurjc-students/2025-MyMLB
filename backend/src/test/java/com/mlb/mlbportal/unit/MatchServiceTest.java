@@ -60,9 +60,9 @@ public class MatchServiceTest {
     }
 
     private List<MatchDTO> buildMockDTOs() {
-        TeamSummary teamDTO1 = new TeamSummary(this.team1.getName(), this.team1.getAbbreviation());
-        TeamSummary teamDTO2 = new TeamSummary(this.team2.getName(), this.team2.getAbbreviation());
-        TeamSummary teamDTO3 = new TeamSummary(this.team3.getName(), this.team3.getAbbreviation());
+        TeamSummary teamDTO1 = new TeamSummary(this.team1.getName(), this.team1.getAbbreviation(), this.team1.getLeague(), this.team1.getDivision());
+        TeamSummary teamDTO2 = new TeamSummary(this.team2.getName(), this.team2.getAbbreviation(), this.team2.getLeague(), this.team2.getDivision());
+        TeamSummary teamDTO3 = new TeamSummary(this.team3.getName(), this.team3.getAbbreviation(), this.team3.getLeague(), this.team3.getDivision());
 
         MatchDTO dto1 = new MatchDTO(teamDTO1, teamDTO2, this.match1.getHomeScore(), this.match1.getAwayScore(), match1.getDate(), match1.getStatus());
         MatchDTO dto2 = new MatchDTO(teamDTO2, teamDTO3, this.match2.getHomeScore(), this.match2.getAwayScore(), match2.getDate(), match2.getStatus());
