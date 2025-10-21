@@ -3,7 +3,6 @@ import { TeamService, StandingsResponse } from '../../services/team.service';
 import { StandingsData } from '../../models/standings-data.model';
 import { CommonModule } from '@angular/common';
 import { Team } from '../../models/team-model';
-import { TeamSummary } from '../../services/match.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 
 @Component({

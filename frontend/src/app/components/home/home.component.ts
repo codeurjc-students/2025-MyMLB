@@ -1,30 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { StandingsComponent } from "../standings/standings.component";
-import { MatchService, ShowMatch, TeamSummary } from '../../services/match.service';
 import { CommonModule } from '@angular/common';
-import { BackgroundColorService } from '../../services/background-color.service';
+import { MatchesOfTheDayComponent } from "../match/matches-of-the-day/matches-of-the-day.component";
 
 @Component({
 	selector: 'app-home',
 	standalone: true,
 	templateUrl: './home.component.html',
- 	imports: [StandingsComponent, CommonModule]
+ 	imports: [StandingsComponent, CommonModule, MatchesOfTheDayComponent]
 })
-export class HomeComponent implements OnInit {
-	public matches: ShowMatch[] = [];
-	public errorMessage = '';
-
-	constructor(private router: Router, private matchService: MatchService, private backgroundService: BackgroundColorService) {}
-
-	ngOnInit(): void {
-		this.matchService.getMatchesOfTheDay().subscribe({
-			next: (response) => this.matches = response,
-			error: (_) => this.errorMessage = 'Error trying to show the matches'
-		});
-	}
-
-	public getBackgroundColor(team: TeamSummary) {
-		return this.backgroundService.getBackgroundColor(team);
-	}
+export class HomeComponent {
+	constructor() {}
 }

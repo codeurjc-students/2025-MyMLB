@@ -62,7 +62,7 @@
 	<div class="overflow-x-auto rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 shadow-inner">
 		<table class="w-full text-sm text-gray-800">
 			<thead
-				class="bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 text-xs uppercase tracking-wide"
+				class="bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 text-xs uppercase tracking-wide dark:bg-slate-700 dark:text-white"
 			>
 				<tr>
 					<th class="px-3 py-2 text-left font-semibold">Logo</th>
@@ -76,9 +76,9 @@
 				</tr>
 			</thead>
 
-			<tbody class="divide-y divide-gray-300">
+			<tbody class="divide-y divide-gray-300 dark:bg-slate-400">
 				@for (team of standings[currentIndex].teams; track team.abbreviation) {
-				<tr class="hover:bg-blue-100/40 even:bg-white transition-colors duration-200">
+				<tr class="hover:bg-blue-100/40 even:bg-white transition-colors duration-200 dark:bg-slate-500 dark:even:bg-slate-400">
 					<td class="px-3 py-2">
 						<div class="flex justify-center">
 							<div
@@ -95,15 +95,15 @@
 						</div>
 					</td>
 
-					<td class="px-3 py-2 font-semibold text-gray-800">
+					<td class="px-3 py-2 font-semibold text-gray-800 dark:text-white">
 						{{ team.abbreviation }}
 					</td>
 
-					<td class="px-3 py-2 text-center text-gray-700">
+					<td class="px-3 py-2 text-center text-gray-700 dark:text-white">
 						{{ team.totalGames }}
 					</td>
 
-					<td class="px-3 py-2 text-center font-bold text-green-700">
+					<td class="px-3 py-2 text-center font-bold text-green-700 dark:even:text-green-500">
 						{{ team.wins }}
 					</td>
 
@@ -112,9 +112,9 @@
 					</td>
 
 					<td
-						class="px-3 py-2 text-center font-mono bg-gray-50 rounded-md"
+						class="px-3 py-2 text-center font-bold"
 						[ngClass]="{
-							'text-green-700': team.pct >= 0.5,
+							'text-green-700 dark:text-emerald-500': team.pct >= 0.5,
 							'text-red-700': team.pct < 0.5
 						}"
 					>
@@ -122,14 +122,14 @@
 					</td>
 
 					@if (team.gamesBehind === 0) {
-					<td class="px-3 py-2 text-center text-gray-600 font-medium">–</td>
+					<td class="px-3 py-2 text-center text-gray-600 font-medium dark:text-white">–</td>
 					} @else {
-					<td class="px-3 py-2 text-center text-gray-700 font-medium">
+					<td class="px-3 py-2 text-center text-gray-700 font-medium dark:text-white">
 						{{ team.gamesBehind }}
 					</td>
 					}
 
-					<td class="px-3 py-2 text-center font-semibold">
+					<td class="px-3 py-2 text-center font-semibold dark:text-white">
 						{{ team.lastTen }}
 					</td>
 				</tr>
