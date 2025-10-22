@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.mappers.MatchMapper;
@@ -61,11 +62,12 @@ class MatchServiceIntegrationTest {
 
     @Test
     @DisplayName("Should update match status to InProgress if match time has passed")
-    void testMatchesOfTheDay_InProgressUpdate() {
+    void testMatchesOfTheDayInProgressUpdate() {
         Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.Scheduled);
         this.matchRepository.save(match);
 
-        List<MatchDTO> result = this.matchService.getMatchesOfTheDay();
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).status()).isEqualTo(MatchStatus.InProgress);
@@ -80,7 +82,8 @@ class MatchServiceIntegrationTest {
         Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.InProgress);
         this.matchRepository.save(match);
 
-        List<MatchDTO> result = this.matchService.getMatchesOfTheDay();
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).status()).isEqualTo(MatchStatus.Finished);

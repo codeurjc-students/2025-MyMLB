@@ -46,7 +46,21 @@ describe('Navigation Bar Integration Tests', () => {
 		expect(req.request.method).toBe('GET');
 		req.flush(response);
 
-		expect(component.username).toBe('testUser');
+		expect(component.username).toEqual('testUser');
 		expect(component.roles).toContain('USER');
+	});
+
+	it('should set the role of the active user to GUEST if there is no user authenticated', () => {
+		const response: UserRole = {
+			username: '',
+			roles: ['GUEST']
+		};
+
+		const req = httpMock.expectOne(url);
+		expect(req.request.method).toBe('GET');
+		req.flush(response);
+
+		expect(component.username).toEqual('');
+		expect(component.roles).toEqual(['GUEST']);
 	});
 });

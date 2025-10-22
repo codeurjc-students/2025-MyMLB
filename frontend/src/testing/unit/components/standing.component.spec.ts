@@ -4,7 +4,7 @@ import { TeamService, StandingsResponse } from './../../../app/services/team.ser
 import { BackgroundColorService } from '../../../app/services/background-color.service';
 import { of } from 'rxjs';
 
-describe('StandingsComponent', () => {
+describe('Standings Component Tests', () => {
 	let component: StandingsComponent;
 	let fixture: ComponentFixture<StandingsComponent>;
 	let teamServiceSpy: jasmine.SpyObj<TeamService>;
@@ -24,7 +24,7 @@ describe('StandingsComponent', () => {
 					pct: 0.556,
 					gamesBehind: 0,
 					lastTen: '6-4',
-					logo: 'yankees.png',
+					logo: 'NYY.png',
 				},
 			],
 		},
@@ -41,7 +41,7 @@ describe('StandingsComponent', () => {
 					pct: 0.617,
 					gamesBehind: 0,
 					lastTen: '8-2',
-					logo: 'dodgers.png',
+					logo: 'LAD.png',
 				},
 			],
 		},

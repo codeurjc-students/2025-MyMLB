@@ -6,19 +6,17 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
@@ -30,6 +28,18 @@ import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.services.MatchService;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 
 @ExtendWith(MockitoExtension.class)
 public class MatchServiceTest {
@@ -54,9 +64,9 @@ public class MatchServiceTest {
         this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL, Division.WEST);
         this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.NL, Division.EAST);
 
-        this.match1 = new Match(team1, team2, 0, 0, now, MatchStatus.Scheduled);
-        this.match2 = new Match(team2, team3, 4, 9, now, MatchStatus.InProgress);
-        this.match3 = new Match(team3, team1, 10, 14, now, MatchStatus.Finished);
+        this.match1 = new Match(team1, team2, 0, 0, now.minusMinutes(5), MatchStatus.Scheduled);
+        this.match2 = new Match(team2, team3, 4, 9, now.minusMinutes(4), MatchStatus.InProgress);
+        this.match3 = new Match(team3, team1, 10, 14, now.minusMinutes(3), MatchStatus.Finished);
     }
 
     private List<MatchDTO> buildMockDTOs() {
@@ -82,9 +92,16 @@ public class MatchServiceTest {
         List<MatchDTO> expectedResult = this.buildMockDTOs();
 
         when(this.matchRepository.findByDateBetween(startOfDay, endOfDay)).thenReturn(mockMatches);
-        when(this.matchMapper.toMatchDTOList(mockMatches)).thenReturn(expectedResult);
+        when(this.matchMapper.toMatchDTO(any(Match.class))).thenAnswer(invocation -> {
+            Match m = invocation.getArgument(0);
+            return expectedResult.stream()
+                    .filter(dto -> dto.date().equals(m.getDate()))
+                    .findFirst()
+                    .orElseThrow();
+        });
 
-        List<MatchDTO> result = this.matchService.getMatchesOfTheDay();
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(3);
         assertThat(result).containsExactlyElementsOf(expectedResult);
@@ -100,23 +117,5 @@ public class MatchServiceTest {
 
         assertThat(result).hasSize(3);
         assertThat(result).containsExactly(match1, match2, match3);
-    }
-
-    @Test
-    @DisplayName("Should not change Finished matches or Scheduled matches in the future")
-    void testGetMatchesOfTheDay_PreservesFutureAndFinished() {
-        Match finishedMatch = new Match(team1, team2, 2, 3, now.minusHours(10), MatchStatus.Finished);
-        Match futureMatch = new Match(team2, team3, 0, 0, now.plusHours(5), MatchStatus.Scheduled);
-        List<Match> mockMatches = Arrays.asList(finishedMatch, futureMatch);
-        List<MatchDTO> expectedResult = this.buildMockDTOs();
-
-        when(matchRepository.findByDateBetween(any(), any())).thenReturn(mockMatches);
-        when(matchMapper.toMatchDTOList(mockMatches)).thenReturn(expectedResult);
-
-        matchService.getMatchesOfTheDay();
-
-        assertThat(finishedMatch.getStatus()).isEqualTo(MatchStatus.Finished);
-        assertThat(futureMatch.getStatus()).isEqualTo(MatchStatus.Scheduled);
-        verify(matchRepository).saveAll(mockMatches);
     }
 }

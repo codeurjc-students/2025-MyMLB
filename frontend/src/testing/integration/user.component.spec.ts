@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 
-describe('UserComponentIntegration', () => {
+describe('User Component Integration Tests', () => {
 	let fixture: ComponentFixture<UserComponent>;
 	let component: UserComponent;
 	let httpMock: HttpTestingController;

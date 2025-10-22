@@ -3,7 +3,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error.service';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
@@ -14,6 +14,11 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 		catchError((error: HttpErrorResponse) => {
 			let message = 'An unexpected error occurred';
 			let code = error.status;
+			const url = req.url;
+
+			if (code === 401 && url.endsWith('/me')) {
+                return throwError(() => error);
+            }
 
 			if (code === 400) {
 				message = 'Invalid request. Please check the submitted data.';

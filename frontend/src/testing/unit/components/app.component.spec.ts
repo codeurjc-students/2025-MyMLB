@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { ThemeService } from '../../../app/services/theme.service';
 
-fdescribe('App Component Tests', () => {
+describe('App Component Tests', () => {
 	let fixture: ComponentFixture<AppComponent>;
 	let appComponent: AppComponent;
 	let routerEvents$: Subject<any>;

@@ -19,9 +19,20 @@ export class NavbarComponent implements OnInit {
 	constructor(private authService: AuthService, private themeService: ThemeService) {}
 
 	public ngOnInit() {
-		this.authService.getActiveUser().subscribe((response) => {
-			this.roles = response.roles;
-			this.username = response.username;
+		this.authService.getActiveUser().subscribe({
+			next: (response) => {
+				this.roles = response.roles;
+				this.username = response.username;
+			},
+			error: (err) => {
+				if (err.status === 401) {
+					this.roles = ['GUEST'];
+					this.username = '';
+				}
+				else {
+					console.error('Error loading user info:', err);
+				}
+			}
 		});
 	}
 

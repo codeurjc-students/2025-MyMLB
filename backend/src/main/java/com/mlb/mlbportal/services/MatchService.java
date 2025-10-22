@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
@@ -24,17 +28,24 @@ public class MatchService {
         this.matchMapper = mapper;
     }
 
-    public List<MatchDTO> getMatchesOfTheDay() {
+    public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
         List<Match> matchesOfTheDay = this.matchRepository.findByDateBetween(startOfDay, endOfDay);
-
         matchesOfTheDay.forEach(this::updateMatches);
         this.matchRepository.saveAll(matchesOfTheDay);
 
-        return this.matchMapper.toMatchDTOList(matchesOfTheDay);
+        Pageable pageable = PageRequest.of(page, size);
+        int start = Math.min((int) pageable.getOffset(), matchesOfTheDay.size());
+        int end = Math.min(start + pageable.getPageSize(), matchesOfTheDay.size());
+
+        List<MatchDTO> paginatedDTOs = matchesOfTheDay.subList(start, end).stream()
+                .map(matchMapper::toMatchDTO)
+                .toList();
+
+        return new PageImpl<>(paginatedDTOs, pageable, matchesOfTheDay.size());
     }
 
     private void updateMatches(Match match) {

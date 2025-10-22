@@ -76,4 +76,19 @@
 			</div>
 		}
 	</div>
+
+	@if (hasMore && matches.length > 0) {
+		<div class="text-center mt-8">
+			<button
+				class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm tracking-wide
+					bg-gradient-to-r from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-600
+					text-slate-800 dark:text-slate-100 shadow-md hover:shadow-lg
+					hover:from-slate-400 hover:to-slate-500 hover:cursor-pointer dark:hover:from-slate-600 dark:hover:to-slate-500
+					transition-all duration-200 ease-in-out"
+				(click)="loadNextPage()"
+			>
+				⚾ Load More Games
+			</button>
+		</div>
+	}
 }
