@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.mlb.mlbportal.e2e.MatchControllerTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 20.56 s -- in com.mlb.mlbportal.e2e.MatchControllerTest

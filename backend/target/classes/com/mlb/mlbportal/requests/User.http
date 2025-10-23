@@ -1,3 +1,0 @@
-### Get All Users
-GET https://localhost:8443/api/users
-Accept: application/json
