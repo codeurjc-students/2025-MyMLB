@@ -13,57 +13,57 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-21T09:05:32+0200&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-10-22T15:11:00+0200&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251001-1143, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L20">public class TeamMapperImpl implements TeamMapper {</span>
 
     @Override
     public TeamDTO toTeamDTO(Team team) {
-<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ( team == null ) {</span>
 <span class="nc" id="L25">            return null;</span>
         }
 
-<span class="fc" id="L28">        String name = null;</span>
-<span class="fc" id="L29">        String abbreviation = null;</span>
-<span class="fc" id="L30">        League league = null;</span>
-<span class="fc" id="L31">        Division division = null;</span>
-<span class="fc" id="L32">        int totalGames = 0;</span>
-<span class="fc" id="L33">        int wins = 0;</span>
-<span class="fc" id="L34">        int losses = 0;</span>
-<span class="fc" id="L35">        double pct = 0.0d;</span>
-<span class="fc" id="L36">        double gamesBehind = 0.0d;</span>
-<span class="fc" id="L37">        String lastTen = null;</span>
+<span class="nc" id="L28">        String name = null;</span>
+<span class="nc" id="L29">        String abbreviation = null;</span>
+<span class="nc" id="L30">        League league = null;</span>
+<span class="nc" id="L31">        Division division = null;</span>
+<span class="nc" id="L32">        int totalGames = 0;</span>
+<span class="nc" id="L33">        int wins = 0;</span>
+<span class="nc" id="L34">        int losses = 0;</span>
+<span class="nc" id="L35">        double pct = 0.0d;</span>
+<span class="nc" id="L36">        double gamesBehind = 0.0d;</span>
+<span class="nc" id="L37">        String lastTen = null;</span>
 
-<span class="fc" id="L39">        name = team.getName();</span>
-<span class="fc" id="L40">        abbreviation = team.getAbbreviation();</span>
-<span class="fc" id="L41">        league = team.getLeague();</span>
-<span class="fc" id="L42">        division = team.getDivision();</span>
-<span class="fc" id="L43">        totalGames = team.getTotalGames();</span>
-<span class="fc" id="L44">        wins = team.getWins();</span>
-<span class="fc" id="L45">        losses = team.getLosses();</span>
-<span class="fc" id="L46">        pct = team.getPct();</span>
-<span class="fc" id="L47">        gamesBehind = team.getGamesBehind();</span>
-<span class="fc" id="L48">        lastTen = team.getLastTen();</span>
+<span class="nc" id="L39">        name = team.getName();</span>
+<span class="nc" id="L40">        abbreviation = team.getAbbreviation();</span>
+<span class="nc" id="L41">        league = team.getLeague();</span>
+<span class="nc" id="L42">        division = team.getDivision();</span>
+<span class="nc" id="L43">        totalGames = team.getTotalGames();</span>
+<span class="nc" id="L44">        wins = team.getWins();</span>
+<span class="nc" id="L45">        losses = team.getLosses();</span>
+<span class="nc" id="L46">        pct = team.getPct();</span>
+<span class="nc" id="L47">        gamesBehind = team.getGamesBehind();</span>
+<span class="nc" id="L48">        lastTen = team.getLastTen();</span>
 
-<span class="fc" id="L50">        TeamDTO teamDTO = new TeamDTO( name, abbreviation, league, division, totalGames, wins, losses, pct, gamesBehind, lastTen );</span>
+<span class="nc" id="L50">        TeamDTO teamDTO = new TeamDTO( name, abbreviation, league, division, totalGames, wins, losses, pct, gamesBehind, lastTen );</span>
 
-<span class="fc" id="L52">        return teamDTO;</span>
+<span class="nc" id="L52">        return teamDTO;</span>
     }
 
     @Override
     public List&lt;TeamDTO&gt; toTeamDTOList(Collection&lt;Team&gt; teams) {
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if ( teams == null ) {</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if ( teams == null ) {</span>
 <span class="nc" id="L58">            return null;</span>
         }
 
-<span class="fc" id="L61">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">        for ( Team team : teams ) {</span>
-<span class="fc" id="L63">            list.add( toTeamDTO( team ) );</span>
-<span class="fc" id="L64">        }</span>
+<span class="nc" id="L61">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        for ( Team team : teams ) {</span>
+<span class="nc" id="L63">            list.add( toTeamDTO( team ) );</span>
+        }
 
-<span class="fc" id="L66">        return list;</span>
+<span class="nc" id="L66">        return list;</span>
     }
 
     @Override
@@ -74,14 +74,14 @@ import org.springframework.stereotype.Component;
 
 <span class="nc" id="L75">        Team team = new Team();</span>
 
-<span class="nc" id="L77">        team.setName( teamStandings.name() );</span>
-<span class="nc" id="L78">        team.setAbbreviation( teamStandings.abbreviation() );</span>
-<span class="nc" id="L79">        team.setWins( teamStandings.wins() );</span>
-<span class="nc" id="L80">        team.setLosses( teamStandings.losses() );</span>
-<span class="nc" id="L81">        team.setPct( teamStandings.pct() );</span>
-<span class="nc" id="L82">        team.setLastTen( teamStandings.lastTen() );</span>
-<span class="nc" id="L83">        team.setLeague( teamStandings.league() );</span>
-<span class="nc" id="L84">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L77">        team.setAbbreviation( teamStandings.abbreviation() );</span>
+<span class="nc" id="L78">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L79">        team.setLastTen( teamStandings.lastTen() );</span>
+<span class="nc" id="L80">        team.setLeague( teamStandings.league() );</span>
+<span class="nc" id="L81">        team.setLosses( teamStandings.losses() );</span>
+<span class="nc" id="L82">        team.setName( teamStandings.name() );</span>
+<span class="nc" id="L83">        team.setPct( teamStandings.pct() );</span>
+<span class="nc" id="L84">        team.setWins( teamStandings.wins() );</span>
 
 <span class="nc" id="L86">        return team;</span>
     }
@@ -94,13 +94,17 @@ import org.springframework.stereotype.Component;
 
 <span class="fc" id="L95">        String name = null;</span>
 <span class="fc" id="L96">        String abbreviation = null;</span>
+<span class="fc" id="L97">        League league = null;</span>
+<span class="fc" id="L98">        Division division = null;</span>
 
-<span class="fc" id="L98">        name = team.getName();</span>
-<span class="fc" id="L99">        abbreviation = team.getAbbreviation();</span>
+<span class="fc" id="L100">        name = team.getName();</span>
+<span class="fc" id="L101">        abbreviation = team.getAbbreviation();</span>
+<span class="fc" id="L102">        league = team.getLeague();</span>
+<span class="fc" id="L103">        division = team.getDivision();</span>
 
-<span class="fc" id="L101">        TeamSummary teamSummary = new TeamSummary( name, abbreviation );</span>
+<span class="fc" id="L105">        TeamSummary teamSummary = new TeamSummary( name, abbreviation, league, division );</span>
 
-<span class="fc" id="L103">        return teamSummary;</span>
+<span class="fc" id="L107">        return teamSummary;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

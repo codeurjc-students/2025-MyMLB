@@ -15,13 +15,13 @@ public class UserController {
     
     private final UserService userService;
 
-<span class="fc" id="L18">    public UserController(UserService userService) {</span>
-<span class="fc" id="L19">        this.userService = userService;</span>
-<span class="fc" id="L20">    }</span>
+<span class="nc" id="L18">    public UserController(UserService userService) {</span>
+<span class="nc" id="L19">        this.userService = userService;</span>
+<span class="nc" id="L20">    }</span>
 
     @GetMapping
     public List&lt;ShowUser&gt; getUsers() {
-<span class="fc" id="L24">        return this.userService.getAllUsers();</span>
+<span class="nc" id="L24">        return this.userService.getAllUsers();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

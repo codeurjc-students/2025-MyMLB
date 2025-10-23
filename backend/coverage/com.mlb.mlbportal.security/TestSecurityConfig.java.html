@@ -24,17 +24,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
     @Bean
     public JavaMailSender mailSender() {
-<span class="fc" id="L27">        JavaMailSenderImpl sender = new JavaMailSenderImpl();</span>
-<span class="fc" id="L28">        sender.setHost(&quot;smtp.gmail.com&quot;);</span>
-<span class="fc" id="L29">        sender.setPort(587);</span>
-<span class="fc" id="L30">        sender.setUsername(System.getenv(&quot;MAIL_USERNAME&quot;));</span>
-<span class="fc" id="L31">        sender.setPassword(System.getenv(&quot;MAIL_PASSWORD&quot;));</span>
+<span class="nc" id="L27">        JavaMailSenderImpl sender = new JavaMailSenderImpl();</span>
+<span class="nc" id="L28">        sender.setHost(&quot;smtp.gmail.com&quot;);</span>
+<span class="nc" id="L29">        sender.setPort(587);</span>
+<span class="nc" id="L30">        sender.setUsername(System.getenv(&quot;MAIL_USERNAME&quot;));</span>
+<span class="nc" id="L31">        sender.setPassword(System.getenv(&quot;MAIL_PASSWORD&quot;));</span>
 
-<span class="fc" id="L33">        Properties props = sender.getJavaMailProperties();</span>
-<span class="fc" id="L34">        props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L35">        props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L33">        Properties props = sender.getJavaMailProperties();</span>
+<span class="nc" id="L34">        props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L35">        props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
 
-<span class="fc" id="L37">        return sender;</span>
+<span class="nc" id="L37">        return sender;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

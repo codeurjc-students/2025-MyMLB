@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
@@ -19,40 +23,47 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
 
-<span class="fc" id="L22">    public MatchService(MatchRepository matchRepo, MatchMapper mapper) {</span>
-<span class="fc" id="L23">        this.matchRepository = matchRepo;</span>
-<span class="fc" id="L24">        this.matchMapper = mapper;</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L26">    public MatchService(MatchRepository matchRepo, MatchMapper mapper) {</span>
+<span class="fc" id="L27">        this.matchRepository = matchRepo;</span>
+<span class="fc" id="L28">        this.matchMapper = mapper;</span>
+<span class="fc" id="L29">    }</span>
 
-    public List&lt;MatchDTO&gt; getMatchesOfTheDay() {
-<span class="fc" id="L28">        LocalDate today = LocalDate.now();</span>
-<span class="fc" id="L29">        LocalDateTime startOfDay = today.atStartOfDay();</span>
-<span class="fc" id="L30">        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);</span>
+    public Page&lt;MatchDTO&gt; getMatchesOfTheDay(int page, int size) {
+<span class="fc" id="L32">        LocalDate today = LocalDate.now();</span>
+<span class="fc" id="L33">        LocalDateTime startOfDay = today.atStartOfDay();</span>
+<span class="fc" id="L34">        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);</span>
 
-<span class="fc" id="L32">        List&lt;Match&gt; matchesOfTheDay = this.matchRepository.findByDateBetween(startOfDay, endOfDay);</span>
+<span class="fc" id="L36">        List&lt;Match&gt; matchesOfTheDay = this.matchRepository.findByDateBetween(startOfDay, endOfDay);</span>
+<span class="fc" id="L37">        matchesOfTheDay.forEach(this::updateMatches);</span>
+<span class="fc" id="L38">        this.matchRepository.saveAll(matchesOfTheDay);</span>
 
-<span class="fc" id="L34">        matchesOfTheDay.forEach(this::updateMatches);</span>
-<span class="fc" id="L35">        this.matchRepository.saveAll(matchesOfTheDay);</span>
+<span class="fc" id="L40">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L41">        int start = Math.min((int) pageable.getOffset(), matchesOfTheDay.size());</span>
+<span class="fc" id="L42">        int end = Math.min(start + pageable.getPageSize(), matchesOfTheDay.size());</span>
 
-<span class="fc" id="L37">        return this.matchMapper.toMatchDTOList(matchesOfTheDay);</span>
+<span class="fc" id="L44">        List&lt;MatchDTO&gt; paginatedDTOs = matchesOfTheDay.subList(start, end).stream()</span>
+<span class="fc" id="L45">                .map(matchMapper::toMatchDTO)</span>
+<span class="fc" id="L46">                .toList();</span>
+
+<span class="fc" id="L48">        return new PageImpl&lt;&gt;(paginatedDTOs, pageable, matchesOfTheDay.size());</span>
     }
 
     private void updateMatches(Match match) {
-<span class="fc" id="L41">        LocalDateTime now = LocalDateTime.now();</span>
-<span class="fc" id="L42">        LocalDateTime matchTime = match.getDate();</span>
+<span class="fc" id="L52">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="fc" id="L53">        LocalDateTime matchTime = match.getDate();</span>
 
-<span class="fc bfc" id="L44" title="All 4 branches covered.">        if (match.getStatus() == MatchStatus.Scheduled &amp;&amp; !now.isBefore(matchTime)) {</span>
-<span class="fc" id="L45">            match.setStatus(MatchStatus.InProgress);</span>
-<span class="fc" id="L46">            return;</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (match.getStatus() == MatchStatus.Scheduled &amp;&amp; !now.isBefore(matchTime)) {</span>
+<span class="nc" id="L56">            match.setStatus(MatchStatus.InProgress);</span>
+<span class="nc" id="L57">            return;</span>
         }
 
-<span class="fc bfc" id="L49" title="All 4 branches covered.">        if (match.getStatus() == MatchStatus.InProgress &amp;&amp; now.isAfter(matchTime.plusHours(3))) {</span>
-<span class="fc" id="L50">            match.setStatus(MatchStatus.Finished);</span>
+<span class="pc bpc" id="L60" title="1 of 4 branches missed.">        if (match.getStatus() == MatchStatus.InProgress &amp;&amp; now.isAfter(matchTime.plusHours(3))) {</span>
+<span class="nc" id="L61">            match.setStatus(MatchStatus.Finished);</span>
         }
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L63">    }</span>
 
     public List&lt;Match&gt; getLast10Matches(Team team) {
-<span class="fc" id="L55">        return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);</span>
+<span class="nc" id="L66">        return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

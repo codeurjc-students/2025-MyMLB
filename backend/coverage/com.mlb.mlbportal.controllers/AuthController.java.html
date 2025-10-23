@@ -40,11 +40,11 @@ public class AuthController {
     private final UserService userService;
     private final EmailService emailService;
 
-<span class="fc" id="L43">    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {</span>
-<span class="fc" id="L44">        this.userLoginService = userLoginService;</span>
-<span class="fc" id="L45">        this.userService = userService;</span>
-<span class="fc" id="L46">        this.emailService = emailService;</span>
-<span class="fc" id="L47">    }</span>
+<span class="nc" id="L43">    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {</span>
+<span class="nc" id="L44">        this.userLoginService = userLoginService;</span>
+<span class="nc" id="L45">        this.userService = userService;</span>
+<span class="nc" id="L46">        this.emailService = emailService;</span>
+<span class="nc" id="L47">    }</span>
 
     @Operation(summary = &quot;Get the active user&quot;, description = &quot;Obtain details of the currently authenticated user.&quot;, responses = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User successfully authenticated&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = UserRole.class), examples = @ExampleObject(value = &quot;{\&quot;username\&quot;:\&quot;johndoe\&quot;,\&quot;roles\&quot;:[\&quot;USER\&quot;]}&quot;))),
@@ -62,7 +62,7 @@ public class AuthController {
     @PostMapping(&quot;/login&quot;)
     public ResponseEntity&lt;AuthResponse&gt; login(@Valid @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
-<span class="fc" id="L65">        return this.userLoginService.login(response, loginRequest);</span>
+<span class="nc" id="L65">        return this.userLoginService.login(response, loginRequest);</span>
     }
 
     @Operation(summary = &quot;Register new user&quot;, description = &quot;Creates a new user account in the system.&quot;, responses = {
@@ -72,8 +72,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/register&quot;)
     public ResponseEntity&lt;AuthResponse&gt; register(@Valid @RequestBody RegisterRequest registerRequest) {
-<span class="fc" id="L75">        this.userService.createUser(registerRequest);</span>
-<span class="fc" id="L76">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
+<span class="nc" id="L75">        this.userService.createUser(registerRequest);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Refresh JWT token&quot;, description = &quot;Generates new JWT tokens using the refresh token stored in cookies.&quot;, responses = {
@@ -92,7 +92,7 @@ public class AuthController {
     })
     @PostMapping(&quot;/logout&quot;)
     public ResponseEntity&lt;AuthResponse&gt; logOut(HttpServletResponse response) {
-<span class="fc" id="L95">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));</span>
+<span class="nc" id="L95">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));</span>
     }
 
     @Operation(summary = &quot;Request password recovery&quot;, description = &quot;Sends a recovery email to the user containing a reset link or verification code.&quot;, responses = {
@@ -102,8 +102,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/forgot-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-<span class="fc" id="L105">        this.emailService.sendEmail(request.email());</span>
-<span class="fc" id="L106">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
+<span class="nc" id="L105">        this.emailService.sendEmail(request.email());</span>
+<span class="nc" id="L106">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Reset user password&quot;, description = &quot;Allows the user to set a new password using a valid recovery code.&quot;, responses = {
@@ -112,11 +112,11 @@ public class AuthController {
     })
     @PostMapping(&quot;/reset-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-<span class="fc" id="L115">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (success) {</span>
-<span class="fc" id="L117">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
+<span class="nc" id="L115">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (success) {</span>
+<span class="nc" id="L117">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
         }
-<span class="fc" id="L119">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
+<span class="nc" id="L119">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

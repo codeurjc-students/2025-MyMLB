@@ -10,41 +10,41 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-21T09:05:32+0200&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-10-22T15:11:01+0200&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251001-1143, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
 )
 @Component
-<span class="fc" id="L17">public class UserMapperImpl implements UserMapper {</span>
+<span class="nc" id="L17">public class UserMapperImpl implements UserMapper {</span>
 
     @Override
     public ShowUser toShowUser(UserEntity user) {
-<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if ( user == null ) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">        if ( user == null ) {</span>
 <span class="nc" id="L22">            return null;</span>
         }
 
-<span class="fc" id="L25">        String username = null;</span>
-<span class="fc" id="L26">        String email = null;</span>
+<span class="nc" id="L25">        String username = null;</span>
+<span class="nc" id="L26">        String email = null;</span>
 
-<span class="fc" id="L28">        username = user.getUsername();</span>
-<span class="fc" id="L29">        email = user.getEmail();</span>
+<span class="nc" id="L28">        username = user.getUsername();</span>
+<span class="nc" id="L29">        email = user.getEmail();</span>
 
-<span class="fc" id="L31">        ShowUser showUser = new ShowUser( username, email );</span>
+<span class="nc" id="L31">        ShowUser showUser = new ShowUser( username, email );</span>
 
-<span class="fc" id="L33">        return showUser;</span>
+<span class="nc" id="L33">        return showUser;</span>
     }
 
     @Override
     public List&lt;ShowUser&gt; toShowUsers(Collection&lt;UserEntity&gt; users) {
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if ( users == null ) {</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if ( users == null ) {</span>
 <span class="nc" id="L39">            return null;</span>
         }
 
-<span class="fc" id="L42">        List&lt;ShowUser&gt; list = new ArrayList&lt;ShowUser&gt;( users.size() );</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        for ( UserEntity userEntity : users ) {</span>
-<span class="fc" id="L44">            list.add( toShowUser( userEntity ) );</span>
-<span class="fc" id="L45">        }</span>
+<span class="nc" id="L42">        List&lt;ShowUser&gt; list = new ArrayList&lt;ShowUser&gt;( users.size() );</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        for ( UserEntity userEntity : users ) {</span>
+<span class="nc" id="L44">            list.add( toShowUser( userEntity ) );</span>
+        }
 
-<span class="fc" id="L47">        return list;</span>
+<span class="nc" id="L47">        return list;</span>
     }
 
     @Override
