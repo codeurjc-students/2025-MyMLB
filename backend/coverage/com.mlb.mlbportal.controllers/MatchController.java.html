@@ -23,9 +23,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class MatchController {
     private final MatchService matchService;
 
-<span class="fc" id="L26">    public MatchController(MatchService matchService) {</span>
-<span class="fc" id="L27">        this.matchService = matchService;</span>
-<span class="fc" id="L28">    }</span>
+<span class="nc" id="L26">    public MatchController(MatchService matchService) {</span>
+<span class="nc" id="L27">        this.matchService = matchService;</span>
+<span class="nc" id="L28">    }</span>
 
     @Operation(summary = &quot;Get the matches of the day (paginated)&quot;, description = &quot;Returns a paginated list of matches scheduled for today. Always 10 matches per page.&quot;)
     @ApiResponses(value = {
@@ -36,8 +36,8 @@ public class MatchController {
     public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfTheDayPaginated(
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
-<span class="fc" id="L39">        Page&lt;MatchDTO&gt; matchesPage = this.matchService.getMatchesOfTheDay(page, size);</span>
-<span class="fc" id="L40">        return ResponseEntity.ok(matchesPage);</span>
+<span class="nc" id="L39">        Page&lt;MatchDTO&gt; matchesPage = this.matchService.getMatchesOfTheDay(page, size);</span>
+<span class="nc" id="L40">        return ResponseEntity.ok(matchesPage);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

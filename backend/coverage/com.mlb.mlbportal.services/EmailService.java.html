@@ -15,46 +15,46 @@ import com.mlb.mlbportal.repositories.UserRepository;
 
 @Service
 public class EmailService {
-<span class="nc" id="L18">    private static final Random RANDOM = new Random();</span>
+<span class="fc" id="L18">    private static final Random RANDOM = new Random();</span>
 
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
 
-<span class="nc" id="L24">    public EmailService(JavaMailSender javaMail, PasswordResetTokenRepository passRepo, UserRepository userRepo) {</span>
-<span class="nc" id="L25">        this.mailSender = javaMail;</span>
-<span class="nc" id="L26">        this.passwordRepository = passRepo;</span>
-<span class="nc" id="L27">        this.userRepository = userRepo;</span>
-<span class="nc" id="L28">    }</span>
+<span class="fc" id="L24">    public EmailService(JavaMailSender javaMail, PasswordResetTokenRepository passRepo, UserRepository userRepo) {</span>
+<span class="fc" id="L25">        this.mailSender = javaMail;</span>
+<span class="fc" id="L26">        this.passwordRepository = passRepo;</span>
+<span class="fc" id="L27">        this.userRepository = userRepo;</span>
+<span class="fc" id="L28">    }</span>
 
     public Optional&lt;PasswordResetToken&gt; getCode(String code) {
-<span class="nc" id="L31">        return this.passwordRepository.findByCode(code);</span>
+<span class="fc" id="L31">        return this.passwordRepository.findByCode(code);</span>
     }
 
     public void deleteToken(PasswordResetToken token) {
-<span class="nc" id="L35">        this.passwordRepository.delete(token);</span>
-<span class="nc" id="L36">    }</span>
+<span class="fc" id="L35">        this.passwordRepository.delete(token);</span>
+<span class="fc" id="L36">    }</span>
 
     private void sendEmailHelper(String destinyEmail, String subject, String body) {
-<span class="nc" id="L39">        SimpleMailMessage message = new SimpleMailMessage();</span>
-<span class="nc" id="L40">        message.setTo(destinyEmail);</span>
-<span class="nc" id="L41">        message.setSubject(subject);</span>
-<span class="nc" id="L42">        message.setText(body);</span>
-<span class="nc" id="L43">        this.mailSender.send(message);</span>
-<span class="nc" id="L44">    }</span>
+<span class="fc" id="L39">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L40">        message.setTo(destinyEmail);</span>
+<span class="fc" id="L41">        message.setSubject(subject);</span>
+<span class="fc" id="L42">        message.setText(body);</span>
+<span class="fc" id="L43">        this.mailSender.send(message);</span>
+<span class="fc" id="L44">    }</span>
 
     public void sendEmail(String destinyEmail) {
-<span class="nc" id="L47">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
+<span class="fc" id="L47">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
         
-<span class="nc" id="L49">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
+<span class="fc" id="L49">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
         
-<span class="nc" id="L51">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
+<span class="fc" id="L51">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
         
-<span class="nc" id="L53">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
-<span class="nc" id="L54">        this.passwordRepository.save(resetToken);</span>
+<span class="fc" id="L53">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
+<span class="fc" id="L54">        this.passwordRepository.save(resetToken);</span>
 
-<span class="nc" id="L56">        String subject = &quot;Password Recovery&quot;;</span>
-<span class="nc" id="L57">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L56">        String subject = &quot;Password Recovery&quot;;</span>
+<span class="fc" id="L57">        String body = &quot;&quot;&quot;</span>
                 Hello %s,
 
                 You have requested to generate a new password for your account.
@@ -65,11 +65,11 @@ public class EmailService {
                 This code will expire in 15 minutes.
 
                 If you do not authorize this procedure, ignore this email.
-<span class="nc" id="L68">                &quot;&quot;&quot;.formatted(</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
-<span class="nc" id="L70">                    code</span>
+<span class="fc" id="L68">                &quot;&quot;&quot;.formatted(</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
+                    code
                 );
-<span class="nc" id="L72">        this.sendEmailHelper(destinyEmail, subject, body);</span>
-<span class="nc" id="L73">    }</span>
+<span class="fc" id="L72">        this.sendEmailHelper(destinyEmail, subject, body);</span>
+<span class="fc" id="L73">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

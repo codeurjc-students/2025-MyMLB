@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-22T15:11:00+0200&quot;,
-    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251001-1143, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
+    date = &quot;2025-10-23T21:49:07+0200&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
 <span class="fc" id="L20">public class MatchMapperImpl implements MatchMapper {</span>
@@ -56,7 +56,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L56">        List&lt;MatchDTO&gt; list = new ArrayList&lt;MatchDTO&gt;( matchList.size() );</span>
 <span class="nc bnc" id="L57" title="All 2 branches missed.">        for ( Match match : matchList ) {</span>
 <span class="nc" id="L58">            list.add( toMatchDTO( match ) );</span>
-        }
+<span class="nc" id="L59">        }</span>
 
 <span class="nc" id="L61">        return list;</span>
     }

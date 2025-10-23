@@ -63,24 +63,24 @@ import jakarta.servlet.http.HttpServletRequest;
 	}
 
 	public String generateAccessToken(UserDetails userDetails) {
-<span class="nc" id="L66">		return buildToken(TokenType.ACCESS, userDetails).compact();</span>
+<span class="fc" id="L66">		return buildToken(TokenType.ACCESS, userDetails).compact();</span>
 	}
 
 	public String generateRefreshToken(UserDetails userDetails) {
-<span class="nc" id="L70">		var token = buildToken(TokenType.REFRESH, userDetails);</span>
-<span class="nc" id="L71">        return token.compact();</span>
+<span class="fc" id="L70">		var token = buildToken(TokenType.REFRESH, userDetails);</span>
+<span class="fc" id="L71">        return token.compact();</span>
 	}
 
 	private JwtBuilder buildToken(TokenType tokenType, UserDetails userDetails) {
-<span class="nc" id="L75">		var currentDate = new Date();</span>
-<span class="nc" id="L76">		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));</span>
-<span class="nc" id="L77">		return Jwts.builder()</span>
-<span class="nc" id="L78">				.claim(&quot;roles&quot;, userDetails.getAuthorities())</span>
-<span class="nc" id="L79">				.claim(&quot;type&quot;, tokenType.name())</span>
-<span class="nc" id="L80">				.subject(userDetails.getUsername())</span>
-<span class="nc" id="L81">				.issuedAt(currentDate)</span>
-<span class="nc" id="L82">				.expiration(expiryDate)</span>
-<span class="nc" id="L83">				.signWith(jwtSecret);</span>
+<span class="fc" id="L75">		var currentDate = new Date();</span>
+<span class="fc" id="L76">		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));</span>
+<span class="fc" id="L77">		return Jwts.builder()</span>
+<span class="fc" id="L78">				.claim(&quot;roles&quot;, userDetails.getAuthorities())</span>
+<span class="fc" id="L79">				.claim(&quot;type&quot;, tokenType.name())</span>
+<span class="fc" id="L80">				.subject(userDetails.getUsername())</span>
+<span class="fc" id="L81">				.issuedAt(currentDate)</span>
+<span class="fc" id="L82">				.expiration(expiryDate)</span>
+<span class="fc" id="L83">				.signWith(jwtSecret);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -29,9 +29,9 @@ import com.mlb.mlbportal.models.enums.League;
 public class TeamController {
     private final TeamService teamService;
 
-<span class="nc" id="L32">    public TeamController(TeamService teamService) {</span>
-<span class="nc" id="L33">        this.teamService = teamService;</span>
-<span class="nc" id="L34">    }</span>
+<span class="fc" id="L32">    public TeamController(TeamService teamService) {</span>
+<span class="fc" id="L33">        this.teamService = teamService;</span>
+<span class="fc" id="L34">    }</span>
 
     @Operation(summary = &quot;Get all teams&quot;, description = &quot;Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.&quot;)
     @ApiResponses(value = {
@@ -40,8 +40,8 @@ public class TeamController {
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;TeamDTO&gt;&gt; getAllTeams() {
-<span class="nc" id="L43">        List&lt;TeamDTO&gt; teams = this.teamService.getTeams();</span>
-<span class="nc" id="L44">        return ResponseEntity.ok(teams);</span>
+<span class="fc" id="L43">        List&lt;TeamDTO&gt; teams = this.teamService.getTeams();</span>
+<span class="fc" id="L44">        return ResponseEntity.ok(teams);</span>
     }
 
     @Operation(summary = &quot;Get team standings&quot;, description = &quot;Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.&quot;)
@@ -51,8 +51,8 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/standings&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt;&gt; getStandings() {
-<span class="nc" id="L54">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings();</span>
-<span class="nc" id="L55">        return ResponseEntity.ok(standings);</span>
+<span class="fc" id="L54">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings();</span>
+<span class="fc" id="L55">        return ResponseEntity.ok(standings);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

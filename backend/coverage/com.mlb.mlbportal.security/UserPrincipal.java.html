@@ -14,24 +14,24 @@ public class UserPrincipal implements UserDetails {
     private final UserEntity user;
     private final Collection&lt;? extends GrantedAuthority&gt; authorities;
 
-<span class="nc" id="L17">    public UserPrincipal(UserEntity user, Collection&lt;? extends  GrantedAuthority&gt; authorities) {</span>
-<span class="nc" id="L18">        this.user = user;</span>
-<span class="nc" id="L19">        this.authorities = authorities;</span>
-<span class="nc" id="L20">    }</span>
+<span class="fc" id="L17">    public UserPrincipal(UserEntity user, Collection&lt;? extends  GrantedAuthority&gt; authorities) {</span>
+<span class="fc" id="L18">        this.user = user;</span>
+<span class="fc" id="L19">        this.authorities = authorities;</span>
+<span class="fc" id="L20">    }</span>
 
     @Override
     public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
-<span class="nc" id="L24">        return this.authorities;</span>
+<span class="fc" id="L24">        return this.authorities;</span>
     }
 
     @Override
     public String getPassword() {
-<span class="nc" id="L29">        return this.user.getPassword();</span>
+<span class="fc" id="L29">        return this.user.getPassword();</span>
     }
 
     @Override
     public String getUsername() {
-<span class="nc" id="L34">        return this.user.getUsername();</span>
+<span class="fc" id="L34">        return this.user.getUsername();</span>
     }   
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
