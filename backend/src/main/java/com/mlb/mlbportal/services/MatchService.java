@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +30,7 @@ public class MatchService {
     }
 
     public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
@@ -49,6 +51,7 @@ public class MatchService {
     }
 
     private void updateMatches(Match match) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime matchTime = match.getDate();
 
