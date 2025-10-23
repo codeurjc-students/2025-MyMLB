@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.mappers.MatchMapper;
@@ -21,6 +22,9 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+
+import jakarta.transaction.Transactional;
+
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
@@ -30,6 +34,8 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class MatchServiceIntegrationTest {
 
     @Autowired
