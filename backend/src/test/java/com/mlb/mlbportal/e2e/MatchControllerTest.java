@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.e2e;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
@@ -16,7 +17,6 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import static com.mlb.mlbportal.utils.TestConstants.MATCHES_OF_DAY_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
@@ -44,13 +44,13 @@ public class MatchControllerTest extends BaseE2ETest {
     private Team team1, team2, team3;
 
     @Autowired
-    private TimeProvider timeProvider;
+    private Clock clock;
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
-        LocalDateTime baseTime = this.timeProvider.now();
+        LocalDateTime baseTime = LocalDateTime.now(this.clock);
         cleanDatabase();
         this.team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES,
                 League.AL,

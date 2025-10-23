@@ -1,7 +1,9 @@
 package com.mlb.mlbportal.unit;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class MatchServiceTest {
     private MatchMapper matchMapper;
 
     @Mock
-    private TimeProvider timeProvider;
+    private Clock clock;
 
     @InjectMocks
     private MatchService matchService;
@@ -87,11 +89,12 @@ public class MatchServiceTest {
     @Test
     @DisplayName("Should return all the matches scheduled for today")
     void testGetMatchesOfTheDay() {
-        when(this.timeProvider.today()).thenReturn(this.fixedNow.toLocalDate());
-        when(this.timeProvider.now()).thenReturn(this.fixedNow);
+        when(clock.instant()).thenReturn(fixedNow.atZone(ZoneId.of("Europe/Madrid")).toInstant());
+        when(clock.getZone()).thenReturn(ZoneId.of("Europe/Madrid"));
 
-        LocalDateTime startOfDay = this.fixedNow.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = this.fixedNow.toLocalDate().atTime(LocalTime.MAX);
+        LocalDateTime now = LocalDateTime.now(clock);
+        LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = now.toLocalDate().atTime(LocalTime.MAX);
 
         List<Match> mockMatches = Arrays.asList(match1, match2, match3);
         List<MatchDTO> expectedResult = this.buildMockDTOs();

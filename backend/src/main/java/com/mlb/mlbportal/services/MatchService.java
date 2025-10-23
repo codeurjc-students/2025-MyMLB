@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.services;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,23 +17,22 @@ import com.mlb.mlbportal.mappers.MatchMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import com.mlb.mlbportal.repositories.MatchRepository;
 
 @Service
 public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
-    private final TimeProvider timeProvider;
+    private final Clock clock;
 
-    public MatchService(MatchRepository matchRepo, MatchMapper mapper, TimeProvider timeProvider) {
+    public MatchService(MatchRepository matchRepo, MatchMapper mapper, Clock clock) {
         this.matchRepository = matchRepo;
         this.matchMapper = mapper;
-        this.timeProvider = timeProvider;
+        this.clock = clock;
     }
 
     public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
-        LocalDate today = this.timeProvider.today();
+        LocalDate today = LocalDate.now(this.clock);
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
@@ -52,7 +52,7 @@ public class MatchService {
     }
 
     private void updateMatches(Match match) {
-        LocalDateTime now = this.timeProvider.now();
+        LocalDateTime now = LocalDateTime.now(this.clock);
         LocalDateTime matchTime = match.getDate();
 
         if (match.getStatus() == MatchStatus.Scheduled && !now.isBefore(matchTime)) {

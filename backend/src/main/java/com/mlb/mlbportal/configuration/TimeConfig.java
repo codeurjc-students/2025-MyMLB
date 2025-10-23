@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.configuration;
 
+import java.time.Clock;
 import java.time.ZoneId;
 
 import org.springframework.context.annotation.Bean;
@@ -13,5 +14,10 @@ public class TimeConfig {
     @Bean
     public TimeProvider timeProvider() {
         return new SystemTimeProvider(ZoneId.of("Europe/Madrid"));
+    }
+
+    @Bean
+    public Clock clock() {
+        return Clock.system(ZoneId.of("Europe/Madrid"));
     }
 }
