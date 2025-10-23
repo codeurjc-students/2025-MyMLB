@@ -2,7 +2,6 @@ package com.mlb.mlbportal.e2e;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
@@ -49,7 +48,6 @@ public class MatchControllerTest extends BaseE2ETest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
         LocalDateTime baseTime = LocalDateTime.now(this.clock);
         cleanDatabase();
         this.team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES,

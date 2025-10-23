@@ -27,7 +27,6 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.services.MatchService;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
