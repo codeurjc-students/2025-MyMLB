@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StandingsComponent } from '../../app/components/standings/standings.component';
+import { StandingsWidgetComponent } from '../../app/components/standings/standings-widget/standings-widget.component';
 import { TeamService } from '../../app/services/team.service';
 import { Team } from '../../app/models/team-model';
 import { of, throwError } from 'rxjs';
 
 describe('Standings Component Integration Tests', () => {
-	let fixture: ComponentFixture<StandingsComponent>;
-	let component: StandingsComponent;
+	let fixture: ComponentFixture<StandingsWidgetComponent>;
+	let component: StandingsWidgetComponent;
 	let teamServiceSpy: jasmine.SpyObj<TeamService>;
 
 	const mockResponse = {
@@ -26,11 +26,11 @@ describe('Standings Component Integration Tests', () => {
 		teamServiceSpy = jasmine.createSpyObj('TeamService', ['getStandings']);
 
 		TestBed.configureTestingModule({
-			imports: [StandingsComponent],
+			imports: [StandingsWidgetComponent],
 			providers: [{ provide: TeamService, useValue: teamServiceSpy }],
 		});
 
-		fixture = TestBed.createComponent(StandingsComponent);
+		fixture = TestBed.createComponent(StandingsWidgetComponent);
 		component = fixture.componentInstance;
 	});
 

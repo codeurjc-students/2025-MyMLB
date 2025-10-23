@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StandingsComponent } from "../standings/standings.component";
+import { StandingsWidgetComponent } from "../standings/standings-widget/standings-widget.component";
 import { CommonModule } from '@angular/common';
 import { MatchesOfTheDayComponent } from "../match/matches-of-the-day/matches-of-the-day.component";
 
@@ -7,7 +7,7 @@ import { MatchesOfTheDayComponent } from "../match/matches-of-the-day/matches-of
 	selector: 'app-home',
 	standalone: true,
 	templateUrl: './home.component.html',
- 	imports: [StandingsComponent, CommonModule, MatchesOfTheDayComponent]
+ 	imports: [StandingsWidgetComponent, CommonModule, MatchesOfTheDayComponent]
 })
 export class HomeComponent {
 	constructor() {}

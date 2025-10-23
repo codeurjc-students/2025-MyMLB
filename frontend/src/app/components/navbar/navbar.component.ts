@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
 	public roles: Array<string> = ['GUEST'];
 	public username: string = '';
 
-	constructor(private authService: AuthService, private themeService: ThemeService) {}
+	constructor(private authService: AuthService, private themeService: ThemeService, private router: Router) {}
 
 	public ngOnInit() {
 		this.authService.getActiveUser().subscribe({
@@ -26,7 +26,6 @@ export class NavbarComponent implements OnInit {
 			},
 			error: (err) => {
 				if (err.status === 401) {
-					this.roles = ['GUEST'];
 					this.username = '';
 				}
 				else {
@@ -38,5 +37,9 @@ export class NavbarComponent implements OnInit {
 
 	public toggleDarkModeButton(): void {
 		this.toggleDarkMode.emit();
+	}
+
+	get profileLink(): string {
+    	return this.roles.includes('USER') || this.roles.includes('ADMIN') ? '/profile' : '/auth';
 	}
 }

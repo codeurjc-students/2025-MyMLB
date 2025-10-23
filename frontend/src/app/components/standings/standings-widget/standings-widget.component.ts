@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { TeamService, StandingsResponse } from '../../services/team.service';
-import { StandingsData } from '../../models/standings-data.model';
+import { TeamService, StandingsResponse } from '../../../services/team.service';
+import { StandingsData } from '../../../models/standings-data.model';
 import { CommonModule } from '@angular/common';
-import { Team } from '../../models/team-model';
-import { BackgroundColorService } from '../../services/background-color.service';
+import { Team } from '../../../models/team-model';
+import { BackgroundColorService } from '../../../services/background-color.service';
 
 @Component({
     selector: 'app-standings',
     standalone: true,
 	imports: [CommonModule],
-    templateUrl: './standings.component.html',
+    templateUrl: './standings-widget.component.html',
 })
-export class StandingsComponent implements OnInit {
+export class StandingsWidgetComponent implements OnInit {
     standings: StandingsData[] = [];
     currentIndex = 0;
     errorMessage = '';

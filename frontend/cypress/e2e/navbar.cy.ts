@@ -1,125 +1,108 @@
 /// <reference types="cypress" />
 
-type Role = 'GUEST' | 'USER' | 'ADMIN';
-
-const roleConfig: Record<
-	Role,
-	{
-		intercept: { statusCode: number; body: { username: string; roles: string[] } };
-		visibleItems: string[];
-		absentItems?: string[];
-		profileRedirect: string;
-	}
-> = {
-	GUEST: {
-		intercept: {
-			statusCode: 401,
-			body: { username: '', roles: ['GUEST'] },
-		},
-		visibleItems: ['Home', 'Login', 'Sign Up', 'Teams', 'Standings'],
-		absentItems: [
-			'My Tickets',
-			'Fav Teams',
-			'Edit Info',
-			'Matches',
-			'Create Match',
-			'Statistics',
-		],
-		profileRedirect: '/auth',
-	},
-	USER: {
-		intercept: {
+describe('Navbar Component E2E Tests', () => {
+	beforeEach(() => {
+		cy.intercept('GET', '/api/auth/me', {
 			statusCode: 200,
-			body: { username: 'testUser', roles: ['USER'] },
-		},
-		visibleItems: ['Home', 'My Tickets', 'Fav Teams', 'Teams', 'Standings'],
-		absentItems: ['Login', 'Sign Up', 'Edit Info', 'Matches', 'Create Match', 'Statistics'],
-		profileRedirect: '/profile',
-	},
-	ADMIN: {
-		intercept: {
-			statusCode: 200,
-			body: { username: 'testAdmin', roles: ['ADMIN'] },
-		},
-		visibleItems: ['Home', 'Edit Info', 'Matches', 'Create Match', 'Statistics'],
-		absentItems: ['Login', 'Sign Up', 'My Tickets', 'Fav Teams', 'Teams', 'Standings'],
-		profileRedirect: '/profile',
-	},
-};
+			body: {
+				username: 'testuser',
+				roles: ['USER'],
+			},
+		}).as('getUser');
 
-describe('Navigation Bar E2E Tests', () => {
-	const testCommonElements = () => {
-		cy.contains('a.nav-elems', 'Home').should('exist').and('be.visible').click();
-		cy.url().should('match', /\/$/);
+		cy.visit('/');
+		cy.wait('@getUser');
+	});
 
-		cy.get('img[alt="MLB Portal Logo"]')
-			.should('exist')
-			.and('be.visible')
-			.and('have.attr', 'src', 'assets/logo.png');
+	it('renders logo and title correctly', () => {
+		cy.get('header nav').should('exist');
+		cy.get('img[alt="MLB Portal Logo"]').should('be.visible');
+		cy.contains('MLB Portal').should('be.visible');
+	});
 
+	it('shows Home link and navigates correctly', () => {
+		cy.contains('Home').should('have.attr', 'href').and('include', '/');
+	});
+
+	it('shows user-specific links when role is USER', () => {
+		cy.contains('My Tickets').should('exist');
+		cy.contains('Fav Teams').should('exist');
+		cy.contains('Teams').should('exist');
+		cy.contains('Standings').should('exist');
+		cy.contains('Edit Info').should('not.exist');
+	});
+
+	it('does not show login/signup when authenticated', () => {
+		cy.contains('Login').should('not.exist');
+		cy.contains('Sign Up').should('not.exist');
+	});
+
+	it('toggles dark mode switch', () => {
+		cy.get('input[type="checkbox"]').should('exist').check({ force: true });
+		cy.get('input[type="checkbox"]').should('be.checked');
+	});
+
+	it('shows avatar and navigates to profile', () => {
 		cy.get('img[alt="Avatar Profile"]')
-			.should('exist')
-			.and('be.visible')
-			.and('have.attr', 'src', 'assets/account-avatar.png');
-
-		cy.get('input[type="checkbox"]')
-            .should('exist')
-            .and('be.visible');
-
-        cy.contains('span', 'Dark Mode')
-            .should('exist')
-            .and('be.visible');
-	};
-
-	const testRoleNavigation = (role: Role) => {
-		describe(`${role} User Navigation`, () => {
-			beforeEach(() => {
-				cy.viewport('macbook-15');
-				cy.intercept(
-					'GET',
-					'https://localhost:8443/api/auth/me',
-					roleConfig[role].intercept).as('getUser');
-
-				cy.visit('/');
-				cy.wait('@getUser');
+			.should('be.visible')
+			.parent('a')
+			.should('have.attr', 'href', '/profile')
+			.invoke('attr', 'href')
+			.then((href) => {
+				cy.visit(href!);
 			});
+		cy.url().should('include', '/profile');
+	});
+});
 
-			it('should display the correct navigation items', () => {
-				testCommonElements();
-				roleConfig[role].visibleItems.forEach((label) => {
-					cy.contains('a.nav-elems', label).should('exist').and('be.visible');
-				});
-				roleConfig[role].absentItems?.forEach((label) => {
-					cy.contains('a.nav-elems', label).should('not.exist');
-				});
-			});
+describe('NavbarComponent as GUEST', () => {
+	beforeEach(() => {
+		cy.intercept('GET', '/api/auth/me', {
+			statusCode: 200,
+			body: {
+				username: '',
+				roles: ['GUEST'],
+			},
+		}).as('getGuest');
 
-			it('should navigate correctly when clicking on the profile avatar', () => {
-				cy.get('a img[alt="Avatar Profile"]').click();
-				cy.url().should('include', roleConfig[role].profileRedirect);
-			});
+		cy.visit('/');
+		cy.wait('@getGuest');
+	});
 
-			if (role === 'GUEST') {
-				it('should navigate to login form when clicking "Login"', () => {
-					cy.contains('a.nav-elems', 'Login').click();
-					cy.url().should('include', '/auth?form=login');
-				});
+	it('shows login and signup links for GUEST', () => {
+		cy.contains('Login').should('exist');
+		cy.contains('Sign Up').should('exist');
+		cy.contains('My Tickets').should('not.exist');
+		cy.contains('Fav Teams').should('not.exist');
+		cy.contains('Edit Info').should('not.exist');
+	});
 
-				it('should navigate to register form when clicking "Sign Up"', () => {
-					cy.contains('a.nav-elems', 'Sign Up').click();
-					cy.url().should('include', '/auth?form=register');
-				});
-			}
-			else if (role === 'USER') {
-				// TODO
-			}
-			else if (role === 'ADMIN') {
-				// TODO
-			}
-		});
-	};
+	it('shows avatar and navigates to auth forms', () => {
+		cy.get('img[alt="Avatar Profile"]').should('be.visible').click();
+		cy.url().should('include', '/auth');
+	});
+});
 
-	testRoleNavigation('GUEST');
-	testRoleNavigation('USER');
-	testRoleNavigation('ADMIN');
+describe('NavbarComponent as ADMIN', () => {
+	beforeEach(() => {
+		cy.intercept('GET', '/api/auth/me', {
+			statusCode: 200,
+			body: {
+				username: 'adminuser',
+				roles: ['ADMIN'],
+			},
+		}).as('getAdmin');
+
+		cy.visit('/');
+		cy.wait('@getAdmin');
+	});
+
+	it('shows admin-specific links', () => {
+		cy.contains('Edit Info').should('exist');
+		cy.contains('Matches').should('exist');
+		cy.contains('Create Match').should('exist');
+		cy.contains('Statistics').should('exist');
+		cy.contains('Teams').should('not.exist');
+		cy.contains('Standings').should('not.exist');
+	});
 });

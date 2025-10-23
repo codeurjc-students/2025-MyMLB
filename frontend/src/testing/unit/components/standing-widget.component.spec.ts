@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StandingsComponent } from '../../../app/components/standings/standings.component';
-import { TeamService, StandingsResponse } from './../../../app/services/team.service';
+import { StandingsWidgetComponent } from '../../../app/components/standings/standings-widget/standings-widget.component';
+import { TeamService, StandingsResponse } from '../../../app/services/team.service';
 import { BackgroundColorService } from '../../../app/services/background-color.service';
 import { of } from 'rxjs';
 
 describe('Standings Component Tests', () => {
-	let component: StandingsComponent;
-	let fixture: ComponentFixture<StandingsComponent>;
+	let component: StandingsWidgetComponent;
+	let fixture: ComponentFixture<StandingsWidgetComponent>;
 	let teamServiceSpy: jasmine.SpyObj<TeamService>;
 	let backgroundServiceSpy: jasmine.SpyObj<BackgroundColorService>;
 
@@ -54,14 +54,14 @@ describe('Standings Component Tests', () => {
 		]);
 
 		TestBed.configureTestingModule({
-			imports: [StandingsComponent],
+			imports: [StandingsWidgetComponent],
 			providers: [
 				{ provide: TeamService, useValue: teamServiceMock },
 				{ provide: BackgroundColorService, useValue: backgroundServiceMock },
 			],
 		});
 
-		fixture = TestBed.createComponent(StandingsComponent);
+		fixture = TestBed.createComponent(StandingsWidgetComponent);
 		component = fixture.componentInstance;
 		teamServiceSpy = TestBed.inject(TeamService) as jasmine.SpyObj<TeamService>;
 		backgroundServiceSpy = TestBed.inject(
