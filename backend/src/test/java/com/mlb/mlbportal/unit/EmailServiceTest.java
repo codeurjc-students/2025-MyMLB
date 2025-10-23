@@ -1,10 +1,6 @@
 package com.mlb.mlbportal.unit;
 
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -19,19 +15,21 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import com.mlb.mlbportal.handler.UserNotFoundException;
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 
+@ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
     @Mock
     private JavaMailSender mailSender;
@@ -51,7 +49,6 @@ class EmailServiceTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.testUser = new UserEntity(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
         this.token = new PasswordResetToken(VALID_CODE, this.testUser);
     }

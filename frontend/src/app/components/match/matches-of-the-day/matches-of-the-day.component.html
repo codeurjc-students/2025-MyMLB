@@ -1,0 +1,94 @@
+<h2 class="text-3xl font-semibold mb-4 text-center">📅 Today's Schedule</h2>
+
+@if (errorMessage) {
+	<div class="text-center text-red-500">
+		{{ errorMessage }}
+	</div>
+}
+@if (matches.length === 0 && !errorMessage) {
+	<div class="text-center text-gray-500 dark:text-gray-400 italic">
+		No matches scheduled for today
+	</div>
+}
+@if (matches.length > 0) {
+	<div class="grid grid-cols-2 md:grid-cols-2 gap-6">
+		@for (match of matches; track match.date) {
+			<div class="landing-games-dashboard-subcontainer">
+				<!-- Teams row -->
+				<div class="flex items-center justify-between w-full mb-2">
+					<!-- Away team -->
+					<div class="flex items-center gap-2">
+						<div
+							class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
+							[ngClass]="getBackgroundColor(match.awayTeam)"
+						>
+							<img
+								class="w-full h-full object-contain"
+								src="assets/team-logos-new/{{ match.awayTeam.league }}/{{
+									match.awayTeam.division
+								}}/{{ match.awayTeam.abbreviation }}.png"
+								alt="{{ match.awayTeam.abbreviation }} logo"
+							/>
+						</div>
+						<span class="font-semibold">{{ match.awayTeam.abbreviation }}</span>
+					</div>
+
+					<!-- Center section -->
+					<div class="flex flex-col items-center">
+						@if (match.status === 'Scheduled') {
+							<span class="font-semibold text-gray-500 dark:text-gray-300">vs</span>
+						}
+						@else {
+							<div class="px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full text-sm font-bold">
+								{{ match.awayScore }} - {{ match.homeScore }}
+							</div>
+
+							<span class="text-xs font-medium text-gray-600 dark:text-gray-300 italic">
+								{{ match.status === 'Finished' ? 'Final' : 'In Progress' }}
+							</span>
+						}
+					</div>
+
+					<!-- Home team -->
+					<div class="flex items-center gap-2">
+						<span class="font-semibold">{{ match.homeTeam.abbreviation }}</span>
+						<div
+							class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
+							[ngClass]="getBackgroundColor(match.homeTeam)"
+						>
+							<img
+								class="w-full h-full object-contain"
+								src="assets/team-logos-new/{{ match.homeTeam.league }}/{{
+									match.homeTeam.division
+								}}/{{ match.homeTeam.abbreviation }}.png"
+								alt="{{ match.homeTeam.abbreviation }} logo"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- Date and time -->
+				<div class="text-center text-sm text-gray-600 dark:text-gray-300">
+					<span>{{ match.date | date : 'mediumDate' }}</span
+					><br />
+					<span class="text-xs">{{ match.date | date : 'HH:mm' }}</span>
+				</div>
+			</div>
+		}
+	</div>
+
+	@if (hasMore && matches.length > 0) {
+		<div class="text-center mt-8">
+			<button
+				class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm tracking-wide
+					bg-gradient-to-r from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-600
+					text-slate-800 dark:text-slate-100 shadow-md hover:shadow-lg
+					hover:from-slate-400 hover:to-slate-500 hover:cursor-pointer dark:hover:from-slate-600 dark:hover:to-slate-500
+					transition-all duration-200 ease-in-out"
+				(click)="loadNextPage()"
+			>
+				⚾ Load More Games
+			</button>
+		</div>
+	}
+}

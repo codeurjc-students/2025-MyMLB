@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.dto.match</a> &gt; <span class="el_source">MatchDTO.java</span></div><h1>MatchDTO.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.dto.match;
+
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
+<span class="fc" id="L14">public record MatchDTO(</span>
+    @NotNull(message= &quot;The home team is required&quot;)
+    TeamSummary homeTeam,
+
+    @NotNull(message= &quot;The away team is required&quot;)
+    TeamSummary awayTeam,
+
+    @Min(value = 0, message = &quot;The home team score cannot be negative&quot;)
+    int homeScore,
+
+    @Min(value = 0, message = &quot;The away team score cannot be negative&quot;)
+    int awayScore,
+
+    @NotNull(message= &quot;The date of the match is required&quot;)
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    @JsonFormat(pattern= &quot;yyyy-MM-dd HH:mm&quot;)
+    LocalDateTime date,
+
+    @NotNull(message= &quot;The status of the game is required&quot;)
+    MatchStatus status
+) {}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -877,6 +877,35 @@ ul.nav-tabs {
     }
   }
 };
+    defs["MatchDTO"] = {
+  "required" : [ "awayTeam", "date", "homeTeam", "status" ],
+  "properties" : {
+    "homeTeam" : {
+      "$ref" : "#/components/schemas/TeamSummary"
+    },
+    "awayTeam" : {
+      "$ref" : "#/components/schemas/TeamSummary"
+    },
+    "homeScore" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "awayScore" : {
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "date" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "status" : {
+      "type" : "string",
+      "enum" : [ "Scheduled", "InProgress", "Finished" ]
+    }
+  }
+};
     defs["RegisterRequest"] = {
   "required" : [ "email", "password", "username" ],
   "properties" : {
@@ -913,6 +942,81 @@ ul.nav-tabs {
     }
   }
 };
+    defs["TeamDTO"] = {
+  "required" : [ "abbreviation", "division", "lastTen", "league", "name" ],
+  "properties" : {
+    "name" : {
+      "type" : "string"
+    },
+    "abbreviation" : {
+      "type" : "string"
+    },
+    "league" : {
+      "type" : "string",
+      "enum" : [ "AL", "NL" ]
+    },
+    "division" : {
+      "type" : "string",
+      "enum" : [ "EAST", "CENTRAL", "WEST" ]
+    },
+    "totalGames" : {
+      "maximum" : 162,
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "wins" : {
+      "maximum" : 162,
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "losses" : {
+      "maximum" : 162,
+      "minimum" : 0,
+      "type" : "integer",
+      "format" : "int32"
+    },
+    "pct" : {
+      "maximum" : 1.0,
+      "minimum" : 0.0,
+      "type" : "number",
+      "format" : "double"
+    },
+    "gamesBehind" : {
+      "minimum" : 0.0,
+      "type" : "number",
+      "format" : "double"
+    },
+    "lastTen" : {
+      "type" : "string"
+    }
+  }
+};
+    defs["TeamSummary"] = {
+  "properties" : {
+    "name" : {
+      "type" : "string"
+    },
+    "abbreviation" : {
+      "type" : "string"
+    }
+  }
+};
+    defs["UserRole"] = {
+  "required" : [ "username" ],
+  "properties" : {
+    "username" : {
+      "type" : "string"
+    },
+    "roles" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    }
+  }
+};
 
 
     var errs = {};
@@ -936,6 +1040,9 @@ ul.nav-tabs {
                     <li data-group="Authentication" data-name="forgotPassword" class="">
                       <a href="#api-Authentication-forgotPassword">forgotPassword</a>
                     </li>
+                    <li data-group="Authentication" data-name="getActiveUser" class="">
+                      <a href="#api-Authentication-getActiveUser">getActiveUser</a>
+                    </li>
                     <li data-group="Authentication" data-name="logOut" class="">
                       <a href="#api-Authentication-logOut">logOut</a>
                     </li>
@@ -950,6 +1057,17 @@ ul.nav-tabs {
                     </li>
                     <li data-group="Authentication" data-name="resetPassword" class="">
                       <a href="#api-Authentication-resetPassword">resetPassword</a>
+                    </li>
+                  <li class="nav-header" data-group="Matches"><a href="#api-Matches">API Methods - Matches</a></li>
+                    <li data-group="Matches" data-name="getMatchesOfTheDay" class="">
+                      <a href="#api-Matches-getMatchesOfTheDay">getMatchesOfTheDay</a>
+                    </li>
+                  <li class="nav-header" data-group="Teams"><a href="#api-Teams">API Methods - Teams</a></li>
+                    <li data-group="Teams" data-name="getAllTeams" class="">
+                      <a href="#api-Teams-getAllTeams">getAllTeams</a>
+                    </li>
+                    <li data-group="Teams" data-name="getStandings" class="">
+                      <a href="#api-Teams-getStandings">getStandings</a>
                     </li>
                   <li class="nav-header" data-group="UserController"><a href="#api-UserController">API Methods - UserController</a></li>
                     <li data-group="UserController" data-name="getUsers" class="">
@@ -1013,7 +1131,7 @@ ul.nav-tabs {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-forgotPassword-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/forgot-password" \
  -d '{
@@ -1323,9 +1441,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Recovery email sent successfully",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Recovery email sent successfully"
       }
     }
   }
@@ -1521,6 +1643,414 @@ $(document).ready(function() {
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Authentication-getActiveUser">
+                      <article id="api-Authentication-getActiveUser-0" data-group="User" data-name="getActiveUser" data-version="0">
+                        <div class="pull-left">
+                          <h1>getActiveUser</h1>
+                          <p>Get the active user</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Obtain details of the currently authenticated user.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/auth/me</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Authentication-getActiveUser-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Authentication-getActiveUser-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Authentication-getActiveUser-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Authentication-getActiveUser-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Authentication-getActiveUser-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json,*/*" \
+ "https://localhost:8443/api/auth/me"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.AuthenticationApi;
+
+import java.io.File;
+import java.util.*;
+
+public class AuthenticationApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        AuthenticationApi apiInstance = new AuthenticationApi();
+
+        try {
+            UserRole result = apiInstance.getActiveUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AuthenticationApi#getActiveUser");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getActiveUser();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getActiveUser: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Authentication-getActiveUser-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.AuthenticationApi;
+
+public class AuthenticationApiExample {
+    public static void main(String[] args) {
+        AuthenticationApi apiInstance = new AuthenticationApi();
+
+        try {
+            UserRole result = apiInstance.getActiveUser();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling AuthenticationApi#getActiveUser");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Authentication-getActiveUser-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+AuthenticationApi *apiInstance = [[AuthenticationApi alloc] init];
+
+// Get the active user
+[apiInstance getActiveUserWithCompletionHandler: 
+              ^(UserRole output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.AuthenticationApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getActiveUser(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Authentication-getActiveUser-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getActiveUserExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new AuthenticationApi();
+
+            try {
+                // Get the active user
+                UserRole result = apiInstance.getActiveUser();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling AuthenticationApi.getActiveUser: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\AuthenticationApi();
+
+try {
+    $result = $api_instance->getActiveUser();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling AuthenticationApi->getActiveUser: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::AuthenticationApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::AuthenticationApi->new();
+
+eval {
+    my $result = $api_instance->getActiveUser();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling AuthenticationApi->getActiveUser: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.AuthenticationApi()
+
+try:
+    # Get the active user
+    api_response = api_instance.get_active_user()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling AuthenticationApi->getActiveUser: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Authentication-getActiveUser-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate AuthenticationApi;
+
+pub fn main() {
+
+    let mut context = AuthenticationApi::Context::default();
+    let result = client.getActiveUser(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Authentication-getActiveUser-title-200"></h3>
+                            <p id="examples-Authentication-getActiveUser-description-200" class="marked"></p>
+                            <script>
+                              var responseAuthentication200_description = `User successfully authenticated`;
+                              var responseAuthentication200_description_break = responseAuthentication200_description.indexOf('\n');
+                              if (responseAuthentication200_description_break == -1) {
+                                $("#examples-Authentication-getActiveUser-title-200").text("Status: 200 - " + responseAuthentication200_description);
+                              } else {
+                                $("#examples-Authentication-getActiveUser-title-200").text("Status: 200 - " + responseAuthentication200_description.substring(0, responseAuthentication200_description_break));
+                                $("#examples-Authentication-getActiveUser-description-200").html(responseAuthentication200_description.substring(responseAuthentication200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Authentication-getActiveUser-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Authentication-getActiveUser-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Authentication-getActiveUser-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Authentication-getActiveUser-200-schema">
+                                <div id="responses-Authentication-getActiveUser-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "User successfully authenticated",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserRole"
+      },
+      "example" : {
+        "username" : "johndoe",
+        "roles" : [ "USER" ]
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Authentication-getActiveUser-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Authentication-getActiveUser-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Authentication-getActiveUser-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Authentication-getActiveUser-title-401"></h3>
+                            <p id="examples-Authentication-getActiveUser-description-401" class="marked"></p>
+                            <script>
+                              var responseAuthentication401_description = `User not authenticated`;
+                              var responseAuthentication401_description_break = responseAuthentication401_description.indexOf('\n');
+                              if (responseAuthentication401_description_break == -1) {
+                                $("#examples-Authentication-getActiveUser-title-401").text("Status: 401 - " + responseAuthentication401_description);
+                              } else {
+                                $("#examples-Authentication-getActiveUser-title-401").text("Status: 401 - " + responseAuthentication401_description.substring(0, responseAuthentication401_description_break));
+                                $("#examples-Authentication-getActiveUser-description-401").html(responseAuthentication401_description.substring(responseAuthentication401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Authentication-getActiveUser-401" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Authentication-getActiveUser-401-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Authentication-getActiveUser-401-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Authentication-getActiveUser-401-schema">
+                                <div id="responses-Authentication-getActiveUser-schema-401" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "User not authenticated",
+  "content" : {
+    "*/*" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/UserRole"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Authentication-getActiveUser-401-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Authentication-getActiveUser-schema-401');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Authentication-getActiveUser-401-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Authentication-logOut">
                       <article id="api-Authentication-logOut-0" data-group="User" data-name="logOut" data-version="0">
                         <div class="pull-left">
@@ -1556,7 +2086,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-logOut-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json" \
  "https://localhost:8443/api/auth/logout"
 </code></pre>
                           </div>
@@ -1803,9 +2333,13 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Logout successful",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "logout successfully"
       }
     }
   }
@@ -1884,7 +2418,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-login-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/login" \
  -d '{
@@ -2195,9 +2729,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Login successful",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Auth successful. Tokens are created in cookie."
       }
     }
   }
@@ -2352,7 +2890,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-refreshToken-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  "https://localhost:8443/api/auth/refresh"
 </code></pre>
                           </div>
@@ -2612,9 +3150,13 @@ pub fn main() {
                                       var schemaWrapper = {
   "description" : "Token refreshed successfully",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Tokens refreshed"
       }
     }
   }
@@ -2769,7 +3311,7 @@ pub fn main() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-register-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/register" \
  -d '{
@@ -3081,9 +3623,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "User successfully registered",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "User registered successfully"
       }
     }
   }
@@ -3314,7 +3860,7 @@ $(document).ready(function() {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Authentication-resetPassword-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X POST \
- -H "Accept: */*" \
+ -H "Accept: application/json,*/*" \
  -H "Content-Type: application/json" \
  "https://localhost:8443/api/auth/reset-password" \
  -d '{
@@ -3625,9 +4171,13 @@ $(document).ready(function() {
                                       var schemaWrapper = {
   "description" : "Password successfully reset",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/AuthResponse"
+      },
+      "example" : {
+        "status" : "SUCCESS",
+        "message" : "Password restored"
       }
     }
   }
@@ -3742,6 +4292,1254 @@ $(document).ready(function() {
                                   </script>
                                 </div>
                                 <input id='responses-Authentication-resetPassword-400-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-Matches">
+                  <h1>Matches</h1>
+                    <div id="api-Matches-getMatchesOfTheDay">
+                      <article id="api-Matches-getMatchesOfTheDay-0" data-group="User" data-name="getMatchesOfTheDay" data-version="0">
+                        <div class="pull-left">
+                          <h1>getMatchesOfTheDay</h1>
+                          <p>Get the matches of the day</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns a list of matches scheduled for today. Each match includes the home and away teams, scores, scheduled date/time, and current status (Scheduled, InProgress, Finished).</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/matches/today</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Matches-getMatchesOfTheDay-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Matches-getMatchesOfTheDay-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Matches-getMatchesOfTheDay-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/matches/today"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.MatchesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class MatchesApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        MatchesApi apiInstance = new MatchesApi();
+
+        try {
+            MatchDTO result = apiInstance.getMatchesOfTheDay();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MatchesApi#getMatchesOfTheDay");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getMatchesOfTheDay();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getMatchesOfTheDay: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.MatchesApi;
+
+public class MatchesApiExample {
+    public static void main(String[] args) {
+        MatchesApi apiInstance = new MatchesApi();
+
+        try {
+            MatchDTO result = apiInstance.getMatchesOfTheDay();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MatchesApi#getMatchesOfTheDay");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+MatchesApi *apiInstance = [[MatchesApi alloc] init];
+
+// Get the matches of the day
+[apiInstance getMatchesOfTheDayWithCompletionHandler: 
+              ^(MatchDTO output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.MatchesApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getMatchesOfTheDay(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getMatchesOfTheDayExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new MatchesApi();
+
+            try {
+                // Get the matches of the day
+                MatchDTO result = apiInstance.getMatchesOfTheDay();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling MatchesApi.getMatchesOfTheDay: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\MatchesApi();
+
+try {
+    $result = $api_instance->getMatchesOfTheDay();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling MatchesApi->getMatchesOfTheDay: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::MatchesApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::MatchesApi->new();
+
+eval {
+    my $result = $api_instance->getMatchesOfTheDay();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling MatchesApi->getMatchesOfTheDay: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.MatchesApi()
+
+try:
+    # Get the matches of the day
+    api_response = api_instance.get_matches_of_the_day()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MatchesApi->getMatchesOfTheDay: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Matches-getMatchesOfTheDay-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate MatchesApi;
+
+pub fn main() {
+
+    let mut context = MatchesApi::Context::default();
+    let result = client.getMatchesOfTheDay(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Matches-getMatchesOfTheDay-title-200"></h3>
+                            <p id="examples-Matches-getMatchesOfTheDay-description-200" class="marked"></p>
+                            <script>
+                              var responseMatches200_description = `Successfully retrieved the matches`;
+                              var responseMatches200_description_break = responseMatches200_description.indexOf('\n');
+                              if (responseMatches200_description_break == -1) {
+                                $("#examples-Matches-getMatchesOfTheDay-title-200").text("Status: 200 - " + responseMatches200_description);
+                              } else {
+                                $("#examples-Matches-getMatchesOfTheDay-title-200").text("Status: 200 - " + responseMatches200_description.substring(0, responseMatches200_description_break));
+                                $("#examples-Matches-getMatchesOfTheDay-description-200").html(responseMatches200_description.substring(responseMatches200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Matches-getMatchesOfTheDay-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Matches-getMatchesOfTheDay-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Matches-getMatchesOfTheDay-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Matches-getMatchesOfTheDay-200-schema">
+                                <div id="responses-Matches-getMatchesOfTheDay-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved the matches",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/MatchDTO"
+      },
+      "example" : [ {
+        "homeTeam" : {
+          "name" : "Los Angeles Dodgers",
+          "abbreviation" : "LAD"
+        },
+        "awayTeam" : {
+          "name" : "New York Yankees",
+          "abbreviation" : "NYY"
+        },
+        "homeScore" : 0,
+        "awayScore" : 0,
+        "date" : "2025-10-20 19:00",
+        "status" : "Scheduled"
+      }, {
+        "homeTeam" : {
+          "name" : "Toronto Blue Jays",
+          "abbreviation" : "TOR"
+        },
+        "awayTeam" : {
+          "name" : "Detroit Tigers",
+          "abbreviation" : "DET"
+        },
+        "homeScore" : 3,
+        "awayScore" : 2,
+        "date" : "2025-10-20 21:00",
+        "status" : "InProgress"
+      } ]
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Matches-getMatchesOfTheDay-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Matches-getMatchesOfTheDay-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Matches-getMatchesOfTheDay-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Matches-getMatchesOfTheDay-title-500"></h3>
+                            <p id="examples-Matches-getMatchesOfTheDay-description-500" class="marked"></p>
+                            <script>
+                              var responseMatches500_description = `Internal server error`;
+                              var responseMatches500_description_break = responseMatches500_description.indexOf('\n');
+                              if (responseMatches500_description_break == -1) {
+                                $("#examples-Matches-getMatchesOfTheDay-title-500").text("Status: 500 - " + responseMatches500_description);
+                              } else {
+                                $("#examples-Matches-getMatchesOfTheDay-title-500").text("Status: 500 - " + responseMatches500_description.substring(0, responseMatches500_description_break));
+                                $("#examples-Matches-getMatchesOfTheDay-description-500").html(responseMatches500_description.substring(responseMatches500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Matches-getMatchesOfTheDay-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Matches-getMatchesOfTheDay-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Matches-getMatchesOfTheDay-500-schema">
+                                <div id="responses-Matches-getMatchesOfTheDay-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Matches-getMatchesOfTheDay-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Matches-getMatchesOfTheDay-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Matches-getMatchesOfTheDay-500-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-Teams">
+                  <h1>Teams</h1>
+                    <div id="api-Teams-getAllTeams">
+                      <article id="api-Teams-getAllTeams-0" data-group="User" data-name="getAllTeams" data-version="0">
+                        <div class="pull-left">
+                          <h1>getAllTeams</h1>
+                          <p>Get all teams</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/teams</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Teams-getAllTeams-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Teams-getAllTeams-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Teams-getAllTeams-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Teams-getAllTeams-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Teams-getAllTeams-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/teams"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Teams-getAllTeams-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.TeamsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class TeamsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        TeamsApi apiInstance = new TeamsApi();
+
+        try {
+            TeamDTO result = apiInstance.getAllTeams();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling TeamsApi#getAllTeams");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Teams-getAllTeams-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getAllTeams();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getAllTeams: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Teams-getAllTeams-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.TeamsApi;
+
+public class TeamsApiExample {
+    public static void main(String[] args) {
+        TeamsApi apiInstance = new TeamsApi();
+
+        try {
+            TeamDTO result = apiInstance.getAllTeams();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling TeamsApi#getAllTeams");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Teams-getAllTeams-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+TeamsApi *apiInstance = [[TeamsApi alloc] init];
+
+// Get all teams
+[apiInstance getAllTeamsWithCompletionHandler: 
+              ^(TeamDTO output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.TeamsApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getAllTeams(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Teams-getAllTeams-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getAllTeamsExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new TeamsApi();
+
+            try {
+                // Get all teams
+                TeamDTO result = apiInstance.getAllTeams();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling TeamsApi.getAllTeams: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\TeamsApi();
+
+try {
+    $result = $api_instance->getAllTeams();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling TeamsApi->getAllTeams: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::TeamsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::TeamsApi->new();
+
+eval {
+    my $result = $api_instance->getAllTeams();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling TeamsApi->getAllTeams: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.TeamsApi()
+
+try:
+    # Get all teams
+    api_response = api_instance.get_all_teams()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling TeamsApi->getAllTeams: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getAllTeams-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate TeamsApi;
+
+pub fn main() {
+
+    let mut context = TeamsApi::Context::default();
+    let result = client.getAllTeams(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Teams-getAllTeams-title-200"></h3>
+                            <p id="examples-Teams-getAllTeams-description-200" class="marked"></p>
+                            <script>
+                              var responseTeams200_description = `Successfully retrieved list of teams`;
+                              var responseTeams200_description_break = responseTeams200_description.indexOf('\n');
+                              if (responseTeams200_description_break == -1) {
+                                $("#examples-Teams-getAllTeams-title-200").text("Status: 200 - " + responseTeams200_description);
+                              } else {
+                                $("#examples-Teams-getAllTeams-title-200").text("Status: 200 - " + responseTeams200_description.substring(0, responseTeams200_description_break));
+                                $("#examples-Teams-getAllTeams-description-200").html(responseTeams200_description.substring(responseTeams200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Teams-getAllTeams-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Teams-getAllTeams-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Teams-getAllTeams-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Teams-getAllTeams-200-schema">
+                                <div id="responses-Teams-getAllTeams-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved list of teams",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/TeamDTO"
+      },
+      "example" : [ {
+        "name" : "Yankees",
+        "abbreviation" : "NYY",
+        "logo" : "url",
+        "league" : "AL",
+        "division" : "EAST",
+        "totalGames" : 162,
+        "wins" : 95,
+        "losses" : 67,
+        "pct" : 0.586,
+        "gamesBack" : 0.0,
+        "streak" : "W3"
+      } ]
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Teams-getAllTeams-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Teams-getAllTeams-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Teams-getAllTeams-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Teams-getAllTeams-title-500"></h3>
+                            <p id="examples-Teams-getAllTeams-description-500" class="marked"></p>
+                            <script>
+                              var responseTeams500_description = `Internal server error`;
+                              var responseTeams500_description_break = responseTeams500_description.indexOf('\n');
+                              if (responseTeams500_description_break == -1) {
+                                $("#examples-Teams-getAllTeams-title-500").text("Status: 500 - " + responseTeams500_description);
+                              } else {
+                                $("#examples-Teams-getAllTeams-title-500").text("Status: 500 - " + responseTeams500_description.substring(0, responseTeams500_description_break));
+                                $("#examples-Teams-getAllTeams-description-500").html(responseTeams500_description.substring(responseTeams500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Teams-getAllTeams-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Teams-getAllTeams-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Teams-getAllTeams-500-schema">
+                                <div id="responses-Teams-getAllTeams-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Teams-getAllTeams-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Teams-getAllTeams-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Teams-getAllTeams-500-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Teams-getStandings">
+                      <article id="api-Teams-getStandings-0" data-group="User" data-name="getStandings" data-version="0">
+                        <div class="pull-left">
+                          <h1>getStandings</h1>
+                          <p>Get team standings</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/teams/standings</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Teams-getStandings-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Teams-getStandings-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Teams-getStandings-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Teams-getStandings-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Teams-getStandings-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Teams-getStandings-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Teams-getStandings-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/teams/standings"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Teams-getStandings-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.TeamsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class TeamsApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        TeamsApi apiInstance = new TeamsApi();
+
+        try {
+            TeamDTO result = apiInstance.getStandings();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling TeamsApi#getStandings");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Teams-getStandings-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getStandings();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getStandings: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Teams-getStandings-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.TeamsApi;
+
+public class TeamsApiExample {
+    public static void main(String[] args) {
+        TeamsApi apiInstance = new TeamsApi();
+
+        try {
+            TeamDTO result = apiInstance.getStandings();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling TeamsApi#getStandings");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Teams-getStandings-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+TeamsApi *apiInstance = [[TeamsApi alloc] init];
+
+// Get team standings
+[apiInstance getStandingsWithCompletionHandler: 
+              ^(TeamDTO output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.TeamsApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getStandings(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Teams-getStandings-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getStandingsExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new TeamsApi();
+
+            try {
+                // Get team standings
+                TeamDTO result = apiInstance.getStandings();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling TeamsApi.getStandings: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\TeamsApi();
+
+try {
+    $result = $api_instance->getStandings();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling TeamsApi->getStandings: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::TeamsApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::TeamsApi->new();
+
+eval {
+    my $result = $api_instance->getStandings();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling TeamsApi->getStandings: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.TeamsApi()
+
+try:
+    # Get team standings
+    api_response = api_instance.get_standings()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling TeamsApi->getStandings: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Teams-getStandings-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate TeamsApi;
+
+pub fn main() {
+
+    let mut context = TeamsApi::Context::default();
+    let result = client.getStandings(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Teams-getStandings-title-200"></h3>
+                            <p id="examples-Teams-getStandings-description-200" class="marked"></p>
+                            <script>
+                              var responseTeams200_description = `Successfully retrieved standings`;
+                              var responseTeams200_description_break = responseTeams200_description.indexOf('\n');
+                              if (responseTeams200_description_break == -1) {
+                                $("#examples-Teams-getStandings-title-200").text("Status: 200 - " + responseTeams200_description);
+                              } else {
+                                $("#examples-Teams-getStandings-title-200").text("Status: 200 - " + responseTeams200_description.substring(0, responseTeams200_description_break));
+                                $("#examples-Teams-getStandings-description-200").html(responseTeams200_description.substring(responseTeams200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Teams-getStandings-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Teams-getStandings-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Teams-getStandings-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Teams-getStandings-200-schema">
+                                <div id="responses-Teams-getStandings-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved standings",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/TeamDTO"
+      },
+      "example" : {
+        "AL" : {
+          "EAST" : [ {
+            "name" : "Yankees",
+            "abbreviation" : "NYY",
+            "logo" : "url",
+            "league" : "AL",
+            "division" : "EAST",
+            "totalGames" : 162,
+            "wins" : 95,
+            "losses" : 67,
+            "pct" : 0.586,
+            "gamesBack" : 0.0,
+            "streak" : "W3"
+          } ]
+        }
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Teams-getStandings-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Teams-getStandings-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Teams-getStandings-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Teams-getStandings-title-500"></h3>
+                            <p id="examples-Teams-getStandings-description-500" class="marked"></p>
+                            <script>
+                              var responseTeams500_description = `Internal server error`;
+                              var responseTeams500_description_break = responseTeams500_description.indexOf('\n');
+                              if (responseTeams500_description_break == -1) {
+                                $("#examples-Teams-getStandings-title-500").text("Status: 500 - " + responseTeams500_description);
+                              } else {
+                                $("#examples-Teams-getStandings-title-500").text("Status: 500 - " + responseTeams500_description.substring(0, responseTeams500_description_break));
+                                $("#examples-Teams-getStandings-description-500").html(responseTeams500_description.substring(responseTeams500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Teams-getStandings-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Teams-getStandings-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Teams-getStandings-500-schema">
+                                <div id="responses-Teams-getStandings-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Teams-getStandings-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Teams-getStandings-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Teams-getStandings-500-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
                         </article>

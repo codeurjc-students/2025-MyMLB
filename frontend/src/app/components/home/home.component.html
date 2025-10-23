@@ -1,3 +1,106 @@
-<button (click)="button()">Presioname</button>
+<div class="landing-container">
+	<!-- Hero Section -->
+	<section class="landing-hero-container">
+		<div class="absolute inset-0"></div>
+		<div class="relative z-10 text-center max-w-2xl px-6">
+			<h1 class="landing-hero-title">
+				Welcome to MLB Portal!
+			</h1>
+			<p class="text-xl md:text-2xl text-white dark:text-gray-200 mb-8">
+				Track team standings, stats, and streaks across all divisions. Stay updated with precision. <br>
+				Your teams. Your stats. Your season.
+			</p>
+			<a href="#features" class="inline-block px-6 py-3 bg-white text-gray-900 font-semibold rounded-md shadow-md hover:bg-gray-100 transition">
+				Explore Features
+			</a>
+		</div>
+	</section>
 
-<h1>Bienvenido</h1>
+	<!-- Features Section -->
+	<section id="features" class="landing-features-container">
+		<!-- Block 1 -->
+		<div class="landing-feature-block-text order-1 md:order-1">
+			<h2 class="landing-feature-block-text-title">
+				Discover team rankings and performance insights
+			</h2>
+			<p class="text-gray-700 text-xl dark:text-gray-300 mb-6">
+				Dive into dynamic team standings and uncover the most compelling stats behind each performance.
+				From league leaders to rising contenders, every number tells a story.
+			</p>
+		</div>
+		<div class="landing-feature-block-image order-2 md:order-2">
+			<img src="assets/landing/standings.png" alt="MLB Leagues" class="rounded-lg shadow-md w-full max-w-md object-cover"/>
+		</div>
+
+		<!-- Block 2 -->
+		<div class="landing-feature-block-image align-super order-3 md:order-3">
+			<img src="assets/landing/teams.png" alt="MLB Teams" class="rounded-lg shadow-md w-full max-w-md object-cover"/>
+		</div>
+		<div class="landing-feature-block-text order-4 md:order-4">
+			<h2 class="landing-feature-block-text-title">
+				Discover teams, track your favorites
+			</h2>
+			<p class="text-gray-700 text-xl dark:text-gray-300 mb-6">
+				Browse detailed profiles for every team, from legendary history and championshi records to their current roster, lineups, pitching rotation, and more!
+				Personalized your experience by marking teams as favourites and get quick access to those you care about most.
+			</p>
+			<ul class="space-y-2 text-gray-600 text-xl dark:text-gray-400 list-disc pl-5">
+				<li>Full access to team profiles across all leagues</li>
+				<li>Detailed player stats for every team</li>
+				<li>Mark teams as favourites for personalized tracking</li>
+				<li>Stay updated with daily matchups and results</li>
+			</ul>
+		</div>
+
+		<!-- Block 3 -->
+		<div class="landing-feature-block-text order-5 md:order-5">
+			<h2 class="landing-feature-block-text-title">
+				See you at the ballpark
+			</h2>
+			<p class="text-gray-700 text-xl dark:text-gray-300 mb-6">
+				Grab your tickets and get ready for an unforgettable day at the ballpark, cheering your favorite teams, soaking in the atmosphere, and living every pitch up close.
+			</p>
+			<ul class="space-y-2 text-gray-600 text-xl dark:text-gray-400 list-disc pl-5">
+				<li>Mark favourite teams for direct access to their matches and tickets</li>
+				<li>Secure payment procedure</li>
+				<li>Free ticket cancellation available at any time.</li>
+			</ul>
+		</div>
+		<div class="landing-feature-block-image align-super order-6 md:order-6">
+			<img src="assets/landing/fans.png" alt="Baseball Fans" class="rounded-lg shadow-md w-full max-w-md object-cover"/>
+		</div>
+
+		<!-- Block 4 -->
+		<div class="landing-feature-block-image align-super order-7 md:order-7">
+			<img
+				src="assets/landing/matches.png"
+				alt="Baseball Match"
+				class="rounded-lg shadow-md w-full max-w-md object-cover"
+			/>
+		</div>
+		<div class="landing-feature-block-text order-8 md:order-8">
+			<h2 class="landing-feature-block-text-title">
+				Play Ball!
+			</h2>
+			<p class="text-gray-700 text-xl dark:text-gray-300 mb-6">
+				Stay on top of every scheduled matchup with a clean, dynamic view of upcoming games.
+				Whether you're tracking your favorite teams or scouting the competition,
+				you'll never miss a pitch.
+			</p>
+			<ul class="space-y-2 text-gray-600 text-xl dark:text-gray-400 list-disc pl-5">
+				<li>Daily schedule of all upcoming games</li>
+				<li>Live scores and post-game results</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Dashboard: Games of the Day -->
+	<section class="landing-games-dashboard-container">
+		<app-matches-of-the-day></app-matches-of-the-day>
+	</section>
+
+	<!-- Standings Widget -->
+	<section class="w-full max-w-md">
+		<app-standings></app-standings>
+	</section>
+</div>

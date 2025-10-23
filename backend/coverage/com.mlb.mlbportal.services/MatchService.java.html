@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">MatchService.java</span></div><h1>MatchService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
+
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.mappers.MatchMapper;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.MatchRepository;
+
+@Service
+public class MatchService {
+    private final MatchRepository matchRepository;
+    private final MatchMapper matchMapper;
+    private final Clock clock;
+
+<span class="fc" id="L28">    public MatchService(MatchRepository matchRepo, MatchMapper mapper, Clock clock) {</span>
+<span class="fc" id="L29">        this.matchRepository = matchRepo;</span>
+<span class="fc" id="L30">        this.matchMapper = mapper;</span>
+<span class="fc" id="L31">        this.clock = clock;</span>
+<span class="fc" id="L32">    }</span>
+
+    public Page&lt;MatchDTO&gt; getMatchesOfTheDay(int page, int size) {
+<span class="fc" id="L35">        LocalDate today = LocalDate.now(this.clock);</span>
+<span class="fc" id="L36">        LocalDateTime startOfDay = today.atStartOfDay();</span>
+<span class="fc" id="L37">        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);</span>
+
+<span class="fc" id="L39">        List&lt;Match&gt; matchesOfTheDay = this.matchRepository.findByDateBetween(startOfDay, endOfDay);</span>
+<span class="fc" id="L40">        matchesOfTheDay.forEach(this::updateMatches);</span>
+<span class="fc" id="L41">        this.matchRepository.saveAll(matchesOfTheDay);</span>
+
+<span class="fc" id="L43">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L44">        int start = Math.min((int) pageable.getOffset(), matchesOfTheDay.size());</span>
+<span class="fc" id="L45">        int end = Math.min(start + pageable.getPageSize(), matchesOfTheDay.size());</span>
+
+<span class="fc" id="L47">        List&lt;MatchDTO&gt; paginatedDTOs = matchesOfTheDay.subList(start, end).stream()</span>
+<span class="fc" id="L48">                .map(matchMapper::toMatchDTO)</span>
+<span class="fc" id="L49">                .toList();</span>
+
+<span class="fc" id="L51">        return new PageImpl&lt;&gt;(paginatedDTOs, pageable, matchesOfTheDay.size());</span>
+    }
+
+    private void updateMatches(Match match) {
+<span class="fc" id="L55">        LocalDateTime now = LocalDateTime.now(this.clock);</span>
+<span class="fc" id="L56">        LocalDateTime matchTime = match.getDate();</span>
+
+<span class="pc bpc" id="L58" title="1 of 4 branches missed.">        if (match.getStatus() == MatchStatus.Scheduled &amp;&amp; !now.isBefore(matchTime)) {</span>
+<span class="fc" id="L59">            match.setStatus(MatchStatus.InProgress);</span>
+<span class="fc" id="L60">            return;</span>
+        }
+
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (match.getStatus() == MatchStatus.InProgress &amp;&amp; now.isAfter(matchTime.plusHours(3))) {</span>
+<span class="fc" id="L64">            match.setStatus(MatchStatus.Finished);</span>
+        }
+<span class="fc" id="L66">    }</span>
+
+    public List&lt;Match&gt; getLast10Matches(Team team) {
+<span class="fc" id="L69">        return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

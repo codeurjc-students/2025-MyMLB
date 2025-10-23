@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
-describe("LoginComponent Integration Test", () => {
+describe("Login Component Integration Test", () => {
 	let fixture: ComponentFixture<LoginComponent>;
 	let loginComponent: LoginComponent;
 	let httpMock: HttpTestingController;

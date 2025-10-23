@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeamMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers</a> &gt; <span class="el_source">TeamMapper.java</span></div><h1>TeamMapper.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+
+@Mapper(componentModel = &quot;spring&quot;)
+public interface TeamMapper {
+    TeamDTO toTeamDTO(Team team);
+
+    List&lt;TeamDTO&gt; toTeamDTOList(Collection&lt;Team&gt; teams);
+
+    default Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; toGroupedStandings(
+            Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
+<span class="nc" id="L25">        return groupedTeams.entrySet().stream()</span>
+<span class="nc" id="L26">                .collect(Collectors.toMap(</span>
+                        Map.Entry::getKey,
+<span class="nc" id="L28">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
+<span class="nc" id="L29">                                .collect(Collectors.toMap(</span>
+                                        Map.Entry::getKey,
+<span class="nc" id="L31">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
+    }
+
+    @Mapping(target = &quot;id&quot;, ignore = true)
+    @Mapping(target = &quot;gamesBehind&quot;, ignore = true)
+    @Mapping(target = &quot;totalGames&quot;, ignore = true)
+    Team toDomainFromTeamStandings(TeamDTO teamStandings);
+
+    TeamSummary toTeamSummaryDTO(Team team);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -6,6 +6,7 @@ import { AuthResponse } from '../models/auth/auth-response.model';
 import { RegisterRequest } from '../models/auth/register-request.model';
 import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
 import { ResetPasswordRequest } from '../models/auth/reset-password-request.model';
+import { UserRole } from '../models/auth/user-role.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,6 +16,10 @@ export class AuthService {
 	private apiUrl = "https://localhost:8443/api/auth"
 
 	constructor(private http: HttpClient) {}
+
+	public getActiveUser(): Observable<UserRole> {
+		return this.http.get<UserRole>(`${this.apiUrl}/me`);
+	}
 
 	public loginUser(loginRequest: LoginRequest): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true});

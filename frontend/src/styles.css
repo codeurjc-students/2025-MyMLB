@@ -3,9 +3,15 @@
 @import 'tailwindcss';
 @plugin "@midudev/tailwind-animations";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Common Styles for the Application */
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .app-button {
-	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg;
+	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
 }
 
 .text-inputs {
@@ -15,7 +21,7 @@
 /* Authentication Forms Styles */
 
 .auth-panel {
-	@apply bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white p-8 flex flex-col items-center justify-center;
+	@apply bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white p-8 flex flex-col items-center justify-center dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
 }
 
 .auth-toggle-button {
@@ -45,4 +51,51 @@
 .fade-in-enter-active,
 .fade-in-leave-active {
 	@apply opacity-100 translate-y-0;
+}
+
+/* Navbar Styles */
+
+.nav-elems {
+	@apply py-2.5 px-3 text-xl text-gray-300 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03]
+}
+
+.active-nav {
+	@apply text-white font-bold bg-blue-700 rounded-md shadow-md px-4 py-2;
+}
+
+/* Landing Page Styles */
+.landing-container {
+	@apply min-h-screen bg-gradient-to-b from-emerald-50 via-teal-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-stone-900 text-gray-900 dark:text-white flex flex-col items-center justify-start px-4 py-10 transition-colors duration-300
+}
+
+.landing-hero-container {
+	@apply relative w-full h-screen flex items-center justify-center bg-cover bg-center bg-[url('/assets/landing/hero.png')] rounded-2xl dark:bg-[url('/assets/landing/hero-dark.png')]
+}
+
+.landing-hero-title {
+	@apply text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent
+}
+
+.landing-features-container {
+	@apply w-full max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10 mt-20
+}
+
+.landing-feature-block-text {
+	@apply flex flex-col justify-center
+}
+
+.landing-feature-block-text-title {
+	@apply text-2xl font-bold mb-4 text-gray-900 dark:text-white
+}
+
+.landing-feature-block-image {
+	@apply flex items-center
+}
+
+.landing-games-dashboard-container {
+	@apply w-full max-w-2xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md shadow-lg p-6 mb-16 border border-gray-200 mt-20 dark:border-slate-700
+}
+
+.landing-games-dashboard-subcontainer {
+	@apply flex flex-col bg-slate-300 dark:bg-slate-700 rounded-md px-4 py-3 hover:transition-all duration-200 transform hover:scale-[1.01] dark:hover:bg-slate-600 transition
 }
