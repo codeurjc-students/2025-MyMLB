@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -15,6 +16,7 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import static com.mlb.mlbportal.utils.TestConstants.MATCHES_OF_DAY_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
@@ -41,10 +43,14 @@ import io.restassured.http.ContentType;
 public class MatchControllerTest extends BaseE2ETest {
     private Team team1, team2, team3;
 
+    @Autowired
+    private TimeProvider timeProvider;
+
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
+        LocalDateTime baseTime = this.timeProvider.now();
         cleanDatabase();
         this.team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES,
                 League.AL,
@@ -56,9 +62,9 @@ public class MatchControllerTest extends BaseE2ETest {
                 League.NL,
                 Division.CENTRAL, TEST_TEAM3_LOGO);
 
-        saveTestMatches(team1, team2, 0, 0, LocalDateTime.now().plusMinutes(5), MatchStatus.Scheduled);
-        saveTestMatches(team2, team3, 4, 8, LocalDateTime.now(), MatchStatus.InProgress);
-        saveTestMatches(team3, team1, 1, 0, LocalDateTime.now(), MatchStatus.Finished);
+        saveTestMatches(team1, team2, 0, 0, baseTime.plusMinutes(5), MatchStatus.Scheduled);
+        saveTestMatches(team2, team3, 4, 8, baseTime, MatchStatus.InProgress);
+        saveTestMatches(team3, team1, 1, 0, baseTime, MatchStatus.Finished);
     }
 
     @Test

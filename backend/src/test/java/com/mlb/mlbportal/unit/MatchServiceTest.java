@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.unit;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -26,6 +25,7 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.services.MatchService;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
@@ -49,13 +49,16 @@ public class MatchServiceTest {
     @Mock
     private MatchMapper matchMapper;
 
+    @Mock
+    private TimeProvider timeProvider;
+
     @InjectMocks
     private MatchService matchService;
 
     private Match match1, match2, match3;
     private Team team1, team2, team3;
 
-    private final LocalDateTime now = LocalDateTime.now();
+    private final LocalDateTime fixedNow = LocalDateTime.of(2025, 10, 23, 15, 0);
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -64,9 +67,9 @@ public class MatchServiceTest {
         this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL, Division.WEST);
         this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.NL, Division.EAST);
 
-        this.match1 = new Match(team1, team2, 0, 0, now.minusMinutes(5), MatchStatus.Scheduled);
-        this.match2 = new Match(team2, team3, 4, 9, now.minusMinutes(4), MatchStatus.InProgress);
-        this.match3 = new Match(team3, team1, 10, 14, now.minusMinutes(3), MatchStatus.Finished);
+        this.match1 = new Match(team1, team2, 0, 0, fixedNow.minusMinutes(5), MatchStatus.Scheduled);
+        this.match2 = new Match(team2, team3, 4, 9, fixedNow.minusMinutes(4), MatchStatus.InProgress);
+        this.match3 = new Match(team3, team1, 10, 14, fixedNow.minusMinutes(3), MatchStatus.Finished);
     }
 
     private List<MatchDTO> buildMockDTOs() {
@@ -84,9 +87,11 @@ public class MatchServiceTest {
     @Test
     @DisplayName("Should return all the matches scheduled for today")
     void testGetMatchesOfTheDay() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+        when(this.timeProvider.today()).thenReturn(this.fixedNow.toLocalDate());
+        when(this.timeProvider.now()).thenReturn(this.fixedNow);
+
+        LocalDateTime startOfDay = this.fixedNow.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = this.fixedNow.toLocalDate().atTime(LocalTime.MAX);
 
         List<Match> mockMatches = Arrays.asList(match1, match2, match3);
         List<MatchDTO> expectedResult = this.buildMockDTOs();

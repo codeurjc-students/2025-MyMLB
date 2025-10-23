@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,21 +16,23 @@ import com.mlb.mlbportal.mappers.MatchMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.models.interfaces.TimeProvider;
 import com.mlb.mlbportal.repositories.MatchRepository;
 
 @Service
 public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
+    private final TimeProvider timeProvider;
 
-    public MatchService(MatchRepository matchRepo, MatchMapper mapper) {
+    public MatchService(MatchRepository matchRepo, MatchMapper mapper, TimeProvider timeProvider) {
         this.matchRepository = matchRepo;
         this.matchMapper = mapper;
+        this.timeProvider = timeProvider;
     }
 
     public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
-        LocalDate today = LocalDate.now();
+        LocalDate today = this.timeProvider.today();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
@@ -51,8 +52,7 @@ public class MatchService {
     }
 
     private void updateMatches(Match match) {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Madrid"));
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = this.timeProvider.now();
         LocalDateTime matchTime = match.getDate();
 
         if (match.getStatus() == MatchStatus.Scheduled && !now.isBefore(matchTime)) {
