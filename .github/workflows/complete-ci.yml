@@ -76,7 +76,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      
+
+      - name: Enable verbose logging
+        run: |
+          mkdir -p src/test/resources
+          echo "logging:\n  level:\n    root: INFO\n    com.mlb.mlbportal: DEBUG" > src/test/resources/application-test.yml
+        working-directory: ./backend
+        
       - name: Run E2E Tests
         run: mvn test -Dsurefire.excludes="**/integration/**,**/unit/**"
         working-directory: ./backend
