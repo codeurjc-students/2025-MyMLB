@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.e2e;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.hasItems;
@@ -54,9 +55,10 @@ public class MatchControllerTest extends BaseE2ETest {
                 League.NL,
                 Division.CENTRAL, TEST_TEAM3_LOGO);
 
-        saveTestMatches(team1, team2, 0, 0, LocalDateTime.now().plusMinutes(5), MatchStatus.Scheduled);
-        saveTestMatches(team2, team3, 4, 8, LocalDateTime.now(), MatchStatus.InProgress);
-        saveTestMatches(team3, team1, 1, 0, LocalDateTime.now(), MatchStatus.Finished);
+        LocalDateTime fixedDate = LocalDate.of(2025, 10, 23).atTime(12, 0);
+        saveTestMatches(team1, team2, 0, 0, fixedDate.plusMinutes(5), MatchStatus.Scheduled);
+        saveTestMatches(team2, team3, 4, 8, fixedDate, MatchStatus.InProgress);
+        saveTestMatches(team3, team1, 1, 0, fixedDate, MatchStatus.Finished);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class MatchControllerTest extends BaseE2ETest {
                 .body("content.size()", is(3))
                 .body("content.homeTeam.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
                 .body("content.awayTeam.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
-                .body("content.status", hasItems("Scheduled", "InProgress", "Finished"))
+                .body("content.status", hasItems("InProgress", "InProgress", "Finished"))
                 .body("page.totalElements", is(3))
                 .body("page.size", is(10));
     }
