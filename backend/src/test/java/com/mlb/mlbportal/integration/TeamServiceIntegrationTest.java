@@ -60,7 +60,7 @@ class TeamServiceIntegrationTest {
 
         LocalDateTime now = LocalDateTime.now();
 
-        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.Finished));
+        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.FINISHED));
     }
 
     @Test
@@ -105,7 +105,10 @@ class TeamServiceIntegrationTest {
         Map<Division, List<TeamDTO>> nlDivisions = standings.get(League.NL);
         Map<Division, List<TeamDTO>> alDivisions = standings.get(League.AL);
 
-        assertThat(nlDivisions.values()).allMatch(List::isEmpty);
-        assertThat(alDivisions.values()).allMatch(List::isEmpty);
+        assertThat(nlDivisions).isNotNull();
+        assertThat(nlDivisions.values()).allSatisfy(list -> assertThat(list).isEmpty());
+
+        assertThat(alDivisions).isNotNull();
+        assertThat(alDivisions.values()).allSatisfy(list -> assertThat(list).isEmpty());
     }
 }

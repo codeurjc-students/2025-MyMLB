@@ -82,8 +82,7 @@ class TeamServiceTest {
 
         List<TeamDTO> result = this.teamService.getTeams();
 
-        assertThat(result).hasSize(3);
-        assertThat(result).containsExactlyElementsOf(mockTeamsDTOs);
+        assertThat(result).hasSize(3).containsExactlyElementsOf(mockTeamsDTOs);
     }
 
     @Test

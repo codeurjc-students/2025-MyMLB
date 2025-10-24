@@ -35,7 +35,7 @@
 
 					<!-- Center section -->
 					<div class="flex flex-col items-center">
-						@if (match.status === 'Scheduled') {
+						@if (match.status === 'SCHEDULED') {
 							<span class="font-semibold text-gray-500 dark:text-gray-300">vs</span>
 						}
 						@else {
@@ -44,7 +44,7 @@
 							</div>
 
 							<span class="text-xs font-medium text-gray-600 dark:text-gray-300 italic">
-								{{ match.status === 'Finished' ? 'Final' : 'In Progress' }}
+								{{ match.status === 'FINISHED' ? 'Final' : 'In Progress' }}
 							</span>
 						}
 					</div>

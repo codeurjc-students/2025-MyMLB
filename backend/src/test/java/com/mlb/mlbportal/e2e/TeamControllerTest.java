@@ -20,7 +20,7 @@ import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class TeamControllerTest extends BaseE2ETest {
+class TeamControllerTest extends BaseE2ETest {
 
     @BeforeEach
     @SuppressWarnings("unused")

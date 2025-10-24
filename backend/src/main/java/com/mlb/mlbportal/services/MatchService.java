@@ -55,13 +55,13 @@ public class MatchService {
         LocalDateTime now = LocalDateTime.now(this.clock);
         LocalDateTime matchTime = match.getDate();
 
-        if (match.getStatus() == MatchStatus.Scheduled && !now.isBefore(matchTime)) {
-            match.setStatus(MatchStatus.InProgress);
+        if (match.getStatus() == MatchStatus.SCHEDULED && !now.isBefore(matchTime)) {
+            match.setStatus(MatchStatus.IN_PROGRESS);
             return;
         }
 
-        if (match.getStatus() == MatchStatus.InProgress && now.isAfter(matchTime.plusHours(3))) {
-            match.setStatus(MatchStatus.Finished);
+        if (match.getStatus() == MatchStatus.IN_PROGRESS && now.isAfter(matchTime.plusHours(3))) {
+            match.setStatus(MatchStatus.FINISHED);
         }
     }
 

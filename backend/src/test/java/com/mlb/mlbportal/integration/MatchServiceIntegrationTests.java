@@ -69,40 +69,40 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should update match status to InProgress if match time has passed")
     void testMatchesOfTheDayInProgressUpdate() {
-        Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.Scheduled);
+        Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.SCHEDULED);
         this.matchRepository.save(match);
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).status()).isEqualTo(MatchStatus.InProgress);
+        assertThat(result.get(0).status()).isEqualTo(MatchStatus.IN_PROGRESS);
 
         Match updated = this.matchRepository.findById(match.getId()).orElseThrow();
-        assertThat(updated.getStatus()).isEqualTo(MatchStatus.InProgress);
+        assertThat(updated.getStatus()).isEqualTo(MatchStatus.IN_PROGRESS);
     }
 
     @Test
     @DisplayName("Should update match status to Finished if 3 hours have passed")
     void testMatchesOfTheDay_FinishedUpdate() {
-        Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.InProgress);
+        Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).status()).isEqualTo(MatchStatus.Finished);
+        assertThat(result.get(0).status()).isEqualTo(MatchStatus.FINISHED);
 
         Match updated = this.matchRepository.findById(match.getId()).orElseThrow();
-        assertThat(updated.getStatus()).isEqualTo(MatchStatus.Finished);
+        assertThat(updated.getStatus()).isEqualTo(MatchStatus.FINISHED);
     }
 
     @Test
     @DisplayName("Should return the last 10 matches of a team in descending order")
     void testGetLast10MatchesIntegration() {
         for (int i = 0; i < 12; i++) {
-            Match match = new Match(this.team1, this.team2, i, i + 1, LocalDateTime.now().minusDays(i), MatchStatus.Finished);
+            Match match = new Match(this.team1, this.team2, i, i + 1, LocalDateTime.now().minusDays(i), MatchStatus.FINISHED);
             this.matchRepository.save(match);
         }
 

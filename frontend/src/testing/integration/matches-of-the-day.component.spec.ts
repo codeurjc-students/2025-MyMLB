@@ -15,7 +15,7 @@ describe('Matches of the Day Integration Tests', () => {
             homeScore: i,
             awayScore: i + 1,
             date: `2025-10-22 19:${String(i).padStart(2, '0')}`,
-            status: 'Finished',
+            status: 'FINISHED',
         })),
         page: {
             size: 10,

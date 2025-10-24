@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 public class UserPrincipal implements UserDetails {
-    private final UserEntity user;
+    private final transient UserEntity user;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(UserEntity user, Collection<? extends  GrantedAuthority> authorities) {

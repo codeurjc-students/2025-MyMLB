@@ -55,7 +55,7 @@ public class TeamService {
                 List<TeamDTO> sorted = divisionTeams.stream()
                         .sorted((a, b) -> Double.compare(b.getPct(), a.getPct()))
                         .map(this.teamMapper::toTeamDTO)
-                        .collect(Collectors.toList());
+                        .toList();
 
                 divisionMap.put(division, sorted);
             }
@@ -97,9 +97,9 @@ public class TeamService {
 
     private void calculateLast10Games(Team team) {
         List<Match> last10Matches = this.matchService.getLast10Matches(team);
-        String record;
+        String matchesRecord;
         if (last10Matches.isEmpty()) {
-            record = "0-0";
+            matchesRecord = "0-0";
         }
         else {
             int numberOfWins = 0;
@@ -112,8 +112,8 @@ public class TeamService {
                     numberOfWins++;
                 }
             }
-            record = numberOfWins + " - " + (last10Matches.size() - numberOfWins);
+            matchesRecord = numberOfWins + " - " + (last10Matches.size() - numberOfWins);
         }
-        team.setLastTen(record);
+        team.setLastTen(matchesRecord);
     }
 }

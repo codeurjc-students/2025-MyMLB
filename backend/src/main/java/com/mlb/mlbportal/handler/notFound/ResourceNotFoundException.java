@@ -1,9 +1,7 @@
 package com.mlb.mlbportal.handler.notFound;
 
-import java.util.NoSuchElementException;
-
-public abstract class ResourceNotFoundException extends NoSuchElementException {
-    public ResourceNotFoundException(String message) {
+public abstract class ResourceNotFoundException extends RuntimeException {
+    protected ResourceNotFoundException(String message) {
         super(message);
     }
 }

@@ -9,7 +9,7 @@ export type TeamSummary = {
 	division: string;
 };
 
-export type MatchStatus = 'Scheduled' | 'InProgress' | 'Finished';
+export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
 
 export type ShowMatch = {
 	homeTeam: TeamSummary;
