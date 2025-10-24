@@ -9,7 +9,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 
 	const generateMatch = (
 		i: number,
-		status: 'Scheduled' | 'Finished' | 'InProgress' = 'Scheduled',
+		status: 'SCHEDULED' | 'FINISHED' | 'IN_PROGRESS' = 'SCHEDULED',
 		homeAbbr: string = `T${i}`,
 		awayAbbr: string = `O${i}`,
 		homeScore: number = i,
@@ -52,7 +52,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 
 	it('should render matches correctly', () => {
 		const mockMatch = {
-			content: [generateMatch(0, 'Finished', 'NYY', 'BOS', 5, 3, '2025-10-22T19:05:00')],
+			content: [generateMatch(0, 'FINISHED', 'NYY', 'BOS', 5, 3, '2025-10-22T19:05:00')],
 			page: { size: 10, number: 0, totalElements: 1, totalPages: 1 },
 		};
 
@@ -69,7 +69,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 	it('should show Load More Games button when hasMore is true', () => {
 		const mockMatch = {
 			content: Array.from({ length: 10 }, (_, i) =>
-				generateMatch(i, 'Scheduled', `T${i}`, `O${i}`, i, i + 1)
+				generateMatch(i, 'SCHEDULED', `T${i}`, `O${i}`, i, i + 1)
 			),
 			page: { size: 10, number: 0, totalElements: 15, totalPages: 2 },
 		};
@@ -83,14 +83,14 @@ describe('Matches Of The Day Component E2E Tests', () => {
 	it('should load more matches when Load More button is clicked', () => {
 		const page0 = {
 			content: Array.from({ length: 10 }, (_, i) =>
-				generateMatch(i, 'Scheduled', `T${i}`, `O${i}`, i, i + 1)
+				generateMatch(i, 'SCHEDULED', `T${i}`, `O${i}`, i, i + 1)
 			),
 			page: { size: 10, number: 0, totalElements: 15, totalPages: 2 },
 		};
 
 		const page1 = {
 			content: Array.from({ length: 5 }, (_, i) =>
-				generateMatch(i + 10, 'Scheduled', `T${i + 10}`, `O${i + 10}`, i + 10, i + 11)
+				generateMatch(i + 10, 'SCHEDULED', `T${i + 10}`, `O${i + 10}`, i + 10, i + 11)
 			),
 			page: { size: 10, number: 1, totalElements: 15, totalPages: 2 },
 		};

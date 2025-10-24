@@ -43,7 +43,7 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchServiceTest {
+class MatchServiceTest {
     @Mock
     private MatchRepository matchRepository;
     
@@ -68,9 +68,9 @@ public class MatchServiceTest {
         this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL, Division.WEST);
         this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.NL, Division.EAST);
 
-        this.match1 = new Match(team1, team2, 0, 0, fixedNow.minusMinutes(5), MatchStatus.Scheduled);
-        this.match2 = new Match(team2, team3, 4, 9, fixedNow.minusMinutes(4), MatchStatus.InProgress);
-        this.match3 = new Match(team3, team1, 10, 14, fixedNow.minusMinutes(3), MatchStatus.Finished);
+        this.match1 = new Match(team1, team2, 0, 0, fixedNow.minusMinutes(5), MatchStatus.SCHEDULED);
+        this.match2 = new Match(team2, team3, 4, 9, fixedNow.minusMinutes(4), MatchStatus.IN_PROGRESS);
+        this.match3 = new Match(team3, team1, 10, 14, fixedNow.minusMinutes(3), MatchStatus.FINISHED);
     }
 
     private List<MatchDTO> buildMockDTOs() {
@@ -110,8 +110,7 @@ public class MatchServiceTest {
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
-        assertThat(result).hasSize(3);
-        assertThat(result).containsExactlyElementsOf(expectedResult);
+        assertThat(result).hasSize(3).containsExactlyElementsOf(expectedResult);
     }
 
     @Test
@@ -122,7 +121,6 @@ public class MatchServiceTest {
 
         List<Match> result = this.matchService.getLast10Matches(team1);
 
-        assertThat(result).hasSize(3);
-        assertThat(result).containsExactly(match1, match2, match3);
+        assertThat(result).hasSize(3).containsExactly(match1, match2, match3);
     }
 }

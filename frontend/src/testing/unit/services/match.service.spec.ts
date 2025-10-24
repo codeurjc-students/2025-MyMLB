@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController, provideHttpClientTestin
 import { MatchService, PaginatedMatches } from '../../../app/services/match.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
-describe('MatchService', () => {
+describe('Match Service Tests', () => {
 	let service: MatchService;
 	let httpMock: HttpTestingController;
 
@@ -38,7 +38,7 @@ describe('MatchService', () => {
 					homeScore: 5,
 					awayScore: 3,
 					date: '2025-10-22 19:05',
-					status: 'Finished'
+					status: 'FINISHED'
 				},
 			],
 			page: {
@@ -53,7 +53,7 @@ describe('MatchService', () => {
 			expect(data).toEqual(mockResponse);
 			expect(data.content.length).toBe(1);
 			expect(data.content[0].homeTeam.abbreviation).toBe('NYY');
-			expect(data.content[0].status).toBe('Finished');
+			expect(data.content[0].status).toBe('FINISHED');
 		});
 
 		const req = httpMock.expectOne('https://localhost:8443/api/matches/today?page=0&size=10');

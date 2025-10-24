@@ -2,6 +2,7 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +39,8 @@ public class InitController {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
 
+    private static final Random RANDOM = new Random();
+
     @Value("${init.user1.password}")
     private String fonssiPassword;
 
@@ -54,7 +56,7 @@ public class InitController {
     }
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() {
         this.createAdmins();
         this.setUpTeams();
         this.setUpMatches();
@@ -79,91 +81,102 @@ public class InitController {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);
 
             List<Team> teams = Arrays.stream(teamDtos)
-                    .map(dto -> {
-                        League league = League.valueOf(dto.league().toUpperCase());
-                        Division division = Division.valueOf(dto.division().toUpperCase());
-                        String logo = dto.abbreviation() + ".png";
+                .map(dto -> {
+                    League league = League.valueOf(dto.league().toUpperCase());
+                    Division division = Division.valueOf(dto.division().toUpperCase());
+                    String logo = dto.abbreviation() + ".png";
 
-                        Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division,
-                                logo);
-                        int totalGames = dto.wins() + dto.losses();
-                        team.setTotalGames(totalGames);
-                        team.setPct((double) dto.wins() / totalGames);
-                        team.setGamesBehind(0);
-                        team.setLastTen("0-0");
+                    Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division, logo);
+                    int totalGames = dto.wins() + dto.losses();
+                    team.setTotalGames(totalGames);
+                    team.setPct((double) dto.wins() / totalGames);
+                    team.setGamesBehind(0);
+                    team.setLastTen("0-0");
 
-                        return team;
-                    })
-                    .collect(Collectors.toList());
+                    return team;
+                })
+                .toList();
 
             this.teamRepository.saveAll(teams);
         } catch (IOException e) {
-            throw new RuntimeException("Error loading team data from JSON", e);
+            throw new UncheckedIOException("Error loading team data from JSON", e);
         }
     }
 
     private List<Match> generateBalancedMatches(List<Team> teams) {
         List<Match> matches = new ArrayList<>();
-        int totalDays = 5;
-        LocalDateTime baseDate = LocalDateTime.now().minusDays(2);
+        Set<String> usedPairs = new HashSet<>();
 
         List<Team> shuffled = new ArrayList<>(teams);
         Collections.shuffle(shuffled);
 
-        Set<String> usedPairs = new HashSet<>();
-        Random random = new Random();
+        int totalDays = 5;
+        LocalDateTime baseDate = LocalDateTime.now().minusDays(2);
 
         for (int day = 0; day < totalDays; day++) {
-            List<Team> available = new ArrayList<>(shuffled);
-            while (available.size() >= 2) {
-                Team teamA = available.remove(0);
-                Team opponent = null;
+            generateDailyMatches(matches, shuffled, usedPairs, baseDate, day);
+        }
 
-                for (Team candidate : available) {
-                    String key1 = teamA.getAbbreviation() + "-" + candidate.getAbbreviation();
-                    String key2 = candidate.getAbbreviation() + "-" + teamA.getAbbreviation();
-                    if (!usedPairs.contains(key1) && !usedPairs.contains(key2)) {
-                        opponent = candidate;
-                        usedPairs.add(key1);
-                        break;
-                    }
-                }
+        return matches;
+    }
 
-                if (opponent == null) continue;
-                available.remove(opponent);
+    private void generateDailyMatches(List<Match> matches, List<Team> teams, Set<String> usedPairs, LocalDateTime baseDate, int day) {
+        List<Team> available = new ArrayList<>(teams);
 
-                boolean homeToday = (day % 2 == 0);
-                Team home = homeToday ? teamA : opponent;
-                Team away = homeToday ? opponent : teamA;
+        while (available.size() >= 2) {
+            Team teamA = available.remove(0);
+            Team opponent = findOpponent(teamA, available, usedPairs);
 
-                // Generates a random hour between 10 and 10pm
-                int randomHour = 10 + random.nextInt(13);
-                int randomMinute = random.nextInt(60);
-                LocalDateTime matchDate = baseDate.plusDays(day).withHour(randomHour).withMinute(randomMinute);
+            if (opponent == null) continue;
+            available.remove(opponent);
 
-                // Determine the game status
-                LocalDateTime now = LocalDateTime.now();
-                MatchStatus status;
-                if (matchDate.isAfter(now)) {
-                    status = MatchStatus.Scheduled;
-                } else if (matchDate.plusHours(3).isBefore(now)) {
-                    status = MatchStatus.Finished;
-                } else {
-                    status = MatchStatus.InProgress;
-                }
+            Match match = createMatch(teamA, opponent, baseDate, day);
+            matches.add(match);
+        }
+    }
 
-                Match match = new Match(
-                    home,
-                    away,
-                    random.nextInt(10),
-                    random.nextInt(10),
-                    matchDate,
-                    status
-                );
-                matches.add(match);
+    private Team findOpponent(Team teamA, List<Team> available, Set<String> usedPairs) {
+        for (Team candidate : available) {
+            String key1 = teamA.getAbbreviation() + "-" + candidate.getAbbreviation();
+            String key2 = candidate.getAbbreviation() + "-" + teamA.getAbbreviation();
+
+            if (!usedPairs.contains(key1) && !usedPairs.contains(key2)) {
+                usedPairs.add(key1);
+                return candidate;
             }
         }
-        return matches;
+        return null;
+    }
+
+    private Match createMatch(Team teamA, Team opponent, LocalDateTime baseDate, int day) {
+        boolean homeToday = (day % 2 == 0);
+        Team home = homeToday ? teamA : opponent;
+        Team away = homeToday ? opponent : teamA;
+
+        LocalDateTime matchDate = generateRandomMatchDate(baseDate, day);
+        MatchStatus status = determineMatchStatus(matchDate);
+
+        return new Match(
+            home,
+            away,
+            RANDOM.nextInt(10),
+            RANDOM.nextInt(10),
+            matchDate,
+            status
+        );
+    }
+
+    private LocalDateTime generateRandomMatchDate(LocalDateTime baseDate, int day) {
+        int randomHour = 10 + RANDOM.nextInt(13);
+        int randomMinute = RANDOM.nextInt(60);
+        return baseDate.plusDays(day).withHour(randomHour).withMinute(randomMinute);
+    }
+
+    private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
+        LocalDateTime now = LocalDateTime.now();
+        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;
+        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;
+        return MatchStatus.IN_PROGRESS;
     }
 
     private void setUpMatches() {

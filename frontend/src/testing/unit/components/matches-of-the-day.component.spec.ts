@@ -17,7 +17,7 @@ describe('Matches Of The Day Component Tests', () => {
 				homeScore: 5,
 				awayScore: 3,
 				date: '2025-10-22 19:05',
-				status: 'Finished',
+				status: 'FINISHED',
 			},
 		],
 		page: {
