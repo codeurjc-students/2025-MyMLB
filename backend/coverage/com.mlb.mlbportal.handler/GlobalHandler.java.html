@@ -52,8 +52,8 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleNullPointer(NullPointerException ex) {
-<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="fc" id="L56">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
+<span class="nc bnc" id="L55" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="nc" id="L56">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
 <span class="nc" id="L58">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
                 &quot;Internal Server Error occurred due to NullPointerException&quot;);
@@ -61,7 +61,7 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="fc" id="L64">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+<span class="nc" id="L64">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
                 &quot;HTTP method not allowed for this endpoint&quot;);
     }
 

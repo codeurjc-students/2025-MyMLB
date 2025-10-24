@@ -2,6 +2,7 @@
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,143 +39,156 @@ public class InitController {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
 
+<span class="nc" id="L42">    private static final Random RANDOM = new Random();</span>
+
     @Value(&quot;${init.user1.password}&quot;)
     private String fonssiPassword;
 
     @Value(&quot;${init.user2.password}&quot;)
     private String arminPassword;
 
-<span class="nc" id="L48">    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {</span>
-<span class="nc" id="L49">        this.userRepository = userRepository;</span>
-<span class="nc" id="L50">        this.passwordEncoder = passsEncoder;</span>
+<span class="nc" id="L50">    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {</span>
+<span class="nc" id="L51">        this.userRepository = userRepository;</span>
+<span class="nc" id="L52">        this.passwordEncoder = passsEncoder;</span>
 
-<span class="nc" id="L52">        this.teamRepository = teamRepo;</span>
-<span class="nc" id="L53">        this.matchRepository = matchRepo;</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L54">        this.teamRepository = teamRepo;</span>
+<span class="nc" id="L55">        this.matchRepository = matchRepo;</span>
+<span class="nc" id="L56">    }</span>
 
     @PostConstruct
-    public void init() throws IOException {
-<span class="nc" id="L58">        this.createAdmins();</span>
-<span class="nc" id="L59">        this.setUpTeams();</span>
-<span class="nc" id="L60">        this.setUpMatches();</span>
-<span class="nc" id="L61">    }</span>
+    public void init() {
+<span class="nc" id="L60">        this.createAdmins();</span>
+<span class="nc" id="L61">        this.setUpTeams();</span>
+<span class="nc" id="L62">        this.setUpMatches();</span>
+<span class="nc" id="L63">    }</span>
 
     private void createAdmins() {
-<span class="nc" id="L64">        UserEntity fonssiUser = new UserEntity(&quot;fonssitorodriguezgutt@gmail.com&quot;, &quot;fonssi29&quot;,</span>
-<span class="nc" id="L65">                this.passwordEncoder.encode(this.fonssiPassword));</span>
-<span class="nc" id="L66">        UserEntity arminUser = new UserEntity(&quot;armin@gmail.com&quot;, &quot;armiin13&quot;,</span>
-<span class="nc" id="L67">                this.passwordEncoder.encode(this.arminPassword));</span>
+<span class="nc" id="L66">        UserEntity fonssiUser = new UserEntity(&quot;fonssitorodriguezgutt@gmail.com&quot;, &quot;fonssi29&quot;,</span>
+<span class="nc" id="L67">                this.passwordEncoder.encode(this.fonssiPassword));</span>
+<span class="nc" id="L68">        UserEntity arminUser = new UserEntity(&quot;armin@gmail.com&quot;, &quot;armiin13&quot;,</span>
+<span class="nc" id="L69">                this.passwordEncoder.encode(this.arminPassword));</span>
 
-<span class="nc" id="L69">        fonssiUser.getRoles().add(&quot;ADMIN&quot;);</span>
-<span class="nc" id="L70">        arminUser.getRoles().add(&quot;ADMIN&quot;);</span>
+<span class="nc" id="L71">        fonssiUser.getRoles().add(&quot;ADMIN&quot;);</span>
+<span class="nc" id="L72">        arminUser.getRoles().add(&quot;ADMIN&quot;);</span>
 
-<span class="nc" id="L72">        this.userRepository.save(fonssiUser);</span>
-<span class="nc" id="L73">        this.userRepository.save(arminUser);</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L74">        this.userRepository.save(fonssiUser);</span>
+<span class="nc" id="L75">        this.userRepository.save(arminUser);</span>
+<span class="nc" id="L76">    }</span>
 
     private void setUpTeams() {
-<span class="nc" id="L77">        ObjectMapper mapper = new ObjectMapper();</span>
-<span class="nc" id="L78">        try (InputStream input = getClass().getResourceAsStream(&quot;/data/teams-2025.json&quot;)) {</span>
-<span class="nc" id="L79">            TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);</span>
+<span class="nc" id="L79">        ObjectMapper mapper = new ObjectMapper();</span>
+<span class="nc" id="L80">        try (InputStream input = getClass().getResourceAsStream(&quot;/data/teams-2025.json&quot;)) {</span>
+<span class="nc" id="L81">            TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);</span>
 
-<span class="nc" id="L81">            List&lt;Team&gt; teams = Arrays.stream(teamDtos)</span>
-<span class="nc" id="L82">                    .map(dto -&gt; {</span>
-<span class="nc" id="L83">                        League league = League.valueOf(dto.league().toUpperCase());</span>
-<span class="nc" id="L84">                        Division division = Division.valueOf(dto.division().toUpperCase());</span>
-<span class="nc" id="L85">                        String logo = dto.abbreviation() + &quot;.png&quot;;</span>
+<span class="nc" id="L83">            List&lt;Team&gt; teams = Arrays.stream(teamDtos)</span>
+<span class="nc" id="L84">                .map(dto -&gt; {</span>
+<span class="nc" id="L85">                    League league = League.valueOf(dto.league().toUpperCase());</span>
+<span class="nc" id="L86">                    Division division = Division.valueOf(dto.division().toUpperCase());</span>
+<span class="nc" id="L87">                    String logo = dto.abbreviation() + &quot;.png&quot;;</span>
 
-<span class="nc" id="L87">                        Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division,</span>
-                                logo);
-<span class="nc" id="L89">                        int totalGames = dto.wins() + dto.losses();</span>
-<span class="nc" id="L90">                        team.setTotalGames(totalGames);</span>
-<span class="nc" id="L91">                        team.setPct((double) dto.wins() / totalGames);</span>
-<span class="nc" id="L92">                        team.setGamesBehind(0);</span>
-<span class="nc" id="L93">                        team.setLastTen(&quot;0-0&quot;);</span>
+<span class="nc" id="L89">                    Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division, logo);</span>
+<span class="nc" id="L90">                    int totalGames = dto.wins() + dto.losses();</span>
+<span class="nc" id="L91">                    team.setTotalGames(totalGames);</span>
+<span class="nc" id="L92">                    team.setPct((double) dto.wins() / totalGames);</span>
+<span class="nc" id="L93">                    team.setGamesBehind(0);</span>
+<span class="nc" id="L94">                    team.setLastTen(&quot;0-0&quot;);</span>
 
-<span class="nc" id="L95">                        return team;</span>
-                    })
-<span class="nc" id="L97">                    .collect(Collectors.toList());</span>
+<span class="nc" id="L96">                    return team;</span>
+                })
+<span class="nc" id="L98">                .toList();</span>
 
-<span class="nc" id="L99">            this.teamRepository.saveAll(teams);</span>
-<span class="nc" id="L100">        } catch (IOException e) {</span>
-<span class="nc" id="L101">            throw new RuntimeException(&quot;Error loading team data from JSON&quot;, e);</span>
-<span class="nc" id="L102">        }</span>
-<span class="nc" id="L103">    }</span>
+<span class="nc" id="L100">            this.teamRepository.saveAll(teams);</span>
+<span class="nc" id="L101">        } catch (IOException e) {</span>
+<span class="nc" id="L102">            throw new UncheckedIOException(&quot;Error loading team data from JSON&quot;, e);</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc" id="L104">    }</span>
 
     private List&lt;Match&gt; generateBalancedMatches(List&lt;Team&gt; teams) {
-<span class="nc" id="L106">        List&lt;Match&gt; matches = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L107">        int totalDays = 5;</span>
-<span class="nc" id="L108">        LocalDateTime baseDate = LocalDateTime.now().minusDays(2);</span>
+<span class="nc" id="L107">        List&lt;Match&gt; matches = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L108">        Set&lt;String&gt; usedPairs = new HashSet&lt;&gt;();</span>
 
 <span class="nc" id="L110">        List&lt;Team&gt; shuffled = new ArrayList&lt;&gt;(teams);</span>
 <span class="nc" id="L111">        Collections.shuffle(shuffled);</span>
 
-<span class="nc" id="L113">        Set&lt;String&gt; usedPairs = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L114">        Random random = new Random();</span>
+<span class="nc" id="L113">        int totalDays = 5;</span>
+<span class="nc" id="L114">        LocalDateTime baseDate = LocalDateTime.now().minusDays(2);</span>
 
 <span class="nc bnc" id="L116" title="All 2 branches missed.">        for (int day = 0; day &lt; totalDays; day++) {</span>
-<span class="nc" id="L117">            List&lt;Team&gt; available = new ArrayList&lt;&gt;(shuffled);</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">            while (available.size() &gt;= 2) {</span>
-<span class="nc" id="L119">                Team teamA = available.remove(0);</span>
-<span class="nc" id="L120">                Team opponent = null;</span>
-
-<span class="nc bnc" id="L122" title="All 2 branches missed.">                for (Team candidate : available) {</span>
-<span class="nc" id="L123">                    String key1 = teamA.getAbbreviation() + &quot;-&quot; + candidate.getAbbreviation();</span>
-<span class="nc" id="L124">                    String key2 = candidate.getAbbreviation() + &quot;-&quot; + teamA.getAbbreviation();</span>
-<span class="nc bnc" id="L125" title="All 4 branches missed.">                    if (!usedPairs.contains(key1) &amp;&amp; !usedPairs.contains(key2)) {</span>
-<span class="nc" id="L126">                        opponent = candidate;</span>
-<span class="nc" id="L127">                        usedPairs.add(key1);</span>
-<span class="nc" id="L128">                        break;</span>
-                    }
-<span class="nc" id="L130">                }</span>
-
-<span class="nc bnc" id="L132" title="All 2 branches missed.">                if (opponent == null) continue;</span>
-<span class="nc" id="L133">                available.remove(opponent);</span>
-
-<span class="nc bnc" id="L135" title="All 2 branches missed.">                boolean homeToday = (day % 2 == 0);</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">                Team home = homeToday ? teamA : opponent;</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">                Team away = homeToday ? opponent : teamA;</span>
-
-                // Generates a random hour between 10 and 10pm
-<span class="nc" id="L140">                int randomHour = 10 + random.nextInt(13);</span>
-<span class="nc" id="L141">                int randomMinute = random.nextInt(60);</span>
-<span class="nc" id="L142">                LocalDateTime matchDate = baseDate.plusDays(day).withHour(randomHour).withMinute(randomMinute);</span>
-
-                // Determine the game status
-<span class="nc" id="L145">                LocalDateTime now = LocalDateTime.now();</span>
-                MatchStatus status;
-<span class="nc bnc" id="L147" title="All 2 branches missed.">                if (matchDate.isAfter(now)) {</span>
-<span class="nc" id="L148">                    status = MatchStatus.Scheduled;</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">                } else if (matchDate.plusHours(3).isBefore(now)) {</span>
-<span class="nc" id="L150">                    status = MatchStatus.Finished;</span>
-                } else {
-<span class="nc" id="L152">                    status = MatchStatus.InProgress;</span>
-                }
-
-<span class="nc" id="L155">                Match match = new Match(</span>
-                    home,
-                    away,
-<span class="nc" id="L158">                    random.nextInt(10),</span>
-<span class="nc" id="L159">                    random.nextInt(10),</span>
-                    matchDate,
-                    status
-                );
-<span class="nc" id="L163">                matches.add(match);</span>
-<span class="nc" id="L164">            }</span>
+<span class="nc" id="L117">            generateDailyMatches(matches, shuffled, usedPairs, baseDate, day);</span>
         }
-<span class="nc" id="L166">        return matches;</span>
+
+<span class="nc" id="L120">        return matches;</span>
+    }
+
+    private void generateDailyMatches(List&lt;Match&gt; matches, List&lt;Team&gt; teams, Set&lt;String&gt; usedPairs, LocalDateTime baseDate, int day) {
+<span class="nc" id="L124">        List&lt;Team&gt; available = new ArrayList&lt;&gt;(teams);</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        while (available.size() &gt;= 2) {</span>
+<span class="nc" id="L127">            Team teamA = available.remove(0);</span>
+<span class="nc" id="L128">            Team opponent = findOpponent(teamA, available, usedPairs);</span>
+
+<span class="nc bnc" id="L130" title="All 2 branches missed.">            if (opponent == null) continue;</span>
+<span class="nc" id="L131">            available.remove(opponent);</span>
+
+<span class="nc" id="L133">            Match match = createMatch(teamA, opponent, baseDate, day);</span>
+<span class="nc" id="L134">            matches.add(match);</span>
+<span class="nc" id="L135">        }</span>
+<span class="nc" id="L136">    }</span>
+
+    private Team findOpponent(Team teamA, List&lt;Team&gt; available, Set&lt;String&gt; usedPairs) {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (Team candidate : available) {</span>
+<span class="nc" id="L140">            String key1 = teamA.getAbbreviation() + &quot;-&quot; + candidate.getAbbreviation();</span>
+<span class="nc" id="L141">            String key2 = candidate.getAbbreviation() + &quot;-&quot; + teamA.getAbbreviation();</span>
+
+<span class="nc bnc" id="L143" title="All 4 branches missed.">            if (!usedPairs.contains(key1) &amp;&amp; !usedPairs.contains(key2)) {</span>
+<span class="nc" id="L144">                usedPairs.add(key1);</span>
+<span class="nc" id="L145">                return candidate;</span>
+            }
+<span class="nc" id="L147">        }</span>
+<span class="nc" id="L148">        return null;</span>
+    }
+
+    private Match createMatch(Team teamA, Team opponent, LocalDateTime baseDate, int day) {
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        boolean homeToday = (day % 2 == 0);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        Team home = homeToday ? teamA : opponent;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        Team away = homeToday ? opponent : teamA;</span>
+
+<span class="nc" id="L156">        LocalDateTime matchDate = generateRandomMatchDate(baseDate, day);</span>
+<span class="nc" id="L157">        MatchStatus status = determineMatchStatus(matchDate);</span>
+
+<span class="nc" id="L159">        return new Match(</span>
+            home,
+            away,
+<span class="nc" id="L162">            RANDOM.nextInt(10),</span>
+<span class="nc" id="L163">            RANDOM.nextInt(10),</span>
+            matchDate,
+            status
+        );
+    }
+
+    private LocalDateTime generateRandomMatchDate(LocalDateTime baseDate, int day) {
+<span class="nc" id="L170">        int randomHour = 10 + RANDOM.nextInt(13);</span>
+<span class="nc" id="L171">        int randomMinute = RANDOM.nextInt(60);</span>
+<span class="nc" id="L172">        return baseDate.plusDays(day).withHour(randomHour).withMinute(randomMinute);</span>
+    }
+
+    private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
+<span class="nc" id="L176">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
+<span class="nc" id="L179">        return MatchStatus.IN_PROGRESS;</span>
     }
 
     private void setUpMatches() {
-<span class="nc" id="L170">        List&lt;Team&gt; allTeams = this.teamRepository.findAll();</span>
-<span class="nc" id="L171">        List&lt;Match&gt; matches = this.generateBalancedMatches(allTeams);</span>
-<span class="nc" id="L172">        this.matchRepository.saveAll(matches);</span>
+<span class="nc" id="L183">        List&lt;Team&gt; allTeams = this.teamRepository.findAll();</span>
+<span class="nc" id="L184">        List&lt;Match&gt; matches = this.generateBalancedMatches(allTeams);</span>
+<span class="nc" id="L185">        this.matchRepository.saveAll(matches);</span>
 
-<span class="nc bnc" id="L174" title="All 2 branches missed.">        for (Team team : allTeams) {</span>
-<span class="nc" id="L175">            team.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(team)).toList());</span>
-<span class="nc" id="L176">            team.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(team)).toList());</span>
-<span class="nc" id="L177">        }</span>
-<span class="nc" id="L178">        this.teamRepository.saveAll(allTeams);</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        for (Team team : allTeams) {</span>
+<span class="nc" id="L188">            team.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(team)).toList());</span>
+<span class="nc" id="L189">            team.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(team)).toList());</span>
+<span class="nc" id="L190">        }</span>
+<span class="nc" id="L191">        this.teamRepository.saveAll(allTeams);</span>
+<span class="nc" id="L192">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

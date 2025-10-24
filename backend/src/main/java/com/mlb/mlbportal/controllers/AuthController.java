@@ -1,7 +1,9 @@
 package com.mlb.mlbportal.controllers;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +15,6 @@ import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.authentication.ResetPasswordRequest;
 import com.mlb.mlbportal.dto.user.UserRole;
-import com.mlb.mlbportal.security.UserPrincipal;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.security.jwt.AuthResponse.Status;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
@@ -51,8 +52,11 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "User not authenticated")
     })
     @GetMapping("/me")
-    public ResponseEntity<UserRole> getActiveUser(@AuthenticationPrincipal UserPrincipal user) {
-        return ResponseEntity.ok(this.userService.getUserRole(user.getUsername()));
+    public ResponseEntity<UserRole> getActiveUser(Principal principal) {
+        if (principal == null) {
+            throw new AuthenticationCredentialsNotFoundException("User Not Authenticated");
+        }
+        return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));
     }
 
     @Operation(summary = "User login", description = "Authenticates the user and returns JWT tokens (access and refresh).", responses = {
@@ -92,7 +96,7 @@ public class AuthController {
     })
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
-        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, this.userLoginService.logout(response)));
+        return this.userLoginService.logout(response);
     }
 
     @Operation(summary = "Request password recovery", description = "Sends a recovery email to the user containing a reset link or verification code.", responses = {

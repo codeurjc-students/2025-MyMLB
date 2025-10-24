@@ -55,13 +55,13 @@ public class MatchService {
 <span class="fc" id="L55">        LocalDateTime now = LocalDateTime.now(this.clock);</span>
 <span class="fc" id="L56">        LocalDateTime matchTime = match.getDate();</span>
 
-<span class="pc bpc" id="L58" title="1 of 4 branches missed.">        if (match.getStatus() == MatchStatus.Scheduled &amp;&amp; !now.isBefore(matchTime)) {</span>
-<span class="fc" id="L59">            match.setStatus(MatchStatus.InProgress);</span>
+<span class="pc bpc" id="L58" title="1 of 4 branches missed.">        if (match.getStatus() == MatchStatus.SCHEDULED &amp;&amp; !now.isBefore(matchTime)) {</span>
+<span class="fc" id="L59">            match.setStatus(MatchStatus.IN_PROGRESS);</span>
 <span class="fc" id="L60">            return;</span>
         }
 
-<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (match.getStatus() == MatchStatus.InProgress &amp;&amp; now.isAfter(matchTime.plusHours(3))) {</span>
-<span class="fc" id="L64">            match.setStatus(MatchStatus.Finished);</span>
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (match.getStatus() == MatchStatus.IN_PROGRESS &amp;&amp; now.isAfter(matchTime.plusHours(3))) {</span>
+<span class="fc" id="L64">            match.setStatus(MatchStatus.FINISHED);</span>
         }
 <span class="fc" id="L66">    }</span>
 
