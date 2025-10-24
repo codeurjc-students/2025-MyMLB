@@ -33,8 +33,8 @@ public class UserEntity {
     @OneToOne(mappedBy=&quot;user&quot;, cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
-<span class="pc" id="L36">    @ElementCollection(fetch= FetchType.EAGER)</span>
-    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
+    @ElementCollection(fetch= FetchType.EAGER)
+<span class="pc" id="L37">    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();</span>
 
 <span class="fc" id="L39">    public UserEntity() {</span>
 <span class="fc" id="L40">        this.roles.add(&quot;GUEST&quot;);  </span>

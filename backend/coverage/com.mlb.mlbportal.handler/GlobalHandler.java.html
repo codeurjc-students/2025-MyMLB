@@ -56,13 +56,13 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 <span class="nc" id="L56">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
 <span class="nc" id="L58">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-                &quot;Internal Server Error occurred due to NullPointerException&quot;);
+<span class="nc" id="L59">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
 <span class="nc" id="L64">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-                &quot;HTTP method not allowed for this endpoint&quot;);
+<span class="nc" id="L65">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
     }
 
     @ExceptionHandler(AuthenticationException.class)

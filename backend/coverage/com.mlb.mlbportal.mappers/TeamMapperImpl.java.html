@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-24T13:57:24+0200&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-10-24T17:28:59+0200&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251001-1143, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L20">public class TeamMapperImpl implements TeamMapper {</span>
@@ -61,7 +61,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L61">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
 <span class="fc bfc" id="L62" title="All 2 branches covered.">        for ( Team team : teams ) {</span>
 <span class="fc" id="L63">            list.add( toTeamDTO( team ) );</span>
-<span class="fc" id="L64">        }</span>
+        }
 
 <span class="fc" id="L66">        return list;</span>
     }
@@ -74,14 +74,14 @@ import org.springframework.stereotype.Component;
 
 <span class="nc" id="L75">        Team team = new Team();</span>
 
-<span class="nc" id="L77">        team.setName( teamStandings.name() );</span>
-<span class="nc" id="L78">        team.setAbbreviation( teamStandings.abbreviation() );</span>
-<span class="nc" id="L79">        team.setWins( teamStandings.wins() );</span>
-<span class="nc" id="L80">        team.setLosses( teamStandings.losses() );</span>
-<span class="nc" id="L81">        team.setPct( teamStandings.pct() );</span>
-<span class="nc" id="L82">        team.setLastTen( teamStandings.lastTen() );</span>
-<span class="nc" id="L83">        team.setLeague( teamStandings.league() );</span>
-<span class="nc" id="L84">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L77">        team.setAbbreviation( teamStandings.abbreviation() );</span>
+<span class="nc" id="L78">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L79">        team.setLastTen( teamStandings.lastTen() );</span>
+<span class="nc" id="L80">        team.setLeague( teamStandings.league() );</span>
+<span class="nc" id="L81">        team.setLosses( teamStandings.losses() );</span>
+<span class="nc" id="L82">        team.setName( teamStandings.name() );</span>
+<span class="nc" id="L83">        team.setPct( teamStandings.pct() );</span>
+<span class="nc" id="L84">        team.setWins( teamStandings.wins() );</span>
 
 <span class="nc" id="L86">        return team;</span>
     }

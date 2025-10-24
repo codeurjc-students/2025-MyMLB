@@ -20,6 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
+import static com.mlb.mlbportal.utils.TestConstants.LOGOUT_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.ME_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -40,8 +44,8 @@ public class AuthControllerTestAux {
         this.userRepository.deleteAll();
 
         UserEntity user = new UserEntity();
-        user.setUsername("user1");
-        user.setPassword(passwordEncoder.encode("password"));
+        user.setUsername(TEST_USER_USERNAME);
+        user.setPassword(passwordEncoder.encode(TEST_USER_PASSWORD));
         user.setRoles(List.of("USER"));
         this.userRepository.save(user);
     }
@@ -50,17 +54,17 @@ public class AuthControllerTestAux {
     @WithMockUser(username = "user1", roles = { "USER" })
     @DisplayName("GET /api/auth/me should successfully return the current authenticated user")
     public void testGetActiveUser() throws Exception {
-        this.mockMvc.perform(get("/api/auth/me")
+        this.mockMvc.perform(get(ME_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("user1"))
+                .andExpect(jsonPath("$.username").value(TEST_USER_USERNAME))
                 .andExpect(jsonPath("$.roles[0]").value("USER"));
     }
 
     @Test
     @DisplayName("GET /api/auth/me with a non authenticated user should return 401")
     public void testGetActiveUserWithoutAuthentication() throws Exception {
-        mockMvc.perform(get("/api/auth/me")
+        mockMvc.perform(get(ME_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -69,7 +73,7 @@ public class AuthControllerTestAux {
     @WithMockUser(username = "user1")
     @DisplayName("POST /api/auth/logout should return success response")
     public void testLogoutWithAuthenticatedUser() throws Exception {
-        this.mockMvc.perform(post("/api/auth/logout")
+        this.mockMvc.perform(post(LOGOUT_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUCCESS"))
@@ -79,7 +83,7 @@ public class AuthControllerTestAux {
     @Test
     @DisplayName("POST /api/auth/logout with a non authenticated user should return a 400")
     public void testLogoutWithoutAuthentication() throws Exception {
-        mockMvc.perform(post("/api/auth/logout")
+        mockMvc.perform(post(LOGOUT_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value("FAILURE"))

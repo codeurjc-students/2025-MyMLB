@@ -49,11 +49,11 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-<span class="fc" id="L52">    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.EAGER)</span>
-    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();
+    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.EAGER)
+<span class="fc" id="L53">    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L55">    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.EAGER)</span>
-    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();
+    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.EAGER)
+<span class="fc" id="L56">    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();</span>
 
 <span class="fc" id="L58">    public Team() {}</span>
 

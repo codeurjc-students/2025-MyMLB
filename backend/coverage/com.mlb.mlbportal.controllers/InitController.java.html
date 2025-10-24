@@ -100,7 +100,7 @@ public class InitController {
 <span class="nc" id="L100">            this.teamRepository.saveAll(teams);</span>
 <span class="nc" id="L101">        } catch (IOException e) {</span>
 <span class="nc" id="L102">            throw new UncheckedIOException(&quot;Error loading team data from JSON&quot;, e);</span>
-<span class="nc" id="L103">        }</span>
+        }
 <span class="nc" id="L104">    }</span>
 
     private List&lt;Match&gt; generateBalancedMatches(List&lt;Team&gt; teams) {
@@ -132,7 +132,7 @@ public class InitController {
 
 <span class="nc" id="L133">            Match match = createMatch(teamA, opponent, baseDate, day);</span>
 <span class="nc" id="L134">            matches.add(match);</span>
-<span class="nc" id="L135">        }</span>
+        }
 <span class="nc" id="L136">    }</span>
 
     private Team findOpponent(Team teamA, List&lt;Team&gt; available, Set&lt;String&gt; usedPairs) {
@@ -144,7 +144,7 @@ public class InitController {
 <span class="nc" id="L144">                usedPairs.add(key1);</span>
 <span class="nc" id="L145">                return candidate;</span>
             }
-<span class="nc" id="L147">        }</span>
+        }
 <span class="nc" id="L148">        return null;</span>
     }
 
@@ -157,12 +157,12 @@ public class InitController {
 <span class="nc" id="L157">        MatchStatus status = determineMatchStatus(matchDate);</span>
 
 <span class="nc" id="L159">        return new Match(</span>
-            home,
-            away,
+<span class="nc" id="L160">            home,</span>
+<span class="nc" id="L161">            away,</span>
 <span class="nc" id="L162">            RANDOM.nextInt(10),</span>
 <span class="nc" id="L163">            RANDOM.nextInt(10),</span>
-            matchDate,
-            status
+<span class="nc" id="L164">            matchDate,</span>
+<span class="nc" id="L165">            status</span>
         );
     }
 
@@ -187,7 +187,7 @@ public class InitController {
 <span class="nc bnc" id="L187" title="All 2 branches missed.">        for (Team team : allTeams) {</span>
 <span class="nc" id="L188">            team.getHomeMatches().addAll(matches.stream().filter(m -&gt; m.getHomeTeam().equals(team)).toList());</span>
 <span class="nc" id="L189">            team.getAwayMatches().addAll(matches.stream().filter(m -&gt; m.getAwayTeam().equals(team)).toList());</span>
-<span class="nc" id="L190">        }</span>
+        }
 <span class="nc" id="L191">        this.teamRepository.saveAll(allTeams);</span>
 <span class="nc" id="L192">    }</span>
 }
