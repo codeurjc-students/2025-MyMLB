@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { AuthService } from '../../../services/auth.service';
 import { ResetPasswordRequest } from '../../../models/auth/reset-password-request.model';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'app-password-phase',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
+	imports: [ReactiveFormsModule, CommonModule, RouterLink],
 	templateUrl: './new-password.component.html',
 })
 export class PasswordPhaseComponent {

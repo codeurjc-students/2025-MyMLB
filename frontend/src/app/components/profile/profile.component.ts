@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class ProfileComponent implements OnInit {
 	public username = '';
 	public errorMessage = '';
+	public showPanel = false;
 
 	constructor(private authService: AuthService, private router: Router) {}
 
@@ -19,7 +20,7 @@ export class ProfileComponent implements OnInit {
 		});
 	}
 
-	public logoutButton() {
+	public confirmLogout() {
 		this.authService.logoutUser().subscribe({
 			next: (response) => {
 				if (response.status === 'SUCCESS') {
@@ -31,5 +32,9 @@ export class ProfileComponent implements OnInit {
 			},
 			error: (err) => this.errorMessage = err.message
 		});
+	}
+
+	public logoutButton() {
+		this.showPanel = true;
 	}
 }
