@@ -5,13 +5,16 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
+import { UserRole } from '../../app/models/auth/user-role.model';
 
 describe('Email Phase Component Integration Tests', () => {
 	let fixture: ComponentFixture<EmailPhaseComponent>;
 	let component: EmailPhaseComponent;
 	let httpMock: HttpTestingController;
 
-	const forgotPasswordUrl = 'https://localhost:8443/api/auth/forgot-password';
+	const apiUrl = 'https://localhost:8443/api/auth';
+	const forgotPasswordUrl = `${apiUrl}/forgot-password`;
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -21,12 +24,17 @@ describe('Email Phase Component Integration Tests', () => {
 				AuthService,
 				provideHttpClient(withFetch()),
 				provideHttpClientTesting(),
-			]
+			],
 		});
+
+		httpMock = TestBed.inject(HttpTestingController);
 
 		fixture = TestBed.createComponent(EmailPhaseComponent);
 		component = fixture.componentInstance;
-		httpMock = TestBed.inject(HttpTestingController);
+
+		const initReq = httpMock.expectOne(`${apiUrl}/me`);
+		expect(initReq.request.method).toBe('GET');
+		initReq.flush(defaultGuestUser);
 		fixture.detectChanges();
 	});
 
@@ -56,12 +64,14 @@ describe('Email Phase Component Integration Tests', () => {
 	});
 
 	it('should show error message on failed request', () => {
+		const expectedErrorMessage = 'Resource Not Found';
 		component.emailForm.setValue({ email: 'fail@example.com' });
 
 		component.submitEmail();
 
 		const req = httpMock.expectOne(forgotPasswordUrl);
-		req.flush('Resource Not Found', { status: 404, statusText: 'Not Found' });
+
+		req.flush(expectedErrorMessage, { status: 404, statusText: 'Not Found' });
 
 		expect(component.loading).toBeFalse();
 	});

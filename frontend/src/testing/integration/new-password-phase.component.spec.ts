@@ -6,6 +6,7 @@ import { AuthService } from '../../app/services/auth.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
+import { UserRole } from '../../app/models/auth/user-role.model';
 
 describe('New Password Phase Integration Tests', () => {
 	let fixture: ComponentFixture<PasswordPhaseComponent>;
@@ -13,7 +14,10 @@ describe('New Password Phase Integration Tests', () => {
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const resetPasswordUrl = 'https://localhost:8443/api/auth/reset-password';
+	const apiUrl = 'https://localhost:8443/api/auth';
+	const resetPasswordUrl = `${apiUrl}/reset-password`;
+	const meUrl = `${apiUrl}/me`;
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -28,10 +32,16 @@ describe('New Password Phase Integration Tests', () => {
 			],
 		});
 
+		httpMock = TestBed.inject(HttpTestingController);
+
 		fixture = TestBed.createComponent(PasswordPhaseComponent);
 		component = fixture.componentInstance;
 		component.code = '1234';
-		httpMock = TestBed.inject(HttpTestingController);
+
+		const initReq = httpMock.expectOne(meUrl);
+		expect(initReq.request.method).toBe('GET');
+		initReq.flush(defaultGuestUser);
+
 		fixture.detectChanges();
 	});
 
