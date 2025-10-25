@@ -1,8 +1,10 @@
 /// <reference types="cypress" />
 
+const AUTH_API_URL = 'https://localhost:8443/api/auth/me';
+
 describe('Navbar Component E2E Tests', () => {
 	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
+		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
 			body: {
 				username: 'testuser',
@@ -57,7 +59,7 @@ describe('Navbar Component E2E Tests', () => {
 
 describe('NavbarComponent as GUEST', () => {
 	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
+		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
 			body: {
 				username: '',
@@ -78,14 +80,21 @@ describe('NavbarComponent as GUEST', () => {
 	});
 
 	it('shows avatar and navigates to auth forms', () => {
-		cy.get('img[alt="Avatar Profile"]').should('be.visible').click();
+		cy.get('img[alt="Avatar Profile"]')
+			.should('be.visible')
+			.parent('a')
+			.should('have.attr', 'href', '/auth')
+			.invoke('attr', 'href')
+			.then((href) => {
+				cy.visit(href!);
+			});
 		cy.url().should('include', '/auth');
 	});
 });
 
 describe('NavbarComponent as ADMIN', () => {
 	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
+		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
 			body: {
 				username: 'adminuser',

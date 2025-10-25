@@ -1,8 +1,6 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
-import { ThemeService } from '../../services/theme.service';
-import { UserRole } from '../../models/auth/user-role.model';
 
 @Component({
 	selector: 'app-navbar',
@@ -17,7 +15,7 @@ export class NavbarComponent implements OnInit {
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 
-	constructor(private authService: AuthService, private themeService: ThemeService) {}
+	constructor(private authService: AuthService) {}
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {

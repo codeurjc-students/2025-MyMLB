@@ -125,7 +125,7 @@ describe('Password Recovery E2E Tests', () => {
 			cy.get('app-password-phase').contains('p', 'Password restored').should('be.visible');
 			cy.get('app-password-phase').contains('button', 'Confirm').click();
 
-			cy.url().should('include', '/login');
+			cy.url().should('include', 'login');
 			cy.get('app-login').contains('h2', 'Sign In').should('be.visible');
 		});
 

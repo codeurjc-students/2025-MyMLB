@@ -48,16 +48,16 @@ describe('Auth Service Tests', () => {
 		let activeUserUrl: string;
 
 		beforeEach(() => {
-			activeUserUrl =`${authService['apiUrl']}/me`;
+			activeUserUrl = `${authService['apiUrl']}/me`;
 		});
 
 		it('should successfully return the active user', () => {
 			const mockUserRole: UserRole = {
 				username: 'testUser',
-				roles: ['USER']
+				roles: ['USER'],
 			};
 
-			authService.getActiveUser().subscribe(response => {
+			authService.getActiveUser().subscribe((response) => {
 				expect(response).toEqual(mockUserRole);
 				expect(response.username).toEqual(mockUserRole.username);
 				expect(response.roles).toContain('USER');
@@ -85,11 +85,24 @@ describe('Auth Service Tests', () => {
 				message: 'Auth successful. Tokens are created in cookie.',
 			};
 
+			const mockUserRole: UserRole = {
+				username: 'testUser',
+				roles: ['USER'],
+			};
+
 			authService.loginUser(mockRequest).subscribe((response) => {
 				expect(response).toEqual(mockResponse);
 			});
 
-			expectPostHelper(loginUrl, mockRequest, mockResponse, true);
+			const loginReq = httpMock.expectOne(`${authService['apiUrl']}/login`);
+			expect(loginReq.request.method).toBe('POST');
+			expect(loginReq.request.body).toEqual(mockRequest);
+			expect(loginReq.request.withCredentials).toBeTrue();
+			loginReq.flush(mockResponse);
+
+			const meReq = httpMock.expectOne(`${authService['apiUrl']}/me`);
+			expect(meReq.request.method).toBe('GET');
+			meReq.flush(mockUserRole);
 		});
 
 		it('should handle login failure with a 401 status code', () => {

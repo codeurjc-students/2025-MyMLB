@@ -56,7 +56,7 @@ html {
 /* Navbar Styles */
 
 .nav-elems {
-	@apply py-2.5 px-3 text-xl text-gray-300 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03]
+	@apply py-2.5 px-3 text-xl text-gray-300 rounded-xl transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03]
 }
 
 .active-nav {
@@ -98,4 +98,26 @@ html {
 
 .landing-games-dashboard-subcontainer {
 	@apply flex flex-col bg-slate-300 dark:bg-slate-700 rounded-md px-4 py-3 hover:transition-all duration-200 transform hover:scale-[1.01] dark:hover:bg-slate-600 transition
+}
+
+/* Profile */
+
+/* Animación de fade-in para overlays o modales */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Animación de scale-in para contenido del modal */
+@keyframes scaleIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out forwards;
 }
