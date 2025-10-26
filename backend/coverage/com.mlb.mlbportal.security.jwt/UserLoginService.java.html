@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,83 +19,91 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class UserLoginService {
 
-<span class="fc" id="L21">	private static final Logger log = LoggerFactory.getLogger(UserLoginService.class);</span>
+<span class="fc" id="L22">	private static final Logger log = LoggerFactory.getLogger(UserLoginService.class);</span>
 
 	private final AuthenticationManager authenticationManager;
 	private final UserDetailsService userDetailsService;
 	private final JwtTokenProvider jwtTokenProvider;
 
-<span class="fc" id="L27">	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {</span>
-<span class="fc" id="L28">		this.authenticationManager = authenticationManager;</span>
-<span class="fc" id="L29">		this.userDetailsService = userDetailsService;</span>
-<span class="fc" id="L30">		this.jwtTokenProvider = jwtTokenProvider;</span>
-<span class="fc" id="L31">	}</span>
+<span class="fc" id="L28">	public UserLoginService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {</span>
+<span class="fc" id="L29">		this.authenticationManager = authenticationManager;</span>
+<span class="fc" id="L30">		this.userDetailsService = userDetailsService;</span>
+<span class="fc" id="L31">		this.jwtTokenProvider = jwtTokenProvider;</span>
+<span class="fc" id="L32">	}</span>
 
 	public ResponseEntity&lt;AuthResponse&gt; login(HttpServletResponse response, LoginRequest loginRequest) {
 		
-<span class="fc" id="L35">		Authentication authentication = authenticationManager.authenticate(</span>
-<span class="fc" id="L36">				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));</span>
+<span class="fc" id="L36">		Authentication authentication = authenticationManager.authenticate(</span>
+<span class="fc" id="L37">				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));</span>
 
-<span class="fc" id="L38">		SecurityContextHolder.getContext().setAuthentication(authentication);</span>
+<span class="fc" id="L39">		SecurityContextHolder.getContext().setAuthentication(authentication);</span>
 
 		
-<span class="fc" id="L41">		String username = loginRequest.getUsername();</span>
-<span class="fc" id="L42">		UserDetails user = userDetailsService.loadUserByUsername(username);</span>
+<span class="fc" id="L42">		String username = loginRequest.getUsername();</span>
+<span class="fc" id="L43">		UserDetails user = userDetailsService.loadUserByUsername(username);</span>
 
-<span class="fc" id="L44">		HttpHeaders responseHeaders = new HttpHeaders();</span>
-<span class="fc" id="L45">		var newAccessToken = jwtTokenProvider.generateAccessToken(user);</span>
-<span class="fc" id="L46">		var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);</span>
+<span class="fc" id="L45">		HttpHeaders responseHeaders = new HttpHeaders();</span>
+<span class="fc" id="L46">		var newAccessToken = jwtTokenProvider.generateAccessToken(user);</span>
+<span class="fc" id="L47">		var newRefreshToken = jwtTokenProvider.generateRefreshToken(user);</span>
 
-<span class="fc" id="L48">		response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));</span>
-<span class="fc" id="L49">		response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));</span>
+<span class="fc" id="L49">		response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));</span>
+<span class="fc" id="L50">		response.addCookie(buildTokenCookie(TokenType.REFRESH, newRefreshToken));</span>
 
-<span class="fc" id="L51">		AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,</span>
+<span class="fc" id="L52">		AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,</span>
 				&quot;Auth successful. Tokens are created in cookie.&quot;);
-<span class="fc" id="L53">		return ResponseEntity.ok().headers(responseHeaders).body(loginResponse);</span>
+<span class="fc" id="L54">		return ResponseEntity.ok().headers(responseHeaders).body(loginResponse);</span>
 	}
 
 	public ResponseEntity&lt;AuthResponse&gt; refresh(HttpServletResponse response, String refreshToken) {
 		try {
-<span class="nc" id="L58">			var claims = jwtTokenProvider.validateToken(refreshToken);</span>
-<span class="nc" id="L59">			UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());</span>
+<span class="fc" id="L59">			var claims = jwtTokenProvider.validateToken(refreshToken);</span>
+<span class="fc" id="L60">			UserDetails user = userDetailsService.loadUserByUsername(claims.getSubject());</span>
 
-<span class="nc" id="L61">			var newAccessToken = jwtTokenProvider.generateAccessToken(user);</span>
-<span class="nc" id="L62">			response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));</span>
+<span class="fc" id="L62">			var newAccessToken = jwtTokenProvider.generateAccessToken(user);</span>
+<span class="fc" id="L63">			response.addCookie(buildTokenCookie(TokenType.ACCESS, newAccessToken));</span>
 
-<span class="nc" id="L64">			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,</span>
+<span class="fc" id="L65">			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.SUCCESS,</span>
 					&quot;Auth successful. Tokens are created in cookie.&quot;);
-<span class="nc" id="L66">			return ResponseEntity.ok().body(loginResponse);</span>
+<span class="fc" id="L67">			return ResponseEntity.ok().body(loginResponse);</span>
 
-<span class="nc" id="L68">		} catch (Exception e) {</span>
-<span class="nc" id="L69">			log.error(&quot;Error while processing refresh token&quot;, e);</span>
-<span class="nc" id="L70">			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.FAILURE,</span>
+<span class="fc" id="L69">		} catch (Exception e) {</span>
+<span class="fc" id="L70">			log.error(&quot;Error while processing refresh token&quot;, e);</span>
+<span class="fc" id="L71">			AuthResponse loginResponse = new AuthResponse(AuthResponse.Status.FAILURE,</span>
 					&quot;Failure while processing refresh token&quot;);
-<span class="nc" id="L72">			return ResponseEntity.ok().body(loginResponse);</span>
+<span class="fc" id="L73">			return ResponseEntity.ok().body(loginResponse);</span>
 		}
 	}
 
-	public String logout(HttpServletResponse response) {
-<span class="fc" id="L77">		SecurityContextHolder.clearContext();</span>
-<span class="fc" id="L78">		response.addCookie(removeTokenCookie(TokenType.ACCESS));</span>
-<span class="fc" id="L79">		response.addCookie(removeTokenCookie(TokenType.REFRESH));</span>
+	public ResponseEntity&lt;AuthResponse&gt; logout(HttpServletResponse response) {
+<span class="fc" id="L78">		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
 
-<span class="fc" id="L81">		return &quot;logout successfully&quot;;</span>
+<span class="pc bpc" id="L80" title="1 of 6 branches missed.">		if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {</span>
+<span class="fc" id="L81">			AuthResponse errorResponse = new AuthResponse(AuthResponse.Status.FAILURE,&quot;There is no user to logout&quot;);</span>
+<span class="fc" id="L82">			return ResponseEntity.status(400).body(errorResponse);</span>
+		}
+<span class="fc" id="L84">		SecurityContextHolder.clearContext();</span>
+<span class="fc" id="L85">		response.addCookie(removeTokenCookie(TokenType.ACCESS));</span>
+<span class="fc" id="L86">		response.addCookie(removeTokenCookie(TokenType.REFRESH));</span>
+
+<span class="fc" id="L88">		AuthResponse successResponse = new AuthResponse(AuthResponse.Status.SUCCESS,</span>
+				&quot;Logout Successful&quot;);
+<span class="fc" id="L90">		return ResponseEntity.ok(successResponse);</span>
 	}
 
 	private Cookie buildTokenCookie(TokenType type, String token) {
-<span class="fc" id="L85">		Cookie cookie = new Cookie(type.cookieName, token);</span>
-<span class="fc" id="L86">		cookie.setMaxAge((int) type.duration.getSeconds());</span>
-<span class="fc" id="L87">		cookie.setHttpOnly(true);</span>
-<span class="fc" id="L88">		cookie.setPath(&quot;/&quot;);</span>
-<span class="fc" id="L89">		return cookie;</span>
+<span class="fc" id="L94">		Cookie cookie = new Cookie(type.cookieName, token);</span>
+<span class="fc" id="L95">		cookie.setMaxAge((int) type.duration.getSeconds());</span>
+<span class="fc" id="L96">		cookie.setHttpOnly(true);</span>
+<span class="fc" id="L97">		cookie.setPath(&quot;/&quot;);</span>
+<span class="fc" id="L98">		return cookie;</span>
 	}
 
 	private Cookie removeTokenCookie(TokenType type){
-<span class="fc" id="L93">		Cookie cookie = new Cookie(type.cookieName, &quot;&quot;);</span>
-<span class="fc" id="L94">		cookie.setMaxAge(0);</span>
-<span class="fc" id="L95">		cookie.setHttpOnly(true);</span>
-<span class="fc" id="L96">		cookie.setPath(&quot;/&quot;);</span>
-<span class="fc" id="L97">		return cookie;</span>
+<span class="fc" id="L102">		Cookie cookie = new Cookie(type.cookieName, &quot;&quot;);</span>
+<span class="fc" id="L103">		cookie.setMaxAge(0);</span>
+<span class="fc" id="L104">		cookie.setHttpOnly(true);</span>
+<span class="fc" id="L105">		cookie.setPath(&quot;/&quot;);</span>
+<span class="fc" id="L106">		return cookie;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -6,31 +6,42 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { UserRole } from '../../app/models/auth/user-role.model';
 
-describe("Register Component Integration Test", () => {
+describe('Register Component Integration Test', () => {
 	let fixture: ComponentFixture<RegisterComponent>;
 	let registerComponent: RegisterComponent;
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const registerUrl = "https://localhost:8443/api/auth/register";
+	const apiUrl = 'https://localhost:8443/api/auth';
+	const registerUrl = `${apiUrl}/register`;
+	const meUrl = `${apiUrl}/me`;
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 		TestBed.configureTestingModule({
+			imports: [RegisterComponent],
 			providers: [
 				FormBuilder,
 				AuthService,
 				{ provide: Router, useValue: routerSpy },
 				provideHttpClient(withFetch()),
-				provideHttpClientTesting()
+				provideHttpClientTesting(),
 			],
 		});
 
+		httpMock = TestBed.inject(HttpTestingController);
+
 		fixture = TestBed.createComponent(RegisterComponent);
 		registerComponent = fixture.componentInstance;
-		httpMock = TestBed.inject(HttpTestingController);
+
+		const initReq = httpMock.expectOne(meUrl);
+		expect(initReq.request.method).toBe('GET');
+		initReq.flush(defaultGuestUser);
+
 		fixture.detectChanges();
 	});
 
@@ -38,21 +49,21 @@ describe("Register Component Integration Test", () => {
 		httpMock.verify();
 	});
 
-	it("should submit valid form and show success message", () => {
+	it('should submit valid form and show success message', () => {
 		registerComponent.registerForm.setValue({
-			email: "test@gmail.com",
-			username: "testUser",
-			password: "test",
+			email: 'test@gmail.com',
+			username: 'testUser',
+			password: 'test',
 		});
 		registerComponent.register();
 
 		const req = httpMock.expectOne(registerUrl);
-		expect(req.request.method).toBe("POST");
+		expect(req.request.method).toBe('POST');
 		expect(req.request.body).toEqual(registerComponent.registerForm.value);
 
 		const mockResponse: AuthResponse = {
-			status: "SUCCESS",
-			message: "User registered successfully",
+			status: 'SUCCESS',
+			message: 'User registered successfully',
 		};
 
 		req.flush(mockResponse);
@@ -62,17 +73,18 @@ describe("Register Component Integration Test", () => {
 		expect(registerComponent.errorMessage).toBe('');
 	});
 
-	it("should show error message on failed registration", () => {
+	it('should show error message on failed registration', () => {
 		registerComponent.registerForm.setValue({
-			email: "test@gmail.com",
-			username: "testExistingUser",
-			password: "test",
+			email: 'test@gmail.com',
+			username: 'testExistingUser',
+			password: 'test',
 		});
 
 		registerComponent.register();
 
 		const req = httpMock.expectOne(registerUrl);
-		req.flush({ message: "User already exists" }, { status: 409, statusText: "Conflict" });
+		req.flush({ message: 'User already exists' }, { status: 409, statusText: 'Conflict' });
+
 		expect(registerComponent.showSuccess).toBeFalse();
 	});
 });

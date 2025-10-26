@@ -55,7 +55,7 @@ public class TeamService {
 <span class="fc" id="L55">                List&lt;TeamDTO&gt; sorted = divisionTeams.stream()</span>
 <span class="fc" id="L56">                        .sorted((a, b) -&gt; Double.compare(b.getPct(), a.getPct()))</span>
 <span class="fc" id="L57">                        .map(this.teamMapper::toTeamDTO)</span>
-<span class="fc" id="L58">                        .collect(Collectors.toList());</span>
+<span class="fc" id="L58">                        .toList();</span>
 
 <span class="fc" id="L60">                divisionMap.put(division, sorted);</span>
 <span class="fc" id="L61">            }</span>
@@ -97,9 +97,9 @@ public class TeamService {
 
     private void calculateLast10Games(Team team) {
 <span class="fc" id="L99">        List&lt;Match&gt; last10Matches = this.matchService.getLast10Matches(team);</span>
-        String record;
+        String matchesRecord;
 <span class="fc bfc" id="L101" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
-<span class="fc" id="L102">            record = &quot;0-0&quot;;</span>
+<span class="fc" id="L102">            matchesRecord = &quot;0-0&quot;;</span>
         }
         else {
 <span class="fc" id="L105">            int numberOfWins = 0;</span>
@@ -112,9 +112,9 @@ public class TeamService {
 <span class="fc" id="L112">                    numberOfWins++;</span>
                 }
 <span class="fc" id="L114">            }</span>
-<span class="fc" id="L115">            record = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
+<span class="fc" id="L115">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
         }
-<span class="fc" id="L117">        team.setLastTen(record);</span>
+<span class="fc" id="L117">        team.setLastTen(matchesRecord);</span>
 <span class="fc" id="L118">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

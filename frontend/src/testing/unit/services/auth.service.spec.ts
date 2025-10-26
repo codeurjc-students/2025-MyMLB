@@ -8,243 +8,325 @@ import { RegisterRequest } from '../../../app/models/auth/register-request.model
 import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 import { ForgotPasswordRequest } from '../../../app/models/auth/forgot-password.model';
 import { ResetPasswordRequest } from '../../../app/models/auth/reset-password-request.model';
+import { first, skip } from 'rxjs';
 
 describe('Auth Service Tests', () => {
-	let authService: AuthService;
-	let httpMock: HttpTestingController;
+    let authService: AuthService;
+    let httpMock: HttpTestingController;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			providers: [AuthService, provideHttpClient(withFetch()), provideHttpClientTesting()],
-		});
-		authService = TestBed.inject(AuthService);
-		httpMock = TestBed.inject(HttpTestingController);
-	});
+    const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
-	afterEach(() => {
-		httpMock.verify();
-	});
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [AuthService, provideHttpClient(withFetch()), provideHttpClientTesting()],
+        });
+        authService = TestBed.inject(AuthService);
+        httpMock = TestBed.inject(HttpTestingController);
 
-	/**
-	 * Helper function to validate an HTTP POST requests, designed to support test refactoring.
-	 *
-	 * @param url - The expected URL of the POST request.
-	 * @param body - The expected request payload.
-	 * @param response - The mock response to return to the subscriber.
-	 * @param withCredentials - Whether the request should include credentials (default is false).
-	 */
-	const expectPostHelper = (url: string, body: any, response: any, withCredentials = false) => {
-		const req = httpMock.expectOne(url);
-		expect(req.request.method).toBe('POST');
-		expect(req.request.body).toEqual(body);
-		if (withCredentials) {
-			expect(req.request.withCredentials).toBeTrue();
-		}
-		req.flush(response);
-	};
+        const initReq = httpMock.expectOne(`${authService['apiUrl']}/me`);
+        expect(initReq.request.method).toBe('GET');
+        initReq.flush(defaultGuestUser);
+    });
 
-	// Active User Test
-	describe('Get Active User', () => {
-		let activeUserUrl: string;
+    afterEach(() => {
+        httpMock.verify();
+    });
 
-		beforeEach(() => {
-			activeUserUrl =`${authService['apiUrl']}/me`;
-		});
+    /**
+     * Helper function to validate an HTTP POST requests, designed to support test refactoring.
+     *
+     * @param url - The expected URL of the POST request.
+     * @param body - The expected request payload.
+     * @param response - The mock response to return to the subscriber.
+     * @param withCredentials - Whether the request should include credentials (default is false).
+     */
+    const expectPostHelper = (url: string, body: any, response: any, withCredentials = false) => {
+        const req = httpMock.expectOne(url);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body).toEqual(body);
+        if (withCredentials) {
+            expect(req.request.withCredentials).toBeTrue();
+        }
+        req.flush(response);
+    };
 
-		it('should successfully return the active user', () => {
-			const mockUserRole: UserRole = {
-				username: 'testUser',
-				roles: ['USER']
-			};
+    // Active User Test
+    describe('Get Active User', () => {
+        let activeUserUrl: string;
 
-			authService.getActiveUser().subscribe(response => {
-				expect(response).toEqual(mockUserRole);
-				expect(response.username).toEqual(mockUserRole.username);
-				expect(response.roles).toContain('USER');
-			});
+        beforeEach(() => {
+            activeUserUrl = `${authService['apiUrl']}/me`;
+        });
 
-			const req = httpMock.expectOne(activeUserUrl);
-			expect(req.request.method).toBe('GET');
-			req.flush(mockUserRole);
-		});
-	});
+        it('should successfully return the active user', () => {
+            const mockUserRole: UserRole = {
+                username: 'testUser',
+                roles: ['USER'],
+            };
 
-	// Login Tests
-	describe('Login User', () => {
-		let loginUrl: string;
+            authService.getActiveUser().subscribe((response) => {
+                expect(response).toEqual(mockUserRole);
+                expect(response.username).toEqual(mockUserRole.username);
+                expect(response.roles).toContain('USER');
+            });
 
-		beforeEach(() => {
-			loginUrl = `${authService['apiUrl']}/login`;
-		});
+            const req = httpMock.expectOne(activeUserUrl);
+            expect(req.request.method).toBe('GET');
+            req.flush(mockUserRole);
+        });
 
-		it('should login the user successfully', () => {
-			const mockRequest: LoginRequest = { username: 'testUser', password: 'test' };
+        it('should emit GUEST user if getActiveUser fails on explicit call', (done) => {
+            const activeUserUrl = `${authService['apiUrl']}/me`;
+            const errorText = 'Unauthorized';
 
-			const mockResponse: AuthResponse = {
-				status: 'SUCCESS',
-				message: 'Auth successful. Tokens are created in cookie.',
-			};
 
-			authService.loginUser(mockRequest).subscribe((response) => {
-				expect(response).toEqual(mockResponse);
-			});
+            authService.getActiveUser().subscribe({
+                next: () => fail('Expected error'),
+                error: (err) => {
+                    expect(err.status).toBe(401);
+                    authService.currentUser$.pipe(first()).subscribe((user) => {
+                        expect(user).toEqual(defaultGuestUser);
+                        done();
+                    });
+                },
+            });
 
-			expectPostHelper(loginUrl, mockRequest, mockResponse, true);
-		});
+            const req = httpMock.expectOne(activeUserUrl);
+            req.flush(errorText, { status: 401, statusText: 'Unauthorized' });
+        });
+    });
 
-		it('should handle login failure with a 401 status code', () => {
-			const mockRequest: LoginRequest = { username: 'wrongUser', password: 'wrongPassword' };
-			const errorText = 'Invalid credentials';
+    // Login Tests
+    describe('Login User', () => {
+        let loginUrl: string;
+        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'] };
+        const mockLoginRequest: LoginRequest = { username: 'testUser', password: 'test' };
+        const mockLoginResponse: AuthResponse = { status: 'SUCCESS', message: 'Auth successful. Tokens are created in cookie.' };
 
-			authService.loginUser(mockRequest).subscribe({
-				next: () => fail('Expected error, but got success'),
-				error: (err) => {
-					expect(err.status).toBe(401);
-					expect(err.statusText).toBe('Unauthorized');
-					expect(err.error).toBe(errorText);
-				},
-			});
+        beforeEach(() => {
+            loginUrl = `${authService['apiUrl']}/login`;
+        });
 
-			const req = httpMock.expectOne(loginUrl);
-			expect(req.request.method).toBe('POST');
-			req.flush(errorText, { status: 401, statusText: 'Unauthorized' });
-		});
-	});
+        it('should login the user successfully and update the current user status', (done) => {
+            authService.loginUser(mockLoginRequest).subscribe((response) => {
+                expect(response).toEqual(mockLoginResponse);
+            });
 
-	// Register Tests
-	describe('Register User', () => {
-		let registerUrl: string;
+            const loginReq = httpMock.expectOne(loginUrl);
+            expect(loginReq.request.method).toBe('POST');
+            expect(loginReq.request.body).toEqual(mockLoginRequest);
+            expect(loginReq.request.withCredentials).toBeTrue();
+            loginReq.flush(mockLoginResponse);
 
-		beforeEach(() => {
-			registerUrl = `${authService['apiUrl']}/register`;
-		});
+            const meReq = httpMock.expectOne(`${authService['apiUrl']}/me`);
+            expect(meReq.request.method).toBe('GET');
+            meReq.flush(mockUserRole);
 
-		it('should register the user successfully', () => {
-			const mockRequest: RegisterRequest = {
-				email: 'test@gmail.com',
-				username: 'testUser',
-				password: 'test',
-			};
+            authService.currentUser$.pipe(first()).subscribe((user) => {
+                expect(user).toEqual(mockUserRole);
+                done();
+            });
+        });
 
-			const mockResponse: AuthResponse = {
-				status: 'SUCCESS',
-				message: 'User registered successfully',
-			};
+        it('should handle login failure with a 401 status code and keep GUEST status', (done) => {
+            const mockRequest: LoginRequest = { username: 'wrongUser', password: 'wrongPassword' };
+            const errorText = 'Invalid credentials';
 
-			authService.registerUser(mockRequest).subscribe((response) => {
-				expect(response).toEqual(mockResponse);
-			});
+            authService.loginUser(mockRequest).subscribe({
+                next: () => fail('Expected error, but got success'),
+                error: (err) => {
+                    expect(err.status).toBe(401);
 
-			expectPostHelper(registerUrl, mockRequest, mockResponse);
-		});
+                    authService.currentUser$.pipe(first()).subscribe((user) => {
+                        expect(user).toEqual(defaultGuestUser);
+                        done();
+                    });
+                },
+            });
+            const req = httpMock.expectOne(loginUrl);
+            expect(req.request.method).toBe('POST');
+            req.flush(errorText, { status: 401, statusText: 'Unauthorized' });
+        });
+    });
 
-		it('should handle register failure with a 409 conflict status code', () => {
-			const mockRequest: RegisterRequest = {
-				email: 'test@gmail.com',
-				username: 'testUser',
-				password: 'test',
-			};
+    // Logout Tests
+    describe('Logout User', () => {
+        let logoutUrl: string;
+        const mockLogoutResponse: AuthResponse = { status: 'SUCCESS', message: 'Logout successful' };
 
-			const errorText = 'User already exists';
+        beforeEach(() => {
+            logoutUrl = `${authService['apiUrl']}/logout`;
+            authService['currentUserSubject'].next({ username: 'testUser', roles: ['USER'] });
+        });
 
-			authService.registerUser(mockRequest).subscribe({
-				next: () => fail('Expected error, but got success'),
-				error: (err) => {
-					expect(err.status).toBe(409);
-					expect(err.statusText).toBe('Conflict');
-					expect(err.error).toBe(errorText);
-				},
-			});
+        it('should successfully logout the user and update status to GUEST', (done) => {
+            authService.currentUser$.pipe(skip(1), first()).subscribe((user) => {
+                expect(user).toEqual(defaultGuestUser);
+                done();
+            });
 
-			const req = httpMock.expectOne(registerUrl);
-			expect(req.request.method).toBe('POST');
-			req.flush(errorText, { status: 409, statusText: 'Conflict' });
-		});
-	});
+            authService.logoutUser().subscribe((response) => {
+                expect(response).toEqual(mockLogoutResponse);
+            });
 
-	// Password Recovery Tests
-	describe('Password Recovery', () => {
-		let forgotPasswordUrl: string;
-		let resetPasswordUrl: string;
+            expectPostHelper(logoutUrl, {}, mockLogoutResponse, true);
+        });
 
-		beforeEach(() => {
-			forgotPasswordUrl = `${authService['apiUrl']}/forgot-password`;
-			resetPasswordUrl = `${authService['apiUrl']}/reset-password`;
-		});
+        it('should handle logout failure gracefully (e.g., 500 error) and keep current user status', (done) => {
+            const currentLoggedInUser: UserRole = { username: 'testUser', roles: ['USER'] };
+            const errorMessage = 'Server error during logout';
 
-		it('should send the email if the email is valid', () => {
-			const request: ForgotPasswordRequest = { email: 'test@gmail.com' };
-			const mockResponse: AuthResponse = {
-				status: 'SUCCESS',
-				message: 'Recovery email sent successfully',
-			};
+            authService.currentUser$.pipe(first()).subscribe((user) => {
+                expect(user).toEqual(currentLoggedInUser);
+                done();
+            });
 
-			authService.forgotPassword(request).subscribe((response) => {
-				expect(response).toEqual(mockResponse);
-			});
+            authService.logoutUser().subscribe({
+                next: () => fail('Expected error, but got success'),
+                error: (err) => {
+                    expect(err.status).toBe(500);
+                },
+            });
 
-			expectPostHelper(forgotPasswordUrl, request, mockResponse);
-		});
+            const req = httpMock.expectOne(logoutUrl);
+            expect(req.request.method).toBe('POST');
+            expect(req.request.withCredentials).toBeTrue();
+            req.flush(errorMessage, { status: 500, statusText: 'Internal Server Error' });
+        });
+    });
 
-		it('should handle the 404 error if the email is not registered in the backend', () => {
-			const request: ForgotPasswordRequest = { email: 'badEmail@example.com' };
-			const errorMessage = 'Resource Not Found';
+    describe('Register User', () => {
+        let registerUrl: string;
 
-			authService.forgotPassword(request).subscribe({
-				next: () => fail('Expected error, but got success'),
-				error: (err) => {
-					expect(err.status).toBe(404);
-					expect(err.statusText).toBe('Not Found');
-					expect(err.error).toBe(errorMessage);
-				},
-			});
+        beforeEach(() => {
+            registerUrl = `${authService['apiUrl']}/register`;
+        });
 
-			const req = httpMock.expectOne(forgotPasswordUrl);
-			expect(req.request.method).toBe('POST');
-			req.flush(errorMessage, { status: 404, statusText: 'Not Found' });
-		});
+        it('should register the user successfully', () => {
+            const mockRequest: RegisterRequest = {
+                email: 'test@gmail.com',
+                username: 'testUser',
+                password: 'test',
+            };
 
-		it('should reset the user password if the code is valid', () => {
-			const request: ResetPasswordRequest = {
-				code: '1234',
-				newPassword: 'newPassword',
-			};
-			const mockResponse: AuthResponse = {
-				status: 'SUCCESS',
-				message: 'Password restored',
-			};
+            const mockResponse: AuthResponse = {
+                status: 'SUCCESS',
+                message: 'User registered successfully',
+            };
 
-			authService.resetPassword(request).subscribe((response) => {
-				expect(response).toEqual(mockResponse);
-			});
+            authService.registerUser(mockRequest).subscribe((response) => {
+                expect(response).toEqual(mockResponse);
+            });
 
-			expectPostHelper(resetPasswordUrl, request, mockResponse);
-		});
+            expectPostHelper(registerUrl, mockRequest, mockResponse);
+        });
 
-		it('should thrown an error if the code is invalid', () => {
-			const request: ResetPasswordRequest = {
-				code: 'abcd',
-				newPassword: 'anyPassword',
-			};
-			const errorMessage = 'Invalid or expired code';
+        it('should handle register failure with a 409 conflict status code', () => {
+            const mockRequest: RegisterRequest = {
+                email: 'test@gmail.com',
+                username: 'testUser',
+                password: 'test',
+            };
 
-			authService.resetPassword(request).subscribe({
-				next: () => fail('Expected error, but got success'),
-				error: (err) => {
-					expect(err.status).toBe(400);
-					expect(err.statusText).toBe(
-						'Invalid request. Please check the submitted data.'
-					);
-					expect(err.error).toBe(errorMessage);
-				},
-			});
+            const errorText = 'User already exists';
 
-			const req = httpMock.expectOne(resetPasswordUrl);
-			expect(req.request.method).toBe('POST');
-			req.flush(errorMessage, {
-				status: 400,
-				statusText: 'Invalid request. Please check the submitted data.',
-			});
-		});
-	});
+            authService.registerUser(mockRequest).subscribe({
+                next: () => fail('Expected error, but got success'),
+                error: (err) => {
+                    expect(err.status).toBe(409);
+                    expect(err.statusText).toBe('Conflict');
+                    expect(err.error).toBe(errorText);
+                },
+            });
+
+            const req = httpMock.expectOne(registerUrl);
+            expect(req.request.method).toBe('POST');
+            req.flush(errorText, { status: 409, statusText: 'Conflict' });
+        });
+    });
+
+    describe('Password Recovery', () => {
+        let forgotPasswordUrl: string;
+        let resetPasswordUrl: string;
+
+        beforeEach(() => {
+            forgotPasswordUrl = `${authService['apiUrl']}/forgot-password`;
+            resetPasswordUrl = `${authService['apiUrl']}/reset-password`;
+        });
+
+        it('should send the email if the email is valid', () => {
+            const request: ForgotPasswordRequest = { email: 'test@gmail.com' };
+            const mockResponse: AuthResponse = {
+                status: 'SUCCESS',
+                message: 'Recovery email sent successfully',
+            };
+
+            authService.forgotPassword(request).subscribe((response) => {
+                expect(response).toEqual(mockResponse);
+            });
+
+            expectPostHelper(forgotPasswordUrl, request, mockResponse);
+        });
+
+        it('should handle the 404 error if the email is not registered in the backend', () => {
+            const request: ForgotPasswordRequest = { email: 'badEmail@example.com' };
+            const errorMessage = 'Resource Not Found';
+
+            authService.forgotPassword(request).subscribe({
+                next: () => fail('Expected error, but got success'),
+                error: (err) => {
+                    expect(err.status).toBe(404);
+                    expect(err.statusText).toBe('Not Found');
+                    expect(err.error).toBe(errorMessage);
+                },
+            });
+
+            const req = httpMock.expectOne(forgotPasswordUrl);
+            expect(req.request.method).toBe('POST');
+            req.flush(errorMessage, { status: 404, statusText: 'Not Found' });
+        });
+
+        it('should reset the user password if the code is valid', () => {
+            const request: ResetPasswordRequest = {
+                code: '1234',
+                newPassword: 'newPassword',
+            };
+            const mockResponse: AuthResponse = {
+                status: 'SUCCESS',
+                message: 'Password restored',
+            };
+
+            authService.resetPassword(request).subscribe((response) => {
+                expect(response).toEqual(mockResponse);
+            });
+
+            expectPostHelper(resetPasswordUrl, request, mockResponse);
+        });
+
+        it('should thrown an error if the code is invalid', () => {
+            const request: ResetPasswordRequest = {
+                code: 'abcd',
+                newPassword: 'anyPassword',
+            };
+            const errorMessage = 'Invalid or expired code';
+
+            authService.resetPassword(request).subscribe({
+                next: () => fail('Expected error, but got success'),
+                error: (err) => {
+                    expect(err.status).toBe(400);
+                    expect(err.statusText).toBe(
+                        'Invalid request. Please check the submitted data.'
+                    );
+                    expect(err.error).toBe(errorMessage);
+                },
+            });
+
+            const req = httpMock.expectOne(resetPasswordUrl);
+            expect(req.request.method).toBe('POST');
+            req.flush(errorMessage, {
+                status: 400,
+                statusText: 'Invalid request. Please check the submitted data.',
+            });
+        });
+    });
 });

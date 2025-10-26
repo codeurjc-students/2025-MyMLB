@@ -62,6 +62,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                     // Authentication Endpoints
                     .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
                     .requestMatchers(HttpMethod.GET, "/apu/teams/**").permitAll()
                     
                     // API Docs Endpoints

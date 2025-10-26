@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -73,12 +74,20 @@ public class UserLoginService {
 		}
 	}
 
-	public String logout(HttpServletResponse response) {
+	public ResponseEntity<AuthResponse> logout(HttpServletResponse response) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+			AuthResponse errorResponse = new AuthResponse(AuthResponse.Status.FAILURE,"There is no user to logout");
+			return ResponseEntity.status(400).body(errorResponse);
+		}
 		SecurityContextHolder.clearContext();
 		response.addCookie(removeTokenCookie(TokenType.ACCESS));
 		response.addCookie(removeTokenCookie(TokenType.REFRESH));
 
-		return "logout successfully";
+		AuthResponse successResponse = new AuthResponse(AuthResponse.Status.SUCCESS,
+				"Logout Successful");
+		return ResponseEntity.ok(successResponse);
 	}
 
 	private Cookie buildTokenCookie(TokenType type, String token) {

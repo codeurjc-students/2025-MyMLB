@@ -1,8 +1,10 @@
 /// <reference types="cypress" />
 
 describe('Navbar Component E2E Tests', () => {
+	const AUTH_API_URL = '/api/auth/me';
+
 	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
+		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
 			body: {
 				username: 'testuser',
@@ -53,56 +55,63 @@ describe('Navbar Component E2E Tests', () => {
 			});
 		cy.url().should('include', '/profile');
 	});
-});
 
-describe('NavbarComponent as GUEST', () => {
-	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
-			statusCode: 200,
-			body: {
-				username: '',
-				roles: ['GUEST'],
-			},
-		}).as('getGuest');
+	describe('NavbarComponent as GUEST', () => {
+		beforeEach(() => {
+			cy.intercept('GET', AUTH_API_URL, {
+				statusCode: 200,
+				body: {
+					username: '',
+					roles: ['GUEST'],
+				},
+			}).as('getGuest');
 
-		cy.visit('/');
-		cy.wait('@getGuest');
+			cy.visit('/');
+			cy.wait('@getGuest');
+		});
+
+		it('shows login and signup links for GUEST', () => {
+			cy.contains('Login').should('exist');
+			cy.contains('Sign Up').should('exist');
+			cy.contains('My Tickets').should('not.exist');
+			cy.contains('Fav Teams').should('not.exist');
+			cy.contains('Edit Info').should('not.exist');
+		});
+
+		it('shows avatar and navigates to auth forms', () => {
+			cy.get('img[alt="Avatar Profile"]')
+				.should('be.visible')
+				.parent('a')
+				.should('have.attr', 'href', '/auth')
+				.invoke('attr', 'href')
+				.then((href) => {
+					cy.visit(href!);
+				});
+			cy.url().should('include', '/auth');
+		});
 	});
 
-	it('shows login and signup links for GUEST', () => {
-		cy.contains('Login').should('exist');
-		cy.contains('Sign Up').should('exist');
-		cy.contains('My Tickets').should('not.exist');
-		cy.contains('Fav Teams').should('not.exist');
-		cy.contains('Edit Info').should('not.exist');
-	});
+	describe('NavbarComponent as ADMIN', () => {
+		beforeEach(() => {
+			cy.intercept('GET', AUTH_API_URL, {
+				statusCode: 200,
+				body: {
+					username: 'adminuser',
+					roles: ['ADMIN'],
+				},
+			}).as('getAdmin');
 
-	it('shows avatar and navigates to auth forms', () => {
-		cy.get('img[alt="Avatar Profile"]').should('be.visible').click();
-		cy.url().should('include', '/auth');
-	});
-});
+			cy.visit('/');
+			cy.wait('@getAdmin');
+		});
 
-describe('NavbarComponent as ADMIN', () => {
-	beforeEach(() => {
-		cy.intercept('GET', '/api/auth/me', {
-			statusCode: 200,
-			body: {
-				username: 'adminuser',
-				roles: ['ADMIN'],
-			},
-		}).as('getAdmin');
-
-		cy.visit('/');
-		cy.wait('@getAdmin');
-	});
-
-	it('shows admin-specific links', () => {
-		cy.contains('Edit Info').should('exist');
-		cy.contains('Matches').should('exist');
-		cy.contains('Create Match').should('exist');
-		cy.contains('Statistics').should('exist');
-		cy.contains('Teams').should('not.exist');
-		cy.contains('Standings').should('not.exist');
+		it('shows admin-specific links', () => {
+			cy.contains('Edit Info').should('exist');
+			cy.contains('Matches').should('exist');
+			cy.contains('Create Match').should('exist');
+			cy.contains('Statistics').should('exist');
+			cy.contains('Teams').should('not.exist');
+			cy.contains('Standings').should('not.exist');
+		});
 	});
 });

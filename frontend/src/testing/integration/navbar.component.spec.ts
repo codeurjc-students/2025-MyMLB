@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { NavbarComponent } from "../../app/components/navbar/navbar.component";
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { AuthService } from "../../app/services/auth.service";
-import { ThemeService } from "../../app/services/theme.service";
-import { provideHttpClient, withFetch } from "@angular/common/http";
-import { UserRole } from "../../app/models/auth/user-role.model";
-import { provideRouter } from '@angular/router'; // 👈
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NavbarComponent } from '../../app/components/navbar/navbar.component';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { AuthService } from '../../app/services/auth.service';
+import { ThemeService } from '../../app/services/theme.service';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { UserRole } from '../../app/models/auth/user-role.model';
+import { provideRouter } from '@angular/router';
 
 describe('Navigation Bar Integration Tests', () => {
 	let fixture: ComponentFixture<NavbarComponent>;
@@ -23,7 +23,7 @@ describe('Navigation Bar Integration Tests', () => {
 				provideHttpClient(withFetch()),
 				provideHttpClientTesting(),
 				provideRouter([])
-			]
+			],
 		});
 
 		fixture = TestBed.createComponent(NavbarComponent);
@@ -39,7 +39,7 @@ describe('Navigation Bar Integration Tests', () => {
 	it('should obtain the current active user', () => {
 		const response: UserRole = {
 			username: 'testUser',
-			roles: ['GUEST', 'USER']
+			roles: ['GUEST', 'USER'],
 		};
 
 		const req = httpMock.expectOne(url);
@@ -53,7 +53,7 @@ describe('Navigation Bar Integration Tests', () => {
 	it('should set the role of the active user to GUEST if there is no user authenticated', () => {
 		const response: UserRole = {
 			username: '',
-			roles: ['GUEST']
+			roles: ['GUEST'],
 		};
 
 		const req = httpMock.expectOne(url);

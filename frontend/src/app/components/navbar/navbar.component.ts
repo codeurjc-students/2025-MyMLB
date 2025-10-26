@@ -1,7 +1,6 @@
 import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterModule } from '@angular/router';
-import { ThemeService } from '../../services/theme.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-navbar',
@@ -13,24 +12,19 @@ export class NavbarComponent implements OnInit {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter<void> = new EventEmitter();
 
-	public roles: Array<string> = ['GUEST'];
+	public roles: string[] = ['GUEST'];
 	public username: string = '';
 
-	constructor(private authService: AuthService, private themeService: ThemeService, private router: Router) {}
+	constructor(private authService: AuthService) {}
 
 	public ngOnInit() {
-		this.authService.getActiveUser().subscribe({
-			next: (response) => {
-				this.roles = response.roles;
-				this.username = response.username;
-			},
-			error: (err) => {
-				if (err.status === 401) {
-					this.username = '';
-				}
-				else {
-					console.error('Error loading user info:', err);
-				}
+		this.authService.currentUser$.subscribe(user => {
+			if (user) {
+				this.roles = user.roles;
+				this.username = user.username;
+			} else {
+				this.roles = ['GUEST'];
+				this.username = '';
 			}
 		});
 	}
@@ -40,6 +34,6 @@ export class NavbarComponent implements OnInit {
 	}
 
 	get profileLink(): string {
-    	return this.roles.includes('USER') || this.roles.includes('ADMIN') ? '/profile' : '/auth';
+		return this.roles.includes('USER') || this.roles.includes('ADMIN') ? '/profile' : '/auth';
 	}
 }
