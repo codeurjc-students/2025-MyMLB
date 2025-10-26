@@ -28,7 +28,7 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class AuthControllerTestAux {
+class AuthControllerTestAux {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,9 +51,9 @@ public class AuthControllerTestAux {
     }
 
     @Test
-    @WithMockUser(username = "user1", roles = { "USER" })
+    @WithMockUser(username = TEST_USER_USERNAME, roles = { "USER" })
     @DisplayName("GET /api/auth/me should successfully return the current authenticated user")
-    public void testGetActiveUser() throws Exception {
+    void testGetActiveUser() throws Exception {
         this.mockMvc.perform(get(ME_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -63,16 +63,16 @@ public class AuthControllerTestAux {
 
     @Test
     @DisplayName("GET /api/auth/me with a non authenticated user should return 401")
-    public void testGetActiveUserWithoutAuthentication() throws Exception {
+    void testGetActiveUserWithoutAuthentication() throws Exception {
         this.mockMvc.perform(get(ME_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @WithMockUser(username = "user1")
+    @WithMockUser(username = TEST_USER_USERNAME)
     @DisplayName("POST /api/auth/logout should return success response")
-    public void testLogoutWithAuthenticatedUser() throws Exception {
+    void testLogoutWithAuthenticatedUser() throws Exception {
         this.mockMvc.perform(post(LOGOUT_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class AuthControllerTestAux {
 
     @Test
     @DisplayName("POST /api/auth/logout with a non authenticated user should return a 400")
-    public void testLogoutWithoutAuthentication() throws Exception {
+    void testLogoutWithoutAuthentication() throws Exception {
         this.mockMvc.perform(post(LOGOUT_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

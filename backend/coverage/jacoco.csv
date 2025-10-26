@@ -3,7 +3,7 @@ MLBPortal,com.mlb.mlbportal.security,UserPrincipal,0,20,0,0,0,7,0,4,0,4
 MLBPortal,com.mlb.mlbportal.security,TestSecurityConfig,0,63,0,0,0,13,0,5,0,5
 MLBPortal,com.mlb.mlbportal.security,CSRFHandlerConfiguration,0,10,0,0,0,3,0,2,0,2
 MLBPortal,com.mlb.mlbportal.security,SecurityUserDetails,18,31,1,1,2,7,2,2,1,2
-MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,0,142,0,0,0,28,0,8,0,8
+MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,0,152,0,0,0,29,0,8,0,8
 MLBPortal,com.mlb.mlbportal.security,CSRFHandlerInterceptor,13,6,3,1,3,3,2,2,0,2
 MLBPortal,com.mlb.mlbportal.dto.team,TeamSummary,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.team,TeamDTO,0,33,0,0,0,1,0,1,0,1

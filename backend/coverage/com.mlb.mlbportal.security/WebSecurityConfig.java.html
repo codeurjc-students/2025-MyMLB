@@ -62,33 +62,34 @@ public class WebSecurityConfig {
 <span class="fc" id="L62">                .authorizeHttpRequests(authorize -&gt; authorize</span>
                     // Authentication Endpoints
 <span class="fc" id="L64">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/**&quot;).permitAll()</span>
-<span class="fc" id="L65">                    .requestMatchers(HttpMethod.GET, &quot;/apu/teams/**&quot;).permitAll()</span>
+<span class="fc" id="L65">                    .requestMatchers(HttpMethod.GET, &quot;/api/auth/me&quot;).authenticated()</span>
+<span class="fc" id="L66">                    .requestMatchers(HttpMethod.GET, &quot;/apu/teams/**&quot;).permitAll()</span>
                     
                     // API Docs Endpoints
-<span class="fc" id="L68">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
-<span class="fc" id="L69">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="fc" id="L70">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="fc" id="L69">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
+<span class="fc" id="L70">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+<span class="fc" id="L71">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
                 
                 
                     // PUBLIC ENDPOINTS:
-<span class="fc" id="L74">                    .anyRequest().permitAll());</span>
+<span class="fc" id="L75">                    .anyRequest().permitAll());</span>
 
         // Disable Form login Authentication
-<span class="fc" id="L77">        http.formLogin(AbstractHttpConfigurer::disable);</span>
+<span class="fc" id="L78">        http.formLogin(AbstractHttpConfigurer::disable);</span>
 
         // Disable CSRF protection.
-<span class="fc" id="L80">        http.csrf(AbstractHttpConfigurer::disable);</span>
+<span class="fc" id="L81">        http.csrf(AbstractHttpConfigurer::disable);</span>
 
         // Disable Basic Authentication.
-<span class="fc" id="L83">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
+<span class="fc" id="L84">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
 
         // Stateless session.
-<span class="fc" id="L86">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="fc" id="L87">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
 
         // Add JWT Token filter
-<span class="fc" id="L89">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="fc" id="L90">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
 
-<span class="fc" id="L91">        return http.build();</span>
+<span class="fc" id="L92">        return http.build();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
