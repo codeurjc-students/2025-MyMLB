@@ -28,7 +28,7 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class AuthControllerTestAux {
+class AuthControllerAuxTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +40,8 @@ class AuthControllerTestAux {
     private UserRepository userRepository;
 
     @BeforeEach
-    public void setupTestData() {
+    @SuppressWarnings("unused")
+    void setupTestData() {
         this.userRepository.deleteAll();
 
         UserEntity user = new UserEntity();
