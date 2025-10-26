@@ -58,10 +58,10 @@ public class TeamService {
 <span class="fc" id="L58">                        .toList();</span>
 
 <span class="fc" id="L60">                divisionMap.put(division, sorted);</span>
-            }
+<span class="fc" id="L61">            }</span>
 
 <span class="fc" id="L63">            standings.put(league, divisionMap);</span>
-        }
+<span class="fc" id="L64">        }</span>
 <span class="fc" id="L65">        return standings;</span>
     }
 
@@ -100,7 +100,7 @@ public class TeamService {
         String matchesRecord;
 <span class="fc bfc" id="L101" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
 <span class="fc" id="L102">            matchesRecord = &quot;0-0&quot;;</span>
-<span class="fc" id="L103">        }</span>
+        }
         else {
 <span class="fc" id="L105">            int numberOfWins = 0;</span>
 <span class="fc bfc" id="L106" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
@@ -111,7 +111,7 @@ public class TeamService {
 <span class="fc bfc" id="L111" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
 <span class="fc" id="L112">                    numberOfWins++;</span>
                 }
-            }
+<span class="fc" id="L114">            }</span>
 <span class="fc" id="L115">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
         }
 <span class="fc" id="L117">        team.setLastTen(matchesRecord);</span>

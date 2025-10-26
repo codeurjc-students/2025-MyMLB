@@ -15,23 +15,14 @@ export class ProfileComponent implements OnInit {
 	constructor(private authService: AuthService, private router: Router) {}
 
 	ngOnInit(): void {
-		this.authService.getActiveUser().subscribe(response => {
-			this.username = response.username;
+		this.authService.getActiveUser().subscribe({
+			next: response => this.username = response.username,
+			error: (_) => this.errorMessage = 'Unexpected error while retrieving the user'
 		});
 	}
 
 	public confirmLogout() {
-		this.authService.logoutUser().subscribe({
-			next: (response) => {
-				if (response.status === 'SUCCESS') {
-					this.router.navigate(['/']);
-				}
-				else {
-					this.errorMessage = response.message;
-				}
-			},
-			error: (err) => this.errorMessage = err.message
-		});
+		this.authService.logoutUser().subscribe((_) => this.router.navigate(['/']));
 	}
 
 	public logoutButton() {

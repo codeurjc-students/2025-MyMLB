@@ -24,10 +24,10 @@ public interface TeamMapper {
             Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
 <span class="nc" id="L25">        return groupedTeams.entrySet().stream()</span>
 <span class="nc" id="L26">                .collect(Collectors.toMap(</span>
-<span class="nc" id="L27">                        Map.Entry::getKey,</span>
+                        Map.Entry::getKey,
 <span class="nc" id="L28">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
 <span class="nc" id="L29">                                .collect(Collectors.toMap(</span>
-<span class="nc" id="L30">                                        Map.Entry::getKey,</span>
+                                        Map.Entry::getKey,
 <span class="nc" id="L31">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
     }
 

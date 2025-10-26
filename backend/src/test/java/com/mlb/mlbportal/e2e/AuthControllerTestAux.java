@@ -64,7 +64,7 @@ public class AuthControllerTestAux {
     @Test
     @DisplayName("GET /api/auth/me with a non authenticated user should return 401")
     public void testGetActiveUserWithoutAuthentication() throws Exception {
-        mockMvc.perform(get(ME_PATH)
+        this.mockMvc.perform(get(ME_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -83,7 +83,7 @@ public class AuthControllerTestAux {
     @Test
     @DisplayName("POST /api/auth/logout with a non authenticated user should return a 400")
     public void testLogoutWithoutAuthentication() throws Exception {
-        mockMvc.perform(post(LOGOUT_PATH)
+        this.mockMvc.perform(post(LOGOUT_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value("FAILURE"))
