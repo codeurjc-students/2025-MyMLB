@@ -8,10 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 public class PasswordResetToken {
     @Id
@@ -24,8 +26,6 @@ public class PasswordResetToken {
     private UserEntity user;
 
     private LocalDateTime expirationDate;
-
-    public PasswordResetToken() {}
 
     public PasswordResetToken(String code, UserEntity user) {
         this.code = code;

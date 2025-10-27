@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
@@ -34,6 +36,12 @@ public class TeamService {
         List<Team> teams = teamRepository.findAll();
         teams.forEach(this::enrichTeamStats);
         return teamMapper.toTeamDTOList(teams);
+    }
+
+    public TeamInfoDTO getTeamInfo(String teamName) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        this.enrichTeamStats(team);
+        return this.teamMapper.toTeamInfoDTO(team);
     }
 
     public Map<League, Map<Division, List<TeamDTO>>> getStandings() {

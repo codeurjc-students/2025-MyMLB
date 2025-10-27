@@ -17,14 +17,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInitDTO;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
@@ -38,6 +42,7 @@ public class InitController {
 
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
+    private final StadiumRepository stadiumRepository;
 
     private static final Random RANDOM = new Random();
 
@@ -47,18 +52,20 @@ public class InitController {
     @Value("${init.user2.password}")
     private String arminPassword;
 
-    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {
+    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo, StadiumRepository stadiumRepo) {
         this.userRepository = userRepository;
         this.passwordEncoder = passsEncoder;
 
         this.teamRepository = teamRepo;
         this.matchRepository = matchRepo;
+        this.stadiumRepository = stadiumRepo;
     }
 
     @PostConstruct
     public void init() {
         this.createAdmins();
         this.setUpTeams();
+        this.setUpStadiums();
         this.setUpMatches();
     }
 
@@ -77,6 +84,8 @@ public class InitController {
 
     private void setUpTeams() {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
         try (InputStream input = getClass().getResourceAsStream("/data/teams-2025.json")) {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);
 
@@ -84,14 +93,25 @@ public class InitController {
                 .map(dto -> {
                     League league = League.valueOf(dto.league().toUpperCase());
                     Division division = Division.valueOf(dto.division().toUpperCase());
-                    String logo = dto.abbreviation() + ".png";
 
-                    Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division, logo);
+                    Team team = new Team(
+                        dto.name(),
+                        dto.abbreviation(),
+                        dto.wins(),
+                        dto.losses(),
+                        dto.city(),
+                        dto.generalInfo(),
+                        dto.championships() != null ? dto.championships() : List.of(),
+                        league,
+                        division
+                    );
+
                     int totalGames = dto.wins() + dto.losses();
                     team.setTotalGames(totalGames);
                     team.setPct((double) dto.wins() / totalGames);
                     team.setGamesBehind(0);
                     team.setLastTen("0-0");
+                    team.setTeamLogo(dto.abbreviation() + ".png");
 
                     return team;
                 })
@@ -189,5 +209,37 @@ public class InitController {
             team.getAwayMatches().addAll(matches.stream().filter(m -> m.getAwayTeam().equals(team)).toList());
         }
         this.teamRepository.saveAll(allTeams);
+    }
+
+    private void setUpStadiums() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // Para LocalDate
+
+        try (InputStream input = getClass().getResourceAsStream("/data/stadiums-2025.json")) {
+            StadiumInitDTO[] stadiumDtos = mapper.readValue(input, StadiumInitDTO[].class);
+
+            List<Team> allTeams = teamRepository.findAll();
+            List<Stadium> stadiums = new ArrayList<>();
+
+            for (StadiumInitDTO dto : stadiumDtos) {
+                Team team = allTeams.stream()
+                    .filter(t -> t.getAbbreviation().equalsIgnoreCase(dto.teamAbbreviation()))
+                    .findFirst()
+                    .orElse(null);
+
+                Stadium stadium = new Stadium(dto.name(), dto.openingDate(), team);
+
+                if (team != null) {
+                    team.setStadium(stadium);
+                }
+
+                stadiums.add(stadium);
+            }
+            this.stadiumRepository.saveAll(stadiums);
+            this.teamRepository.saveAll(allTeams);
+
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error loading stadium data from JSON", e);
+        }
     }
 }

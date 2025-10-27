@@ -1,37 +1,445 @@
 [
-    { "name": "Toronto Blue Jays", "abbreviation": "TOR", "wins": 94, "losses": 68, "league": "AL", "division": "EAST" },
-    { "name": "New York Yankees", "abbreviation": "NYY", "wins": 94, "losses": 68, "league": "AL", "division": "EAST" },
-    { "name": "Boston Red Sox", "abbreviation": "BOS", "wins": 89, "losses": 73, "league": "AL", "division": "EAST" },
-    { "name": "Tampa Bay Rays", "abbreviation": "TB", "wins": 77, "losses": 85, "league": "AL", "division": "EAST" },
-    { "name": "Baltimore Orioles", "abbreviation": "BAL", "wins": 75, "losses": 87, "league": "AL", "division": "EAST" },
+  {
+    "name": "Toronto Blue Jays",
+    "abbreviation": "TOR",
+    "wins": 94,
+    "losses": 68,
+    "league": "AL",
+    "division": "EAST",
+    "city": "Toronto",
+    "generalInfo": "Founded in 1977, the Toronto Blue Jays are Canada's only MLB team.",
+    "championships": [1992, 1993],
+    "stadium": {
+      "name": "Rogers Centre",
+      "openingDate": "1989-01-01"
+    }
+  },
+  {
+    "name": "New York Yankees",
+    "abbreviation": "NYY",
+    "wins": 94,
+    "losses": 68,
+    "league": "AL",
+    "division": "EAST",
+    "city": "New York",
+    "generalInfo": "The Yankees are one of the most successful franchises in MLB history.",
+    "championships": [1923, 1927, 1928, 1932, 1936, 1937, 1938, 1939, 1941, 1943, 1947, 1949, 1950, 1951, 1952, 1953, 1956, 1958, 1961, 1962, 1977, 1978, 1996, 1998, 1999, 2000, 2009],
+    "stadium": { "name": "Yankee Stadium", "openingDate": "2009-04-02" }
+  },
+  {
+    "name": "Boston Red Sox",
+    "abbreviation": "BOS",
+    "wins": 89,
+    "losses": 73,
+    "league": "AL",
+    "division": "EAST",
+    "city": "Boston",
+    "generalInfo": "Founded in 1901, the Red Sox play at Fenway Park.",
+    "championships": [1903, 1912, 1915, 1916, 1918, 2004, 2007, 2013, 2018],
+    "stadium": { "name": "Fenway Park", "openingDate": "1912-04-20" }
+  },
+  {
+    "name": "Tampa Bay Rays",
+    "abbreviation": "TB",
+    "wins": 77,
+    "losses": 85,
+    "league": "AL",
+    "division": "EAST",
+    "city": "St. Petersburg",
+    "generalInfo": "Rays are a relatively young franchise, founded in 1998.",
+    "championships": [],
+    "stadium": { "name": "Tropicana Field", "openingDate": "1990-03-03" }
+  },
+  {
+    "name": "Baltimore Orioles",
+    "abbreviation": "BAL",
+    "wins": 75,
+    "losses": 87,
+    "league": "AL",
+    "division": "EAST",
+    "city": "Baltimore",
+    "generalInfo": "Orioles are a historic franchise with multiple World Series titles.",
+    "championships": [1966, 1970, 1983],
+    "stadium": { "name": "Oriole Park at Camden Yards", "openingDate": "1992-04-06" }
+  },
+  
+  {
+    "name": "Cleveland Guardians",
+    "abbreviation": "CLE",
+    "wins": 88,
+    "losses": 74,
+    "league": "AL",
+    "division": "CENTRAL",
+    "city": "Cleveland",
+    "generalInfo": "Originally founded in 1901 as the Cleveland Bluebirds, the team adopted the Guardians name in 2022.",
+    "championships": [1920, 1948],
+    "stadium": {
+      "name": "Progressive Field",
+      "openingDate": "1994-04-04"
+    }
+  },
+  {
+    "name": "Detroit Tigers",
+    "abbreviation": "DET",
+    "wins": 87,
+    "losses": 75,
+    "league": "AL",
+    "division": "CENTRAL",
+    "city": "Detroit",
+    "generalInfo": "One of the AL's original franchises, the Tigers have played in Detroit since 1901.",
+    "championships": [1935, 1945, 1968, 1984],
+    "stadium": {
+      "name": "Comerica Park",
+      "openingDate": "2000-04-11"
+    }
+  },
+  {
+    "name": "Kansas City Royals",
+    "abbreviation": "KC",
+    "wins": 82,
+    "losses": 80,
+    "league": "AL",
+    "division": "CENTRAL",
+    "city": "Kansas City",
+    "generalInfo": "Founded in 1969, the Royals have won two World Series titles.",
+    "championships": [1985, 2015],
+    "stadium": {
+      "name": "Kauffman Stadium",
+      "openingDate": "1973-04-10"
+    }
+  },
+  {
+    "name": "Minnesota Twins",
+    "abbreviation": "MIN",
+    "wins": 70,
+    "losses": 92,
+    "league": "AL",
+    "division": "CENTRAL",
+    "city": "Minneapolis",
+    "generalInfo": "Originally the Washington Senators, the franchise moved to Minnesota in 1961.",
+    "championships": [1924, 1987, 1991],
+    "stadium": {
+      "name": "Target Field",
+      "openingDate": "2010-04-12"
+    }
+  },
+  {
+    "name": "Chicago White Sox",
+    "abbreviation": "CWS",
+    "wins": 60,
+    "losses": 102,
+    "league": "AL",
+    "division": "CENTRAL",
+    "city": "Chicago",
+    "generalInfo": "Founded in 1900, the White Sox are one of the AL's charter franchises.",
+    "championships": [1906, 1917, 2005],
+    "stadium": {
+      "name": "Rate Field",
+      "openingDate": "1991-04-18"
+    }
+  },
 
-    { "name": "Cleveland Guardians", "abbreviation": "CLE", "wins": 88, "losses": 74, "league": "AL", "division": "CENTRAL" },
-    { "name": "Detroit Tigers", "abbreviation": "DET", "wins": 87, "losses": 75, "league": "AL", "division": "CENTRAL" },
-    { "name": "Kansas City Royals", "abbreviation": "KC", "wins": 82, "losses": 80, "league": "AL", "division": "CENTRAL" },
-    { "name": "Minnesota Twins", "abbreviation": "MIN", "wins": 70, "losses": 92, "league": "AL", "division": "CENTRAL" },
-    { "name": "Chicago White Sox", "abbreviation": "CWS", "wins": 60, "losses": 102, "league": "AL", "division": "CENTRAL" },
+  {
+    "name": "Seattle Mariners",
+    "abbreviation": "SEA",
+    "wins": 90,
+    "losses": 72,
+    "league": "AL",
+    "division": "WEST",
+    "city": "Seattle",
+    "generalInfo": "Established in 1977, the Mariners are still seeking their first World Series title.",
+    "championships": [],
+    "stadium": {
+      "name": "T-Mobile Park",
+      "openingDate": "1999-07-15"
+    }
+  },
+  {
+    "name": "Houston Astros",
+    "abbreviation": "HOU",
+    "wins": 87,
+    "losses": 75,
+    "league": "AL",
+    "division": "WEST",
+    "city": "Houston",
+    "generalInfo": "Founded in 1962 as the Colt .45s, the Astros have become a dominant force in the AL.",
+    "championships": [2017, 2022],
+    "stadium": {
+      "name": "Daikin Park",
+      "openingDate": "2000-04-07"
+    }
+  },
+  {
+    "name": "Texas Rangers",
+    "abbreviation": "TEX",
+    "wins": 81,
+    "losses": 81,
+    "league": "AL",
+    "division": "WEST",
+    "city": "Arlington",
+    "generalInfo": "Originally the Washington Senators, the team relocated to Texas in 1972.",
+    "championships": [2023],
+    "stadium": {
+      "name": "Globe Life Field",
+      "openingDate": "2020-07-24"
+    }
+  },
+  {
+    "name": "Sacramento Athletics",
+    "abbreviation": "ATH",
+    "wins": 76,
+    "losses": 86,
+    "league": "AL",
+    "division": "WEST",
+    "city": "Sacramento",
+    "generalInfo": "Relocated from Oakland in 2025, the Athletics are temporarily based in Sacramento before their planned move to Las Vegas.",
+    "championships": [1910, 1911, 1913, 1929, 1930, 1972, 1973, 1974, 1989],
+    "stadium": {
+      "name": "Sutter Health Park",
+      "openingDate": "2000-05-15"
+    }
+  },
+  {
+    "name": "Los Angeles Angels",
+    "abbreviation": "LAA",
+    "wins": 72,
+    "losses": 90,
+    "league": "AL",
+    "division": "WEST",
+    "city": "Anaheim",
+    "generalInfo": "Founded in 1961, the Angels won their only World Series in 2002.",
+    "championships": [2002],
+    "stadium": {
+      "name": "Angel Stadium",
+      "openingDate": "1966-04-19"
+    }
+  },
 
-    { "name": "Seattle Mariners", "abbreviation": "SEA", "wins": 90, "losses": 72, "league": "AL", "division": "WEST" },
-    { "name": "Houston Astros", "abbreviation": "HOU", "wins": 87, "losses": 75, "league": "AL", "division": "WEST" },
-    { "name": "Texas Rangers", "abbreviation": "TEX", "wins": 81, "losses": 81, "league": "AL", "division": "WEST" },
-    { "name": "Sacramento Athletics", "abbreviation": "ATH", "wins": 76, "losses": 86, "league": "AL", "division": "WEST" },
-    { "name": "Los Angeles Angels", "abbreviation": "LAA", "wins": 72, "losses": 90, "league": "AL", "division": "WEST" },
+  {
+    "name": "Philadelphia Phillies",
+    "abbreviation": "PHI",
+    "wins": 96,
+    "losses": 66,
+    "league": "NL",
+    "division": "EAST",
+    "city": "Philadelphia",
+    "generalInfo": "Established in 1883, the Phillies are the oldest continuous one-name, one-city franchise in American professional sports.",
+    "championships": [1980, 2008],
+    "stadium": {
+      "name": "Citizens Bank Park",
+      "openingDate": "2004-04-12"
+    }
+  },
+  {
+    "name": "New York Mets",
+    "abbreviation": "NYM",
+    "wins": 83,
+    "losses": 79,
+    "league": "NL",
+    "division": "EAST",
+    "city": "New York",
+    "generalInfo": "Founded in 1962, the Mets have won two World Series titles.",
+    "championships": [1969, 1986],
+    "stadium": {
+      "name": "Citi Field",
+      "openingDate": "2009-04-13"
+    }
+  },
+  {
+    "name": "Atlanta Braves",
+    "abbreviation": "ATL",
+    "wins": 76,
+    "losses": 86,
+    "league": "NL",
+    "division": "EAST",
+    "city": "Atlanta",
+    "generalInfo": "The Braves are the oldest continuously operating professional sports franchise in America, dating back to 1871.",
+    "championships": [1914, 1957, 1995, 2021],
+    "stadium": {
+      "name": "Truist Park",
+      "openingDate": "2017-04-14"
+    }
+  },
+  {
+    "name": "Miami Marlins",
+    "abbreviation": "MIA",
+    "wins": 79,
+    "losses": 83,
+    "league": "NL",
+    "division": "EAST",
+    "city": "Miami",
+    "generalInfo": "Founded in 1993, the Marlins have won two World Series titles despite never winning a division title.",
+    "championships": [1997, 2003],
+    "stadium": {
+      "name": "LoanDepot Park",
+      "openingDate": "2012-04-04"
+    }
+  },
+  {
+    "name": "Washington Nationals",
+    "abbreviation": "WSH",
+    "wins": 66,
+    "losses": 96,
+    "league": "NL",
+    "division": "EAST",
+    "city": "Washington",
+    "generalInfo": "Originally the Montreal Expos, the franchise relocated to Washington in 2005.",
+    "championships": [2019],
+    "stadium": {
+      "name": "Nationals Park",
+      "openingDate": "2008-03-30"
+    }
+  },
 
-    { "name": "Philadelphia Phillies", "abbreviation": "PHI", "wins": 96, "losses": 66, "league": "NL", "division": "EAST" },
-    { "name": "New York Mets", "abbreviation": "NYM", "wins": 83, "losses": 79, "league": "NL", "division": "EAST" },
-    { "name": "Atlanta Braves", "abbreviation": "ATL", "wins": 76, "losses": 86, "league": "NL", "division": "EAST" },
-    { "name": "Miami Marlins", "abbreviation": "MIA", "wins": 79, "losses": 83, "league": "NL", "division": "EAST" },
-    { "name": "Washington Nationals", "abbreviation": "WSH", "wins": 66, "losses": 96, "league": "NL", "division": "EAST" },
+  {
+    "name": "Milwaukee Brewers",
+    "abbreviation": "MIL",
+    "wins": 97,
+    "losses": 65,
+    "league": "NL",
+    "division": "CENTRAL",
+    "city": "Milwaukee",
+    "generalInfo": "Founded in 1969, the Brewers moved to the National League in 1998 and have made multiple playoff appearances.",
+    "championships": [],
+    "stadium": {
+      "name": "American Family Field",
+      "openingDate": "2001-04-06"
+    }
+  },
+  {
+    "name": "Chicago Cubs",
+    "abbreviation": "CHC",
+    "wins": 92,
+    "losses": 70,
+    "league": "NL",
+    "division": "CENTRAL",
+    "city": "Chicago",
+    "generalInfo": "One of MLB's oldest teams, the Cubs ended a 108-year championship drought by winning the 2016 World Series.",
+    "championships": [1907, 1908, 2016],
+    "stadium": {
+      "name": "Wrigley Field",
+      "openingDate": "1914-04-23"
+    }
+  },
+  {
+    "name": "Cincinnati Reds",
+    "abbreviation": "CIN",
+    "wins": 83,
+    "losses": 79,
+    "league": "NL",
+    "division": "CENTRAL",
+    "city": "Cincinnati",
+    "generalInfo": "The Reds were the first professional baseball team, founded in 1869 as the Cincinnati Red Stockings.",
+    "championships": [1919, 1940, 1975, 1976, 1990],
+    "stadium": {
+      "name": "Great American Ball Park",
+      "openingDate": "2003-03-31"
+    }
+  },
+  {
+    "name": "St. Louis Cardinals",
+    "abbreviation": "STL",
+    "wins": 78,
+    "losses": 84,
+    "league": "NL",
+    "division": "CENTRAL",
+    "city": "St. Louis",
+    "generalInfo": "The Cardinals are one of the most successful franchises in MLB history, with 11 World Series titles.",
+    "championships": [1926, 1931, 1934, 1942, 1944, 1946, 1964, 1967, 1982, 2006, 2011],
+    "stadium": {
+      "name": "Busch Stadium",
+      "openingDate": "2006-04-10"
+    }
+  },
+  {
+    "name": "Pittsburgh Pirates",
+    "abbreviation": "PIT",
+    "wins": 71,
+    "losses": 91,
+    "league": "NL",
+    "division": "CENTRAL",
+    "city": "Pittsburgh",
+    "generalInfo": "Founded in 1882, the Pirates have a rich history and five World Series championships.",
+    "championships": [1909, 1925, 1960, 1971, 1979],
+    "stadium": {
+      "name": "PNC Park",
+      "openingDate": "2001-04-09"
+    }
+  },
 
-    { "name": "Milwaukee Brewers", "abbreviation": "MIL", "wins": 97, "losses": 65, "league": "NL", "division": "CENTRAL" },
-    { "name": "Chicago Cubs", "abbreviation": "CHC", "wins": 92, "losses": 70, "league": "NL", "division": "CENTRAL" },
-    { "name": "Cincinnati Reds", "abbreviation": "CIN", "wins": 83, "losses": 79, "league": "NL", "division": "CENTRAL" },
-    { "name": "St. Louis Cardinals", "abbreviation": "STL", "wins": 78, "losses": 84, "league": "NL", "division": "CENTRAL" },
-    { "name": "Pittsburgh Pirates", "abbreviation": "PIT", "wins": 71, "losses": 91, "league": "NL", "division": "CENTRAL" },
-
-    { "name": "Los Angeles Dodgers", "abbreviation": "LAD", "wins": 93, "losses": 69, "league": "NL", "division": "WEST" },
-    { "name": "San Diego Padres", "abbreviation": "SD", "wins": 90, "losses": 72, "league": "NL", "division": "WEST" },
-    { "name": "San Francisco Giants", "abbreviation": "SF", "wins": 81, "losses": 81, "league": "NL", "division": "WEST" },
-    { "name": "Arizona Diamondbacks", "abbreviation": "ARI", "wins": 80, "losses": 82, "league": "NL", "division": "WEST" },
-    { "name": "Colorado Rockies", "abbreviation": "COL", "wins": 43, "losses": 119, "league": "NL", "division": "WEST" }
+  {
+    "name": "Los Angeles Dodgers",
+    "abbreviation": "LAD",
+    "wins": 93,
+    "losses": 69,
+    "league": "NL",
+    "division": "WEST",
+    "city": "Los Angeles",
+    "generalInfo": "Originally based in Brooklyn, the Dodgers moved to Los Angeles in 1958 and have won multiple championships.",
+    "championships": [1955, 1959, 1963, 1965, 1981, 1988, 2020, 2024],
+    "stadium": {
+      "name": "Dodger Stadium",
+      "openingDate": "1962-04-10"
+    }
+  },
+  {
+    "name": "San Diego Padres",
+    "abbreviation": "SD",
+    "wins": 90,
+    "losses": 72,
+    "league": "NL",
+    "division": "WEST",
+    "city": "San Diego",
+    "generalInfo": "Founded in 1969, the Padres have reached the World Series twice but are still seeking their first title.",
+    "championships": [],
+    "stadium": {
+      "name": "Petco Park",
+      "openingDate": "2004-04-08"
+    }
+  },
+  {
+    "name": "San Francisco Giants",
+    "abbreviation": "SF",
+    "wins": 81,
+    "losses": 81,
+    "league": "NL",
+    "division": "WEST",
+    "city": "San Francisco",
+    "generalInfo": "The Giants, originally from New York, have won eight World Series titles and are known for their passionate fanbase.",
+    "championships": [1905, 1921, 1922, 1933, 1954, 2010, 2012, 2014],
+    "stadium": {
+      "name": "Oracle Park",
+      "openingDate": "2000-04-11"
+    }
+  },
+  {
+    "name": "Arizona Diamondbacks",
+    "abbreviation": "ARI",
+    "wins": 80,
+    "losses": 82,
+    "league": "NL",
+    "division": "WEST",
+    "city": "Phoenix",
+    "generalInfo": "The Diamondbacks joined MLB in 1998 and won the World Series just three years later.",
+    "championships": [2001],
+    "stadium": {
+      "name": "Chase Field",
+      "openingDate": "1998-03-31"
+    }
+  },
+  {
+    "name": "Colorado Rockies",
+    "abbreviation": "COL",
+    "wins": 43,
+    "losses": 119,
+    "league": "NL",
+    "division": "WEST",
+    "city": "Denver",
+    "generalInfo": "Founded in 1993, the Rockies reached their first and only World Series in 2007.",
+    "championships": [],
+    "stadium": {
+      "name": "Coors Field",
+      "openingDate": "1995-04-26"
+    }
+  }
 ]

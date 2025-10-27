@@ -9,12 +9,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = StadiumMapper.class)
 public interface TeamMapper {
     TeamDTO toTeamDTO(Team team);
 
@@ -37,4 +38,7 @@ public interface TeamMapper {
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
 
     TeamSummary toTeamSummaryDTO(Team team);
+
+    @Mapping(target = "teamDTO", source = "team")
+    TeamInfoDTO toTeamInfoDTO(Team team);
 }

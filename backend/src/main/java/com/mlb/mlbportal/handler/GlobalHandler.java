@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
+import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
 @ControllerAdvice
@@ -41,37 +43,46 @@ public class GlobalHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @SuppressWarnings("null")
     public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
-        String errorMsg = (ex instanceof UserNotFoundException) ? "User Not Found" : "Team Not Found";
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
+        String errorMsg = "Resource Not Found";
+        if (ex instanceof UserNotFoundException) {
+            errorMsg = "User Not Found";
+        }
+        else if (ex instanceof TeamNotFoundException) {
+            errorMsg = "Team Not Found";
+        }
+        else if (ex instanceof StadiumNotFoundException) {
+            errorMsg = "Stadium Not Found";
+        }
+        return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
-        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "User Already Exists in the Database");
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "User Already Exists in the Database");
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<Map<String, Object>> handleNullPointer(NullPointerException ex) {
         if (ex.getMessage() == null || ex.getMessage().contains("getUser")) {
-            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), "User Not Authenticated");
+            return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), "User Not Authenticated");
         }
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),
+        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),
                 "Internal Server Error occurred due to NullPointerException");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, Object>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),
+        return this.buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),
                 "HTTP method not allowed for this endpoint");
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleAuthentication(AuthenticationException ex) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(),"Unauthorized");
+        return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(),"Unauthorized");
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllOtherExceptions(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "Internal Server Error");
+        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "Internal Server Error");
     }
 }

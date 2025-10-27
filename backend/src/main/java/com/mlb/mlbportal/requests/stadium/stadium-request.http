@@ -1,0 +1,6 @@
+### Get All Stadiums
+
+GET https://localhost:8443/api/stadiums
+
+### Get Stadium by Name
+GET https://localhost:8443/api/stadiums/Petco Park
