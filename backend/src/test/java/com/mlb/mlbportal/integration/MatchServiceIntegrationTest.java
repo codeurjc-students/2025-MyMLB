@@ -22,9 +22,6 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
-
-import jakarta.transaction.Transactional;
-
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
@@ -32,6 +29,8 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -84,7 +83,7 @@ class MatchServiceIntegrationTest {
 
     @Test
     @DisplayName("Should update match status to Finished if 3 hours have passed")
-    void testMatchesOfTheDay_FinishedUpdate() {
+    void testMatchesOfTheDayFinishedUpdate() {
         Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 

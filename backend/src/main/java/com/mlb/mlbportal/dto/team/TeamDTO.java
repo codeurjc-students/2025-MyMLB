@@ -10,6 +10,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * DTO that represents the stats of a team. Used to display the team stats in the standings
+ */
 public record TeamDTO(
     @NotBlank(message = "The name of the team is required")
     String name,

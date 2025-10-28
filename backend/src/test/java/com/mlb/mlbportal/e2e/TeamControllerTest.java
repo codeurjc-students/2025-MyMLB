@@ -10,13 +10,27 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_TEAMS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.STANDINGS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
-
 import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -46,12 +60,12 @@ class TeamControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("size()", is(3))
-                .body("name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
-                .body("abbreviation",
+                .body("teamDTO.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+                .body("teamDTO.abbreviation",
                         hasItems(TEST_TEAM1_ABBREVIATION, TEST_TEAM2_ABBREVIATION, TEST_TEAM3_ABBREVIATION))
-                .body("wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
-                .body("pct", hasItems(0.469f, 0.563f, 0.077f))
-                .body("gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
+                .body("teamDTO.wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
+                .body("teamDTO.pct", hasItems(0.469f, 0.563f, 0.077f))
+                .body("teamDTO.gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
     }
 
     @Test

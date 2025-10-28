@@ -40,8 +40,8 @@ public class TeamController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<TeamDTO>> getAllTeams() {
-        List<TeamDTO> teams = this.teamService.getTeams();
+    public ResponseEntity<List<TeamInfoDTO>> getAllTeams() {
+        List<TeamInfoDTO> teams = this.teamService.getTeams();
         return ResponseEntity.ok(teams);
     }
 
@@ -57,7 +57,7 @@ public class TeamController {
     }
 
     @GetMapping("/{teamName}")
-    public ResponseEntity<TeamInfoDTO> getMethodName(@PathVariable String teamName) {
+    public ResponseEntity<TeamInfoDTO> getMethodName(@PathVariable("teamName") String teamName) {
        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
     }
 }

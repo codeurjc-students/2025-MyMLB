@@ -2,6 +2,7 @@ package com.mlb.mlbportal.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,6 +53,7 @@ public class WebSecurityConfig {
 
     @Bean
     @Order(1)
+    @Profile("!test")
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http
@@ -61,9 +63,27 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                     // Authentication Endpoints
-                    .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/apu/teams/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/refresh").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").authenticated()
+                    
+                    // User Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+
+                    // Team Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/teams").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/teams/standings").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/teams/{teamName}").permitAll()
+
+                    // Stadium Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/stadiums").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/stadiums/{name}").permitAll()
+
+                    // Matches Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/matches/today").permitAll()
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

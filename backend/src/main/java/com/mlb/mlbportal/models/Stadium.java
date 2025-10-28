@@ -1,6 +1,6 @@
 package com.mlb.mlbportal.models;
 
-import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class Stadium {
 
     private String name;
 
-    private LocalDate openingDate;
+    private Year openingDate;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> pictures = new ArrayList<>();
@@ -42,14 +42,14 @@ public class Stadium {
         }
     }
 
-    public Stadium(String name, LocalDate openingDate, List<String> pictures, Team team) {
+    public Stadium(String name, Year openingDate, List<String> pictures, Team team) {
         this.name = name;
         this.openingDate = openingDate;
         this.pictures = pictures;
         this.team = team;
     }
 
-    public Stadium(String name, LocalDate openingDate, Team team) {
+    public Stadium(String name, Year openingDate, Team team) {
         this.name = name;
         this.openingDate = openingDate;
         this.team = team;

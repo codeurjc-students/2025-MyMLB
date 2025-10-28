@@ -27,7 +27,7 @@ public class StadiumController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<StadiumDTO> getStadiumByName(@PathVariable String name) {
+    public ResponseEntity<StadiumDTO> getStadiumByName(@PathVariable("name") String name) {
         return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));
     }
 }

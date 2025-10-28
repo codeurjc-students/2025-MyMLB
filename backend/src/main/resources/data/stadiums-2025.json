@@ -1,152 +1,152 @@
 [
   {
     "name": "Rogers Centre",
-    "openingDate": "1989-01-01",
+    "openingDate": "1989",
     "teamAbbreviation": "TOR"
   },
   {
     "name": "Yankee Stadium",
-    "openingDate": "2009-04-16",
+    "openingDate": "2009",
     "teamAbbreviation": "NYY"
   },
   {
     "name": "Fenway Park",
-    "openingDate": "1912-04-20",
+    "openingDate": "1912",
     "teamAbbreviation": "BOS"
   },
   {
     "name": "Tropicana Field",
-    "openingDate": "1990-03-03",
+    "openingDate": "1990",
     "teamAbbreviation": "TB"
   },
   {
     "name": "Oriole Park at Camden Yards",
-    "openingDate": "1992-04-06",
+    "openingDate": "1992",
     "teamAbbreviation": "BAL"
   },
   {
     "name": "Progressive Field",
-    "openingDate": "1994-04-04",
+    "openingDate": "1994",
     "teamAbbreviation": "CLE"
   },
   {
     "name": "Comerica Park",
-    "openingDate": "2000-04-11",
+    "openingDate": "2000",
     "teamAbbreviation": "DET"
   },
   {
     "name": "Kauffman Stadium",
-    "openingDate": "1973-04-10",
+    "openingDate": "1973",
     "teamAbbreviation": "KC"
   },
   {
     "name": "Target Field",
-    "openingDate": "2010-04-12",
+    "openingDate": "2010",
     "teamAbbreviation": "MIN"
   },
   {
     "name": "Guaranteed Rate Field",
-    "openingDate": "1991-04-18",
+    "openingDate": "1991",
     "teamAbbreviation": "CWS"
   },
   {
     "name": "T-Mobile Park",
-    "openingDate": "1999-07-15",
+    "openingDate": "1999",
     "teamAbbreviation": "SEA"
   },
   {
-    "name": "Minute Maid Park",
-    "openingDate": "2000-04-07",
+    "name": "Daikin Park",
+    "openingDate": "2000",
     "teamAbbreviation": "HOU"
   },
   {
     "name": "Globe Life Field",
-    "openingDate": "2020-07-24",
+    "openingDate": "2020",
     "teamAbbreviation": "TEX"
   },
   {
     "name": "Sutter Health Park",
-    "openingDate": "2000-05-15",
+    "openingDate": "2000",
     "teamAbbreviation": "OAK"
   },
   {
     "name": "Angel Stadium",
-    "openingDate": "1966-04-19",
+    "openingDate": "1996",
     "teamAbbreviation": "LAA"
   },
   {
     "name": "Citizens Bank Park",
-    "openingDate": "2004-04-12",
+    "openingDate": "2004",
     "teamAbbreviation": "PHI"
   },
   {
     "name": "Citi Field",
-    "openingDate": "2009-04-13",
+    "openingDate": "2009",
     "teamAbbreviation": "NYM"
   },
   {
     "name": "Truist Park",
-    "openingDate": "2017-04-14",
+    "openingDate": "2017",
     "teamAbbreviation": "ATL"
   },
   {
-    "name": "loanDepot Park",
-    "openingDate": "2012-04-04",
+    "name": "LoanDepot Park",
+    "openingDate": "2012",
     "teamAbbreviation": "MIA"
   },
   {
     "name": "Nationals Park",
-    "openingDate": "2008-03-30",
+    "openingDate": "2008",
     "teamAbbreviation": "WSH"
   },
   {
     "name": "American Family Field",
-    "openingDate": "2001-04-06",
+    "openingDate": "2001",
     "teamAbbreviation": "MIL"
   },
   {
     "name": "Wrigley Field",
-    "openingDate": "1914-04-23",
+    "openingDate": "1914",
     "teamAbbreviation": "CHC"
   },
   {
     "name": "Great American Ball Park",
-    "openingDate": "2003-03-31",
+    "openingDate": "2003",
     "teamAbbreviation": "CIN"
   },
   {
     "name": "Busch Stadium",
-    "openingDate": "2006-04-10",
+    "openingDate": "2006",
     "teamAbbreviation": "STL"
   },
   {
     "name": "PNC Park",
-    "openingDate": "2001-04-09",
+    "openingDate": "2001",
     "teamAbbreviation": "PIT"
   },
   {
     "name": "Dodger Stadium",
-    "openingDate": "1962-04-10",
+    "openingDate": "1962",
     "teamAbbreviation": "LAD"
   },
   {
     "name": "Petco Park",
-    "openingDate": "2004-04-08",
+    "openingDate": "2004",
     "teamAbbreviation": "SD"
   },
   {
     "name": "Oracle Park",
-    "openingDate": "2000-04-11",
+    "openingDate": "2000",
     "teamAbbreviation": "SF"
   },
   {
     "name": "Chase Field",
-    "openingDate": "1998-03-31",
+    "openingDate": "1998",
     "teamAbbreviation": "ARI"
   },
   {
     "name": "Coors Field",
-    "openingDate": "1995-04-26",
+    "openingDate": "1995",
     "teamAbbreviation": "COL"
   }
 ]

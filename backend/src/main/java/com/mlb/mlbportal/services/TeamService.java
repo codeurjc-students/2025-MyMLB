@@ -32,10 +32,10 @@ public class TeamService {
         this.matchService = matchService;
     }
 
-    public List<TeamDTO> getTeams() {
-        List<Team> teams = teamRepository.findAll();
+    public List<TeamInfoDTO> getTeams() {
+        List<Team> teams = this.teamRepository.findAll();
         teams.forEach(this::enrichTeamStats);
-        return teamMapper.toTeamDTOList(teams);
+        return this.teamMapper.toTeamInfoDTOList(teams);
     }
 
     public TeamInfoDTO getTeamInfo(String teamName) {

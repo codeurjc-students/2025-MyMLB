@@ -213,7 +213,7 @@ public class InitController {
 
     private void setUpStadiums() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule()); // Para LocalDate
+        mapper.registerModule(new JavaTimeModule());
 
         try (InputStream input = getClass().getResourceAsStream("/data/stadiums-2025.json")) {
             StadiumInitDTO[] stadiumDtos = mapper.readValue(input, StadiumInitDTO[].class);

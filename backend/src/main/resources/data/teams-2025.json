@@ -7,12 +7,9 @@
     "league": "AL",
     "division": "EAST",
     "city": "Toronto",
-    "generalInfo": "Founded in 1977, the Toronto Blue Jays are Canada's only MLB team.",
+    "generalInfo": "Founded in 1977, the Toronto Blue Jays are Canada’s only Major League Baseball team. They quickly became a symbol of national pride, winning back-to-back World Series championships in 1992 and 1993. Playing at Rogers Centre, the team has cultivated a devoted fanbase across Canada. The Blue Jays are known for blending veteran leadership with young talent, consistently challenging for playoff contention. Their iconic blue uniforms and international appeal make them one of MLB’s most recognized teams outside the United States.",
     "championships": [1992, 1993],
-    "stadium": {
-      "name": "Rogers Centre",
-      "openingDate": "1989-01-01"
-    }
+    "stadium": { "name": "Rogers Centre", "openingDate": "1989" }
   },
   {
     "name": "New York Yankees",
@@ -22,9 +19,13 @@
     "league": "AL",
     "division": "EAST",
     "city": "New York",
-    "generalInfo": "The Yankees are one of the most successful franchises in MLB history.",
-    "championships": [1923, 1927, 1928, 1932, 1936, 1937, 1938, 1939, 1941, 1943, 1947, 1949, 1950, 1951, 1952, 1953, 1956, 1958, 1961, 1962, 1977, 1978, 1996, 1998, 1999, 2000, 2009],
-    "stadium": { "name": "Yankee Stadium", "openingDate": "2009-04-02" }
+    "generalInfo": "Founded in 1901, the New York Yankees are the most successful franchise in Major League Baseball history. They have captured 27 World Series championships, featuring legendary players like Babe Ruth, Lou Gehrig, and Derek Jeter. Yankee Stadium is an iconic landmark where generations of fans have witnessed historic moments. The team is synonymous with excellence, tradition, and a culture of winning that spans over a century. Their pinstripe uniforms and global recognition make the Yankees a symbol of baseball greatness.",
+    "championships": [
+      1923, 1927, 1928, 1932, 1936, 1937, 1938, 1939, 1941, 1943, 1947, 1949,
+      1950, 1951, 1952, 1953, 1956, 1958, 1961, 1962, 1977, 1978, 1996, 1998,
+      1999, 2000, 2009
+    ],
+    "stadium": { "name": "Yankee Stadium", "openingDate": "2009" }
   },
   {
     "name": "Boston Red Sox",
@@ -34,9 +35,9 @@
     "league": "AL",
     "division": "EAST",
     "city": "Boston",
-    "generalInfo": "Founded in 1901, the Red Sox play at Fenway Park.",
+    "generalInfo": "Founded in 1901, the Boston Red Sox are one of baseball’s most historic franchises. Their home, Fenway Park, has been an iconic landmark since 1912, famous for its Green Monster in left field. The Red Sox have won nine World Series titles, including the dramatic 2004 championship that ended an 86-year drought. Known for their intense rivalry with the Yankees and passionate fanbase, the team blends tradition with modern competitiveness. Boston continues to develop homegrown talent while remaining a symbol of baseball excellence.",
     "championships": [1903, 1912, 1915, 1916, 1918, 2004, 2007, 2013, 2018],
-    "stadium": { "name": "Fenway Park", "openingDate": "1912-04-20" }
+    "stadium": { "name": "Fenway Park", "openingDate": "1912" }
   },
   {
     "name": "Tampa Bay Rays",
@@ -46,9 +47,9 @@
     "league": "AL",
     "division": "EAST",
     "city": "St. Petersburg",
-    "generalInfo": "Rays are a relatively young franchise, founded in 1998.",
+    "generalInfo": "Founded in 1998, the Tampa Bay Rays are a young franchise known for innovation and strong player development. They reached the World Series in 2008 and 2020, demonstrating their ability to compete despite being a small-market team. Tropicana Field serves as their home, where fans enjoy fast-paced baseball and a community-focused atmosphere. The Rays have built a reputation for analytics-driven strategies and consistently field competitive teams. They continue to challenge larger-market clubs in the American League East with smart management and talented rosters.",
     "championships": [],
-    "stadium": { "name": "Tropicana Field", "openingDate": "1990-03-03" }
+    "stadium": { "name": "Tropicana Field", "openingDate": "1990" }
   },
   {
     "name": "Baltimore Orioles",
@@ -58,11 +59,11 @@
     "league": "AL",
     "division": "EAST",
     "city": "Baltimore",
-    "generalInfo": "Orioles are a historic franchise with multiple World Series titles.",
+    "generalInfo": "Founded in 1901, the Baltimore Orioles are a historic franchise with three World Series titles. Their golden eras in the 1960s and 1980s featured stars like Brooks Robinson and Cal Ripken Jr. Oriole Park at Camden Yards is celebrated for redefining modern ballpark design. The Orioles are known for developing elite talent and maintaining a passionate local fanbase. Baltimore baseball continues to be a proud part of MLB’s heritage, balancing tradition and competitive ambition.",
     "championships": [1966, 1970, 1983],
-    "stadium": { "name": "Oriole Park at Camden Yards", "openingDate": "1992-04-06" }
+    "stadium": { "name": "Oriole Park at Camden Yards", "openingDate": "1992" }
   },
-  
+
   {
     "name": "Cleveland Guardians",
     "abbreviation": "CLE",
@@ -71,12 +72,9 @@
     "league": "AL",
     "division": "CENTRAL",
     "city": "Cleveland",
-    "generalInfo": "Originally founded in 1901 as the Cleveland Bluebirds, the team adopted the Guardians name in 2022.",
+    "generalInfo": "Founded in 1901 as the Cleveland Bluebirds, the franchise became the Guardians in 2022. The team has won World Series titles in 1920 and 1948 and is known for its resilience and loyal fanbase. Progressive Field serves as a modern home, offering a vibrant game-day experience. The Guardians have a rich tradition of developing strong pitching and fielding talent. Cleveland baseball remains a cornerstone of the American League Central, blending history with a bright future.",
     "championships": [1920, 1948],
-    "stadium": {
-      "name": "Progressive Field",
-      "openingDate": "1994-04-04"
-    }
+    "stadium": { "name": "Progressive Field", "openingDate": "1994" }
   },
   {
     "name": "Detroit Tigers",
@@ -86,12 +84,9 @@
     "league": "AL",
     "division": "CENTRAL",
     "city": "Detroit",
-    "generalInfo": "One of the AL's original franchises, the Tigers have played in Detroit since 1901.",
+    "generalInfo": "Founded in 1901, the Detroit Tigers are one of the American League’s original franchises. They have captured four World Series titles and featured legendary players such as Ty Cobb and Miguel Cabrera. Comerica Park provides a modern home for the team and its passionate fanbase. The Tigers are known for blending tradition with a commitment to developing young talent. Detroit’s team reflects the city’s resilience and deep-rooted love for baseball.",
     "championships": [1935, 1945, 1968, 1984],
-    "stadium": {
-      "name": "Comerica Park",
-      "openingDate": "2000-04-11"
-    }
+    "stadium": { "name": "Comerica Park", "openingDate": "2000" }
   },
   {
     "name": "Kansas City Royals",
@@ -101,12 +96,9 @@
     "league": "AL",
     "division": "CENTRAL",
     "city": "Kansas City",
-    "generalInfo": "Founded in 1969, the Royals have won two World Series titles.",
+    "generalInfo": "Founded in 1969, the Kansas City Royals quickly became a competitive small-market franchise. They won World Series titles in 1985 and 2015, showcasing their ability to compete at the highest level. Kauffman Stadium is celebrated for its unique fountains and fan-friendly environment. The Royals are recognized for strong player development and cultivating homegrown talent. Kansas City baseball continues to embody Midwestern pride and perseverance in the American League.",
     "championships": [1985, 2015],
-    "stadium": {
-      "name": "Kauffman Stadium",
-      "openingDate": "1973-04-10"
-    }
+    "stadium": { "name": "Kauffman Stadium", "openingDate": "1973" }
   },
   {
     "name": "Minnesota Twins",
@@ -116,12 +108,9 @@
     "league": "AL",
     "division": "CENTRAL",
     "city": "Minneapolis",
-    "generalInfo": "Originally the Washington Senators, the franchise moved to Minnesota in 1961.",
+    "generalInfo": "Founded in 1901 as the Washington Senators, the franchise moved to Minnesota in 1961 and became the Twins. They have won three World Series championships and are known for their strong player development. Target Field provides a modern home and a fan-friendly experience. The Twins have produced numerous Hall of Famers, blending tradition with ongoing competitiveness. Minnesota baseball reflects both community pride and a rich sporting heritage.",
     "championships": [1924, 1987, 1991],
-    "stadium": {
-      "name": "Target Field",
-      "openingDate": "2010-04-12"
-    }
+    "stadium": { "name": "Target Field", "openingDate": "2010" }
   },
   {
     "name": "Chicago White Sox",
@@ -131,12 +120,9 @@
     "league": "AL",
     "division": "CENTRAL",
     "city": "Chicago",
-    "generalInfo": "Founded in 1900, the White Sox are one of the AL's charter franchises.",
+    "generalInfo": "Founded in 1900, the Chicago White Sox are one of the American League’s original franchises. They have won three World Series titles, most recently in 2005, and are a staple of Chicago sports. Guaranteed Rate Field serves as their home, providing a modern venue for fans. The White Sox are known for developing homegrown talent and fostering strong community ties. Their history reflects a blend of tradition, resilience, and passionate fan support.",
     "championships": [1906, 1917, 2005],
-    "stadium": {
-      "name": "Rate Field",
-      "openingDate": "1991-04-18"
-    }
+    "stadium": { "name": "Rate Field", "openingDate": "1991" }
   },
 
   {
@@ -147,12 +133,9 @@
     "league": "AL",
     "division": "WEST",
     "city": "Seattle",
-    "generalInfo": "Established in 1977, the Mariners are still seeking their first World Series title.",
+    "generalInfo": "Founded in 1977, the Seattle Mariners are a relatively young MLB franchise. Despite never winning a World Series, they have had strong playoff appearances and boast a loyal fanbase in the Pacific Northwest. T-Mobile Park provides a scenic and modern home for fans to enjoy baseball. The Mariners are known for developing talented players and maintaining competitive teams. Their commitment to innovation and community involvement makes them a prominent part of Seattle sports culture.",
     "championships": [],
-    "stadium": {
-      "name": "T-Mobile Park",
-      "openingDate": "1999-07-15"
-    }
+    "stadium": { "name": "T-Mobile Park", "openingDate": "1999" }
   },
   {
     "name": "Houston Astros",
@@ -162,12 +145,9 @@
     "league": "AL",
     "division": "WEST",
     "city": "Houston",
-    "generalInfo": "Founded in 1962 as the Colt .45s, the Astros have become a dominant force in the AL.",
+    "generalInfo": "Founded in 1962 as the Colt .45s, the Houston Astros became a dominant force in the American League. They won their first World Series in 2017 and captured another title in 2022. Minute Maid Park provides a modern venue with a retractable roof and rich history for fans. The Astros are known for strong pitching, advanced analytics, and player development. Houston baseball has become a symbol of innovation and championship ambition.",
     "championships": [2017, 2022],
-    "stadium": {
-      "name": "Daikin Park",
-      "openingDate": "2000-04-07"
-    }
+    "stadium": { "name": "Minute Maid Park", "openingDate": "2000" }
   },
   {
     "name": "Texas Rangers",
@@ -177,12 +157,9 @@
     "league": "AL",
     "division": "WEST",
     "city": "Arlington",
-    "generalInfo": "Originally the Washington Senators, the team relocated to Texas in 1972.",
+    "generalInfo": "Founded in 1961 as the Washington Senators, the franchise moved to Texas in 1972 and became the Rangers. They won their first World Series in 2023, marking a historic achievement for the team. Globe Life Field offers a modern and fan-friendly environment in Arlington. The Rangers are known for cultivating talent and maintaining competitive rosters. Texas baseball continues to grow in popularity, blending regional pride with national recognition.",
     "championships": [2023],
-    "stadium": {
-      "name": "Globe Life Field",
-      "openingDate": "2020-07-24"
-    }
+    "stadium": { "name": "Globe Life Field", "openingDate": "2020" }
   },
   {
     "name": "Sacramento Athletics",
@@ -192,12 +169,9 @@
     "league": "AL",
     "division": "WEST",
     "city": "Sacramento",
-    "generalInfo": "Relocated from Oakland in 2025, the Athletics are temporarily based in Sacramento before their planned move to Las Vegas.",
+    "generalInfo": "Founded in 1901 as the Philadelphia Athletics, the franchise relocated multiple times and is temporarily based in Sacramento since 2025. The team has won nine World Series titles across its history, reflecting a storied legacy. Sutter Health Park serves as a temporary home while plans for Las Vegas progress. The Athletics are known for developing young talent and a strong analytical approach. Sacramento fans enjoy a glimpse of a historic franchise adapting to a new era.",
     "championships": [1910, 1911, 1913, 1929, 1930, 1972, 1973, 1974, 1989],
-    "stadium": {
-      "name": "Sutter Health Park",
-      "openingDate": "2000-05-15"
-    }
+    "stadium": { "name": "Sutter Health Park", "openingDate": "2000" }
   },
   {
     "name": "Los Angeles Angels",
@@ -207,12 +181,9 @@
     "league": "AL",
     "division": "WEST",
     "city": "Anaheim",
-    "generalInfo": "Founded in 1961, the Angels won their only World Series in 2002.",
+    "generalInfo": "Founded in 1961, the Los Angeles Angels captured their only World Series in 2002. The franchise has seen periods of success and produced stars like Nolan Ryan and Mike Trout. Angel Stadium offers fans a historic venue in Anaheim to enjoy games. The Angels are known for offensive firepower and exciting play on the field. Their blend of star talent and regional support makes them a key part of California baseball.",
     "championships": [2002],
-    "stadium": {
-      "name": "Angel Stadium",
-      "openingDate": "1966-04-19"
-    }
+    "stadium": { "name": "Angel Stadium", "openingDate": "1996" }
   },
 
   {
@@ -223,12 +194,9 @@
     "league": "NL",
     "division": "EAST",
     "city": "Philadelphia",
-    "generalInfo": "Established in 1883, the Phillies are the oldest continuous one-name, one-city franchise in American professional sports.",
+    "generalInfo": "Founded in 1883, the Philadelphia Phillies are the oldest continuous one-name, one-city franchise in American professional sports. They have won two World Series titles, in 1980 and 2008. Citizens Bank Park serves as a modern and fan-friendly venue for Phillies supporters. The team is known for its passionate fanbase and commitment to building competitive rosters. Philadelphia baseball reflects a rich history, resilience, and strong community identity.",
     "championships": [1980, 2008],
-    "stadium": {
-      "name": "Citizens Bank Park",
-      "openingDate": "2004-04-12"
-    }
+    "stadium": { "name": "Citizens Bank Park", "openingDate": "2004" }
   },
   {
     "name": "New York Mets",
@@ -238,12 +206,9 @@
     "league": "NL",
     "division": "EAST",
     "city": "New York",
-    "generalInfo": "Founded in 1962, the Mets have won two World Series titles.",
+    "generalInfo": "Founded in 1962, the New York Mets quickly became New York’s National League team after the Dodgers and Giants moved west. They have won two World Series titles, in 1969 and 1986, including the dramatic 'Miracle Mets' season. Citi Field serves as a modern home, providing fans with state-of-the-art facilities. The Mets are known for producing young talent and maintaining a passionate fanbase. They continue to play a central role in New York’s vibrant baseball culture.",
     "championships": [1969, 1986],
-    "stadium": {
-      "name": "Citi Field",
-      "openingDate": "2009-04-13"
-    }
+    "stadium": { "name": "Citi Field", "openingDate": "2009" }
   },
   {
     "name": "Atlanta Braves",
@@ -253,12 +218,9 @@
     "league": "NL",
     "division": "EAST",
     "city": "Atlanta",
-    "generalInfo": "The Braves are the oldest continuously operating professional sports franchise in America, dating back to 1871.",
+    "generalInfo": "Founded in 1871, the Atlanta Braves are the oldest continuously operating professional sports franchise in the United States. They have won four World Series titles, most recently in 2021, and have a long tradition of excellence. Truist Park serves as their home, combining modern amenities with fan engagement. The Braves are known for producing legendary players and maintaining strong fan loyalty. Atlanta baseball embodies history, talent development, and sustained competitiveness in the National League.",
     "championships": [1914, 1957, 1995, 2021],
-    "stadium": {
-      "name": "Truist Park",
-      "openingDate": "2017-04-14"
-    }
+    "stadium": { "name": "Truist Park", "openingDate": "2017" }
   },
   {
     "name": "Miami Marlins",
@@ -268,12 +230,9 @@
     "league": "NL",
     "division": "EAST",
     "city": "Miami",
-    "generalInfo": "Founded in 1993, the Marlins have won two World Series titles despite never winning a division title.",
+    "generalInfo": "Founded in 1993, the Miami Marlins have achieved two World Series championships despite never winning a division title. LoanDepot Park offers a modern, retractable-roof stadium for fans in South Florida. The team is recognized for producing talented players and exciting, fast-paced baseball. Miami baseball is known for its vibrant atmosphere and diverse fanbase. The Marlins continue to build their legacy while growing the sport in a non-traditional baseball market.",
     "championships": [1997, 2003],
-    "stadium": {
-      "name": "LoanDepot Park",
-      "openingDate": "2012-04-04"
-    }
+    "stadium": { "name": "LoanDepot Park", "openingDate": "2012" }
   },
   {
     "name": "Washington Nationals",
@@ -283,12 +242,9 @@
     "league": "NL",
     "division": "EAST",
     "city": "Washington",
-    "generalInfo": "Originally the Montreal Expos, the franchise relocated to Washington in 2005.",
+    "generalInfo": "Founded in 1969 as the Montreal Expos, the franchise relocated to Washington, D.C., in 2005 and became the Nationals. They won their first World Series in 2019, a historic achievement for the young Washington team. Nationals Park provides a modern, fan-friendly venue in the nation’s capital. The Nationals are known for developing strong pitching and homegrown talent while fostering a dedicated fanbase. Washington baseball reflects a blend of history, rapid success, and growing prominence in Major League Baseball.",
     "championships": [2019],
-    "stadium": {
-      "name": "Nationals Park",
-      "openingDate": "2008-03-30"
-    }
+    "stadium": { "name": "Nationals Park", "openingDate": "2008" }
   },
 
   {
@@ -299,12 +255,9 @@
     "league": "NL",
     "division": "CENTRAL",
     "city": "Milwaukee",
-    "generalInfo": "Founded in 1969, the Brewers moved to the National League in 1998 and have made multiple playoff appearances.",
+    "generalInfo": "Founded in 1969, the Milwaukee Brewers began as an expansion team in the American League before moving to the National League in 1998. While they have yet to win a World Series, the Brewers have made multiple playoff appearances and cultivated a passionate fanbase. American Family Field, with its retractable roof, provides a modern and vibrant venue for fans. Known for developing talented players and emphasizing strong pitching, the Brewers continue to be competitive. Milwaukee baseball embodies Midwestern dedication and a loyal community spirit.",
     "championships": [],
-    "stadium": {
-      "name": "American Family Field",
-      "openingDate": "2001-04-06"
-    }
+    "stadium": { "name": "American Family Field", "openingDate": "2001" }
   },
   {
     "name": "Chicago Cubs",
@@ -314,12 +267,9 @@
     "league": "NL",
     "division": "CENTRAL",
     "city": "Chicago",
-    "generalInfo": "One of MLB's oldest teams, the Cubs ended a 108-year championship drought by winning the 2016 World Series.",
+    "generalInfo": "Founded in 1876, the Chicago Cubs are one of the oldest franchises in Major League Baseball. They famously ended a 108-year championship drought by winning the 2016 World Series, cementing their place in history. Wrigley Field, with its ivy-covered walls and iconic scoreboard, remains one of baseball’s most beloved stadiums. The Cubs are known for cultivating a passionate fanbase and for their rich tradition of iconic players. Chicago baseball blends historic charm with modern competitiveness, making the Cubs a central part of the sport.",
     "championships": [1907, 1908, 2016],
-    "stadium": {
-      "name": "Wrigley Field",
-      "openingDate": "1914-04-23"
-    }
+    "stadium": { "name": "Wrigley Field", "openingDate": "1914" }
   },
   {
     "name": "Cincinnati Reds",
@@ -329,12 +279,9 @@
     "league": "NL",
     "division": "CENTRAL",
     "city": "Cincinnati",
-    "generalInfo": "The Reds were the first professional baseball team, founded in 1869 as the Cincinnati Red Stockings.",
+    "generalInfo": "Founded in 1869 as the Cincinnati Red Stockings, the Reds were the first professional baseball team in history. They have won five World Series titles, with strong teams in the 1970s earning the nickname 'Big Red Machine.' The Great American Ball Park provides a modern home for fans to experience the team’s rich legacy. Known for a strong tradition of producing talented players, the Reds have a loyal and enthusiastic fanbase. Cincinnati baseball reflects both historical significance and ongoing competitiveness in the National League.",
     "championships": [1919, 1940, 1975, 1976, 1990],
-    "stadium": {
-      "name": "Great American Ball Park",
-      "openingDate": "2003-03-31"
-    }
+    "stadium": { "name": "Great American Ball Park", "openingDate": "2003" }
   },
   {
     "name": "St. Louis Cardinals",
@@ -344,12 +291,11 @@
     "league": "NL",
     "division": "CENTRAL",
     "city": "St. Louis",
-    "generalInfo": "The Cardinals are one of the most successful franchises in MLB history, with 11 World Series titles.",
-    "championships": [1926, 1931, 1934, 1942, 1944, 1946, 1964, 1967, 1982, 2006, 2011],
-    "stadium": {
-      "name": "Busch Stadium",
-      "openingDate": "2006-04-10"
-    }
+    "generalInfo": "Founded in 1882, the St. Louis Cardinals are one of the most successful franchises in Major League Baseball history. They have captured 11 World Series titles, reflecting a consistent tradition of excellence. Busch Stadium provides a modern venue with strong fan engagement and a storied backdrop for games. The Cardinals are known for producing Hall of Fame talent and maintaining passionate fan loyalty. St. Louis baseball embodies enduring success, community pride, and a rich National League heritage.",
+    "championships": [
+      1926, 1931, 1934, 1942, 1944, 1946, 1964, 1967, 1982, 2006, 2011
+    ],
+    "stadium": { "name": "Busch Stadium", "openingDate": "2006" }
   },
   {
     "name": "Pittsburgh Pirates",
@@ -359,12 +305,9 @@
     "league": "NL",
     "division": "CENTRAL",
     "city": "Pittsburgh",
-    "generalInfo": "Founded in 1882, the Pirates have a rich history and five World Series championships.",
+    "generalInfo": "Founded in 1882, the Pittsburgh Pirates have a proud history including five World Series championships. Legends such as Honus Wagner and Roberto Clemente helped define the team’s legacy. PNC Park, with its scenic riverfront location, is widely regarded as one of the most beautiful ballparks in baseball. The Pirates are known for strong pitching, player development, and a dedicated fanbase. Pittsburgh baseball reflects tradition, resilience, and a deep connection to its city.",
     "championships": [1909, 1925, 1960, 1971, 1979],
-    "stadium": {
-      "name": "PNC Park",
-      "openingDate": "2001-04-09"
-    }
+    "stadium": { "name": "PNC Park", "openingDate": "2001" }
   },
 
   {
@@ -375,12 +318,9 @@
     "league": "NL",
     "division": "WEST",
     "city": "Los Angeles",
-    "generalInfo": "Originally based in Brooklyn, the Dodgers moved to Los Angeles in 1958 and have won multiple championships.",
+    "generalInfo": "Founded in 1883, the Dodgers originally played in Brooklyn before relocating to Los Angeles in 1958. They have won multiple World Series titles, including 2020 and 2024, reflecting a storied tradition of excellence. Dodger Stadium is an iconic venue that has hosted generations of fans. Known for innovative play, strong pitching, and star talent, the Dodgers remain one of MLB’s flagship franchises. Los Angeles baseball combines historic legacy with a strong national and international following.",
     "championships": [1955, 1959, 1963, 1965, 1981, 1988, 2020, 2024],
-    "stadium": {
-      "name": "Dodger Stadium",
-      "openingDate": "1962-04-10"
-    }
+    "stadium": { "name": "Dodger Stadium", "openingDate": "1962" }
   },
   {
     "name": "San Diego Padres",
@@ -390,12 +330,9 @@
     "league": "NL",
     "division": "WEST",
     "city": "San Diego",
-    "generalInfo": "Founded in 1969, the Padres have reached the World Series twice but are still seeking their first title.",
+    "generalInfo": "Founded in 1969, the San Diego Padres are a relatively young franchise with a passionate coastal following. They have reached the World Series twice but are still chasing their first title. Petco Park provides a modern home with excellent fan amenities and a beautiful downtown location. The Padres are known for developing talent and fielding dynamic teams. San Diego baseball emphasizes innovation, youth development, and community engagement.",
     "championships": [],
-    "stadium": {
-      "name": "Petco Park",
-      "openingDate": "2004-04-08"
-    }
+    "stadium": { "name": "Petco Park", "openingDate": "2004" }
   },
   {
     "name": "San Francisco Giants",
@@ -405,12 +342,9 @@
     "league": "NL",
     "division": "WEST",
     "city": "San Francisco",
-    "generalInfo": "The Giants, originally from New York, have won eight World Series titles and are known for their passionate fanbase.",
+    "generalInfo": "Founded in 1883 in New York, the Giants relocated to San Francisco in 1958 and have won eight World Series titles. Oracle Park offers a stunning waterfront home for fans and a vibrant baseball atmosphere. The Giants are known for legendary players, historic moments, and passionate fan support. Their franchise embodies both tradition and success, balancing historic roots with modern competitiveness. San Francisco baseball remains a cornerstone of the National League West.",
     "championships": [1905, 1921, 1922, 1933, 1954, 2010, 2012, 2014],
-    "stadium": {
-      "name": "Oracle Park",
-      "openingDate": "2000-04-11"
-    }
+    "stadium": { "name": "Oracle Park", "openingDate": "2000" }
   },
   {
     "name": "Arizona Diamondbacks",
@@ -420,12 +354,9 @@
     "league": "NL",
     "division": "WEST",
     "city": "Phoenix",
-    "generalInfo": "The Diamondbacks joined MLB in 1998 and won the World Series just three years later.",
+    "generalInfo": "Founded in 1998, the Arizona Diamondbacks made history by winning the World Series in just their fourth season, 2001. Chase Field, with its retractable roof, provides a modern and comfortable home for fans. The Diamondbacks are known for rapid early success and strong desert baseball identity. Arizona continues to build a competitive team with an emphasis on youth and development. The franchise has quickly become an important part of Major League Baseball’s expansion story.",
     "championships": [2001],
-    "stadium": {
-      "name": "Chase Field",
-      "openingDate": "1998-03-31"
-    }
+    "stadium": { "name": "Chase Field", "openingDate": "1998" }
   },
   {
     "name": "Colorado Rockies",
@@ -435,11 +366,8 @@
     "league": "NL",
     "division": "WEST",
     "city": "Denver",
-    "generalInfo": "Founded in 1993, the Rockies reached their first and only World Series in 2007.",
+    "generalInfo": "Founded in 1993, the Colorado Rockies brought Major League Baseball to Denver and the Rocky Mountain region. They reached their first and only World Series in 2007, showcasing a competitive roster and exciting style of play. Coors Field is famous for its high-altitude impact on hitting and lively fan experience. The Rockies are known for cultivating young talent and developing strong hitters. Colorado baseball reflects the growth of MLB in non-traditional markets and continues to inspire fans in the region.",
     "championships": [],
-    "stadium": {
-      "name": "Coors Field",
-      "openingDate": "1995-04-26"
-    }
+    "stadium": { "name": "Coors Field", "openingDate": "1995" }
   }
 ]

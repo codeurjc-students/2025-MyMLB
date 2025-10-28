@@ -41,4 +41,6 @@ public interface TeamMapper {
 
     @Mapping(target = "teamDTO", source = "team")
     TeamInfoDTO toTeamInfoDTO(Team team);
+
+    List<TeamInfoDTO> toTeamInfoDTOList(List<Team> teamList);
 }

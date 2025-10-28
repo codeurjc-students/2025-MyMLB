@@ -1,9 +1,9 @@
 package com.mlb.mlbportal.dto.stadium;
 
-import java.time.LocalDate;
+import java.time.Year;
 
 public record StadiumInitDTO(
     String name,
-    LocalDate openingDate,
+    Year openingDate,
     String teamAbbreviation
 ) {}
