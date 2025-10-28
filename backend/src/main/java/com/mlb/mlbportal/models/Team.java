@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -74,6 +76,12 @@ public class Team {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
+
+    @OneToMany(mappedBy = "positionPlayers", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<PositionPlayer> positionPlayers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pitchers", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Pitcher> pitchers = new ArrayList<>();
 
     @PreRemove
     public void preRemove() {
