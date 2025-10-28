@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
@@ -17,104 +19,110 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 
 @Service
 public class TeamService {
-<span class="fc" id="L20">    private static final List&lt;League&gt; LEAGUE_ORDER = List.of(League.AL, League.NL);</span>
-<span class="fc" id="L21">    private static final List&lt;Division&gt; DIVISION_ORDER = List.of(Division.EAST, Division.CENTRAL, Division.WEST);</span>
+<span class="fc" id="L22">    private static final List&lt;League&gt; LEAGUE_ORDER = List.of(League.AL, League.NL);</span>
+<span class="fc" id="L23">    private static final List&lt;Division&gt; DIVISION_ORDER = List.of(Division.EAST, Division.CENTRAL, Division.WEST);</span>
 
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
     private final MatchService matchService;
 
-<span class="fc" id="L27">    public TeamService(TeamRepository teamRepository, TeamMapper teamMapper, MatchService matchService) {</span>
-<span class="fc" id="L28">        this.teamRepository = teamRepository;</span>
-<span class="fc" id="L29">        this.teamMapper = teamMapper;</span>
-<span class="fc" id="L30">        this.matchService = matchService;</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L29">    public TeamService(TeamRepository teamRepository, TeamMapper teamMapper, MatchService matchService) {</span>
+<span class="fc" id="L30">        this.teamRepository = teamRepository;</span>
+<span class="fc" id="L31">        this.teamMapper = teamMapper;</span>
+<span class="fc" id="L32">        this.matchService = matchService;</span>
+<span class="fc" id="L33">    }</span>
 
-    public List&lt;TeamDTO&gt; getTeams() {
-<span class="fc" id="L34">        List&lt;Team&gt; teams = teamRepository.findAll();</span>
-<span class="fc" id="L35">        teams.forEach(this::enrichTeamStats);</span>
-<span class="fc" id="L36">        return teamMapper.toTeamDTOList(teams);</span>
+    public List&lt;TeamInfoDTO&gt; getTeams() {
+<span class="fc" id="L36">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+<span class="fc" id="L37">        teams.forEach(this::enrichTeamStats);</span>
+<span class="fc" id="L38">        return this.teamMapper.toTeamInfoDTOList(teams);</span>
+    }
+
+    public TeamInfoDTO getTeamInfo(String teamName) {
+<span class="fc" id="L42">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L43">        this.enrichTeamStats(team);</span>
+<span class="fc" id="L44">        return this.teamMapper.toTeamInfoDTO(team);</span>
     }
 
     public Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; getStandings() {
-<span class="fc" id="L40">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
-<span class="fc" id="L41">        teams.forEach(this::enrichTeamStats);</span>
+<span class="fc" id="L48">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+<span class="fc" id="L49">        teams.forEach(this::enrichTeamStats);</span>
 
-<span class="fc" id="L43">        Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; grouped = teams.stream()</span>
-<span class="fc" id="L44">                .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));</span>
+<span class="fc" id="L51">        Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; grouped = teams.stream()</span>
+<span class="fc" id="L52">                .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));</span>
 
-<span class="fc" id="L46">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L54">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = new LinkedHashMap&lt;&gt;();</span>
 
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (League league : LEAGUE_ORDER) {</span>
-<span class="fc" id="L49">            Map&lt;Division, List&lt;TeamDTO&gt;&gt; divisionMap = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (League league : LEAGUE_ORDER) {</span>
+<span class="fc" id="L57">            Map&lt;Division, List&lt;TeamDTO&gt;&gt; divisionMap = new LinkedHashMap&lt;&gt;();</span>
 
-<span class="fc bfc" id="L51" title="All 2 branches covered.">            for (Division division : DIVISION_ORDER) {</span>
-<span class="fc" id="L52">                List&lt;Team&gt; divisionTeams = grouped.getOrDefault(league, Map.of())</span>
-<span class="fc" id="L53">                        .getOrDefault(division, List.of());</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            for (Division division : DIVISION_ORDER) {</span>
+<span class="fc" id="L60">                List&lt;Team&gt; divisionTeams = grouped.getOrDefault(league, Map.of())</span>
+<span class="fc" id="L61">                        .getOrDefault(division, List.of());</span>
 
-<span class="fc" id="L55">                List&lt;TeamDTO&gt; sorted = divisionTeams.stream()</span>
-<span class="fc" id="L56">                        .sorted((a, b) -&gt; Double.compare(b.getPct(), a.getPct()))</span>
-<span class="fc" id="L57">                        .map(this.teamMapper::toTeamDTO)</span>
-<span class="fc" id="L58">                        .toList();</span>
+<span class="fc" id="L63">                List&lt;TeamDTO&gt; sorted = divisionTeams.stream()</span>
+<span class="fc" id="L64">                        .sorted((a, b) -&gt; Double.compare(b.getPct(), a.getPct()))</span>
+<span class="fc" id="L65">                        .map(this.teamMapper::toTeamDTO)</span>
+<span class="fc" id="L66">                        .toList();</span>
 
-<span class="fc" id="L60">                divisionMap.put(division, sorted);</span>
-<span class="fc" id="L61">            }</span>
+<span class="fc" id="L68">                divisionMap.put(division, sorted);</span>
+<span class="fc" id="L69">            }</span>
 
-<span class="fc" id="L63">            standings.put(league, divisionMap);</span>
-<span class="fc" id="L64">        }</span>
-<span class="fc" id="L65">        return standings;</span>
+<span class="fc" id="L71">            standings.put(league, divisionMap);</span>
+<span class="fc" id="L72">        }</span>
+<span class="fc" id="L73">        return standings;</span>
     }
 
     private void enrichTeamStats(Team team) {
-<span class="fc" id="L69">        this.recalculatePct(team);</span>
-<span class="fc" id="L70">        this.calculateGamesBehind(team);</span>
-<span class="fc" id="L71">        this.calculateLast10Games(team);</span>
-<span class="fc" id="L72">        this.teamRepository.save(team);</span>
-<span class="fc" id="L73">    }</span>
-
-    private void recalculatePct(Team team) {
-<span class="fc" id="L76">        int totalGames = team.getWins() + team.getLosses();</span>
-<span class="fc" id="L77">        team.setTotalGames(totalGames);</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
-<span class="fc" id="L79">        double truncatedPct = ((int) (pct * 1000)) / 1000.0;</span>
-<span class="fc" id="L80">        team.setPct(truncatedPct);</span>
+<span class="fc" id="L77">        this.recalculatePct(team);</span>
+<span class="fc" id="L78">        this.calculateGamesBehind(team);</span>
+<span class="fc" id="L79">        this.calculateLast10Games(team);</span>
+<span class="fc" id="L80">        this.teamRepository.save(team);</span>
 <span class="fc" id="L81">    }</span>
 
+    private void recalculatePct(Team team) {
+<span class="fc" id="L84">        int totalGames = team.getWins() + team.getLosses();</span>
+<span class="fc" id="L85">        team.setTotalGames(totalGames);</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
+<span class="fc" id="L87">        double truncatedPct = ((int) (pct * 1000)) / 1000.0;</span>
+<span class="fc" id="L88">        team.setPct(truncatedPct);</span>
+<span class="fc" id="L89">    }</span>
+
     private void calculateGamesBehind(Team team) {
-<span class="fc" id="L84">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
+<span class="fc" id="L92">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
 
-<span class="fc" id="L86">        divisionTeams.forEach(this::recalculatePct);</span>
+<span class="fc" id="L94">        divisionTeams.forEach(this::recalculatePct);</span>
 
-<span class="fc" id="L88">        divisionTeams.sort((a, b) -&gt; Double.compare(b.getPct(), a.getPct()));</span>
+<span class="fc" id="L96">        divisionTeams.sort((a, b) -&gt; Double.compare(b.getPct(), a.getPct()));</span>
 
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (divisionTeams.isEmpty())</span>
-<span class="fc" id="L91">            return;</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (divisionTeams.isEmpty())</span>
+<span class="fc" id="L99">            return;</span>
 
-<span class="fc" id="L93">        Team leader = divisionTeams.get(0);</span>
-<span class="fc" id="L94">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
-<span class="fc" id="L95">        team.setGamesBehind(gamesBehind);</span>
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L101">        Team leader = divisionTeams.get(0);</span>
+<span class="fc" id="L102">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
+<span class="fc" id="L103">        team.setGamesBehind(gamesBehind);</span>
+<span class="fc" id="L104">    }</span>
 
     private void calculateLast10Games(Team team) {
-<span class="fc" id="L99">        List&lt;Match&gt; last10Matches = this.matchService.getLast10Matches(team);</span>
+<span class="fc" id="L107">        List&lt;Match&gt; last10Matches = this.matchService.getLast10Matches(team);</span>
         String matchesRecord;
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
-<span class="fc" id="L102">            matchesRecord = &quot;0-0&quot;;</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
+<span class="fc" id="L110">            matchesRecord = &quot;0-0&quot;;</span>
         }
         else {
-<span class="fc" id="L105">            int numberOfWins = 0;</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
-<span class="fc" id="L107">                boolean isHomeTeam = team.equals(match.getHomeTeam());</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();</span>
+<span class="fc" id="L113">            int numberOfWins = 0;</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
+<span class="fc" id="L115">                boolean isHomeTeam = team.equals(match.getHomeTeam());</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();</span>
 
-<span class="fc bfc" id="L111" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
-<span class="fc" id="L112">                    numberOfWins++;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
+<span class="fc" id="L120">                    numberOfWins++;</span>
                 }
-<span class="fc" id="L114">            }</span>
-<span class="fc" id="L115">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
+<span class="fc" id="L122">            }</span>
+<span class="fc" id="L123">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
         }
-<span class="fc" id="L117">        team.setLastTen(matchesRecord);</span>
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L125">        team.setLastTen(matchesRecord);</span>
+<span class="fc" id="L126">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

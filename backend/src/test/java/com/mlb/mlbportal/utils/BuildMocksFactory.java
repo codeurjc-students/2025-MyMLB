@@ -1,16 +1,24 @@
 package com.mlb.mlbportal.utils;
 
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
+import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_NAME;
@@ -38,13 +46,6 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class BuildMocksFactory {
 
@@ -106,5 +107,41 @@ public class BuildMocksFactory {
             TeamSummary away = new TeamSummary(m.getAwayTeam().getName(), m.getAwayTeam().getAbbreviation(), m.getAwayTeam().getLeague(), m.getAwayTeam().getDivision());
             return new MatchDTO(home, away, m.getHomeScore(), m.getAwayScore(), m.getDate(), m.getStatus());
         }).collect(Collectors.toList());
+    }
+
+    // Stadium Mocks
+
+    public static List<Stadium> setUpStadiums() {
+        List<Team> teamList = setUpTeamMocks();
+        Stadium stadium1 = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, teamList.get(0));
+        Stadium stadium2 = new Stadium(STADIUM2_NAME, STADIUM2_YEAR, teamList.get(1));
+        Stadium stadium3 = new Stadium(STADIUM3_NAME, STADIUM3_YEAR, teamList.get(2));
+
+        return Arrays.asList(stadium1, stadium2, stadium3);
+    }
+
+    public static List<StadiumInitDTO> buildStadiumInitDTOMocks() {
+        List<Team> teams = setUpTeamMocks();
+        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName());
+        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName());
+        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName());
+
+        return Arrays.asList(dto1, dto2, dto3);
+    }
+
+    public static List<Stadium> setUpStadiums(List<Team> teamList) {
+        Stadium stadium1 = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, teamList.get(0));
+        Stadium stadium2 = new Stadium(STADIUM2_NAME, STADIUM2_YEAR, teamList.get(1));
+        Stadium stadium3 = new Stadium(STADIUM3_NAME, STADIUM3_YEAR, teamList.get(2));
+
+        return Arrays.asList(stadium1, stadium2, stadium3);
+    }
+
+    public static List<StadiumInitDTO> buildStadiumInitDTOMocks(List<Team> teams) {
+        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName());
+        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName());
+        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName());
+
+        return Arrays.asList(dto1, dto2, dto3);
     }
 }

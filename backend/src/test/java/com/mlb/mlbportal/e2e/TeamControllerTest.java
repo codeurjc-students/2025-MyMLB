@@ -1,5 +1,7 @@
 package com.mlb.mlbportal.e2e;
 
+import java.util.Collections;
+
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,25 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
-import static com.mlb.mlbportal.utils.TestConstants.ALL_TEAMS_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.STANDINGS_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
-import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
@@ -40,21 +25,19 @@ class TeamControllerTest extends BaseE2ETest {
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL,
-                Division.EAST, TEST_TEAM1_LOGO);
-        saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL,
-                Division.EAST, TEST_TEAM2_LOGO);
-        saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.NL,
-                Division.CENTRAL, TEST_TEAM3_LOGO);
+        saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL,
+                Division.EAST);
+        saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL,
+                Division.EAST);
+        saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), League.NL,
+                Division.CENTRAL);
     }
 
     @Test
     @DisplayName("GET /api/teams should return all teams with the correct data")
     void testGetAllTeams() {
         given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
                 .when()
                 .get(ALL_TEAMS_PATH)
                 .then()
@@ -72,9 +55,7 @@ class TeamControllerTest extends BaseE2ETest {
     @DisplayName("GET /api/teams/standings return standings grouped by league and division, ordered by pct")
     void testGetStandingsEndpoint() {
         given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
                 .when()
                 .get(STANDINGS_PATH)
                 .then()
@@ -87,5 +68,35 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("NL.CENTRAL.size()", is(1))
                 .body("NL.CENTRAL[0].abbreviation", is(TEST_TEAM3_ABBREVIATION))
                 .body("NL.CENTRAL[0].gamesBehind", is(0.0f));
+    }
+
+    @Test
+    @DisplayName("GET /api/teams/{teamName} should return the information of a team based on its name")
+    void testGetTeamInformation() {
+        String url = TEAM_INFO_PATH + TEST_TEAM1_NAME;
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("teamDTO.name", is(TEST_TEAM1_NAME))
+                .body("teamDTO.abbreviation", is(TEST_TEAM1_ABBREVIATION))
+                .body("city", is(TEST_TEAM1_CITY));
+    }
+
+    @Test
+    @DisplayName("GET /api/teams/{teamName} should return a 404 if the team does not exists")
+    void testGetNonExistentTeamInformation() {
+        String url = TEAM_INFO_PATH + UNKNOWN_TEAM;
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(404)
+                .body("status", is(FAILURE))
+                .body("message", is("Team Not Found"))
+                .body("error", is("Team Not Found"));
     }
 }

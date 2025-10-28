@@ -1,7 +1,5 @@
 package com.mlb.mlbportal.utils;
 
-import java.time.Year;
-
 public final class TestConstants {
 
     private TestConstants() {}
@@ -28,8 +26,12 @@ public final class TestConstants {
 
     public static final String ALL_TEAMS_PATH = "/api/teams";
     public static final String STANDINGS_PATH = "/api/teams/standings";
+    public static final String TEAM_INFO_PATH = "/api/teams/";
 
     public static final String MATCHES_OF_DAY_PATH = "/api/matches/today";
+
+    public static final String ALL_STADIUMS_PATH = "/api/stadiums";
+    public static final String STADIUM_PATH = "/api/stadiums/";
 
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";
@@ -68,11 +70,13 @@ public final class TestConstants {
     public static final String UNKNOWN_TEAM = "AnyTeam";
 
     public static final String STADIUM1_NAME = "Stadium1";
-    public static final Year STADIUM1_YEAR = Year.of(1985);
+    public static final int STADIUM1_YEAR = 1985;
 
     public static final String STADIUM2_NAME = "Stadium2";
-    public static final Year STADIUM2_YEAR = Year.of(2000);
+    public static final int STADIUM2_YEAR = 2000;
 
     public static final String STADIUM3_NAME = "Stadium3";
-    public static final Year STADIUM3_YEAR = Year.of(2001);
+    public static final int STADIUM3_YEAR = 2001;
+
+    public static final String UNKNOWN_STADIUM = "AnyStadium";
 }

@@ -10,7 +10,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-<span class="fc" id="L13">public record TeamDTO(</span>
+/**
+ * DTO that represents the stats of a team. Used to display the team stats in the standings
+ */
+<span class="fc" id="L16">public record TeamDTO(</span>
     @NotBlank(message = &quot;The name of the team is required&quot;)
     String name,
 
@@ -45,4 +48,4 @@ import jakarta.validation.constraints.NotNull;
     @NotBlank(message = &quot;The record of the team in the last 10 games is required&quot;)
     String lastTen
 ) {}
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

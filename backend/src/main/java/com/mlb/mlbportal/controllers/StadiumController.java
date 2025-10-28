@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mlb.mlbportal.dto.stadium.StadiumDTO;
+import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.services.StadiumService;
 
 @RestController
@@ -21,13 +21,13 @@ public class StadiumController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StadiumDTO>> getAllStadiums() {
-        List<StadiumDTO> response = this.stadiumService.getAllStadiums();
+    public ResponseEntity<List<StadiumInitDTO>> getAllStadiums() {
+        List<StadiumInitDTO> response = this.stadiumService.getAllStadiums();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<StadiumDTO> getStadiumByName(@PathVariable("name") String name) {
+    public ResponseEntity<StadiumInitDTO> getStadiumByName(@PathVariable("name") String name) {
         return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));
     }
 }

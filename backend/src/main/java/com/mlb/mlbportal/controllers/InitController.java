@@ -213,7 +213,6 @@ public class InitController {
 
     private void setUpStadiums() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
 
         try (InputStream input = getClass().getResourceAsStream("/data/stadiums-2025.json")) {
             StadiumInitDTO[] stadiumDtos = mapper.readValue(input, StadiumInitDTO[].class);
@@ -223,7 +222,7 @@ public class InitController {
 
             for (StadiumInitDTO dto : stadiumDtos) {
                 Team team = allTeams.stream()
-                    .filter(t -> t.getAbbreviation().equalsIgnoreCase(dto.teamAbbreviation()))
+                    .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
                     .findFirst()
                     .orElse(null);
 
