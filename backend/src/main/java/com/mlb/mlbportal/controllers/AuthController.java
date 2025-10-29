@@ -31,21 +31,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
+@Tag(name = "Authentication", description = "Endpoints related to user authentication")
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Authentication", description = "Endpoints related to user authentication")
+@AllArgsConstructor
 public class AuthController {
-
     private final UserLoginService userLoginService;
     private final UserService userService;
     private final EmailService emailService;
-
-    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {
-        this.userLoginService = userLoginService;
-        this.userService = userService;
-        this.emailService = emailService;
-    }
 
     @Operation(summary = "Get the active user", description = "Obtain details of the currently authenticated user.", responses = {
             @ApiResponse(responseCode = "200", description = "User successfully authenticated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRole.class), examples = @ExampleObject(value = "{\"username\":\"johndoe\",\"roles\":[\"USER\"]}"))),

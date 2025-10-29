@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.services.StadiumService;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("/api/stadiums")
+@AllArgsConstructor
 public class StadiumController {
     private final StadiumService stadiumService;
-
-    public StadiumController(StadiumService service) {
-        this.stadiumService = service;
-    }
 
     @GetMapping
     public ResponseEntity<List<StadiumInitDTO>> getAllStadiums() {

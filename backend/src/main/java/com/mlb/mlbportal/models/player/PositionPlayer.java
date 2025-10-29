@@ -24,28 +24,38 @@ public class PositionPlayer extends Player {
 
     private int atBats;
     private int hits;
+    private int walks;
     private int homeRuns;
     private int rbis;
     private double average;
+    private double obp;
+    private double ops;
+    private int doubles;
+    private int triples;
+    private double slugging;
 
-    public PositionPlayer(String name, Team team, PlayerPositions position, int atBats, int hits, int homeRuns, int rbis, double average) {
+    public PositionPlayer(String name, Team team, PlayerPositions position, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
         super(name, team);
         this.position = position;
         this.atBats = atBats;
         this.hits = hits;
+        this.walks = walks;
         this.homeRuns = homeRuns;
+        this.doubles = doubles;
+        this.triples = triples;
         this.rbis = rbis;
-        this.average = average;
     }
 
-    public PositionPlayer(String name, Team team, String picture, PlayerPositions position, int atBats, int hits, int homeRuns, int rbis, double average) {
+    public PositionPlayer(String name, Team team, String picture, PlayerPositions position, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
         super(name, team, picture);
         this.position = position;
         this.atBats = atBats;
+        this.walks = walks;
         this.hits = hits;
+        this.doubles = doubles;
+        this.triples = triples;
         this.homeRuns = homeRuns;
         this.rbis = rbis;
-        this.average = average;
     }
 
     @Override

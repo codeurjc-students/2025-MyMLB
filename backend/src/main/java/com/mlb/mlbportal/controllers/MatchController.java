@@ -16,16 +16,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 @Tag(name = "Matches", description = "Operations related to the matches")
 @RestController
 @RequestMapping("/api/matches")
+@AllArgsConstructor
 public class MatchController {
     private final MatchService matchService;
-
-    public MatchController(MatchService matchService) {
-        this.matchService = matchService;
-    }
 
     @Operation(summary = "Get the matches of the day (paginated)", description = "Returns a paginated list of matches scheduled for today. Always 10 matches per page.")
     @ApiResponses(value = {

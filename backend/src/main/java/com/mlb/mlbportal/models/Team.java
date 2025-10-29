@@ -77,16 +77,26 @@ public class Team {
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
 
-    @OneToMany(mappedBy = "positionPlayers", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
     private List<PositionPlayer> positionPlayers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pitchers", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
     private List<Pitcher> pitchers = new ArrayList<>();
 
     @PreRemove
     public void preRemove() {
         if (stadium != null) {
             stadium.setTeam(null);
+        }
+
+        for (PositionPlayer player: this.positionPlayers) {
+            player.setTeam(null);
+        }
+
+        for (Pitcher pitcher : this.pitchers) {
+            pitcher.setTeam(null);
         }
     }
 

@@ -10,15 +10,13 @@ import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class StadiumService {
     private final StadiumRepository stadiumRepository;
     private final StadiumMapper stadiumMapper;
-
-    public StadiumService(StadiumRepository repo, StadiumMapper mapper) {
-        this.stadiumRepository = repo;
-        this.stadiumMapper = mapper;
-    }
 
     public List<StadiumInitDTO> getAllStadiums() {
         return this.stadiumMapper.toListStadiumInitDTO(this.stadiumRepository.findAll());

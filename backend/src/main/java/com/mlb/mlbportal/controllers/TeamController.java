@@ -22,17 +22,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.AllArgsConstructor;
 
 @Tag(name = "Teams", description = "Operations related to MLB teams and standings")
 @RestController
 @RequestMapping("/api/teams")
+@AllArgsConstructor
 public class TeamController {
     private final TeamService teamService;
-
-    public TeamController(TeamService teamService) {
-        this.teamService = teamService;
-    }
 
     @Operation(summary = "Get all teams", description = "Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.")
     @ApiResponses(value = {

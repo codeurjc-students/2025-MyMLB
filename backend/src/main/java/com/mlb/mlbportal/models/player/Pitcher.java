@@ -28,30 +28,41 @@ public class Pitcher extends Player {
     private int losses;
     private int inningsPitched;
     private int totalStrikeouts;
-    private int totalBaseOnBalls;
+    private int walks;
+    private int hitsAllowed;
+    private int runsAllowed;
+    private int saves;
+    private int saveOpportunities;
+    private double whip;
 
-    public Pitcher(String name, Team team, PitcherPositions position, int games, double era, int wins, int losses, int inningsPitched, int totalStrikeouts, int totalBaseOnBalls) {
+    public Pitcher(String name, Team team, PitcherPositions position, int games, int wins, int losses, int inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
         super(name, team);
         this.position = position;
         this.games = games;
-        this.era = era;
         this.wins = wins;
         this.losses = losses;
         this.inningsPitched = inningsPitched;
         this.totalStrikeouts = totalStrikeouts;
-        this.totalBaseOnBalls = totalBaseOnBalls;
+        this.walks = walks;
+        this.hitsAllowed = hitsAllowed;
+        this.runsAllowed = runsAllowed;
+        this.saves = saves;
+        this.saveOpportunities = saveOpportunities;
     }
 
-    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, double era, int wins, int losses, int inningsPitched, int totalStrikeouts, int totalBaseOnBalls) {
+    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, int wins, int losses, int inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
         super(name, team, picture);
         this.position = position;
         this.games = games;
-        this.era = era;
         this.wins = wins;
         this.losses = losses;
         this.inningsPitched = inningsPitched;
         this.totalStrikeouts = totalStrikeouts;
-        this.totalBaseOnBalls = totalBaseOnBalls;
+        this.walks = walks;
+        this.hitsAllowed = hitsAllowed;
+        this.runsAllowed = runsAllowed;
+        this.saves = saves;
+        this.saveOpportunities = saveOpportunities;
     }
     
     @Override
@@ -64,7 +75,7 @@ public class Pitcher extends Player {
             "IP", this.inningsPitched,
             "ERA", this.era,
             "SO", this.totalStrikeouts,
-            "BB", this.totalBaseOnBalls
+            "BB", this.walks
         );
     }
 }

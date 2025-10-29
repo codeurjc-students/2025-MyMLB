@@ -3,6 +3,8 @@ package com.mlb.mlbportal.dto.team;
 import java.time.Year;
 import java.util.List;
 
+import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 
 /**
@@ -13,5 +15,7 @@ public record TeamInfoDTO(
     String city,
     String generalInfo,
     List<Year> championships,
-    StadiumDTO stadium
+    StadiumDTO stadium,
+    List<PositionPlayerDTO> positionPlayers,
+    List<PitcherDTO> pitchers
 ) {}

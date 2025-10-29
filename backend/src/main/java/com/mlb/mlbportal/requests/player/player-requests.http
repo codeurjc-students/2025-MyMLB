@@ -1,0 +1,23 @@
+### Get All Players
+GET https://localhost:8443/api/players
+Accept: application/json
+
+### Get All Position Players
+GET https://localhost:8443/api/players/position-players
+Accept: application/json
+
+### Get All Pitchers
+GET https://localhost:8443/api/players/pitchers
+Accept: application/json
+
+### Get Player by name (Position Player)
+GET https://localhost:8443/api/players/Aaron Judge
+Accept: application/json
+
+### Get Player by name (Pitcher)
+GET https://localhost:8443/api/players/Max Fried
+Accept: application/json
+
+### Get Non Existent Player
+GET https://localhost:8443/api/players/Mike Trout
+Accept: application/json

@@ -17,7 +17,10 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.TeamRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class TeamService {
     private static final List<League> LEAGUE_ORDER = List.of(League.AL, League.NL);
     private static final List<Division> DIVISION_ORDER = List.of(Division.EAST, Division.CENTRAL, Division.WEST);
@@ -25,12 +28,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
     private final MatchService matchService;
-
-    public TeamService(TeamRepository teamRepository, TeamMapper teamMapper, MatchService matchService) {
-        this.teamRepository = teamRepository;
-        this.teamMapper = teamMapper;
-        this.matchService = matchService;
-    }
 
     public List<TeamInfoDTO> getTeams() {
         List<Team> teams = this.teamRepository.findAll();

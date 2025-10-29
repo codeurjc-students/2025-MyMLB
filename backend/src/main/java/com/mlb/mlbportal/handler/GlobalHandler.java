@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
@@ -52,6 +53,9 @@ public class GlobalHandler {
         }
         else if (ex instanceof StadiumNotFoundException) {
             errorMsg = "Stadium Not Found";
+        }
+        else if (ex instanceof PlayerNotFoundException) {
+            errorMsg = "Player Not Found";
         }
         return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
     }

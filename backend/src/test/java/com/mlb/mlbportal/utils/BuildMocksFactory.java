@@ -85,9 +85,9 @@ public class BuildMocksFactory {
         StadiumDTO stDto2 = new StadiumDTO(STADIUM2_NAME, STADIUM2_YEAR);
         StadiumDTO stDto3 = new StadiumDTO(STADIUM3_NAME, STADIUM3_YEAR);
 
-        TeamInfoDTO dto1 = new TeamInfoDTO(mockList.get(0), TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(Year.of(2021), Year.of(1999)), stDto1);
-        TeamInfoDTO dto2= new TeamInfoDTO(mockList.get(1), TEST_TEAM2_CITY, TEST_TEAM2_INFO, List.of(Year.of(2010)), stDto2);
-        TeamInfoDTO dto3 = new TeamInfoDTO(mockList.get(2), TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), stDto3);
+        TeamInfoDTO dto1 = new TeamInfoDTO(mockList.get(0), TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(Year.of(2021), Year.of(1999)), stDto1, null, null);
+        TeamInfoDTO dto2= new TeamInfoDTO(mockList.get(1), TEST_TEAM2_CITY, TEST_TEAM2_INFO, List.of(Year.of(2010)), stDto2,null, null);
+        TeamInfoDTO dto3 = new TeamInfoDTO(mockList.get(2), TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), stDto3,null, null);
         
         return Arrays.asList(dto1, dto2, dto3);
     }

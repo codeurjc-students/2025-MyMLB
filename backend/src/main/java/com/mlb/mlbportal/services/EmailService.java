@@ -13,19 +13,16 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class EmailService {
     private static final Random RANDOM = new Random();
 
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
-
-    public EmailService(JavaMailSender javaMail, PasswordResetTokenRepository passRepo, UserRepository userRepo) {
-        this.mailSender = javaMail;
-        this.passwordRepository = passRepo;
-        this.userRepository = userRepo;
-    }
 
     public Optional<PasswordResetToken> getCode(String code) {
         return this.passwordRepository.findByCode(code);

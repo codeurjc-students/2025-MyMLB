@@ -18,7 +18,10 @@ import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserService {
     
     private final UserRepository userRepository;
@@ -26,14 +29,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
-    public UserService(UserRepository userRepo, AuthenticationMapper authenticationMapper, UserMapper userMapper, PasswordEncoder password, EmailService emailService) {
-        this.userRepository = userRepo;
-        this.authenticationMapper = authenticationMapper;
-        this.userMapper = userMapper;
-        this.passwordEncoder = password;
-        this.emailService = emailService;
-    }
 
     public List<ShowUser> getAllUsers() {
         return this.userMapper.toShowUsers(this.userRepository.findAll());
