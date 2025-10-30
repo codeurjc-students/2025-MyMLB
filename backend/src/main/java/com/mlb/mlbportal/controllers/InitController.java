@@ -7,11 +7,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInitDTO;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -252,20 +253,28 @@ public class InitController {
 
         try (InputStream input = getClass().getResourceAsStream("/data/players-2025.json")) {
             List<Map<String, Object>> rawPlayers = mapper.readValue(input, List.class);
-            Team yankees = this.teamRepository.findByName("New York Yankees")
-                    .orElseThrow(() -> new TeamNotFoundException());
+            List<Team> allTeams = teamRepository.findAll();
 
-            List<PositionPlayer> positionPlayers = new ArrayList<>();
-            List<Pitcher> pitchers = new ArrayList<>();
+            // Mapeo por nombre para acceso rápido
+            Map<String, Team> teamMap = allTeams.stream()
+                .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
+
+            // Acumuladores por equipo
+            Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
+            Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
 
             for (Map<String, Object> raw : rawPlayers) {
                 String type = (String) raw.get("type");
                 String name = (String) raw.get("name");
+                String teamName = ((String) raw.get("teamName")).toLowerCase();
+
+                Team team = teamMap.get(teamName);
+                if (team == null) continue;
 
                 if ("Pitcher".equalsIgnoreCase(type)) {
                     Pitcher pitcher = new Pitcher(
                         name,
-                        yankees,
+                        team,
                         PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
                         ((Number) raw.get("games")).intValue(),
                         ((Number) raw.get("wins")).intValue(),
@@ -278,11 +287,11 @@ public class InitController {
                         ((Number) raw.get("saves")).intValue(),
                         ((Number) raw.get("saveOpportunities")).intValue()
                     );
-                    pitchers.add(pitcher);
+                    pitchersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(pitcher);
                 } else {
                     PositionPlayer player = new PositionPlayer(
                         name,
-                        yankees,
+                        team,
                         PlayerPositions.fromLabel((String) raw.get("position")),
                         ((Number) raw.get("atBats")).intValue(),
                         ((Number) raw.get("walks")).intValue(),
@@ -292,12 +301,21 @@ public class InitController {
                         ((Number) raw.get("homeRuns")).intValue(),
                         ((Number) raw.get("rbis")).intValue()
                     );
-                    positionPlayers.add(player);
+                    positionPlayersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(player);
                 }
             }
 
-            this.positionPlayerRepository.saveAll(positionPlayers);
-            this.pitcherRepository.saveAll(pitchers);
+            // Asignar jugadores a sus equipos
+            for (Team team : allTeams) {
+                List<PositionPlayer> positionPlayers = positionPlayersByTeam.getOrDefault(team, List.of());
+                List<Pitcher> pitchers = pitchersByTeam.getOrDefault(team, List.of());
+
+                team.setPositionPlayers(positionPlayers);
+                team.setPitchers(pitchers);
+            }
+
+            // Persistir jugadores y equipos
+            teamRepository.saveAll(allTeams);
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading players data", e);

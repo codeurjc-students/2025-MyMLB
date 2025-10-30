@@ -35,6 +35,10 @@ public class TeamService {
         return this.teamMapper.toTeamInfoDTOList(teams);
     }
 
+    public Team getTeam(String teamName) {
+        return this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+    }
+
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         this.enrichTeamStats(team);

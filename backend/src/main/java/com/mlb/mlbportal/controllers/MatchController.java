@@ -35,6 +35,10 @@ public class MatchController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<MatchDTO> matchesPage = this.matchService.getMatchesOfTheDay(page, size);
+
+        if (page < 0 || size <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(matchesPage);
     }
 }

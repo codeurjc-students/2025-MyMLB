@@ -7,7 +7,7 @@ GET https://localhost:8443/api/teams/standings
 Content-Type: application/json
 
 ### Get Team Information
-GET https://localhost:8443/api/teams/Tampa Bay Rays
+GET https://localhost:8443/api/teams/New York Yankees
 Content-Type: application/json
 
 ### Get Non Existent Team Information

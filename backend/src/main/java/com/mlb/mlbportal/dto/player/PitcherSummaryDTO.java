@@ -1,24 +1,20 @@
 package com.mlb.mlbportal.dto.player;
 
-public record PlayerInitDTO(
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+
+public record PitcherSummaryDTO(
     String name,
-    String teamName,
-    String position,
-    String type,
-    int atBats,
-    int walks,
-    int hits,
-    int doubles,
-    int triples,
-    int homeRuns,
-    int rbis,
+    PitcherPositions position,
     int games,
     int wins,
     int losses,
+    double era,
     int inningsPitched,
     int totalStrikeouts,
+    int walks,
     int hitsAllowed,
     int runsAllowed,
+    double whip,
     int saves,
     int saveOpportunities
 ) {}

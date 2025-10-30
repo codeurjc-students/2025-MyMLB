@@ -3,20 +3,28 @@ package com.mlb.mlbportal.services.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRespository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
+import com.mlb.mlbportal.services.TeamService;
 
 import lombok.AllArgsConstructor;
 
@@ -29,6 +37,8 @@ public class PlayerService {
 
     private final PositionPlayerMapper positionPlayerMapper;
     private final PitcherMapper pitcherMapper;
+
+    private final TeamService teamService;
 
     public List<PlayerDTO> getAllPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
@@ -73,5 +83,35 @@ public class PlayerService {
             return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);
         }
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
+    }
+
+    public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
+        Team team = this.teamService.getTeam(teamName);
+        List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
+        players.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+
+        Pageable pageable = PageRequest.of(page, size);
+        int start = Math.min((int) pageable.getOffset(), players.size());
+        int end = Math.min(start + pageable.getPageSize(), players.size());
+
+        List<PositionPlayerSummaryDTO> result = players.subList(start, end).stream()
+            .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();
+
+        return new PageImpl<>(result, pageable, players.size());
+    }
+
+    public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
+        Team team = this.teamService.getTeam(teamName);
+        List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
+        pitchers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+
+        Pageable pageable = PageRequest.of(page, size);
+        int start = Math.min((int) pageable.getOffset(), pitchers.size());
+        int end = Math.min(start + pageable.getPageSize(), pitchers.size());
+
+        List<PitcherSummaryDTO> result = pitchers.subList(start, end).stream()
+            .map(this.pitcherMapper::toPitcherSummaryDTO).toList();
+
+        return new PageImpl<>(result, pageable, pitchers.size());
     }
 }

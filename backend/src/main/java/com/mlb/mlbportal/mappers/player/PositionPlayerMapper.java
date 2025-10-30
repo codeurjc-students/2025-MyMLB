@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 
 @Mapper(componentModel = "spring")
@@ -14,4 +15,8 @@ public interface PositionPlayerMapper {
     PositionPlayerDTO toPositionPlayerDTO(PositionPlayer player);
 
     List<PositionPlayerDTO> toListPositionPlayerDTO(List<PositionPlayer> playerList);
+
+    PositionPlayerSummaryDTO toPositionPlayerSummaryDTO(PositionPlayer player);
+
+    List<PositionPlayerSummaryDTO> toListPositionPlayerSummaryDTO(List<PositionPlayer> playerList);
 }

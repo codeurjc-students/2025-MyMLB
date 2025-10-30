@@ -7,85 +7,123 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
 public class PlayerServiceOperations {
+
     protected static void updatePlayerStats(Player player,
             PositionPlayerRepository positionPlayerRepo,
             PitcherRepository pitcherRepo) {
-        switch (player) {
-            case PositionPlayer positionPlayer -> updatePositionPlayerStats(positionPlayer, positionPlayerRepo);
-            case Pitcher pitcher -> updatePitcherStats(pitcher, pitcherRepo);
-            default -> {
-            }
+        if (player instanceof PositionPlayer positionPlayer) {
+            updatePositionPlayerStats(positionPlayer, positionPlayerRepo);
+        } else if (player instanceof Pitcher pitcher) {
+            updatePitcherStats(pitcher, pitcherRepo);
         }
     }
 
     private static void updatePositionPlayerStats(PositionPlayer player, PositionPlayerRepository repo) {
-        double oldAverage = player.getAverage();
-        double oldOBP = player.getObp();
-        double oldSlugging = player.getSlugging();
-        double oldOPS = player.getOps();
+        double oldAvg = player.getAverage();
+        double oldObp = player.getObp();
+        double oldSlg = player.getSlugging();
+        double oldOps = player.getOps();
 
         calculateAverage(player);
         calculateOBP(player);
         calculateSlugging(player);
         calculateOPS(player);
 
-        if (statsChanged(player.getAverage(), oldAverage,
-                player.getObp(), oldOBP,
-                player.getSlugging(), oldSlugging,
-                player.getOps(), oldOPS)) {
+        if (hasStatChanged(player.getAverage(), oldAvg,
+                player.getObp(), oldObp,
+                player.getSlugging(), oldSlg,
+                player.getOps(), oldOps)) {
             repo.save(player);
         }
     }
 
-    private static void updatePitcherStats(Pitcher pitcher,
-            PitcherRepository repo) {
-        double oldERA = pitcher.getEra();
-        double oldWHIP = pitcher.getWhip();
+    private static void updatePitcherStats(Pitcher pitcher, PitcherRepository repo) {
+        double oldEra = pitcher.getEra();
+        double oldWhip = pitcher.getWhip();
 
         calculateERA(pitcher);
         calculateWHIP(pitcher);
 
-        if (statsChanged(pitcher.getEra(), oldERA,
-                pitcher.getWhip(), oldWHIP)) {
+        if (hasStatChanged(pitcher.getEra(), oldEra,
+                pitcher.getWhip(), oldWhip)) {
             repo.save(pitcher);
         }
     }
 
-    private static boolean statsChanged(double... values) {
+    private static boolean hasStatChanged(double... values) {
         for (int i = 0; i < values.length; i += 2) {
-            if (Double.compare(values[i], values[i + 1]) != 0)
+            double newVal = values[i];
+            double oldVal = values[i + 1];
+            if (Double.compare(newVal, oldVal) != 0)
                 return true;
         }
         return false;
     }
 
     private static void calculateAverage(PositionPlayer player) {
-        double avg = (double) player.getHits() / player.getAtBats();
-        player.setAverage(((int) (avg * 1000)) / 1000.0);
+        int atBats = player.getAtBats();
+        if (atBats == 0) {
+            player.setAverage(0.0);
+            return;
+        }
+        double avg = (double) player.getHits() / atBats;
+        player.setAverage(truncateToThreeDecimals(avg));
     }
 
     private static void calculateOBP(PositionPlayer player) {
-        double obp = (double) (player.getHits() + player.getWalks()) / (player.getAtBats() + player.getWalks());
-        player.setObp(((int) (obp * 1000)) / 1000.0);
+        int plateAppearances = player.getAtBats() + player.getWalks();
+        if (plateAppearances == 0) {
+            player.setObp(0.0);
+            return;
+        }
+        double obp = (double) (player.getHits() + player.getWalks()) / plateAppearances;
+        player.setObp(truncateToThreeDecimals(obp));
     }
 
     private static void calculateSlugging(PositionPlayer player) {
-        double slg = (player.getHits() + 2 * player.getDoubles() + 3 * player.getTriples() + 4 * player.getHomeRuns())
-                / (double) player.getAtBats();
-        player.setSlugging(((int) (slg * 1000)) / 1000.0);
+        int atBats = player.getAtBats();
+        if (atBats == 0) {
+            player.setSlugging(0.0);
+            return;
+        }
+        int totalBases = player.getHits()
+                + player.getDoubles()
+                + 2 * player.getTriples()
+                + 3 * player.getHomeRuns();
+        double slg = (double) totalBases / atBats;
+        player.setSlugging(truncateToThreeDecimals(slg));
     }
 
     private static void calculateOPS(PositionPlayer player) {
-        player.setOps(player.getObp() + player.getSlugging());
+        double ops = player.getObp() + player.getSlugging();
+        player.setOps(truncateToThreeDecimals(ops));
     }
 
     private static void calculateERA(Pitcher pitcher) {
-        double era = (double) (pitcher.getRunsAllowed() * 9) / pitcher.getInningsPitched();
-        pitcher.setEra(((int) (era * 100)) / 100.0);
+        int innings = pitcher.getInningsPitched();
+        if (innings == 0) {
+            pitcher.setEra(0.0);
+            return;
+        }
+        double era = (double) (pitcher.getRunsAllowed() * 9) / innings;
+        pitcher.setEra(truncateToTwoDecimals(era));
     }
 
     private static void calculateWHIP(Pitcher pitcher) {
-        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / pitcher.getInningsPitched();
-        pitcher.setWhip(((int) (whip * 1000)) / 1000.0);
+        int innings = pitcher.getInningsPitched();
+        if (innings == 0) {
+            pitcher.setWhip(0.0);
+            return;
+        }
+        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;
+        pitcher.setWhip(truncateToThreeDecimals(whip));
+    }
+
+    private static double truncateToThreeDecimals(double value) {
+        return ((int) (value * 1000)) / 1000.0;
+    }
+
+    private static double truncateToTwoDecimals(double value) {
+        return ((int) (value * 100)) / 100.0;
     }
 }
