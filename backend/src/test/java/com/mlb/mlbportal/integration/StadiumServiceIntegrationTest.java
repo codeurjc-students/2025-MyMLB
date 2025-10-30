@@ -22,6 +22,7 @@ import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 import jakarta.transaction.Transactional;
@@ -92,5 +93,16 @@ class StadiumServiceIntegrationTest {
         assertThatThrownBy(() -> this.stadiumService.findStadiumByName(UNKNOWN_TEAM))
             .isInstanceOf(StadiumNotFoundException.class)
             .hasMessageContaining("Stadium Not Found");
+    }
+
+    @Test
+    @DisplayName("Should persist Stadium with its associated Team")
+    void testStadiumEntityHasTeam() {
+        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        Team team = stadium.getTeam();
+
+        assertThat(team).isNotNull();
+        assertThat(team.getStadium()).isEqualTo(stadium);
+        assertThat(team.getName()).isEqualTo(TEST_TEAM1_NAME);
     }
 }

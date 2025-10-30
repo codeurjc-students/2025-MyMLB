@@ -22,16 +22,16 @@ import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
-import com.mlb.mlbportal.repositories.player.PlayerRespository;
+import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
-import com.mlb.mlbportal.services.TeamService;
+import com.mlb.mlbportal.services.team.TeamService;
 
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class PlayerService {
-    private final PlayerRespository playerRepository;
+    private final PlayerRepository playerRepository;
     private final PositionPlayerRepository positionPlayerRepository;
     private final PitcherRepository pitcherRepository;
 

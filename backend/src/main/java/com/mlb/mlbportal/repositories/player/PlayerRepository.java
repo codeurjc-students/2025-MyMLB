@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.mlb.mlbportal.models.player.Player;
 
 @Repository
-public interface PlayerRespository extends JpaRepository<Player, Long> {
+public interface PlayerRepository extends JpaRepository<Player, Long> {
     public Optional<Player> findByName(String name);
 }

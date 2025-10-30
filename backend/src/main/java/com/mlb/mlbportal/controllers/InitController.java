@@ -255,11 +255,9 @@ public class InitController {
             List<Map<String, Object>> rawPlayers = mapper.readValue(input, List.class);
             List<Team> allTeams = teamRepository.findAll();
 
-            // Mapeo por nombre para acceso rápido
             Map<String, Team> teamMap = allTeams.stream()
                 .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
 
-            // Acumuladores por equipo
             Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
             Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
 
@@ -305,7 +303,6 @@ public class InitController {
                 }
             }
 
-            // Asignar jugadores a sus equipos
             for (Team team : allTeams) {
                 List<PositionPlayer> positionPlayers = positionPlayersByTeam.getOrDefault(team, List.of());
                 List<Pitcher> pitchers = pitchersByTeam.getOrDefault(team, List.of());
@@ -313,8 +310,6 @@ public class InitController {
                 team.setPositionPlayers(positionPlayers);
                 team.setPitchers(pitchers);
             }
-
-            // Persistir jugadores y equipos
             teamRepository.saveAll(allTeams);
 
         } catch (IOException e) {

@@ -8,13 +8,14 @@ import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
 public class PlayerServiceOperations {
 
-    protected static void updatePlayerStats(Player player,
+    public static void updatePlayerStats(Player player,
             PositionPlayerRepository positionPlayerRepo,
             PitcherRepository pitcherRepo) {
-        if (player instanceof PositionPlayer positionPlayer) {
-            updatePositionPlayerStats(positionPlayer, positionPlayerRepo);
-        } else if (player instanceof Pitcher pitcher) {
-            updatePitcherStats(pitcher, pitcherRepo);
+        switch (player) {
+            case PositionPlayer positionPlayer -> updatePositionPlayerStats(positionPlayer, positionPlayerRepo);
+            case Pitcher pitcher -> updatePitcherStats(pitcher, pitcherRepo);
+            default -> {
+            }
         }
     }
 

@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -19,33 +23,12 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
+
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
 public class BuildMocksFactory {
 
@@ -117,6 +100,13 @@ public class BuildMocksFactory {
         Stadium stadium2 = new Stadium(STADIUM2_NAME, STADIUM2_YEAR, teamList.get(1));
         Stadium stadium3 = new Stadium(STADIUM3_NAME, STADIUM3_YEAR, teamList.get(2));
 
+        teamList.get(0).setStadium(stadium1);
+        stadium1.setTeam(teamList.get(0));
+        teamList.get(1).setStadium(stadium2);
+        stadium2.setTeam(teamList.get(1));
+        teamList.get(2).setStadium(stadium3);
+        stadium3.setTeam(teamList.get(2));
+
         return Arrays.asList(stadium1, stadium2, stadium3);
     }
 
@@ -144,4 +134,45 @@ public class BuildMocksFactory {
 
         return Arrays.asList(dto1, dto2, dto3);
     }
+
+    // Players
+    public static List<PositionPlayer> buildPositionPlayers(List<Team> teamList) {
+        PositionPlayer p1 = new PositionPlayer(PLAYER1_NAME, teamList.get(0), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS);
+        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS);
+        Team team1 = teamList.get(0);
+        team1.setPositionPlayers(Arrays.asList(p1, p2));
+        return Arrays.asList(p1, p2);
+    }
+
+    public static List<PositionPlayerDTO> buildPositionPlayerDTOs() {
+        List<Team> teamList = setUpTeamMocks();
+        PositionPlayerDTO dto1 = new PositionPlayerDTO(PLAYER1_NAME, teamList.get(0).getName(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0);
+        PositionPlayerDTO dto2 = new PositionPlayerDTO(PLAYER2_NAME, teamList.get(0).getName(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0);
+        return Arrays.asList(dto1, dto2);
+    }
+
+    public static List<PositionPlayerSummaryDTO> buildPositionPlayerSummaryDTOs() {
+        PositionPlayerSummaryDTO dto1 = new PositionPlayerSummaryDTO(PLAYER1_NAME, PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0);
+        PositionPlayerSummaryDTO dto2 = new PositionPlayerSummaryDTO(PLAYER2_NAME, PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0);
+        return Arrays.asList(dto1, dto2);
+    }
+
+    // Pitcher mocks
+    public static List<Pitcher> buildPitchers(List<Team> teamList) {
+        Pitcher p3 = new Pitcher(PLAYER3_NAME, teamList.get(1), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        Team team1 = teamList.get(1);
+        team1.setPitchers(Arrays.asList(p3));
+        return Arrays.asList(p3);
+    }
+
+    public static List<PitcherDTO> buildPitcherDTOs() {
+        List<Team> teamList = setUpTeamMocks();
+        PitcherDTO dto3 = new PitcherDTO(PLAYER3_NAME, teamList.get(1).getName(), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        return Arrays.asList(dto3);
+    }
+
+    public static List<PitcherSummaryDTO> buildPitcherSummaryDTOs() {
+        PitcherSummaryDTO dto3 = new PitcherSummaryDTO(PLAYER3_NAME, PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        return Arrays.asList(dto3);
+    }   
 }

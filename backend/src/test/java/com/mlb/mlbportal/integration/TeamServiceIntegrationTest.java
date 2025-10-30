@@ -18,13 +18,17 @@ import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.TeamService;
+import com.mlb.mlbportal.services.team.TeamService;
+
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
@@ -144,5 +148,22 @@ class TeamServiceIntegrationTest {
         assertThatThrownBy(() -> this.teamService.getTeamInfo(UNKNOWN_TEAM))
             .isInstanceOf(TeamNotFoundException.class)
             .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
+    @DisplayName("Should persist Stadium and associate it with the correct Team")
+    void testTeamStadiumPersistence() {
+        Team team = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow(TeamNotFoundException::new);
+        Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, team);
+        team.setStadium(stadium);
+
+        this.teamRepository.save(team);
+
+        Team persistedTeam = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow(TeamNotFoundException::new);
+        Stadium persistedStadium = persistedTeam.getStadium();
+
+        assertThat(persistedStadium).isNotNull();
+        assertThat(persistedStadium.getName()).isEqualTo("Stadium1");
+        assertThat(persistedStadium.getTeam()).isEqualTo(persistedTeam);
     }
 }

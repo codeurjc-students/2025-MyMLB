@@ -27,7 +27,7 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
-import com.mlb.mlbportal.services.TeamService;
+import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;

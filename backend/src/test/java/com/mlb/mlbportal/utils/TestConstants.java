@@ -79,4 +79,36 @@ public final class TestConstants {
     public static final int STADIUM3_YEAR = 2001;
 
     public static final String UNKNOWN_STADIUM = "AnyStadium";
+
+    public static final String PLAYER1_NAME = "Player1";
+    public static final int PLAYER1_AT_BATS = 200;
+    public static final int PLAYER1_WALKS = 10;
+    public static final int PLAYER1_HITS = 85;
+    public static final int PLAYER1_DOUBLES = 10;
+    public static final int PLAYER1_TRIPLES = 2;
+    public static final int PLAYER1_HOME_RUNS = 20;
+    public static final int PLAYER1_RBIS = 40;
+
+    public static final String PLAYER2_NAME = "Player2";
+    public static final int PLAYER2_AT_BATS = 200;
+    public static final int PLAYER2_WALKS = 10;
+    public static final int PLAYER2_HITS = 85;
+    public static final int PLAYER2_DOUBLES = 10;
+    public static final int PLAYER2_TRIPLES = 2;
+    public static final int PLAYER2_HOME_RUNS = 20;
+    public static final int PLAYER2_RBIS = 40;
+
+    public static final String PLAYER3_NAME = "Player3";
+    public static final int PLAYER3_GAMES = 10;
+    public static final int PLAYER3_WINS = 5;
+    public static final int PLAYER3_LOSSES = 3;
+    public static final int PLAYER3_INNINGS = 53;
+    public static final int PLAYER3_SO = 33;
+    public static final int PLAYER3_WALKS = 20;
+    public static final int PLAYER3_HITS_ALLOWED = 21;
+    public static final int PLAYER3_RUNS_ALLOWED = 7;
+    public static final int PLAYER3_SAVES = 0;
+    public static final int PLAYER3_SAVES_OPORTUNITIES = 0;
+
+    public static final String UNKNOWN_PLAYER = "AnyPlayer";
 }
