@@ -3,16 +3,20 @@
 import java.time.Year;
 import java.util.List;
 
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 
 /**
  * DTO that contains all the relevant information of a Team. Used in the individual team page
  */
-<span class="fc" id="L11">public record TeamInfoDTO(</span>
+<span class="fc" id="L13">public record TeamInfoDTO(</span>
     TeamDTO teamDTO,
     String city,
     String generalInfo,
     List&lt;Year&gt; championships,
-    StadiumDTO stadium
+    StadiumDTO stadium,
+    List&lt;PositionPlayerSummaryDTO&gt; positionPlayers,
+    List&lt;PitcherSummaryDTO&gt; pitchers
 ) {}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

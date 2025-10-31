@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeamMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers</a> &gt; <span class="el_source">TeamMapperImpl.java</span></div><h1>TeamMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers;
 
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
@@ -7,6 +9,10 @@ import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,141 +23,249 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-10-28T16:29:08+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-10-31T13:09:18+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 24.0.2 (Amazon.com Inc.)&quot;
 )
 @Component
-<span class="fc" id="L24">public class TeamMapperImpl implements TeamMapper {</span>
+<span class="fc" id="L30">public class TeamMapperImpl implements TeamMapper {</span>
 
     @Autowired
     private StadiumMapper stadiumMapper;
 
     @Override
     public TeamDTO toTeamDTO(Team team) {
-<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if ( team == null ) {</span>
-<span class="nc" id="L32">            return null;</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc" id="L38">            return null;</span>
         }
 
-<span class="fc" id="L35">        String name = null;</span>
-<span class="fc" id="L36">        String abbreviation = null;</span>
-<span class="fc" id="L37">        League league = null;</span>
-<span class="fc" id="L38">        Division division = null;</span>
-<span class="fc" id="L39">        int totalGames = 0;</span>
-<span class="fc" id="L40">        int wins = 0;</span>
-<span class="fc" id="L41">        int losses = 0;</span>
-<span class="fc" id="L42">        double pct = 0.0d;</span>
-<span class="fc" id="L43">        double gamesBehind = 0.0d;</span>
-<span class="fc" id="L44">        String lastTen = null;</span>
+<span class="fc" id="L41">        String name = null;</span>
+<span class="fc" id="L42">        String abbreviation = null;</span>
+<span class="fc" id="L43">        League league = null;</span>
+<span class="fc" id="L44">        Division division = null;</span>
+<span class="fc" id="L45">        int totalGames = 0;</span>
+<span class="fc" id="L46">        int wins = 0;</span>
+<span class="fc" id="L47">        int losses = 0;</span>
+<span class="fc" id="L48">        double pct = 0.0d;</span>
+<span class="fc" id="L49">        double gamesBehind = 0.0d;</span>
+<span class="fc" id="L50">        String lastTen = null;</span>
 
-<span class="fc" id="L46">        name = team.getName();</span>
-<span class="fc" id="L47">        abbreviation = team.getAbbreviation();</span>
-<span class="fc" id="L48">        league = team.getLeague();</span>
-<span class="fc" id="L49">        division = team.getDivision();</span>
-<span class="fc" id="L50">        totalGames = team.getTotalGames();</span>
-<span class="fc" id="L51">        wins = team.getWins();</span>
-<span class="fc" id="L52">        losses = team.getLosses();</span>
-<span class="fc" id="L53">        pct = team.getPct();</span>
-<span class="fc" id="L54">        gamesBehind = team.getGamesBehind();</span>
-<span class="fc" id="L55">        lastTen = team.getLastTen();</span>
+<span class="fc" id="L52">        name = team.getName();</span>
+<span class="fc" id="L53">        abbreviation = team.getAbbreviation();</span>
+<span class="fc" id="L54">        league = team.getLeague();</span>
+<span class="fc" id="L55">        division = team.getDivision();</span>
+<span class="fc" id="L56">        totalGames = team.getTotalGames();</span>
+<span class="fc" id="L57">        wins = team.getWins();</span>
+<span class="fc" id="L58">        losses = team.getLosses();</span>
+<span class="fc" id="L59">        pct = team.getPct();</span>
+<span class="fc" id="L60">        gamesBehind = team.getGamesBehind();</span>
+<span class="fc" id="L61">        lastTen = team.getLastTen();</span>
 
-<span class="fc" id="L57">        TeamDTO teamDTO = new TeamDTO( name, abbreviation, league, division, totalGames, wins, losses, pct, gamesBehind, lastTen );</span>
+<span class="fc" id="L63">        TeamDTO teamDTO = new TeamDTO( name, abbreviation, league, division, totalGames, wins, losses, pct, gamesBehind, lastTen );</span>
 
-<span class="fc" id="L59">        return teamDTO;</span>
+<span class="fc" id="L65">        return teamDTO;</span>
     }
 
     @Override
     public List&lt;TeamDTO&gt; toTeamDTOList(Collection&lt;Team&gt; teams) {
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        if ( teams == null ) {</span>
-<span class="nc" id="L65">            return null;</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if ( teams == null ) {</span>
+<span class="nc" id="L71">            return null;</span>
         }
 
-<span class="nc" id="L68">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        for ( Team team : teams ) {</span>
-<span class="nc" id="L70">            list.add( toTeamDTO( team ) );</span>
-<span class="nc" id="L71">        }</span>
+<span class="nc" id="L74">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        for ( Team team : teams ) {</span>
+<span class="nc" id="L76">            list.add( toTeamDTO( team ) );</span>
+<span class="nc" id="L77">        }</span>
 
-<span class="nc" id="L73">        return list;</span>
+<span class="nc" id="L79">        return list;</span>
     }
 
     @Override
     public Team toDomainFromTeamStandings(TeamDTO teamStandings) {
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        if ( teamStandings == null ) {</span>
-<span class="nc" id="L79">            return null;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if ( teamStandings == null ) {</span>
+<span class="nc" id="L85">            return null;</span>
         }
 
-<span class="nc" id="L82">        Team team = new Team();</span>
+<span class="nc" id="L88">        Team team = new Team();</span>
 
-<span class="nc" id="L84">        team.setName( teamStandings.name() );</span>
-<span class="nc" id="L85">        team.setAbbreviation( teamStandings.abbreviation() );</span>
-<span class="nc" id="L86">        team.setWins( teamStandings.wins() );</span>
-<span class="nc" id="L87">        team.setLosses( teamStandings.losses() );</span>
-<span class="nc" id="L88">        team.setPct( teamStandings.pct() );</span>
-<span class="nc" id="L89">        team.setLastTen( teamStandings.lastTen() );</span>
-<span class="nc" id="L90">        team.setLeague( teamStandings.league() );</span>
-<span class="nc" id="L91">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L90">        team.setName( teamStandings.name() );</span>
+<span class="nc" id="L91">        team.setAbbreviation( teamStandings.abbreviation() );</span>
+<span class="nc" id="L92">        team.setWins( teamStandings.wins() );</span>
+<span class="nc" id="L93">        team.setLosses( teamStandings.losses() );</span>
+<span class="nc" id="L94">        team.setPct( teamStandings.pct() );</span>
+<span class="nc" id="L95">        team.setLastTen( teamStandings.lastTen() );</span>
+<span class="nc" id="L96">        team.setLeague( teamStandings.league() );</span>
+<span class="nc" id="L97">        team.setDivision( teamStandings.division() );</span>
 
-<span class="nc" id="L93">        return team;</span>
+<span class="nc" id="L99">        return team;</span>
     }
 
     @Override
     public TeamSummary toTeamSummaryDTO(Team team) {
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if ( team == null ) {</span>
-<span class="nc" id="L99">            return null;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc" id="L105">            return null;</span>
         }
 
-<span class="fc" id="L102">        String name = null;</span>
-<span class="fc" id="L103">        String abbreviation = null;</span>
-<span class="fc" id="L104">        League league = null;</span>
-<span class="fc" id="L105">        Division division = null;</span>
+<span class="fc" id="L108">        String name = null;</span>
+<span class="fc" id="L109">        String abbreviation = null;</span>
+<span class="fc" id="L110">        League league = null;</span>
+<span class="fc" id="L111">        Division division = null;</span>
 
-<span class="fc" id="L107">        name = team.getName();</span>
-<span class="fc" id="L108">        abbreviation = team.getAbbreviation();</span>
-<span class="fc" id="L109">        league = team.getLeague();</span>
-<span class="fc" id="L110">        division = team.getDivision();</span>
+<span class="fc" id="L113">        name = team.getName();</span>
+<span class="fc" id="L114">        abbreviation = team.getAbbreviation();</span>
+<span class="fc" id="L115">        league = team.getLeague();</span>
+<span class="fc" id="L116">        division = team.getDivision();</span>
 
-<span class="fc" id="L112">        TeamSummary teamSummary = new TeamSummary( name, abbreviation, league, division );</span>
+<span class="fc" id="L118">        TeamSummary teamSummary = new TeamSummary( name, abbreviation, league, division );</span>
 
-<span class="fc" id="L114">        return teamSummary;</span>
+<span class="fc" id="L120">        return teamSummary;</span>
     }
 
     @Override
     public TeamInfoDTO toTeamInfoDTO(Team team) {
-<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if ( team == null ) {</span>
-<span class="nc" id="L120">            return null;</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc" id="L126">            return null;</span>
         }
 
-<span class="fc" id="L123">        TeamDTO teamDTO = null;</span>
-<span class="fc" id="L124">        String city = null;</span>
-<span class="fc" id="L125">        String generalInfo = null;</span>
-<span class="fc" id="L126">        List&lt;Year&gt; championships = null;</span>
-<span class="fc" id="L127">        StadiumDTO stadium = null;</span>
+<span class="fc" id="L129">        TeamDTO teamDTO = null;</span>
+<span class="fc" id="L130">        String city = null;</span>
+<span class="fc" id="L131">        String generalInfo = null;</span>
+<span class="fc" id="L132">        List&lt;Year&gt; championships = null;</span>
+<span class="fc" id="L133">        StadiumDTO stadium = null;</span>
+<span class="fc" id="L134">        List&lt;PositionPlayerSummaryDTO&gt; positionPlayers = null;</span>
+<span class="fc" id="L135">        List&lt;PitcherSummaryDTO&gt; pitchers = null;</span>
 
-<span class="fc" id="L129">        teamDTO = toTeamDTO( team );</span>
-<span class="fc" id="L130">        city = team.getCity();</span>
-<span class="fc" id="L131">        generalInfo = team.getGeneralInfo();</span>
-<span class="fc" id="L132">        List&lt;Year&gt; list = team.getChampionships();</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if ( list != null ) {</span>
-<span class="fc" id="L134">            championships = new ArrayList&lt;Year&gt;( list );</span>
+<span class="fc" id="L137">        teamDTO = toTeamDTO( team );</span>
+<span class="fc" id="L138">        city = team.getCity();</span>
+<span class="fc" id="L139">        generalInfo = team.getGeneralInfo();</span>
+<span class="fc" id="L140">        List&lt;Year&gt; list = team.getChampionships();</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if ( list != null ) {</span>
+<span class="fc" id="L142">            championships = new ArrayList&lt;Year&gt;( list );</span>
         }
-<span class="fc" id="L136">        stadium = stadiumMapper.toStadiumDTO( team.getStadium() );</span>
+<span class="fc" id="L144">        stadium = stadiumMapper.toStadiumDTO( team.getStadium() );</span>
+<span class="fc" id="L145">        positionPlayers = positionPlayerListToPositionPlayerSummaryDTOList( team.getPositionPlayers() );</span>
+<span class="fc" id="L146">        pitchers = pitcherListToPitcherSummaryDTOList( team.getPitchers() );</span>
 
-<span class="fc" id="L138">        TeamInfoDTO teamInfoDTO = new TeamInfoDTO( teamDTO, city, generalInfo, championships, stadium );</span>
+<span class="fc" id="L148">        TeamInfoDTO teamInfoDTO = new TeamInfoDTO( teamDTO, city, generalInfo, championships, stadium, positionPlayers, pitchers );</span>
 
-<span class="fc" id="L140">        return teamInfoDTO;</span>
+<span class="fc" id="L150">        return teamInfoDTO;</span>
     }
 
     @Override
     public List&lt;TeamInfoDTO&gt; toTeamInfoDTOList(List&lt;Team&gt; teamList) {
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if ( teamList == null ) {</span>
-<span class="nc" id="L146">            return null;</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if ( teamList == null ) {</span>
+<span class="nc" id="L156">            return null;</span>
         }
 
-<span class="fc" id="L149">        List&lt;TeamInfoDTO&gt; list = new ArrayList&lt;TeamInfoDTO&gt;( teamList.size() );</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">        for ( Team team : teamList ) {</span>
-<span class="fc" id="L151">            list.add( toTeamInfoDTO( team ) );</span>
-<span class="fc" id="L152">        }</span>
+<span class="fc" id="L159">        List&lt;TeamInfoDTO&gt; list = new ArrayList&lt;TeamInfoDTO&gt;( teamList.size() );</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for ( Team team : teamList ) {</span>
+<span class="fc" id="L161">            list.add( toTeamInfoDTO( team ) );</span>
+<span class="fc" id="L162">        }</span>
 
-<span class="fc" id="L154">        return list;</span>
+<span class="fc" id="L164">        return list;</span>
+    }
+
+    protected PositionPlayerSummaryDTO positionPlayerToPositionPlayerSummaryDTO(PositionPlayer positionPlayer) {
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if ( positionPlayer == null ) {</span>
+<span class="nc" id="L169">            return null;</span>
+        }
+
+<span class="nc" id="L172">        String name = null;</span>
+<span class="nc" id="L173">        PlayerPositions position = null;</span>
+<span class="nc" id="L174">        int atBats = 0;</span>
+<span class="nc" id="L175">        int walks = 0;</span>
+<span class="nc" id="L176">        int hits = 0;</span>
+<span class="nc" id="L177">        int doubles = 0;</span>
+<span class="nc" id="L178">        int triples = 0;</span>
+<span class="nc" id="L179">        int homeRuns = 0;</span>
+<span class="nc" id="L180">        int rbis = 0;</span>
+<span class="nc" id="L181">        double average = 0.0d;</span>
+<span class="nc" id="L182">        double obp = 0.0d;</span>
+<span class="nc" id="L183">        double ops = 0.0d;</span>
+<span class="nc" id="L184">        double slugging = 0.0d;</span>
+
+<span class="nc" id="L186">        name = positionPlayer.getName();</span>
+<span class="nc" id="L187">        position = positionPlayer.getPosition();</span>
+<span class="nc" id="L188">        atBats = positionPlayer.getAtBats();</span>
+<span class="nc" id="L189">        walks = positionPlayer.getWalks();</span>
+<span class="nc" id="L190">        hits = positionPlayer.getHits();</span>
+<span class="nc" id="L191">        doubles = positionPlayer.getDoubles();</span>
+<span class="nc" id="L192">        triples = positionPlayer.getTriples();</span>
+<span class="nc" id="L193">        homeRuns = positionPlayer.getHomeRuns();</span>
+<span class="nc" id="L194">        rbis = positionPlayer.getRbis();</span>
+<span class="nc" id="L195">        average = positionPlayer.getAverage();</span>
+<span class="nc" id="L196">        obp = positionPlayer.getObp();</span>
+<span class="nc" id="L197">        ops = positionPlayer.getOps();</span>
+<span class="nc" id="L198">        slugging = positionPlayer.getSlugging();</span>
+
+<span class="nc" id="L200">        PositionPlayerSummaryDTO positionPlayerSummaryDTO = new PositionPlayerSummaryDTO( name, position, atBats, walks, hits, doubles, triples, homeRuns, rbis, average, obp, ops, slugging );</span>
+
+<span class="nc" id="L202">        return positionPlayerSummaryDTO;</span>
+    }
+
+    protected List&lt;PositionPlayerSummaryDTO&gt; positionPlayerListToPositionPlayerSummaryDTOList(List&lt;PositionPlayer&gt; list) {
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L207">            return null;</span>
+        }
+
+<span class="fc" id="L210">        List&lt;PositionPlayerSummaryDTO&gt; list1 = new ArrayList&lt;PositionPlayerSummaryDTO&gt;( list.size() );</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        for ( PositionPlayer positionPlayer : list ) {</span>
+<span class="nc" id="L212">            list1.add( positionPlayerToPositionPlayerSummaryDTO( positionPlayer ) );</span>
+<span class="nc" id="L213">        }</span>
+
+<span class="fc" id="L215">        return list1;</span>
+    }
+
+    protected PitcherSummaryDTO pitcherToPitcherSummaryDTO(Pitcher pitcher) {
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if ( pitcher == null ) {</span>
+<span class="nc" id="L220">            return null;</span>
+        }
+
+<span class="nc" id="L223">        String name = null;</span>
+<span class="nc" id="L224">        PitcherPositions position = null;</span>
+<span class="nc" id="L225">        int games = 0;</span>
+<span class="nc" id="L226">        int wins = 0;</span>
+<span class="nc" id="L227">        int losses = 0;</span>
+<span class="nc" id="L228">        double era = 0.0d;</span>
+<span class="nc" id="L229">        int inningsPitched = 0;</span>
+<span class="nc" id="L230">        int totalStrikeouts = 0;</span>
+<span class="nc" id="L231">        int walks = 0;</span>
+<span class="nc" id="L232">        int hitsAllowed = 0;</span>
+<span class="nc" id="L233">        int runsAllowed = 0;</span>
+<span class="nc" id="L234">        double whip = 0.0d;</span>
+<span class="nc" id="L235">        int saves = 0;</span>
+<span class="nc" id="L236">        int saveOpportunities = 0;</span>
+
+<span class="nc" id="L238">        name = pitcher.getName();</span>
+<span class="nc" id="L239">        position = pitcher.getPosition();</span>
+<span class="nc" id="L240">        games = pitcher.getGames();</span>
+<span class="nc" id="L241">        wins = pitcher.getWins();</span>
+<span class="nc" id="L242">        losses = pitcher.getLosses();</span>
+<span class="nc" id="L243">        era = pitcher.getEra();</span>
+<span class="nc" id="L244">        inningsPitched = pitcher.getInningsPitched();</span>
+<span class="nc" id="L245">        totalStrikeouts = pitcher.getTotalStrikeouts();</span>
+<span class="nc" id="L246">        walks = pitcher.getWalks();</span>
+<span class="nc" id="L247">        hitsAllowed = pitcher.getHitsAllowed();</span>
+<span class="nc" id="L248">        runsAllowed = pitcher.getRunsAllowed();</span>
+<span class="nc" id="L249">        whip = pitcher.getWhip();</span>
+<span class="nc" id="L250">        saves = pitcher.getSaves();</span>
+<span class="nc" id="L251">        saveOpportunities = pitcher.getSaveOpportunities();</span>
+
+<span class="nc" id="L253">        PitcherSummaryDTO pitcherSummaryDTO = new PitcherSummaryDTO( name, position, games, wins, losses, era, inningsPitched, totalStrikeouts, walks, hitsAllowed, runsAllowed, whip, saves, saveOpportunities );</span>
+
+<span class="nc" id="L255">        return pitcherSummaryDTO;</span>
+    }
+
+    protected List&lt;PitcherSummaryDTO&gt; pitcherListToPitcherSummaryDTOList(List&lt;Pitcher&gt; list) {
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L260">            return null;</span>
+        }
+
+<span class="fc" id="L263">        List&lt;PitcherSummaryDTO&gt; list1 = new ArrayList&lt;PitcherSummaryDTO&gt;( list.size() );</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">        for ( Pitcher pitcher : list ) {</span>
+<span class="nc" id="L265">            list1.add( pitcherToPitcherSummaryDTO( pitcher ) );</span>
+<span class="nc" id="L266">        }</span>
+
+<span class="fc" id="L268">        return list1;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
