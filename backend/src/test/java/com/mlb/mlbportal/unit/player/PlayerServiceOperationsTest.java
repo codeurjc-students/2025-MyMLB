@@ -42,9 +42,9 @@ class PlayerServiceOperationsTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
+        this.teams = BuildMocksFactory.setUpTeamMocks();
         this.positionPlayers = BuildMocksFactory.buildPositionPlayers(this.teams);
         this.pitchers = BuildMocksFactory.buildPitchers(this.teams);
-        this.teams = BuildMocksFactory.setUpTeamMocks();
     }
 
     @Test

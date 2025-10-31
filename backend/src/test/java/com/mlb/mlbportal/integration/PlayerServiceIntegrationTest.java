@@ -3,10 +3,10 @@ package com.mlb.mlbportal.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.data.domain.Page;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
@@ -54,8 +57,6 @@ class PlayerServiceIntegrationTest {
 
     private List<PositionPlayer> positionPlayers;
     private List<Pitcher> pitchers;
-    private List<PositionPlayerDTO> positionPlayerDTOs;
-    private List<PitcherDTO> pitcherDTOs;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -73,9 +74,6 @@ class PlayerServiceIntegrationTest {
 
         this.positionPlayerRepository.saveAll(this.positionPlayers);
         this.pitcherRepository.saveAll(this.pitchers);
-
-        this.positionPlayerDTOs = BuildMocksFactory.buildPositionPlayerDTOs();
-        this.pitcherDTOs = BuildMocksFactory.buildPitcherDTOs();
     }
 
     @Test
@@ -101,14 +99,23 @@ class PlayerServiceIntegrationTest {
             .containsExactlyInAnyOrder(PlayerPositions.CF, PlayerPositions.SS);
 
         assertThat(result).extracting(PositionPlayerDTO::teamName)
-            .containsOnly(PLAYER1_NAME);
+            .containsExactlyInAnyOrder(TEST_TEAM1_NAME, TEST_TEAM1_NAME);
     }
 
     @Test
     @DisplayName("Should return all pitchers")
     void testGetAllPitchers() {
         List<PitcherDTO> result = this.playerService.getAllPitchers();
-        assertThat(result).hasSize(1).containsExactlyElementsOf(this.pitcherDTOs);
+
+        assertThat(result).hasSize(1);
+        assertThat(result).extracting(PitcherDTO::name)
+            .containsOnly(PLAYER3_NAME);
+
+        assertThat(result).extracting(PitcherDTO::position)
+            .containsOnly(PitcherPositions.SP);
+
+        assertThat(result).extracting(PitcherDTO::teamName)
+            .containsOnly(TEST_TEAM2_NAME);
     }
 
     @Test
@@ -139,5 +146,64 @@ class PlayerServiceIntegrationTest {
         assertThatThrownBy(() -> this.playerService.findPlayerByName(UNKNOWN_PLAYER))
             .isInstanceOf(PlayerNotFoundException.class)
             .hasMessageContaining("Player Not Found");
+    }
+
+    @Test
+    @DisplayName("Should return paginated position players of a team")
+    void testGetPositionPlayerOfATeam() {
+        Page<PositionPlayerSummaryDTO> result = this.playerService.getAllPositionPlayersOfATeam(TEST_TEAM1_NAME, 0, 10);
+        List<PositionPlayerSummaryDTO> resultContent = result.getContent();
+
+        assertThat(resultContent).hasSize(2);
+        assertThat(resultContent.get(0).name()).isEqualTo(PLAYER1_NAME);
+        assertThat(resultContent.get(1).name()).isEqualTo(PLAYER2_NAME);
+        
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isEqualTo(0); // page index
+        assertThat(result.getSize()).isEqualTo(10);  // requested size
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.hasPrevious()).isFalse();
+        assertThat(result.isFirst()).isTrue();
+        assertThat(result.isLast()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should return paginated pitchers of a team")
+    void testGetPitchersOfATeam() {
+        Page<PitcherSummaryDTO> result = this.playerService.getAllPitchersOfATeam(TEST_TEAM2_NAME, 0, 10);
+        List<PitcherSummaryDTO> resultContent = result.getContent();
+
+        assertThat(resultContent).hasSize(1);
+        assertThat(resultContent.get(0).name()).isEqualTo(PLAYER3_NAME);
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isEqualTo(0); // page index
+        assertThat(result.getSize()).isEqualTo(10);  // requested size
+        assertThat(result.hasNext()).isFalse();
+        assertThat(result.hasPrevious()).isFalse();
+        assertThat(result.isFirst()).isTrue();
+        assertThat(result.isLast()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should persist PositionPlayer with its associated Team")
+    void testPositionPlayerEntityPersistency() {
+        PositionPlayer player = this.positionPlayerRepository.findByName(PLAYER1_NAME).orElseThrow(PlayerNotFoundException::new);
+        Team team = player.getTeam();
+
+        assertThat(team).isNotNull();
+        assertThat(team.getPositionPlayers()).contains(player);
+    }
+
+    @Test
+    @DisplayName("Should persist Pitcher with its associated Team")
+    void testPitcherEntityPersistency() {
+        Pitcher player = this.pitcherRepository.findByName(PLAYER3_NAME).orElseThrow(PlayerNotFoundException::new);
+        Team team = player.getTeam();
+
+        assertThat(team).isNotNull();
+        assertThat(team.getPitchers()).contains(player);
     }
 }

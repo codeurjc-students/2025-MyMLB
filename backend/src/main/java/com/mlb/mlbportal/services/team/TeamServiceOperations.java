@@ -9,7 +9,7 @@ import com.mlb.mlbportal.services.MatchService;
 
 public class TeamServiceOperations {
     
-    protected static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
+    public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
         recalculatePct(team);
         calculateGamesBehind(team, teamRepository);
         calculateLast10Games(team, matchService);

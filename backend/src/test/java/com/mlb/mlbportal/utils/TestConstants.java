@@ -33,6 +33,10 @@ public final class TestConstants {
     public static final String ALL_STADIUMS_PATH = "/api/stadiums";
     public static final String STADIUM_PATH = "/api/stadiums/";
 
+    public static final String ALL_PLAYERS_PATH = "/api/players";
+    public static final String ALL_POSITION_PLAYERS_PATH = "/api/players/position-players";
+    public static final String ALL_PITCHERS_PATH = "/api/players/pitchers";
+
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";
 
