@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatchService, ShowMatch, TeamSummary } from '../../../services/match.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatchService, ShowMatch } from '../../../services/match.service';
 import { CommonModule } from '@angular/common';
 import { BackgroundColorService } from '../../../services/background-color.service';
 
@@ -7,6 +7,7 @@ import { BackgroundColorService } from '../../../services/background-color.servi
 	selector: 'app-matches-of-the-day',
 	standalone: true,
 	imports: [CommonModule],
+	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './matches-of-the-day.component.html'
 })
 export class MatchesOfTheDayComponent implements OnInit {
@@ -39,7 +40,7 @@ export class MatchesOfTheDayComponent implements OnInit {
 		}
 	}
 
-	public getBackgroundColor(team: TeamSummary) {
-		return this.backgroundService.getBackgroundColor(team);
+	public getBackgroundColor(abbreviation: string) {
+		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 }

@@ -76,7 +76,7 @@ public abstract class BaseE2ETest {
         this.userRepository.save(new com.mlb.mlbportal.models.UserEntity(email, username, passwordEncoder.encode(password)));
     }
 
-    protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Year> championships, League league,
+    protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league,
             Division division) {
         return this.teamRepository.save(new Team(name, abbreviation, wins, losses, city, info, championships, league, division));
     }

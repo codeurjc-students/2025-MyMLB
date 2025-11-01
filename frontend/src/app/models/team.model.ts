@@ -1,4 +1,4 @@
-export interface Team {
+export type Team = {
 	name: string,
 	abbreviation: string,
 	league: string,
@@ -8,6 +8,5 @@ export interface Team {
 	losses: number,
 	pct: number,
 	gamesBehind: number,
-	lastTen: string,
-	logo: string
+	lastTen: string
 }

@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.dto.team;
 
-import java.time.Year;
 import java.util.List;
 
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
@@ -17,6 +16,6 @@ public record TeamInitDTO(
     String division,
     String city,
     String generalInfo,
-    List<Year> championships,
+    List<Integer> championships,
     StadiumInitDTO stadium
 ) {}

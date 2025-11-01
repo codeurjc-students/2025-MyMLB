@@ -14,8 +14,11 @@ import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.services.player.PlayerService;
 
 import lombok.AllArgsConstructor;
 
@@ -28,6 +31,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
     private final MatchService matchService;
+    private final PlayerService playerService;
 
     public List<TeamInfoDTO> getTeams() {
         List<Team> teams = this.teamRepository.findAll();
@@ -42,6 +46,16 @@ public class TeamService {
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
+        
+        List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(teamName);
+        List<Pitcher> pitchers = this.playerService.getUpdatedPitchersOfTeam(teamName);
+
+        positionPlayers.forEach(p -> p.setTeam(team));
+        pitchers.forEach(p -> p.setTeam(team));
+
+        team.setPositionPlayers(positionPlayers);
+        team.setPitchers(pitchers);
+        this.teamRepository.save(team);
         return this.teamMapper.toTeamInfoDTO(team);
     }
 

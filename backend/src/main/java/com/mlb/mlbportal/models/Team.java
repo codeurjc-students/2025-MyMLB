@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.models;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +58,7 @@ public class Team {
     @Lob
     private String generalInfo;
     
-    private List<Year> championships = new LinkedList<>();
+    private List<Integer> championships = new LinkedList<>();
 
     @Enumerated(EnumType.STRING)
     private League league;
@@ -98,7 +97,7 @@ public class Team {
         }
     }
 
-    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Year> championships, League league, Division division) {
+    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league, Division division) {
         this.name = name;
         this.abbreviation = abbreviation;
         this.wins = wins;

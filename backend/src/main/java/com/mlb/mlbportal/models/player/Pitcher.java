@@ -26,7 +26,7 @@ public class Pitcher extends Player {
     private double era;
     private int wins;
     private int losses;
-    private int inningsPitched;
+    private double inningsPitched;
     private int totalStrikeouts;
     private int walks;
     private int hitsAllowed;
@@ -35,7 +35,7 @@ public class Pitcher extends Player {
     private int saveOpportunities;
     private double whip;
 
-    public Pitcher(String name, Team team, PitcherPositions position, int games, int wins, int losses, int inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
+    public Pitcher(String name, Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
         super(name, team);
         this.position = position;
         this.games = games;
@@ -50,7 +50,7 @@ public class Pitcher extends Player {
         this.saveOpportunities = saveOpportunities;
     }
 
-    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, int wins, int losses, int inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
+    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, int wins, int losses, double inningsPitched, int totalStrikeouts, int walks, int hitsAllowed, int runsAllowed, int saves, int saveOpportunities) {
         super(name, team, picture);
         this.position = position;
         this.games = games;

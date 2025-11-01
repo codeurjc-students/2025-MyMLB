@@ -25,10 +25,10 @@ public interface TeamMapper {
             Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
 <span class="nc" id="L26">        return groupedTeams.entrySet().stream()</span>
 <span class="nc" id="L27">                .collect(Collectors.toMap(</span>
-                        Map.Entry::getKey,
+<span class="nc" id="L28">                        Map.Entry::getKey,</span>
 <span class="nc" id="L29">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
 <span class="nc" id="L30">                                .collect(Collectors.toMap(</span>
-                                        Map.Entry::getKey,
+<span class="nc" id="L31">                                        Map.Entry::getKey,</span>
 <span class="nc" id="L32">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
     }
 
@@ -40,6 +40,8 @@ public interface TeamMapper {
     TeamSummary toTeamSummaryDTO(Team team);
 
     @Mapping(target = &quot;teamDTO&quot;, source = &quot;team&quot;)
+    @Mapping(target = &quot;positionPlayers&quot;, source = &quot;positionPlayers&quot;) // MapStruct mapea las colecciones
+    @Mapping(target = &quot;pitchers&quot;, source = &quot;pitchers&quot;)
     TeamInfoDTO toTeamInfoDTO(Team team);
 
     List&lt;TeamInfoDTO&gt; toTeamInfoDTOList(List&lt;Team&gt; teamList);

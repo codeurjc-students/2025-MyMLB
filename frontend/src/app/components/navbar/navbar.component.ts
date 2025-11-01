@@ -1,11 +1,14 @@
-import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
 
 @Component({
 	selector: 'app-navbar',
 	standalone: true,
-	imports: [RouterModule],
+	imports: [RouterModule, CommonModule, DropdownMenuComponent],
+	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {

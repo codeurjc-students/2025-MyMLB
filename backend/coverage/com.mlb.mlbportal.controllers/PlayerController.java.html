@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">PlayerController.java</span></div><h1>PlayerController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.PlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.services.player.PlayerService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+
+@Tag(name = &quot;Players&quot;, description = &quot;Operations related to MLB players, including position players and pitchers&quot;)
+@RestController
+@RequestMapping(&quot;/api/players&quot;)
+@AllArgsConstructor
+public class PlayerController {
+    private final PlayerService playerService;
+
+    @Operation(summary = &quot;Get all players&quot;, description = &quot;Returns a list of all MLB players, including both position players and pitchers.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of players&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PlayerDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;PlayerDTO&gt;&gt; getAllPlayers() {
+<span class="fc" id="L42">        return ResponseEntity.ok(this.playerService.getAllPlayers());</span>
+    }
+
+    @Operation(summary = &quot;Get all position players&quot;, description = &quot;Returns a list of all MLB position players with detailed stats.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of position players&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PositionPlayerDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(&quot;/position-players&quot;)
+    public ResponseEntity&lt;List&lt;PositionPlayerDTO&gt;&gt; getAllPositionPlayers() {
+<span class="fc" id="L52">        return ResponseEntity.ok(this.playerService.getAllPositionPlayers());</span>
+    }
+
+    @Operation(summary = &quot;Get all pitchers&quot;, description = &quot;Returns a list of all MLB pitchers with detailed stats.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of pitchers&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PitcherDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(&quot;/pitchers&quot;)
+    public ResponseEntity&lt;List&lt;PitcherDTO&gt;&gt; getAllPitchers() {
+<span class="fc" id="L62">        return ResponseEntity.ok(this.playerService.getAllPitchers());</span>
+    }
+
+    @Operation(summary = &quot;Get player by name&quot;, description = &quot;Returns detailed information about a specific player identified by name.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved player info&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PlayerDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Player not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(&quot;/{name}&quot;)
+    public ResponseEntity&lt;PlayerDTO&gt; getPlayerByName(@PathVariable(&quot;name&quot;) String name) {
+<span class="fc" id="L73">        return ResponseEntity.ok(this.playerService.findPlayerByName(name));</span>
+    }
+
+    @Operation(summary = &quot;Get position players of a team&quot;, description = &quot;Returns a paginated list of position players for a specific team, ordered alphabetically.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved position players of the team&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PositionPlayerSummaryDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid pagination parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(&quot;/position-players/{teamName}&quot;)
+    public ResponseEntity&lt;Page&lt;PositionPlayerSummaryDTO&gt;&gt; getPositionPlayersOfATeam(
+            @PathVariable(&quot;teamName&quot;) String teamName,
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;10&quot;) int size) {
+
+<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (page &lt; 0 || size &lt;= 0) {</span>
+<span class="fc" id="L90">            return ResponseEntity.badRequest().build();</span>
+        }
+<span class="fc" id="L92">        return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));</span>
+    }
+
+    @Operation(summary = &quot;Get pitchers of a team&quot;, description = &quot;Returns a paginated list of pitchers for a specific team, ordered alphabetically.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved pitchers of the team&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PitcherSummaryDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid pagination parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(&quot;/pitchers/{teamName}&quot;)
+    public ResponseEntity&lt;Page&lt;PitcherSummaryDTO&gt;&gt; getPitchersOfATeam(
+            @PathVariable(&quot;teamName&quot;) String teamName,
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;10&quot;) int size) {
+
+<span class="fc bfc" id="L108" title="All 4 branches covered.">        if (page &lt; 0 || size &lt;= 0) {</span>
+<span class="fc" id="L109">            return ResponseEntity.badRequest().build();</span>
+        }
+<span class="fc" id="L111">        return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

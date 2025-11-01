@@ -1,8 +1,5 @@
 package com.mlb.mlbportal.unit.player;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +7,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 
@@ -38,8 +39,12 @@ import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceTest {
@@ -60,7 +65,7 @@ class PlayerServiceTest {
     private PitcherMapper pitcherMapper;
 
     @Mock
-    private TeamService teamService;
+    private TeamRepository teamRepository;
 
     @InjectMocks
     private PlayerService playerService;
@@ -171,10 +176,58 @@ class PlayerServiceTest {
     }
 
     @Test
+    @DisplayName("Should return updated position players of a known team")
+    void testGetUpdatedPositionPlayersOfTeam() {
+        Team team = this.teams.get(0);
+        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+        when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
+
+        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME);
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.get(0).getName()).isEqualTo(PLAYER1_NAME);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException when getting updated position players of unknown team")
+    void testGetUpdatedPositionPlayersOfUnknownTeam() {
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
+    @DisplayName("Should return updated pitchers of a known team")
+    void testGetUpdatedPitchersOfTeam() {
+        Team team = this.teams.get(1);
+        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+        when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
+
+        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
+        assertThat(result.get(0).getName()).isEqualTo(PLAYER3_NAME);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException when getting updated pitchers of unknown team")
+    void testGetUpdatedPitchersOfUnknownTeam() {
+        when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
     @DisplayName("Should return paginated position players of a team")
     void testGetPositionPlayersOfTeam() {
         Team team = this.teams.get(0);
-        when(this.teamService.getTeam(TEST_TEAM1_NAME)).thenReturn(team);
+        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
         when(this.positionPlayerMapper.toPositionPlayerSummaryDTO(any())).thenReturn(this.positionSummaryDTOs.get(0), this.positionSummaryDTOs.get(1));
 
@@ -199,7 +252,7 @@ class PlayerServiceTest {
     @DisplayName("Should return paginated pitchers of a team")
     void testGetPitchersOfTeam() {
         Team team = this.teams.get(1);
-        when(this.teamService.getTeam(TEST_TEAM2_NAME)).thenReturn(team);
+        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(pitchers);
         when(this.pitcherMapper.toPitcherSummaryDTO(any())).thenReturn(this.pitcherSummaryDTOs.get(0));
 

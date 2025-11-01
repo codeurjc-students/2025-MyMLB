@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Team } from '../models/team-model';
-import { TeamSummary } from './match.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -8,8 +6,8 @@ import { TeamSummary } from './match.service';
 export class BackgroundColorService {
 	constructor() {}
 
-	public getBackgroundColor(team: Team | TeamSummary) {
-		switch (team.abbreviation) {
+	public getBackgroundColor(abbreviation: string) {
+		switch (abbreviation) {
 			case 'TOR':
 				return 'bg-sky-500';
 			case 'LAA':

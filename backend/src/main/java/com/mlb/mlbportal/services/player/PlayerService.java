@@ -15,16 +15,17 @@ import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
-import com.mlb.mlbportal.services.team.TeamService;
 
 import lombok.AllArgsConstructor;
 
@@ -38,7 +39,7 @@ public class PlayerService {
     private final PositionPlayerMapper positionPlayerMapper;
     private final PitcherMapper pitcherMapper;
 
-    private final TeamService teamService;
+    private final TeamRepository teamRepository;
 
     public List<PlayerDTO> getAllPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
@@ -85,32 +86,44 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
-    public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamService.getTeam(teamName);
+    public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(String teamName) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
+
         players.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        return players;
+    }
+
+    public List<Pitcher> getUpdatedPitchersOfTeam(String teamName) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
+
+        pitchers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        return pitchers;
+    }
+
+    public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
+        List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(teamName);
 
         Pageable pageable = PageRequest.of(page, size);
         int start = Math.min((int) pageable.getOffset(), players.size());
         int end = Math.min(start + pageable.getPageSize(), players.size());
 
         List<PositionPlayerSummaryDTO> result = players.subList(start, end).stream()
-            .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();
+                .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();
 
         return new PageImpl<>(result, pageable, players.size());
     }
 
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamService.getTeam(teamName);
-        List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
-        pitchers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(teamName);
 
         Pageable pageable = PageRequest.of(page, size);
         int start = Math.min((int) pageable.getOffset(), pitchers.size());
         int end = Math.min(start + pageable.getPageSize(), pitchers.size());
 
         List<PitcherSummaryDTO> result = pitchers.subList(start, end).stream()
-            .map(this.pitcherMapper::toPitcherSummaryDTO).toList();
+                .map(this.pitcherMapper::toPitcherSummaryDTO).toList();
 
         return new PageImpl<>(result, pageable, pitchers.size());
     }

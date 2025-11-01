@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInitDTO;
 import com.mlb.mlbportal.models.Match;
@@ -89,7 +88,6 @@ public class InitController {
 
     private void setUpTeams() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
 
         try (InputStream input = getClass().getResourceAsStream("/data/teams-2025.json")) {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);

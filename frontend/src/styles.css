@@ -18,6 +18,10 @@ html {
 	@apply w-full px-4 py-2 border border-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-700 placeholder:text-gray-500;
 }
 
+.team-logo-container {
+	@apply w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm
+}
+
 /* Authentication Forms Styles */
 
 .auth-panel {
@@ -120,4 +124,17 @@ html {
 
 .animate-scaleIn {
   animation: scaleIn 0.2s ease-out forwards;
+}
+
+/* Dropdown menu styles */
+.dropdown-container {
+	@apply absolute z-10 bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out
+}
+
+.dropdown-cell {
+	@apply flex items-center px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-150 text-sm
+}
+
+.dropdown-team-logo-container {
+	@apply w-6 h-6 rounded-full flex items-center justify-center overflow-hidden shadow-sm me-3
 }

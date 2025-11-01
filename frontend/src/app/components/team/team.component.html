@@ -1,0 +1,47 @@
+<p>{{ team?.info?.name }}</p>
+<p>{{ team?.info?.abbreviation }}</p>
+<p>{{ team?.info?.league }}</p>
+<p>{{ team?.info?.division }}</p>
+<p>{{ team?.city }}</p>
+<p>{{ team?.chamiponships }}</p>
+<p>{{ team?.informationText }}</p>
+<p>{{ team?.stadium?.name }}</p>
+<p>{{ team?.stadium?.openingDate }}</p>
+
+<br>
+<p>POSITION PLAYERS</p>
+@for (player of positionPlayers; track player.name) {
+	<p>{{ player.name }}</p>
+	<p>{{ player.position }}</p>
+	<p>{{ player.atBats }}</p>
+	<p>{{ player.walks }}</p>
+	<p>{{ player.hits }}</p>
+	<p>{{ player.doubles }}</p>
+	<p>{{ player.triples }}</p>
+	<p>{{ player.homeRuns }}</p>
+	<p>{{ player.rbis }}</p>
+	<p>{{ player.average | number: '1.3-3' }}</p>
+	<p>{{ player.obp | number: '1.3-3' }}</p>
+	<p>{{ player.ops | number: '1.3-3' }}</p>
+	<p>{{ player.slugging | number: '1.3-3' }}</p>
+}
+
+<br>
+<p>POSITION PLAYERS</p>
+
+@for (pitcher of pitchers; track pitcher.name) {
+	<p>{{ pitcher.name }}</p>
+	<p>{{ pitcher.position }}</p>
+	<p>{{ pitcher.games }}</p>
+	<p>{{ pitcher.wins }}</p>
+	<p>{{ pitcher.losses }}</p>
+	<p>{{ pitcher.era | number:'1.2-2' }}</p>
+	<p>{{ pitcher.inningsPitched | number:'1.1-1' }}</p>
+	<p>{{ pitcher.totalStrikeouts }}</p>
+	<p>{{ pitcher.walks }}</p>
+	<p>{{ pitcher.hitsAllowed }}</p>
+	<p>{{ pitcher.runsAllowed }}</p>
+	<p>{{ pitcher.whip | number:'1.2-2' }}</p>
+	<p>{{ pitcher.saves }}</p>
+	<p>{{ pitcher.saveOpportunities }}</p>
+}

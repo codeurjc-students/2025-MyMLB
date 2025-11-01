@@ -9,7 +9,6 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
     pageSerializationMode= EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO
 )
 public class MlbPortalApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MlbPortalApplication.class, args);
     }

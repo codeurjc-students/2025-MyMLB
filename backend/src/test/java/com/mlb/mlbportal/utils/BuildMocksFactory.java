@@ -1,7 +1,6 @@
 package com.mlb.mlbportal.utils;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +26,60 @@ import com.mlb.mlbportal.models.enums.PitcherPositions;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_AT_BATS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_DOUBLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HITS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HOME_RUNS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_RBIS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_TRIPLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_AT_BATS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_DOUBLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HITS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HOME_RUNS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_RBIS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_TRIPLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_GAMES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_HITS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_INNINGS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPORTUNITIES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SO;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 
 public class BuildMocksFactory {
 
@@ -68,8 +119,8 @@ public class BuildMocksFactory {
         StadiumDTO stDto2 = new StadiumDTO(STADIUM2_NAME, STADIUM2_YEAR);
         StadiumDTO stDto3 = new StadiumDTO(STADIUM3_NAME, STADIUM3_YEAR);
 
-        TeamInfoDTO dto1 = new TeamInfoDTO(mockList.get(0), TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(Year.of(2021), Year.of(1999)), stDto1, null, null);
-        TeamInfoDTO dto2= new TeamInfoDTO(mockList.get(1), TEST_TEAM2_CITY, TEST_TEAM2_INFO, List.of(Year.of(2010)), stDto2,null, null);
+        TeamInfoDTO dto1 = new TeamInfoDTO(mockList.get(0), TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(2021, 1999), stDto1, null, null);
+        TeamInfoDTO dto2= new TeamInfoDTO(mockList.get(1), TEST_TEAM2_CITY, TEST_TEAM2_INFO, List.of(2010), stDto2,null, null);
         TeamInfoDTO dto3 = new TeamInfoDTO(mockList.get(2), TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), stDto3,null, null);
         
         return Arrays.asList(dto1, dto2, dto3);

@@ -1,13 +1,15 @@
 package com.mlb.mlbportal.unit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
+import com.mlb.mlbportal.services.player.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,8 +33,6 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -44,6 +46,9 @@ class TeamServiceTest {
     @Mock
     @SuppressWarnings("unused")
     private MatchService matchService;
+
+    @Mock
+    private PlayerService playerService;
 
     @InjectMocks
     private TeamService teamService;
@@ -121,20 +126,31 @@ class TeamServiceTest {
     }
 
     @Test
-    @DisplayName("Should return the general info of a team")
+    @DisplayName("Should return the general info of a team with updated players and pitchers")
     void testGetTeamInfo() {
         when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(team1));
-        assertThatNoException().isThrownBy(() -> this.teamService.getTeamInfo(TEST_TEAM1_NAME));
+
+        List<PositionPlayer> mockPositionPlayers = BuildMocksFactory.buildPositionPlayers(List.of(team1, team2, team3));
+        List<Pitcher> mockPitchers = BuildMocksFactory.buildPitchers(List.of(team1, team2, team3));
+
+        when(this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME)).thenReturn(mockPositionPlayers);
+        when(this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM1_NAME)).thenReturn(mockPitchers);
 
         TeamInfoDTO expected = this.mockTeamInfoDTOs.get(0);
         when(this.teamMapper.toTeamInfoDTO(team1)).thenReturn(expected);
 
         TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
 
+        assertThat(result).isNotNull();
         assertThat(result.teamDTO().name()).isEqualTo(expected.teamDTO().name());
         assertThat(result.teamDTO().abbreviation()).isEqualTo(expected.teamDTO().abbreviation());
         assertThat(result.city()).isEqualTo(expected.city());
         assertThat(result.stadium().name()).isEqualTo(expected.stadium().name());
+
+        assertThat(team1.getPositionPlayers()).isNotEmpty();
+        assertThat(team1.getPitchers()).isNotEmpty();
+
+        verify(this.teamRepository).findByName(TEST_TEAM1_NAME);
     }
 
     @Test

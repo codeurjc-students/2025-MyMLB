@@ -100,8 +100,21 @@ public class PlayerServiceOperations {
         player.setOps(truncateToThreeDecimals(ops));
     }
 
+    private static double convertInnings(double rawInnings) {
+        int whole = (int) rawInnings;
+        double decimal = rawInnings - whole;
+
+        if (Math.abs(decimal - 0.1) < 0.01) {
+            return whole + (1.0 / 3);
+        } else if (Math.abs(decimal - 0.2) < 0.01) {
+            return whole + (2.0 / 3);
+        } else {
+            return rawInnings;
+        }
+    }
+
     private static void calculateERA(Pitcher pitcher) {
-        int innings = pitcher.getInningsPitched();
+        double innings = convertInnings(pitcher.getInningsPitched());
         if (innings == 0) {
             pitcher.setEra(0.0);
             return;
@@ -111,7 +124,7 @@ public class PlayerServiceOperations {
     }
 
     private static void calculateWHIP(Pitcher pitcher) {
-        int innings = pitcher.getInningsPitched();
+        double innings = convertInnings(pitcher.getInningsPitched());
         if (innings == 0) {
             pitcher.setWhip(0.0);
             return;

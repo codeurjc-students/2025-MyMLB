@@ -18,10 +18,7 @@
 				<div class="flex items-center justify-between w-full mb-2">
 					<!-- Away team -->
 					<div class="flex items-center gap-2">
-						<div
-							class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
-							[ngClass]="getBackgroundColor(match.awayTeam)"
-						>
+						<div class="team-logo-container" [ngClass]="getBackgroundColor(match.awayTeam.abbreviation)">
 							<img
 								class="w-full h-full object-contain"
 								src="assets/team-logos-new/{{ match.awayTeam.league }}/{{
@@ -54,7 +51,7 @@
 						<span class="font-semibold">{{ match.homeTeam.abbreviation }}</span>
 						<div
 							class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
-							[ngClass]="getBackgroundColor(match.homeTeam)"
+							[ngClass]="getBackgroundColor(match.homeTeam.abbreviation)"
 						>
 							<img
 								class="w-full h-full object-contain"

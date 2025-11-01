@@ -5,12 +5,14 @@ import { LoginComponent } from './components/login/login.component';
 import { PasswordComponent } from './components/password-recovery/password.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ErrorComponent } from './components/error/error.component';
+import { TeamComponent } from './components/team/team.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
 	{ path: 'auth', component: AuthComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'recovery', component: PasswordComponent },
+	{ path: 'team', component: TeamComponent },
 	//{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',

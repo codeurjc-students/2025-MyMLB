@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.player</a> &gt; <span class="el_source">PlayerService.java</span></div><h1>PlayerService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.player;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.mlb.mlbportal.dto.player.PitcherDTO;
+import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.PlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.mappers.player.PitcherMapper;
+import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.Player;
+import com.mlb.mlbportal.models.player.PositionPlayer;
+import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.player.PitcherRepository;
+import com.mlb.mlbportal.repositories.player.PlayerRepository;
+import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
+
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
+public class PlayerService {
+    private final PlayerRepository playerRepository;
+    private final PositionPlayerRepository positionPlayerRepository;
+    private final PitcherRepository pitcherRepository;
+
+    private final PositionPlayerMapper positionPlayerMapper;
+    private final PitcherMapper pitcherMapper;
+
+    private final TeamRepository teamRepository;
+
+    public List&lt;PlayerDTO&gt; getAllPlayers() {
+<span class="fc" id="L45">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
+<span class="fc" id="L46">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
+
+<span class="fc" id="L48">        positionPlayers.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+<span class="fc" id="L49">        pitcherList.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+
+<span class="fc" id="L51">        List&lt;PositionPlayerDTO&gt; mappedPostionPlayers = this.positionPlayerMapper</span>
+<span class="fc" id="L52">                .toListPositionPlayerDTO(positionPlayers);</span>
+<span class="fc" id="L53">        List&lt;PitcherDTO&gt; mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);</span>
+
+<span class="fc" id="L55">        List&lt;PlayerDTO&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L56">        result.addAll(mappedPostionPlayers);</span>
+<span class="fc" id="L57">        result.addAll(mappedPitchers);</span>
+
+<span class="fc" id="L59">        result.sort((p1, p2) -&gt; p1.name().compareToIgnoreCase(p2.name()));</span>
+<span class="fc" id="L60">        return result;</span>
+    }
+
+    public List&lt;PositionPlayerDTO&gt; getAllPositionPlayers() {
+<span class="fc" id="L64">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
+<span class="fc" id="L65">        this.updateAndSortByName(positionPlayers);</span>
+<span class="fc" id="L66">        return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
+    }
+
+    public List&lt;PitcherDTO&gt; getAllPitchers() {
+<span class="fc" id="L70">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findAll();</span>
+<span class="fc" id="L71">        this.updateAndSortByName(pitchers);</span>
+<span class="fc" id="L72">        return this.pitcherMapper.toListPitcherDTO(pitchers);</span>
+    }
+
+    private &lt;T extends Player&gt; void updateAndSortByName(List&lt;T&gt; players) {
+<span class="fc" id="L76">        players.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+<span class="fc" id="L77">        players.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
+<span class="fc" id="L78">    }</span>
+
+    public PlayerDTO findPlayerByName(String name) {
+<span class="fc" id="L81">        Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+<span class="fc" id="L82">        PlayerServiceOperations.updatePlayerStats(player, positionPlayerRepository, pitcherRepository);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (player instanceof PositionPlayer positionPlayer) {</span>
+<span class="fc" id="L84">            return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);</span>
+        }
+<span class="fc" id="L86">        return this.pitcherMapper.toPitcherDTO((Pitcher) player);</span>
+    }
+
+    public List&lt;PositionPlayer&gt; getUpdatedPositionPlayersOfTeam(String teamName) {
+<span class="fc" id="L90">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L91">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
+
+<span class="fc" id="L93">        players.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+<span class="fc" id="L94">        return players;</span>
+    }
+
+    public List&lt;Pitcher&gt; getUpdatedPitchersOfTeam(String teamName) {
+<span class="fc" id="L98">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L99">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
+
+<span class="fc" id="L101">        pitchers.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+<span class="fc" id="L102">        return pitchers;</span>
+    }
+
+    public Page&lt;PositionPlayerSummaryDTO&gt; getAllPositionPlayersOfATeam(String teamName, int page, int size) {
+<span class="fc" id="L106">        List&lt;PositionPlayer&gt; players = this.getUpdatedPositionPlayersOfTeam(teamName);</span>
+
+<span class="fc" id="L108">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L109">        int start = Math.min((int) pageable.getOffset(), players.size());</span>
+<span class="fc" id="L110">        int end = Math.min(start + pageable.getPageSize(), players.size());</span>
+
+<span class="fc" id="L112">        List&lt;PositionPlayerSummaryDTO&gt; result = players.subList(start, end).stream()</span>
+<span class="fc" id="L113">                .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();</span>
+
+<span class="fc" id="L115">        return new PageImpl&lt;&gt;(result, pageable, players.size());</span>
+    }
+
+    public Page&lt;PitcherSummaryDTO&gt; getAllPitchersOfATeam(String teamName, int page, int size) {
+<span class="fc" id="L119">        List&lt;Pitcher&gt; pitchers = this.getUpdatedPitchersOfTeam(teamName);</span>
+
+<span class="fc" id="L121">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L122">        int start = Math.min((int) pageable.getOffset(), pitchers.size());</span>
+<span class="fc" id="L123">        int end = Math.min(start + pageable.getPageSize(), pitchers.size());</span>
+
+<span class="fc" id="L125">        List&lt;PitcherSummaryDTO&gt; result = pitchers.subList(start, end).stream()</span>
+<span class="fc" id="L126">                .map(this.pitcherMapper::toPitcherSummaryDTO).toList();</span>
+
+<span class="fc" id="L128">        return new PageImpl&lt;&gt;(result, pageable, pitchers.size());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

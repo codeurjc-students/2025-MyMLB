@@ -1,17 +1,16 @@
 package com.mlb.mlbportal.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.springframework.data.domain.Page;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.player.PitcherDTO;
@@ -31,8 +30,12 @@ import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
 
 import jakarta.transaction.Transactional;
 
@@ -146,6 +149,27 @@ class PlayerServiceIntegrationTest {
         assertThatThrownBy(() -> this.playerService.findPlayerByName(UNKNOWN_PLAYER))
             .isInstanceOf(PlayerNotFoundException.class)
             .hasMessageContaining("Player Not Found");
+    }
+
+    @Test
+    @DisplayName("Should return updated position players of a team sorted by name")
+    void testGetUpdatedPositionPlayersOfTeam() {
+        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(PositionPlayer::getName)
+                .containsExactly(PLAYER1_NAME, PLAYER2_NAME); // sorted
+        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
+    }
+
+    @Test
+    @DisplayName("Should return updated pitchers of a team sorted by name")
+    void testGetUpdatedPitchersOfTeam() {
+        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getName()).isEqualTo(PLAYER3_NAME);
+        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
     }
 
     @Test

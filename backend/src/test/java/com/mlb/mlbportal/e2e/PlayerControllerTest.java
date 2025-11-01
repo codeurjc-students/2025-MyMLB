@@ -23,7 +23,7 @@ import io.restassured.http.ContentType;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class PlayerControllerTest extends BaseE2ETest {
-    
+
     private Team team1, team2;
 
     @BeforeEach
@@ -47,42 +47,42 @@ public class PlayerControllerTest extends BaseE2ETest {
     @DisplayName("GET /api/players should return all players with the correct data")
     void testGetAllPlayers() {
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(ALL_PLAYERS_PATH)
-            .then()
-            .statusCode(200)
-            .body("size()", is(3))
-            .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME))
-            .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME, TEST_TEAM2_NAME));
+                .accept(ContentType.JSON)
+                .when()
+                .get(ALL_PLAYERS_PATH)
+                .then()
+                .statusCode(200)
+                .body("size()", is(3))
+                .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME))
+                .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME, TEST_TEAM2_NAME));
     }
 
     @Test
     @DisplayName("GET /api/players/position-players should return all position players with the correct data")
     void testGetAllPositionPlayers() {
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(ALL_POSITION_PLAYERS_PATH)
-            .then()
-            .statusCode(200)
-            .body("size()", is(2))
-            .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
-            .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME));
+                .accept(ContentType.JSON)
+                .when()
+                .get(ALL_POSITION_PLAYERS_PATH)
+                .then()
+                .statusCode(200)
+                .body("size()", is(2))
+                .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
+                .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME));
     }
 
     @Test
     @DisplayName("GET /api/players/pitchers should return all pitchers with the correct data")
     void testGetAllPitchers() {
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(ALL_PITCHERS_PATH)
-            .then()
-            .statusCode(200)
-            .body("size()", is(1))
-            .body("name", hasItems(PLAYER3_NAME))
-            .body("teamName", hasItems(TEST_TEAM2_NAME));
+                .accept(ContentType.JSON)
+                .when()
+                .get(ALL_PITCHERS_PATH)
+                .then()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("name", hasItems(PLAYER3_NAME))
+                .body("teamName", hasItems(TEST_TEAM2_NAME));
     }
 
     @Test
@@ -90,14 +90,14 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetPositionPlayerByName() {
         String url = ALL_PLAYERS_PATH + "/" + PLAYER1_NAME;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(200)
-            .body("name", is(PLAYER1_NAME))
-            .body("teamName", is(TEST_TEAM1_NAME))
-            .body("hits", is(PLAYER1_HITS));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("name", is(PLAYER1_NAME))
+                .body("teamName", is(TEST_TEAM1_NAME))
+                .body("hits", is(PLAYER1_HITS));
     }
 
     @Test
@@ -105,14 +105,14 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetPitcherByName() {
         String url = ALL_PLAYERS_PATH + "/" + PLAYER3_NAME;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(200)
-            .body("name", is(PLAYER3_NAME))
-            .body("teamName", is(TEST_TEAM2_NAME))
-            .body("wins", is(PLAYER3_WINS));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("name", is(PLAYER3_NAME))
+                .body("teamName", is(TEST_TEAM2_NAME))
+                .body("wins", is(PLAYER3_WINS));
     }
 
     @Test
@@ -120,14 +120,14 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetNonExistentPlayer() {
         String url = ALL_PLAYERS_PATH + "/" + UNKNOWN_PLAYER;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(404)
-            .body("status", is(FAILURE))
-            .body("message", is("Player Not Found"))
-            .body("error", is("Player Not Found"));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(404)
+                .body("status", is(FAILURE))
+                .body("message", is("Player Not Found"))
+                .body("error", is("Player Not Found"));
     }
 
     @Test
@@ -135,17 +135,40 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetAllPositionsPlayerOfATeam() {
         String url = ALL_POSITION_PLAYERS_PATH + "/" + TEST_TEAM1_NAME;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(200)
-            .body("content.size()", is(2))
-            .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
-            .body("content.hits", hasItems(PLAYER1_HITS, PLAYER2_HITS))
-            .body("page.size", is(10))
-            .body("page.totalElements", is(2))
-            .body("page.totalPages", is(1));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(2))
+                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
+                .body("content.hits", hasItems(PLAYER1_HITS, PLAYER2_HITS))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(2))
+                .body("page.totalPages", is(1));
+    }
+
+    @Test
+    @DisplayName("GET /api/players/position-players/{teamName} should return 400 if the page parameters are invalid")
+    void testGetAllPositionPlayerOfATeamWithBadPageParameters() {
+        String url = ALL_POSITION_PLAYERS_PATH + "/" + TEST_TEAM1_NAME;
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("page", -1)
+                .queryParam("size", 10)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(400);
+
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("page", 0)
+                .queryParam("size", 0)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(400);
     }
 
     @Test
@@ -153,17 +176,40 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetAllPitchersOfATeam() {
         String url = ALL_PITCHERS_PATH + "/" + TEST_TEAM2_NAME;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(200)
-            .body("content.size()", is(1))
-            .body("content.name", hasItems(PLAYER3_NAME))
-            .body("content.wins", hasItems(PLAYER3_WINS))
-            .body("page.size", is(10))
-            .body("page.totalElements", is(1))
-            .body("page.totalPages", is(1));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(1))
+                .body("content.name", hasItems(PLAYER3_NAME))
+                .body("content.wins", hasItems(PLAYER3_WINS))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(1))
+                .body("page.totalPages", is(1));
+    }
+
+    @Test
+    @DisplayName("GET /api/players/pitchers/{teamName} should return 400 if the page parameters are invalid")
+    void testGetAllPitchersOfATeamWithBadPageParameters() {
+        String url = ALL_PITCHERS_PATH + "/" + TEST_TEAM2_NAME;
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("page", -1)
+                .queryParam("size", 10)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(400);
+
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("page", 0)
+                .queryParam("size", 0)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(400);
     }
 
     @Test
@@ -171,13 +217,13 @@ public class PlayerControllerTest extends BaseE2ETest {
     void testGetPlayersFromNonExistentTeam() {
         String url = ALL_PITCHERS_PATH + "/" + UNKNOWN_TEAM;
         given()
-            .accept(ContentType.JSON)
-            .when()
-            .get(url)
-            .then()
-            .statusCode(404)
-            .body("status", is(FAILURE))
-            .body("message", is("Team Not Found"))
-            .body("error", is("Team Not Found"));
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(404)
+                .body("status", is(FAILURE))
+                .body("message", is("Team Not Found"))
+                .body("error", is("Team Not Found"));
     }
 }
