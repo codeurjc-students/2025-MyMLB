@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class BackgroundColorService {
 	constructor() {}
 
-	public getBackgroundColor(abbreviation: string) {
+	public getBackgroundColor(abbreviation: string | undefined) {
 		switch (abbreviation) {
 			case 'TOR':
 				return 'bg-sky-500';

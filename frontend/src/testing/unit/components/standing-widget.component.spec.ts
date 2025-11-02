@@ -23,8 +23,7 @@ describe('Standings Component Tests', () => {
 					losses: 72,
 					pct: 0.556,
 					gamesBehind: 0,
-					lastTen: '6-4',
-					logo: 'NYY.png',
+					lastTen: '6-4'
 				},
 			],
 		},
@@ -40,8 +39,7 @@ describe('Standings Component Tests', () => {
 					losses: 62,
 					pct: 0.617,
 					gamesBehind: 0,
-					lastTen: '8-2',
-					logo: 'LAD.png',
+					lastTen: '8-2'
 				},
 			],
 		},

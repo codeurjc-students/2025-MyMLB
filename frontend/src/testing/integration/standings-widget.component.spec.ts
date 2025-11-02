@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StandingsWidgetComponent } from '../../app/components/standings/standings-widget/standings-widget.component';
 import { TeamService } from '../../app/services/team.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Team } from '../../app/models/team-model';
+import { Team } from '../../app/models/team.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
 describe('Standings Widget Component Integration Test', () => {

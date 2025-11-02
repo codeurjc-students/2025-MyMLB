@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
 
@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit {
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 
-	constructor(private authService: AuthService) {}
+	constructor(private authService: AuthService, private router: Router) {}
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
@@ -39,4 +39,10 @@ export class NavbarComponent implements OnInit {
 	get profileLink(): string {
 		return this.roles.includes('USER') || this.roles.includes('ADMIN') ? '/profile' : '/auth';
 	}
+
+	// public setActiveSection(section: string) {
+	// 	if (this.router.url.includes(section)) {
+	// 		return 'active-nav';
+	// 	}
+	// }
 }

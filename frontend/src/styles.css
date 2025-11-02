@@ -7,11 +7,15 @@
 
 /* Common Styles for the Application */
 html {
-    transition: background-color 0.3s ease, color 0.3s ease;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-button {
 	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
+}
+
+.app-background {
+	@apply bg-gradient-to-b from-emerald-50 via-teal-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-stone-900;
 }
 
 .text-inputs {
@@ -19,7 +23,7 @@ html {
 }
 
 .team-logo-container {
-	@apply w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm
+	@apply w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm;
 }
 
 /* Authentication Forms Styles */
@@ -60,7 +64,7 @@ html {
 /* Navbar Styles */
 
 .nav-elems {
-	@apply py-2.5 px-3 text-xl text-gray-300 rounded-xl transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03]
+	@apply py-2.5 px-3 text-xl text-gray-300 rounded-xl transition duration-300 ease-in-out hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03];
 }
 
 .active-nav {
@@ -69,72 +73,148 @@ html {
 
 /* Landing Page Styles */
 .landing-container {
-	@apply min-h-screen bg-gradient-to-b from-emerald-50 via-teal-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-stone-900 text-gray-900 dark:text-white flex flex-col items-center justify-start px-4 py-10 transition-colors duration-300
+	@apply min-h-screen text-gray-900 dark:text-white flex flex-col items-center justify-start px-4 py-10 transition-colors duration-300;
 }
 
 .landing-hero-container {
-	@apply relative w-full h-screen flex items-center justify-center bg-cover bg-center bg-[url('/assets/landing/hero.png')] rounded-2xl dark:bg-[url('/assets/landing/hero-dark.png')]
+	@apply relative w-full h-screen flex items-center justify-center bg-cover bg-center bg-[url('/assets/landing/hero.png')] rounded-2xl dark:bg-[url('/assets/landing/hero-dark.png')];
 }
 
 .landing-hero-title {
-	@apply text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent
+	@apply text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent;
 }
 
 .landing-features-container {
-	@apply w-full max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10 mt-20
+	@apply w-full max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10 mt-20;
 }
 
 .landing-feature-block-text {
-	@apply flex flex-col justify-center
+	@apply flex flex-col justify-center;
 }
 
 .landing-feature-block-text-title {
-	@apply text-2xl font-bold mb-4 text-gray-900 dark:text-white
+	@apply text-2xl font-bold mb-4 text-gray-900 dark:text-white;
 }
 
 .landing-feature-block-image {
-	@apply flex items-center
+	@apply flex items-center;
 }
 
 .landing-games-dashboard-container {
-	@apply w-full max-w-2xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md shadow-lg p-6 mb-16 border border-gray-200 mt-20 dark:border-slate-700
+	@apply w-full max-w-2xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md shadow-lg p-6 mb-16 border border-gray-200 mt-20 dark:border-slate-700;
 }
 
 .landing-games-dashboard-subcontainer {
-	@apply flex flex-col bg-slate-300 dark:bg-slate-700 rounded-md px-4 py-3 hover:transition-all duration-200 transform hover:scale-[1.01] dark:hover:bg-slate-600 transition
+	@apply flex flex-col bg-slate-300 dark:bg-slate-700 rounded-md px-4 py-3 hover:transition-all duration-200 transform hover:scale-[1.01] dark:hover:bg-slate-600 transition;
 }
 
 /* Profile */
 
 /* Animación de fade-in para overlays o modales */
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.2s ease-out forwards;
+	animation: fadeIn 0.2s ease-out forwards;
 }
 
 /* Animación de scale-in para contenido del modal */
 @keyframes scaleIn {
-  0% { transform: scale(0.95); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+	0% {
+		transform: scale(0.95);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
 }
 
 .animate-scaleIn {
-  animation: scaleIn 0.2s ease-out forwards;
+	animation: scaleIn 0.2s ease-out forwards;
 }
 
 /* Dropdown menu styles */
 .dropdown-container {
-	@apply absolute z-10 bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out
+	@apply absolute z-10 bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out;
 }
 
 .dropdown-cell {
-	@apply flex items-center px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-150 text-sm
+	@apply flex items-center px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors duration-150 text-sm;
 }
 
 .dropdown-team-logo-container {
-	@apply w-6 h-6 rounded-full flex items-center justify-center overflow-hidden shadow-sm me-3
+	@apply w-6 h-6 rounded-full flex items-center justify-center overflow-hidden shadow-sm me-3;
+}
+
+/* Team Page */
+@keyframes shimmer-color {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer-number {
+    background-size: 400% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer-color 4s ease-in-out infinite; /* ← más lento y suave */
+}
+
+.dark .shimmer-number {
+    opacity: 0.9;
+}
+
+/* Ranks Styles */
+
+.rank-gold {
+    background-image: linear-gradient(
+        90deg,
+        #fef08a 0%,
+        #facc15 25%,
+        #f59e0b 50%,
+        #facc15 75%,
+        #fef08a 100%
+    );
+}
+
+.rank-silver {
+    background-image: linear-gradient(
+        90deg,
+        #e5e7eb 0%,
+        #d1d5db 25%,
+        #9ca3af 50%,
+        #d1d5db 75%,
+        #e5e7eb 100%
+    );
+}
+
+.rank-bronze {
+    background-image: linear-gradient(
+        90deg,
+        #fbbf24 0%,
+        #d97706 25%,
+        #92400e 50%,
+        #d97706 75%,
+        #fbbf24 100%
+    );
+}
+
+.rank-neutral {
+	@apply text-blue-800 dark:text-white;
+	text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+.team-section-container {
+	@apply bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 rounded-2xl shadow-2xl p-10 border border-blue-300 dark:border-blue-900;
 }

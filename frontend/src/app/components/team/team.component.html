@@ -1,55 +1,151 @@
-<p>{{ team?.teamStats?.name }}</p>
-<p>{{ team?.teamStats?.abbreviation }}</p>
-<p>{{ team?.teamStats?.league }}</p>
-<p>{{ team?.teamStats?.division }}</p>
-<p>{{ team?.teamStats?.totalGames }}</p>
-<p>{{ team?.teamStats?.wins }}</p>
-<p>{{ team?.teamStats?.losses }}</p>
-<p>{{ team?.teamStats?.pct }}</p>
-<p>{{ team?.teamStats?.gamesBehind }}</p>
-<p>{{ team?.teamStats?.lastTen }}</p>
-<p>{{ team?.city }}</p>
-@for (champion of championships; track champion) {
-	<span>{{ champion }}</span>
-}
-<p>{{ team?.generalInfo }}</p>
-<p>{{ team?.stadium?.name }}</p>
-<p>{{ team?.stadium?.openingDate }}</p>
+<div
+	class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-24 flex flex-col items-center"
+>
 
-<br>
-<p>POSITION PLAYERS</p>
-@for (player of positionPlayers; track player.name) {
-	<p>{{ player.name }}</p>
-	<p>{{ player.position }}</p>
-	<p>{{ player.atBats }}</p>
-	<p>{{ player.walks }}</p>
-	<p>{{ player.hits }}</p>
-	<p>{{ player.doubles }}</p>
-	<p>{{ player.triples }}</p>
-	<p>{{ player.homeRuns }}</p>
-	<p>{{ player.rbis }}</p>
-	<p>{{ player.average | number: '1.3-3' }}</p>
-	<p>{{ player.obp | number: '1.3-3' }}</p>
-	<p>{{ player.ops | number: '1.3-3' }}</p>
-	<p>{{ player.slugging | number: '1.3-3' }}</p>
-}
+	<!-- Team Header -->
+		<section class="flex flex-col md:flex-row items-center justify-center gap-6 w-full text-center overflow-visible">
+			<div
+				class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center"
+				[ngClass]="backgroundLogo(team?.teamStats?.abbreviation)"
+			>
+				<img
+				src="assets/team-logos-new/{{ team?.teamStats?.league }}/{{
+					team?.teamStats?.division
+				}}/{{ team?.teamStats?.abbreviation }}.png"
+				alt="Team Logo"
+				class="w-24 h-24 object-contain"
+				/>
+			</div>
+			<h1
+				class="text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]"
+			>
+				{{ team?.teamStats?.name }}
+			</h1>
+	</section>
 
-<br>
-<p>PITCHERS</p>
+	<!-- Informatiom Section -->
+	<section class="w-full max-w-5xl team-section-container text-center">
+		<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">About the Team</h2>
+		<p class="text-lg leading-relaxed">{{ team?.generalInfo }}</p>
+	</section>
 
-@for (pitcher of pitchers; track pitcher.name) {
-	<p>{{ pitcher.name }}</p>
-	<p>{{ pitcher.position }}</p>
-	<p>{{ pitcher.games }}</p>
-	<p>{{ pitcher.wins }}</p>
-	<p>{{ pitcher.losses }}</p>
-	<p>{{ pitcher.era | number:'1.2-2' }}</p>
-	<p>{{ pitcher.inningsPitched | number:'1.1-1' }}</p>
-	<p>{{ pitcher.totalStrikeouts }}</p>
-	<p>{{ pitcher.walks }}</p>
-	<p>{{ pitcher.hitsAllowed }}</p>
-	<p>{{ pitcher.runsAllowed }}</p>
-	<p>{{ pitcher.whip | number:'1.2-2' }}</p>
-	<p>{{ pitcher.saves }}</p>
-	<p>{{ pitcher.saveOpportunities }}</p>
-}
+	<!-- Championships Section -->
+	<div class="w-full max-w-6xl team-section-container text-center">
+		<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Championships</h2>
+		<div class="grid grid-cols-3 md:grid-cols-6 gap-8 justify-center">
+			@if(championships.length === 0) {
+				<div class="col-span-3 md:col-span-6 flex justify-center items-center w-full">
+					<p class="text-2xl font-bold text-black dark:text-white whitespace-nowrap">
+						No championships won yet
+					</p>
+				</div>
+			}
+			@else {
+				@for (champion of championships; track champion) {
+					<div class="flex flex-col items-center space-y-2">
+						<img src="/assets/trophy.png" alt="WS Trophy" class="w-14 h-14" />
+						<span class="text-lg font-medium">{{ champion }}</span>
+					</div>
+				}
+			}
+		</div>
+	</div>
+
+	<!-- Stadium Section -->
+	<section class="w-full max-w-6xl team-section-container text-center">
+		<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Stadium</h2>
+		<p class="text-xl font-semibold">{{ team?.stadium?.name }}</p>
+		<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+			Opening Date: {{ team?.stadium?.openingDate }}
+		</p>
+		<div class="flex space-x-6 overflow-x-auto justify-center">
+			<img
+				src="/assets/landing/hero-dark.png"
+				class="w-72 h-44 rounded-lg shadow-md object-cover"
+			/>
+			<img
+				src="/assets/landing/hero-dark.png"
+				class="w-72 h-44 rounded-lg shadow-md object-cover"
+			/>
+			<img
+				src="/assets/landing/hero-dark.png"
+				class="w-72 h-44 rounded-lg shadow-md object-cover"
+			/>
+		</div>
+	</section>
+
+	<!-- Stats Section -->
+	<section class="w-full max-w-6xl team-section-container">
+
+		<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">Season Statistics</h2>
+
+		<div class="flex flex-col md:flex-row items-start gap-x-20">
+			<!-- Rank -->
+			<div class="flex flex-col items-center justify-start mt-7 min-w-[100px]">
+				<p class="text-9xl font-extrabold shimmer-number"
+				[ngClass]="{
+					'rank-gold': teamRank === 1,
+					'rank-silver': teamRank === 2,
+					'rank-bronze': teamRank === 3,
+					'rank-neutral': teamRank >= 4
+				}">
+				{{ teamRank }}
+				</p>
+				<p class="text-sm uppercase tracking-wide mt-2 text-blue-800 dark:text-gray-300">Rank</p>
+			</div>
+
+			<!-- Stats Panel -->
+			<div class="grid grid-cols-2 md:grid-cols-3 gap-8 w-full items-center ml-11">
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Abbreviation</p><p class="text-xl font-bold">{{ team?.teamStats?.abbreviation }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">League</p><p class="text-xl font-bold">{{ team?.teamStats?.league }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Division</p><p class="text-xl font-bold">{{ team?.teamStats?.division }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Total Games</p><p class="text-xl font-bold">{{ team?.teamStats?.totalGames }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Wins</p><p class="text-xl font-bold text-green-600 dark:text-green-400">{{ team?.teamStats?.wins }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Losses</p><p class="text-xl font-bold text-red-600 dark:text-red-400">{{ team?.teamStats?.losses }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">PCT</p><p class="text-xl font-bold">{{ team?.teamStats?.pct }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Games Behind</p><p class="text-xl font-bold">{{ team?.teamStats?.gamesBehind }}</p></div>
+				<div><p class="text-sm text-gray-500 dark:text-gray-400">Last 10</p><p class="text-xl font-bold">{{ team?.teamStats?.lastTen }}</p></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Position Players Section -->
+	<section class="w-full max-w-6xl team-section-container text-center">
+		<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Position Players</h2>
+		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
+			@for (player of positionPlayers; track player.name) {
+			<div
+				class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition"
+			>
+				<img
+					src="assets/account-avatar.png"
+					alt="{{ player.name }}"
+					class="w-24 h-24 rounded-full object-cover mb-2"
+				/>
+				<p class="font-semibold">{{ player.name }}</p>
+				<p class="text-sm text-gray-500 dark:text-gray-300">{{ player.position }}</p>
+			</div>
+			}
+		</div>
+	</section>
+
+	<!-- Pitchers Section -->
+	<section class="w-full max-w-6xl team-section-container text-center">
+		<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Pitchers</h2>
+		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
+			@for (pitcher of pitchers; track pitcher.name) {
+				<div
+					class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition"
+				>
+					<img
+						src="assets/account-avatar.png"
+						alt="{{ pitcher.name }}"
+						class="w-24 h-24 rounded-full object-cover mb-2"
+					/>
+					<p class="font-semibold">{{ pitcher.name }}</p>
+					<p class="text-sm text-gray-500 dark:text-gray-300">{{ pitcher.position }}</p>
+				</div>
+			}
+		</div>
+	</section>
+</div>

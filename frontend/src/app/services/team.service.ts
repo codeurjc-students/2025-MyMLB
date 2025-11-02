@@ -62,4 +62,22 @@ export class TeamService {
 			})
 		);
 	}
+
+	public getTeamDivisionRank(teamAbbr: string): Observable<number> {
+		return this.getStandings().pipe(
+			map((standings) => {
+				for (const league of Object.keys(standings)) {
+					const divisions = standings[league];
+					for (const division of Object.keys(divisions)) {
+						const teams = divisions[division];
+						const index = teams.findIndex((team) => team.abbreviation === teamAbbr);
+						if (index !== -1) {
+							return index + 1;
+						}
+					}
+				}
+				return -1;
+			})
+		);
+	}
 }

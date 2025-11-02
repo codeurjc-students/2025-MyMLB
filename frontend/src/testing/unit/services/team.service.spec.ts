@@ -2,7 +2,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TeamService } from '../../../app/services/team.service';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { Team } from '../../../app/models/team-model';
+import { Team } from '../../../app/models/team.model';
 
 describe('Team Service Tests', () => {
 	let service: TeamService;
