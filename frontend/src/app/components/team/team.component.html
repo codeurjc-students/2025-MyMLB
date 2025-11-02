@@ -1,10 +1,18 @@
-<p>{{ team?.info?.name }}</p>
-<p>{{ team?.info?.abbreviation }}</p>
-<p>{{ team?.info?.league }}</p>
-<p>{{ team?.info?.division }}</p>
+<p>{{ team?.teamStats?.name }}</p>
+<p>{{ team?.teamStats?.abbreviation }}</p>
+<p>{{ team?.teamStats?.league }}</p>
+<p>{{ team?.teamStats?.division }}</p>
+<p>{{ team?.teamStats?.totalGames }}</p>
+<p>{{ team?.teamStats?.wins }}</p>
+<p>{{ team?.teamStats?.losses }}</p>
+<p>{{ team?.teamStats?.pct }}</p>
+<p>{{ team?.teamStats?.gamesBehind }}</p>
+<p>{{ team?.teamStats?.lastTen }}</p>
 <p>{{ team?.city }}</p>
-<p>{{ team?.chamiponships }}</p>
-<p>{{ team?.informationText }}</p>
+@for (champion of championships; track champion) {
+	<span>{{ champion }}</span>
+}
+<p>{{ team?.generalInfo }}</p>
 <p>{{ team?.stadium?.name }}</p>
 <p>{{ team?.stadium?.openingDate }}</p>
 
@@ -27,7 +35,7 @@
 }
 
 <br>
-<p>POSITION PLAYERS</p>
+<p>PITCHERS</p>
 
 @for (pitcher of pitchers; track pitcher.name) {
 	<p>{{ pitcher.name }}</p>

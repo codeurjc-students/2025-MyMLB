@@ -16,6 +16,7 @@ export class TeamComponent implements OnInit {
 	public team: TeamInfo | null = null;
 	public positionPlayers: PositionPlayer[] = [];
 	public pitchers: Pitcher[] = [];
+	public championships: number[] = [];
 
 	constructor(private selectedTeamService: SelectedTeamService) {}
 
@@ -24,6 +25,7 @@ export class TeamComponent implements OnInit {
 			this.team = selectedTeam;
 			this.positionPlayers = selectedTeam?.positionPlayers ?? [];
 			this.pitchers = selectedTeam?.pitchers ?? [];
+			this.championships = selectedTeam?.championships ?? [];
 		});
 	}
 }

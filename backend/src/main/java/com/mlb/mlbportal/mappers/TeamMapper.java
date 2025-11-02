@@ -39,7 +39,7 @@ public interface TeamMapper {
 
     TeamSummary toTeamSummaryDTO(Team team);
 
-    @Mapping(target = "teamDTO", source = "team")
+    @Mapping(target = "teamStats", source = "team")
     @Mapping(target = "positionPlayers", source = "positionPlayers") // MapStruct mapea las colecciones
     @Mapping(target = "pitchers", source = "pitchers")
     TeamInfoDTO toTeamInfoDTO(Team team);

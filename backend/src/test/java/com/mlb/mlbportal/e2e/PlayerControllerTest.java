@@ -1,11 +1,8 @@
 package com.mlb.mlbportal.e2e;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-
-import static org.hamcrest.Matchers.hasItems;
-
 import java.util.Collections;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +13,51 @@ import org.springframework.test.context.ActiveProfiles;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_PITCHERS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_PLAYERS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_POSITION_PLAYERS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_AT_BATS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_DOUBLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HITS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HOME_RUNS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_RBIS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_TRIPLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_AT_BATS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_DOUBLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HITS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HOME_RUNS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_RBIS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_TRIPLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_GAMES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_HITS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_INNINGS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPORTUNITIES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SO;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -149,29 +191,6 @@ public class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/position-players/{teamName} should return 400 if the page parameters are invalid")
-    void testGetAllPositionPlayerOfATeamWithBadPageParameters() {
-        String url = ALL_POSITION_PLAYERS_PATH + "/" + TEST_TEAM1_NAME;
-        given()
-                .accept(ContentType.JSON)
-                .queryParam("page", -1)
-                .queryParam("size", 10)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(400);
-
-        given()
-                .accept(ContentType.JSON)
-                .queryParam("page", 0)
-                .queryParam("size", 0)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
     @DisplayName("GET /api/players/pitchers/{teamName} should return all pitchers of the given team")
     void testGetAllPitchersOfATeam() {
         String url = ALL_PITCHERS_PATH + "/" + TEST_TEAM2_NAME;
@@ -187,29 +206,6 @@ public class PlayerControllerTest extends BaseE2ETest {
                 .body("page.size", is(10))
                 .body("page.totalElements", is(1))
                 .body("page.totalPages", is(1));
-    }
-
-    @Test
-    @DisplayName("GET /api/players/pitchers/{teamName} should return 400 if the page parameters are invalid")
-    void testGetAllPitchersOfATeamWithBadPageParameters() {
-        String url = ALL_PITCHERS_PATH + "/" + TEST_TEAM2_NAME;
-        given()
-                .accept(ContentType.JSON)
-                .queryParam("page", -1)
-                .queryParam("size", 10)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(400);
-
-        given()
-                .accept(ContentType.JSON)
-                .queryParam("page", 0)
-                .queryParam("size", 0)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(400);
     }
 
     @Test

@@ -76,7 +76,6 @@ public class PlayerController {
     @Operation(summary = "Get position players of a team", description = "Returns a paginated list of position players for a specific team, ordered alphabetically.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved position players of the team", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PositionPlayerSummaryDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -86,16 +85,12 @@ public class PlayerController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        if (page < 0 || size <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));
     }
 
     @Operation(summary = "Get pitchers of a team", description = "Returns a paginated list of pitchers for a specific team, ordered alphabetically.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved pitchers of the team", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PitcherSummaryDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -105,9 +100,6 @@ public class PlayerController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        if (page < 0 || size <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));
     }
 }

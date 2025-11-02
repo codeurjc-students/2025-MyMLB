@@ -1,15 +1,12 @@
 package com.mlb.mlbportal.unit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.models.player.Pitcher;
-import com.mlb.mlbportal.models.player.PositionPlayer;
-import com.mlb.mlbportal.services.player.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,10 +25,15 @@ import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -142,8 +143,8 @@ class TeamServiceTest {
         TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
 
         assertThat(result).isNotNull();
-        assertThat(result.teamDTO().name()).isEqualTo(expected.teamDTO().name());
-        assertThat(result.teamDTO().abbreviation()).isEqualTo(expected.teamDTO().abbreviation());
+        assertThat(result.teamStats().name()).isEqualTo(expected.teamStats().name());
+        assertThat(result.teamStats().abbreviation()).isEqualTo(expected.teamStats().abbreviation());
         assertThat(result.city()).isEqualTo(expected.city());
         assertThat(result.stadium().name()).isEqualTo(expected.stadium().name());
 

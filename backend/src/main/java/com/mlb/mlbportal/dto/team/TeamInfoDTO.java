@@ -10,7 +10,7 @@ import com.mlb.mlbportal.dto.stadium.StadiumDTO;
  * DTO that contains all the relevant information of a Team. Used in the individual team page
  */
 public record TeamInfoDTO(
-    TeamDTO teamDTO,
+    TeamDTO teamStats,
     String city,
     String generalInfo,
     List<Integer> championships,

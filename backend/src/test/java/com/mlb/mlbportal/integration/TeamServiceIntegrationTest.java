@@ -26,7 +26,6 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.team.TeamService;
-
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
@@ -91,10 +90,10 @@ class TeamServiceIntegrationTest {
 
         assertThat(result).hasSize(3);
 
-        TeamInfoDTO teamDTO1 = result.stream().filter(team -> team.teamDTO().abbreviation().equals(TEST_TEAM1_ABBREVIATION))
+        TeamInfoDTO teamDTO1 = result.stream().filter(team -> team.teamStats().abbreviation().equals(TEST_TEAM1_ABBREVIATION))
                 .findFirst().orElseThrow();
-        assertThat(teamDTO1.teamDTO().totalGames()).isEqualTo(149);
-        assertThat(teamDTO1.teamDTO().pct()).isEqualTo(0.469);
+        assertThat(teamDTO1.teamStats().totalGames()).isEqualTo(149);
+        assertThat(teamDTO1.teamStats().pct()).isEqualTo(0.469);
     }
 
     @Test
@@ -138,8 +137,8 @@ class TeamServiceIntegrationTest {
     void testGetTeamInfo() {
         TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
 
-        assertThat(result.teamDTO().name()).isEqualTo(TEST_TEAM1_NAME);
-        assertThat(result.teamDTO().abbreviation()).isEqualTo(TEST_TEAM1_ABBREVIATION);
+        assertThat(result.teamStats().name()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.teamStats().abbreviation()).isEqualTo(TEST_TEAM1_ABBREVIATION);
     }
 
     @Test

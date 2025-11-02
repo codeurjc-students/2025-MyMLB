@@ -4,10 +4,10 @@ import { PositionPlayer } from "./position-player.model"
 import { Team } from "./team.model"
 
 export type TeamInfo = {
-	info: Team,
+	teamStats: Team,
 	city: string,
-	informationText: string,
-	chamiponships: number[],
+	generalInfo: string,
+	championships: number[],
 	stadium: StadiumSummary,
 	positionPlayers: PositionPlayer[],
 	pitchers: Pitcher[]
