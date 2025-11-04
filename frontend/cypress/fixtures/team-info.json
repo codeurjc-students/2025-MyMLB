@@ -1,0 +1,23 @@
+{
+    "teamStats": {
+        "name": "Yankees",
+        "abbreviation": "NYY",
+        "league": "AL",
+        "division": "East",
+        "totalGames": 162,
+        "wins": 95,
+        "losses": 67,
+        "pct": 0.586,
+        "gamesBehind": 2.0,
+        "lastTen": "6-4"
+    },
+	"city": "New York",
+	"generalInfo": "Information",
+	"championships": [2010],
+	"stadium": {
+		"name": "Yankee Stadium",
+		"openingDate": 2009
+	},
+	"positionPlayers": [],
+	"pitchers": []
+}

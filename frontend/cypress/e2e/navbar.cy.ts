@@ -34,6 +34,11 @@ describe('Navbar Component E2E Tests', () => {
 		cy.contains('Edit Info').should('not.exist');
 	});
 
+	it('should display the dropdown menu when hover over "Teams"', () => {
+		cy.get('li.group').contains(/^Teams$/).trigger('mouseover');
+		cy.get('app-dropdown-menu').should('exist');
+	});
+
 	it('does not show login/signup when authenticated', () => {
 		cy.contains('Login').should('not.exist');
 		cy.contains('Sign Up').should('not.exist');

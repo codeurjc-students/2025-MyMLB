@@ -4,6 +4,8 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
 import { filter } from 'rxjs';
+import { BackgroundColorService } from '../../services/background-color.service';
+import { SelectedTeamService } from '../../services/selected-team.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -19,8 +21,8 @@ export class NavbarComponent implements OnInit {
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 	public currentRoute = '';
-
-	constructor(private authService: AuthService, private router: Router) {}
+	public navBarStyleClass = '';
+	constructor(private authService: AuthService, private backgroundService: BackgroundColorService, private selectTeamService: SelectedTeamService, private router: Router) {}
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
@@ -35,9 +37,16 @@ export class NavbarComponent implements OnInit {
 
 		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
 			this.currentRoute = event.urlAfterRedirects;
+			if (!this.currentRoute.includes('/team')) {
+				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
+			}
 		});
 
 		this.currentRoute = this.router.url;
+
+		this.selectTeamService.selectedTeam$.subscribe((team) => {
+			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
+		});
 	}
 
 	public toggleDarkModeButton(): void {
@@ -50,5 +59,9 @@ export class NavbarComponent implements OnInit {
 
 	public applyStyle(page: string): string {
 		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? 'active-nav' : '';
+	}
+
+	public navBarBackgroundColor(abbreviation: string | undefined) {
+		return this.backgroundService.navBarBackground(abbreviation);
 	}
 }

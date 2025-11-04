@@ -2,6 +2,7 @@
 	"AL": {
 		"East": [
 			{
+				"name": "New York Yankees",
 				"abbreviation": "NYY",
 				"league": "AL",
 				"division": "East",
@@ -13,6 +14,7 @@
 				"lastTen": "7-3"
 			},
 			{
+				"name": "Boston Red Sox",
 				"abbreviation": "BOS",
 				"league": "AL",
 				"division": "East",

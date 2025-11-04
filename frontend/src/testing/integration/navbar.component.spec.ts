@@ -5,14 +5,26 @@ import { AuthService } from '../../app/services/auth.service';
 import { ThemeService } from '../../app/services/theme.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { UserRole } from '../../app/models/auth/user-role.model';
+import { BackgroundColorService } from '../../app/services/background-color.service';
+import { SelectedTeamService } from '../../app/services/selected-team.service';
 import { provideRouter } from '@angular/router';
+import { Subject } from 'rxjs';
 
 describe('Navigation Bar Integration Tests', () => {
 	let fixture: ComponentFixture<NavbarComponent>;
 	let component: NavbarComponent;
 	let httpMock: HttpTestingController;
 
-	const url = 'https://localhost:8443/api/auth/me';
+	const authUrl = 'https://localhost:8443/api/auth/me';
+	const mockBackgroundService = {
+		navBarBackground: (abbr: string | undefined) =>
+			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default',
+	};
+
+	const selectedTeamSubject = new Subject<any>();
+	const mockSelectedTeamService = {
+		selectedTeam$: selectedTeamSubject.asObservable(),
+	};
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -22,7 +34,9 @@ describe('Navigation Bar Integration Tests', () => {
 				ThemeService,
 				provideHttpClient(withFetch()),
 				provideHttpClientTesting(),
-				provideRouter([])
+				provideRouter([]),
+				{ provide: BackgroundColorService, useValue: mockBackgroundService },
+				{ provide: SelectedTeamService, useValue: mockSelectedTeamService },
 			],
 		});
 
@@ -33,6 +47,8 @@ describe('Navigation Bar Integration Tests', () => {
 	});
 
 	afterEach(() => {
+		const pending = httpMock.match(() => true);
+		pending.forEach((req) => req.flush({}));
 		httpMock.verify();
 	});
 
@@ -42,7 +58,7 @@ describe('Navigation Bar Integration Tests', () => {
 			roles: ['GUEST', 'USER'],
 		};
 
-		const req = httpMock.expectOne(url);
+		const req = httpMock.expectOne(authUrl);
 		expect(req.request.method).toBe('GET');
 		req.flush(response);
 
@@ -56,11 +72,31 @@ describe('Navigation Bar Integration Tests', () => {
 			roles: ['GUEST'],
 		};
 
-		const req = httpMock.expectOne(url);
+		const req = httpMock.expectOne(authUrl);
 		expect(req.request.method).toBe('GET');
 		req.flush(response);
 
 		expect(component.username).toEqual('');
 		expect(component.roles).toEqual(['GUEST']);
+	});
+
+	it('should update navBarStyleClass when a team is selected', () => {
+		selectedTeamSubject.next({
+			teamStats: { abbreviation: 'NYY' },
+		});
+		expect(component.navBarStyleClass).toBe('bg-nyy');
+	});
+
+	it('should reset navBarStyleClass when route is not /team', () => {
+		component.currentRoute = '/home';
+		component.navBarStyleClass = 'bg-nyy';
+		const result = component.navBarBackgroundColor(undefined);
+		expect(result).toBe('bg-default');
+	});
+
+	it('should emit toggleDarkMode event when button is clicked', () => {
+		spyOn(component.toggleDarkMode, 'emit');
+		component.toggleDarkModeButton();
+		expect(component.toggleDarkMode.emit).toHaveBeenCalled();
 	});
 });
