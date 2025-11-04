@@ -1,8 +1,9 @@
 import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
+import { filter } from 'rxjs';
 
 @Component({
 	selector: 'app-navbar',
@@ -17,6 +18,7 @@ export class NavbarComponent implements OnInit {
 
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
+	public currentRoute = '';
 
 	constructor(private authService: AuthService, private router: Router) {}
 
@@ -30,6 +32,12 @@ export class NavbarComponent implements OnInit {
 				this.username = '';
 			}
 		});
+
+		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+			this.currentRoute = event.urlAfterRedirects;
+		});
+
+		this.currentRoute = this.router.url;
 	}
 
 	public toggleDarkModeButton(): void {
@@ -40,9 +48,7 @@ export class NavbarComponent implements OnInit {
 		return this.roles.includes('USER') || this.roles.includes('ADMIN') ? '/profile' : '/auth';
 	}
 
-	// public setActiveSection(section: string) {
-	// 	if (this.router.url.includes(section)) {
-	// 		return 'active-nav';
-	// 	}
-	// }
+	public applyStyle(page: string): string {
+		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? 'active-nav' : '';
+	}
 }

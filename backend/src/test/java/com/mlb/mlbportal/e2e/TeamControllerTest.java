@@ -12,7 +12,29 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_TEAMS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
+import static com.mlb.mlbportal.utils.TestConstants.STANDINGS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEAM_INFO_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -43,12 +65,12 @@ class TeamControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("size()", is(3))
-                .body("teamDTO.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
-                .body("teamDTO.abbreviation",
+                .body("teamStats.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+                .body("teamStats.abbreviation",
                         hasItems(TEST_TEAM1_ABBREVIATION, TEST_TEAM2_ABBREVIATION, TEST_TEAM3_ABBREVIATION))
-                .body("teamDTO.wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
-                .body("teamDTO.pct", hasItems(0.469f, 0.563f, 0.077f))
-                .body("teamDTO.gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
+                .body("teamStats.wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
+                .body("teamStats.pct", hasItems(0.469f, 0.563f, 0.077f))
+                .body("teamStats.gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
     }
 
     @Test
@@ -80,8 +102,8 @@ class TeamControllerTest extends BaseE2ETest {
                 .get(url)
                 .then()
                 .statusCode(200)
-                .body("teamDTO.name", is(TEST_TEAM1_NAME))
-                .body("teamDTO.abbreviation", is(TEST_TEAM1_ABBREVIATION))
+                .body("teamStats.name", is(TEST_TEAM1_NAME))
+                .body("teamStats.abbreviation", is(TEST_TEAM1_ABBREVIATION))
                 .body("city", is(TEST_TEAM1_CITY));
     }
 

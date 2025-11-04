@@ -26,15 +26,12 @@
 				<div class="flex items-center justify-center flex-grow min-w-0">
 					<ul class="flex flex-row flex-wrap gap-x-4 sm:gap-x-6 font-medium items-center">
 						<li>
-							<a [routerLink]="'/'" class="nav-elems active-nav">Home</a>
+							<a [routerLink]="'/'" class="nav-elems" [ngClass]="applyStyle('/')">Home</a>
 						</li>
 
 						@if (!roles.includes("USER") && !roles.includes("ADMIN")) {
 						<li>
-							<a
-								[routerLink]="'/auth'"
-								[queryParams]="{ form: 'login' }"
-								class="nav-elems"
+							<a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" class="nav-elems"
 								>Login</a
 							>
 						</li>
@@ -48,35 +45,35 @@
 						</li>
 						} @if (roles.includes("USER")) {
 						<li>
-							<a href="#" class="nav-elems">My Tickets</a>
+							<a href="#" class="nav-elems" [ngClass]="applyStyle('/my-tickets')">My Tickets</a>
 						</li>
 						<li>
-							<a href="#" class="nav-elems">Fav Teams</a>
+							<a href="#" class="nav-elems" [ngClass]="applyStyle('/fav-teams')">Fav Teams</a>
 						</li>
 						}
 
 						@if (!roles.includes("ADMIN")) {
 						<li class="relative group">
-							<a href="#" class="nav-elems">Teams</a>
+							<a class="nav-elems" [ngClass]="applyStyle('/team')">Teams</a>
 							<app-dropdown-menu></app-dropdown-menu>
 						</li>
 						<li>
-							<a href="#" class="nav-elems">Standings</a>
+							<a class="nav-elems" [ngClass]="applyStyle('/standings')">Standings</a>
 						</li>
 						}
 
 						@else if (roles.includes("ADMIN")) {
 							<li>
-								<a href="#" class="nav-elems">Edit Info</a>
+								<a href="#" class="nav-elems" [ngClass]="applyStyle('/edit-menu')">Edit Info</a>
 							</li>
 							<li>
-								<a href="#" class="nav-elems">Matches</a>
+								<a href="#" class="nav-elems" [ngClass]="applyStyle('/matches')">Matches</a>
 							</li>
 							<li>
-								<a href="#" class="nav-elems">Create Match</a>
+								<a href="#" class="nav-elems" [ngClass]="applyStyle('/create-match')">Create Match</a>
 							</li>
 							<li>
-								<a href="#" class="nav-elems">Statistics</a>
+								<a href="#" class="nav-elems" [ngClass]="applyStyle('/statistics')">Statistics</a>
 							</li>
 						}
 					</ul>

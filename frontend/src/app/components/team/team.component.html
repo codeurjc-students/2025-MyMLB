@@ -43,7 +43,7 @@
 			@else {
 				@for (champion of championships; track champion) {
 					<div class="flex flex-col items-center space-y-2">
-						<img src="/assets/trophy.png" alt="WS Trophy" class="w-14 h-14" />
+						<img src="/assets/trophy.png" alt="WS Trophy" class="trophy glow-hover">
 						<span class="text-lg font-medium">{{ champion }}</span>
 					</div>
 				}
@@ -58,55 +58,57 @@
 		<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
 			Opening Date: {{ team?.stadium?.openingDate }}
 		</p>
-		<div class="flex space-x-6 overflow-x-auto justify-center">
-			<img
-				src="/assets/landing/hero-dark.png"
-				class="w-72 h-44 rounded-lg shadow-md object-cover"
-			/>
-			<img
-				src="/assets/landing/hero-dark.png"
-				class="w-72 h-44 rounded-lg shadow-md object-cover"
-			/>
-			<img
-				src="/assets/landing/hero-dark.png"
-				class="w-72 h-44 rounded-lg shadow-md object-cover"
-			/>
+
+		<!-- Carousel Container -->
+		<div class="relative">
+			<!-- Image Track -->
+			<div class="relative w-full flex justify-center h-80">
+				<img
+					[src]="stadiumImages[currentIndex]"
+					class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
+					[ngClass]="{
+						'opacity-0': isTransitioning,
+						'opacity-100': !isTransitioning
+					}"
+					alt="Stadium image"
+				/>
+			</div>
+
+			<!-- Left Button -->
+			<button
+				(click)="scrollCarousel('left')"
+				class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+			>
+				←
+			</button>
+
+			<!-- Right Button -->
+			<button
+				(click)="scrollCarousel('right')"
+				class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+			>
+				→
+			</button>
+
+			<!-- Dots -->
+			<div class="flex justify-center mt-4 space-x-2">
+				@for (img of stadiumImages; let i = $index; track img) {
+					<div
+						class="w-3 h-3 rounded-full cursor-pointer transition-all"
+						[ngClass]="{
+							'bg-blue-700': i === currentIndex,
+							'bg-gray-400 dark:bg-gray-600': i !== currentIndex
+						}"
+						(click)="goToSlide(i)"
+					></div>
+				}
+			</div>
 		</div>
 	</section>
 
 	<!-- Stats Section -->
-	<section class="w-full max-w-6xl team-section-container">
-
-		<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">Season Statistics</h2>
-
-		<div class="flex flex-col md:flex-row items-start gap-x-20">
-			<!-- Rank -->
-			<div class="flex flex-col items-center justify-start mt-7 min-w-[100px]">
-				<p class="text-9xl font-extrabold shimmer-number"
-				[ngClass]="{
-					'rank-gold': teamRank === 1,
-					'rank-silver': teamRank === 2,
-					'rank-bronze': teamRank === 3,
-					'rank-neutral': teamRank >= 4
-				}">
-				{{ teamRank }}
-				</p>
-				<p class="text-sm uppercase tracking-wide mt-2 text-blue-800 dark:text-gray-300">Rank</p>
-			</div>
-
-			<!-- Stats Panel -->
-			<div class="grid grid-cols-2 md:grid-cols-3 gap-8 w-full items-center ml-11">
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Abbreviation</p><p class="text-xl font-bold">{{ team?.teamStats?.abbreviation }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">League</p><p class="text-xl font-bold">{{ team?.teamStats?.league }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Division</p><p class="text-xl font-bold">{{ team?.teamStats?.division }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Total Games</p><p class="text-xl font-bold">{{ team?.teamStats?.totalGames }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Wins</p><p class="text-xl font-bold text-green-600 dark:text-green-400">{{ team?.teamStats?.wins }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Losses</p><p class="text-xl font-bold text-red-600 dark:text-red-400">{{ team?.teamStats?.losses }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">PCT</p><p class="text-xl font-bold">{{ team?.teamStats?.pct }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Games Behind</p><p class="text-xl font-bold">{{ team?.teamStats?.gamesBehind }}</p></div>
-				<div><p class="text-sm text-gray-500 dark:text-gray-400">Last 10</p><p class="text-xl font-bold">{{ team?.teamStats?.lastTen }}</p></div>
-			</div>
-		</div>
+	<section class="w-full max-w-6xl">
+		<app-stats-panel [teamStats]="true" [team]="team" [teamRank]="teamRank"></app-stats-panel>
 	</section>
 
 	<!-- Position Players Section -->
@@ -115,10 +117,11 @@
 		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
 			@for (player of positionPlayers; track player.name) {
 			<div
-				class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition"
-			>
+				class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
+				(click)="selectPlayer(player)"
+				>
 				<img
-					src="assets/account-avatar.png"
+					src="assets/judge.png"
 					alt="{{ player.name }}"
 					class="w-24 h-24 rounded-full object-cover mb-2"
 				/>
@@ -135,7 +138,8 @@
 		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
 			@for (pitcher of pitchers; track pitcher.name) {
 				<div
-					class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition"
+					class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
+					(click)="selectPlayer(pitcher)"
 				>
 					<img
 						src="assets/account-avatar.png"
@@ -148,4 +152,12 @@
 			}
 		</div>
 	</section>
+
+	@if (selectedPlayer) {
+		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+			<div class="w-full max-w-6xl">
+				<app-stats-panel [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
+			</div>
+		</div>
+	}
 </div>

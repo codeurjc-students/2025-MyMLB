@@ -109,8 +109,6 @@ html {
 }
 
 /* Profile */
-
-/* Animación de fade-in para overlays o modales */
 @keyframes fadeIn {
 	0% {
 		opacity: 0;
@@ -124,7 +122,6 @@ html {
 	animation: fadeIn 0.2s ease-out forwards;
 }
 
-/* Animación de scale-in para contenido del modal */
 @keyframes scaleIn {
 	0% {
 		transform: scale(0.95);
@@ -153,61 +150,59 @@ html {
 	@apply w-6 h-6 rounded-full flex items-center justify-center overflow-hidden shadow-sm me-3;
 }
 
-/* Team Page */
+/* Team Page Styles */
 @keyframes shimmer-color {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
 }
 
 .shimmer-number {
-    background-size: 400% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: shimmer-color 4s ease-in-out infinite; /* ← más lento y suave */
+	background-size: 400% 100%;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	animation: shimmer-color 4s ease-in-out infinite;
 }
 
 .dark .shimmer-number {
-    opacity: 0.9;
+	opacity: 0.9;
 }
 
-/* Ranks Styles */
-
 .rank-gold {
-    background-image: linear-gradient(
-        90deg,
-        #fef08a 0%,
-        #facc15 25%,
-        #f59e0b 50%,
-        #facc15 75%,
-        #fef08a 100%
-    );
+	background-image: linear-gradient(
+		90deg,
+		#fef08a 0%,
+		#facc15 25%,
+		#f59e0b 50%,
+		#facc15 75%,
+		#fef08a 100%
+	);
 }
 
 .rank-silver {
-    background-image: linear-gradient(
-        90deg,
-        #e5e7eb 0%,
-        #d1d5db 25%,
-        #9ca3af 50%,
-        #d1d5db 75%,
-        #e5e7eb 100%
-    );
+	background-image: linear-gradient(
+		90deg,
+		#e5e7eb 0%,
+		#d1d5db 25%,
+		#9ca3af 50%,
+		#d1d5db 75%,
+		#e5e7eb 100%
+	);
 }
 
 .rank-bronze {
-    background-image: linear-gradient(
-        90deg,
-        #fbbf24 0%,
-        #d97706 25%,
-        #92400e 50%,
-        #d97706 75%,
-        #fbbf24 100%
-    );
+	background-image: linear-gradient(
+		90deg,
+		#fbbf24 0%,
+		#d97706 25%,
+		#92400e 50%,
+		#d97706 75%,
+		#fbbf24 100%
+	);
 }
 
 .rank-neutral {
@@ -217,4 +212,25 @@ html {
 
 .team-section-container {
 	@apply bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 rounded-2xl shadow-2xl p-10 border border-blue-300 dark:border-blue-900;
+}
+
+/* Trophy Halo */
+@keyframes goldenGlow {
+	0% {
+		box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+	}
+	100% {
+		box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+	}
+}
+
+.glow-hover:hover {
+	animation: goldenGlow 1.2s ease-in-out infinite;
+}
+
+.trophy {
+	@apply w-14 h-14 rounded-full transition duration-300 hover:shadow-[0_0_20px_#fbbf24dd] hover:bg-[radial-gradient(circle,_rgba(251,191,36,0.6)_0%,_transparent_70%)] dark:hover:shadow-[0_0_12px_#facc15aa] dark:hover:bg-[radial-gradient(circle,_rgba(250,204,21,0.3)_0%,_transparent_70%)]
 }

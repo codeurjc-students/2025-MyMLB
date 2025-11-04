@@ -36,7 +36,7 @@ export class DropdownMenuComponent implements OnInit {
 		this.teamService.getTeamInfo(teamName).subscribe({
 			next: (response) => {
 				this.selectedTeamService.setSelectedTeam(response);
-				this.router.navigate(['team']);
+				this.router.navigate(['team', teamName]);
 			},
 			error: (err) => {
 				this.errorMessage = err.message;

@@ -12,7 +12,7 @@ export const routes: Routes = [
 	{ path: 'auth', component: AuthComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'recovery', component: PasswordComponent },
-	{ path: 'team', component: TeamComponent },
+	{ path: 'team/:name', component: TeamComponent },
 	//{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',
