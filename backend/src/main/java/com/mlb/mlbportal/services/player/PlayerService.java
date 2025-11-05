@@ -42,12 +42,13 @@ public class PlayerService {
 
     private final TeamRepository teamRepository;
 
+    @Transactional
     public List<PlayerDTO> getAllPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
         List<Pitcher> pitcherList = this.pitcherRepository.findAll();
 
-        positionPlayers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
-        pitcherList.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        this.updateAndSaveStats(positionPlayers);
+        this.updateAndSaveStats(pitcherList);
 
         List<PositionPlayerDTO> mappedPostionPlayers = this.positionPlayerMapper
                 .toListPositionPlayerDTO(positionPlayers);
@@ -61,26 +62,52 @@ public class PlayerService {
         return result;
     }
 
+    @Transactional
     public List<PositionPlayerDTO> getAllPositionPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
-        this.updateAndSortByName(positionPlayers);
+        this.updateAndSaveStats(positionPlayers);
+        positionPlayers.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);
     }
 
+    @Transactional
     public List<PitcherDTO> getAllPitchers() {
         List<Pitcher> pitchers = this.pitcherRepository.findAll();
-        this.updateAndSortByName(pitchers);
+        this.updateAndSaveStats(pitchers);
+        pitchers.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return this.pitcherMapper.toListPitcherDTO(pitchers);
     }
 
-    private <T extends Player> void updateAndSortByName(List<T> players) {
-        players.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
-        players.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
+    @Transactional
+    private <T extends Player> void updateAndSaveStats(List<T> players) {
+        players.forEach(p -> {
+            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);
+            if (hasChanged) {
+                // Guarda solo si hay cambios. Usa el repositorio específico del tipo de jugador
+                switch (p) {
+                    case PositionPlayer positionPlayer -> this.positionPlayerRepository.save(positionPlayer);
+                    case Pitcher pitcher -> this.pitcherRepository.save(pitcher);
+                    default -> {
+                    }
+                }
+            }
+        });
     }
 
+    @Transactional
     public PlayerDTO findPlayerByName(String name) {
         Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);
-        PlayerServiceOperations.updatePlayerStats(player, positionPlayerRepository, pitcherRepository);
+
+        // Actualiza y guarda el jugador si es necesario, dentro de la transacción.
+        boolean hasChanged = PlayerServiceOperations.updatePlayerStats(player);
+        if (hasChanged) {
+            switch (player) {
+                case PositionPlayer positionPlayer -> this.positionPlayerRepository.save(positionPlayer);
+                case Pitcher pitcher -> this.pitcherRepository.save(pitcher);
+                default -> {}
+            }
+        }
+
         if (player instanceof PositionPlayer positionPlayer) {
             return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);
         }
@@ -91,7 +118,12 @@ public class PlayerService {
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
 
-        players.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        players.forEach(p -> {
+            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);
+            if (hasChanged) {
+                this.positionPlayerRepository.save(p);
+            }
+        });
         return players;
     }
 
@@ -99,7 +131,12 @@ public class PlayerService {
     public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
 
-        pitchers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
+        pitchers.forEach(p -> {
+            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);
+            if (hasChanged) {
+                this.pitcherRepository.save(p);
+            }
+        });
         return pitchers;
     }
 

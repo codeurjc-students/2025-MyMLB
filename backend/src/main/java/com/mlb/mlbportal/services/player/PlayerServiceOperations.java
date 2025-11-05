@@ -3,23 +3,18 @@ package com.mlb.mlbportal.services.player;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
-import com.mlb.mlbportal.repositories.player.PitcherRepository;
-import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
 public class PlayerServiceOperations {
 
-    public static void updatePlayerStats(Player player,
-            PositionPlayerRepository positionPlayerRepo,
-            PitcherRepository pitcherRepo) {
-        switch (player) {
-            case PositionPlayer positionPlayer -> updatePositionPlayerStats(positionPlayer, positionPlayerRepo);
-            case Pitcher pitcher -> updatePitcherStats(pitcher, pitcherRepo);
-            default -> {
-            }
-        }
+    public static boolean updatePlayerStats(Player player) {
+        return switch (player) {
+            case PositionPlayer positionPlayer -> updatePositionPlayerStats(positionPlayer);
+            case Pitcher pitcher -> updatePitcherStats(pitcher);
+            default -> false;
+        };
     }
 
-    private static void updatePositionPlayerStats(PositionPlayer player, PositionPlayerRepository repo) {
+    private static boolean updatePositionPlayerStats(PositionPlayer player) {
         double oldAvg = player.getAverage();
         double oldObp = player.getObp();
         double oldSlg = player.getSlugging();
@@ -30,25 +25,21 @@ public class PlayerServiceOperations {
         calculateSlugging(player);
         calculateOPS(player);
 
-        if (hasStatChanged(player.getAverage(), oldAvg,
+        return hasStatChanged(player.getAverage(), oldAvg,
                 player.getObp(), oldObp,
                 player.getSlugging(), oldSlg,
-                player.getOps(), oldOps)) {
-            repo.save(player);
-        }
+                player.getOps(), oldOps);
     }
 
-    private static void updatePitcherStats(Pitcher pitcher, PitcherRepository repo) {
+    private static boolean updatePitcherStats(Pitcher pitcher) {
         double oldEra = pitcher.getEra();
         double oldWhip = pitcher.getWhip();
 
         calculateERA(pitcher);
         calculateWHIP(pitcher);
 
-        if (hasStatChanged(pitcher.getEra(), oldEra,
-                pitcher.getWhip(), oldWhip)) {
-            repo.save(pitcher);
-        }
+        return hasStatChanged(pitcher.getEra(), oldEra,
+                pitcher.getWhip(), oldWhip);
     }
 
     private static boolean hasStatChanged(double... values) {

@@ -56,7 +56,7 @@ class PlayerServiceOperationsTest {
         player.setSlugging(0.0);
         player.setOps(0.0);
 
-        PlayerServiceOperations.updatePlayerStats(player, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(player);
 
         double expectedAvg = truncate((double) PLAYER1_HITS / PLAYER1_AT_BATS);
         double expectedObp = truncate((double) (PLAYER1_HITS + PLAYER1_WALKS) / (PLAYER1_AT_BATS + PLAYER1_WALKS));
@@ -68,8 +68,6 @@ class PlayerServiceOperationsTest {
         assertThat(player.getObp()).isEqualTo(expectedObp);
         assertThat(player.getSlugging()).isEqualTo(expectedSlg);
         assertThat(player.getOps()).isEqualTo(expectedOps);
-
-        verify(this.positionPlayerRepository).save(player);
     }
 
     @Test
@@ -79,15 +77,13 @@ class PlayerServiceOperationsTest {
         pitcher.setEra(0.0);
         pitcher.setWhip(0.0);
 
-        PlayerServiceOperations.updatePlayerStats(pitcher, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(pitcher);
 
         double expectedEra = truncate((double) (PLAYER3_RUNS_ALLOWED * 9) / PLAYER3_INNINGS, 2);
         double expectedWhip = truncate((double) (PLAYER3_WALKS + PLAYER3_HITS_ALLOWED) / PLAYER3_INNINGS);
 
         assertThat(pitcher.getEra()).isEqualTo(expectedEra);
         assertThat(pitcher.getWhip()).isEqualTo(expectedWhip);
-
-        verify(this.pitcherRepository).save(pitcher);
     }
 
     @Test
@@ -106,7 +102,7 @@ class PlayerServiceOperationsTest {
         player.setSlugging(slg);
         player.setOps(ops);
 
-        PlayerServiceOperations.updatePlayerStats(player, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(player);
 
         verify(this.positionPlayerRepository, never()).save(any());
     }
@@ -122,7 +118,7 @@ class PlayerServiceOperationsTest {
         pitcher.setEra(era);
         pitcher.setWhip(whip);
 
-        PlayerServiceOperations.updatePlayerStats(pitcher, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(pitcher);
 
         verify(this.pitcherRepository, never()).save(any());
     }
@@ -132,7 +128,7 @@ class PlayerServiceOperationsTest {
     void testZeroStatsForEmptyPositionPlayer() {
         PositionPlayer player = new PositionPlayer("EmptyPlayer", this.teams.get(0), PlayerPositions.CF, 0, 0, 0, 0, 0, 0, 0);
 
-        PlayerServiceOperations.updatePlayerStats(player, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(player);
 
         assertThat(player.getAverage()).isEqualTo(0.0);
         assertThat(player.getObp()).isEqualTo(0.0);
@@ -145,7 +141,7 @@ class PlayerServiceOperationsTest {
     void testZeroStatsForEmptyPitcher() {
         Pitcher pitcher = new Pitcher("EmptyPitcher", this.teams.get(1), PitcherPositions.SP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-        PlayerServiceOperations.updatePlayerStats(pitcher, this.positionPlayerRepository, this.pitcherRepository);
+        PlayerServiceOperations.updatePlayerStats(pitcher);
 
         assertThat(pitcher.getEra()).isEqualTo(0.0);
         assertThat(pitcher.getWhip()).isEqualTo(0.0);
