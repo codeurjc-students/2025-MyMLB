@@ -52,16 +52,17 @@ describe('Navbar Component E2E Tests', () => {
 	});
 
 	it('shows avatar and navigates to profile', () => {
-		cy.get('img[alt="Avatar Profile"]')
-			.should('be.visible')
-			.parent('a')
-			.should('have.attr', 'href', '/profile')
-			.invoke('attr', 'href')
-			.then((href) => {
-				cy.visit(href!);
-				cy.url().should('include', '/profile');
-			});
-	});
+        cy.get('img[alt="Avatar Profile"]')
+            .should('be.visible')
+            .parent('a')
+            .should('have.attr', 'href', '/profile')
+            .invoke('attr', 'href')
+            .then((href) => {
+                cy.visit(href!);
+                cy.wait(500);
+                cy.url().should('include', '/profile');
+            });
+    });
 
 	describe('NavbarComponent as GUEST', () => {
 		beforeEach(() => {
