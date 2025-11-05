@@ -109,7 +109,7 @@
 
 		<!-- Stats Section -->
 		<section class="w-full max-w-6xl">
-			<app-stats-panel [teamStats]="true" [team]="team" [teamRank]="teamRank"></app-stats-panel>
+			<app-stats-panel id="team-stats" [teamStats]="true" [team]="team" [teamRank]="teamRank"></app-stats-panel>
 		</section>
 
 		<!-- Position Players Section -->
@@ -157,7 +157,7 @@
 		@if (selectedPlayer) {
 			<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
 				<div class="w-full max-w-6xl">
-					<app-stats-panel [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
+					<app-stats-panel id="player-stats" [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
 				</div>
 			</div>
 		}
