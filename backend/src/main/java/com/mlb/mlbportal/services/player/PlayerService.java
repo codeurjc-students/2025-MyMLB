@@ -87,7 +87,7 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
-    @Transactional
+    
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
@@ -96,7 +96,6 @@ public class PlayerService {
         return players;
     }
 
-    @Transactional
     public List<Pitcher> getUpdatedPitchersOfTeam(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
@@ -105,6 +104,7 @@ public class PlayerService {
         return pitchers;
     }
 
+    @Transactional
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
         List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(teamName);
 
@@ -118,6 +118,7 @@ public class PlayerService {
         return new PageImpl<>(result, pageable, players.size());
     }
 
+    @Transactional
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
         List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(teamName);
 
