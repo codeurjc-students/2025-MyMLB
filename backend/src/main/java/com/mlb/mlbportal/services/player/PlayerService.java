@@ -87,6 +87,7 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
+    @Transactional
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
 
@@ -94,6 +95,7 @@ public class PlayerService {
         return players;
     }
 
+    @Transactional
     public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
 
