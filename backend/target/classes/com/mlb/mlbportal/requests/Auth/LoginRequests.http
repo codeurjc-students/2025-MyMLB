@@ -1,0 +1,53 @@
+### Login
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "fonssi29",
+    "password": "pollitoPio"
+}
+
+### Login with new user
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "test1",
+    "password": "hola"
+}
+
+### Login
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "prueba",
+    "password": "34"
+}
+
+### Login with wrong password
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "fonssi29",
+    "password": "hkasjas"
+}
+
+### Login with wrong username
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "hola",
+    "password": "123"
+}
+
+### Login with invalid fields
+POST https://localhost:8443/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "",
+    "password": "123"
+}
