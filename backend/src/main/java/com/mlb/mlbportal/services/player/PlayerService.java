@@ -27,6 +27,7 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -103,6 +104,7 @@ public class PlayerService {
         return pitchers;
     }
 
+    @Transactional
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
         List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(teamName);
 
@@ -116,6 +118,7 @@ public class PlayerService {
         return new PageImpl<>(result, pageable, players.size());
     }
 
+    @Transactional
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
         List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(teamName);
 
