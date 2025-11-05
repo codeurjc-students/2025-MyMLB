@@ -55,13 +55,9 @@ describe('Navbar Component E2E Tests', () => {
         cy.get('img[alt="Avatar Profile"]')
             .should('be.visible')
             .parent('a')
-            .should('have.attr', 'href', '/profile')
-            .invoke('attr', 'href')
-            .then((href) => {
-                cy.visit(href!);
-                cy.wait(500);
-                cy.url().should('include', '/profile');
-            });
+            .should('have.attr', 'href', '/profile').click();
+
+			cy.url().should('include', '/profile');
     });
 
 	describe('NavbarComponent as GUEST', () => {
