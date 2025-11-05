@@ -134,8 +134,8 @@ class TeamServiceTest {
         List<PositionPlayer> mockPositionPlayers = BuildMocksFactory.buildPositionPlayers(List.of(team1, team2, team3));
         List<Pitcher> mockPitchers = BuildMocksFactory.buildPitchers(List.of(team1, team2, team3));
 
-        when(this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME)).thenReturn(mockPositionPlayers);
-        when(this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM1_NAME)).thenReturn(mockPitchers);
+        when(this.playerService.getUpdatedPositionPlayersOfTeam(team1)).thenReturn(mockPositionPlayers);
+        when(this.playerService.getUpdatedPitchersOfTeam(team1)).thenReturn(mockPitchers);
 
         TeamInfoDTO expected = this.mockTeamInfoDTOs.get(0);
         when(this.teamMapper.toTeamInfoDTO(team1)).thenReturn(expected);

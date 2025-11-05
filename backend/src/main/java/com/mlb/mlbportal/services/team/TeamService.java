@@ -20,6 +20,7 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.player.PlayerService;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -43,12 +44,13 @@ public class TeamService {
         return this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
     }
 
+    @Transactional
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
         
-        List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(teamName);
-        List<Pitcher> pitchers = this.playerService.getUpdatedPitchersOfTeam(teamName);
+        List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);
+        List<Pitcher> pitchers = this.playerService.getUpdatedPitchersOfTeam(team);
 
         positionPlayers.forEach(p -> p.setTeam(team));
         pitchers.forEach(p -> p.setTeam(team));

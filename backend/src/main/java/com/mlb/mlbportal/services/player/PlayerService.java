@@ -87,17 +87,14 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
-    
-    public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(String teamName) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+    public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
 
         players.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
         return players;
     }
 
-    public List<Pitcher> getUpdatedPitchersOfTeam(String teamName) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+    public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
 
         pitchers.forEach(p -> PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));
@@ -106,7 +103,8 @@ public class PlayerService {
 
     @Transactional
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-        List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(teamName);
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(team);
 
         Pageable pageable = PageRequest.of(page, size);
         int start = Math.min((int) pageable.getOffset(), players.size());
@@ -120,7 +118,8 @@ public class PlayerService {
 
     @Transactional
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
-        List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(teamName);
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(team);
 
         Pageable pageable = PageRequest.of(page, size);
         int start = Math.min((int) pageable.getOffset(), pitchers.size());

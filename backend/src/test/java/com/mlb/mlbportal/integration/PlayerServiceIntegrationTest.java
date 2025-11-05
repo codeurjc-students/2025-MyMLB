@@ -60,6 +60,7 @@ class PlayerServiceIntegrationTest {
 
     private List<PositionPlayer> positionPlayers;
     private List<Pitcher> pitchers;
+    private List<Team> teams;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -69,7 +70,7 @@ class PlayerServiceIntegrationTest {
         this.pitcherRepository.deleteAll();
         this.teamRepository.deleteAll();
 
-        List<Team> teams = BuildMocksFactory.setUpTeamMocks();
+        teams = BuildMocksFactory.setUpTeamMocks();
         this.teamRepository.saveAll(teams);
 
         this.positionPlayers = BuildMocksFactory.buildPositionPlayers(teams);
@@ -154,7 +155,7 @@ class PlayerServiceIntegrationTest {
     @Test
     @DisplayName("Should return updated position players of a team sorted by name")
     void testGetUpdatedPositionPlayersOfTeam() {
-        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME);
+        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(this.teams.get(0));
 
         assertThat(result).hasSize(2);
         assertThat(result).extracting(PositionPlayer::getName)
@@ -165,7 +166,7 @@ class PlayerServiceIntegrationTest {
     @Test
     @DisplayName("Should return updated pitchers of a team sorted by name")
     void testGetUpdatedPitchersOfTeam() {
-        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME);
+        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(this.teams.get(1));
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo(PLAYER3_NAME);

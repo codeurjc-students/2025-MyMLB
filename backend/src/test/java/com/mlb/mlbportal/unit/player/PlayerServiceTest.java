@@ -179,10 +179,9 @@ class PlayerServiceTest {
     @DisplayName("Should return updated position players of a known team")
     void testGetUpdatedPositionPlayersOfTeam() {
         Team team = this.teams.get(0);
-        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
 
-        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME);
+        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(this.teams.get(0));
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
@@ -190,37 +189,16 @@ class PlayerServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw TeamNotFoundException when getting updated position players of unknown team")
-    void testGetUpdatedPositionPlayersOfUnknownTeam() {
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> this.playerService.getUpdatedPositionPlayersOfTeam(TEST_TEAM1_NAME))
-                .isInstanceOf(TeamNotFoundException.class)
-                .hasMessageContaining("Team Not Found");
-    }
-
-    @Test
     @DisplayName("Should return updated pitchers of a known team")
     void testGetUpdatedPitchersOfTeam() {
         Team team = this.teams.get(1);
-        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
 
-        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME);
+        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(this.teams.get(1));
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
         assertThat(result.get(0).getName()).isEqualTo(PLAYER3_NAME);
-    }
-
-    @Test
-    @DisplayName("Should throw TeamNotFoundException when getting updated pitchers of unknown team")
-    void testGetUpdatedPitchersOfUnknownTeam() {
-        when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> this.playerService.getUpdatedPitchersOfTeam(TEST_TEAM2_NAME))
-                .isInstanceOf(TeamNotFoundException.class)
-                .hasMessageContaining("Team Not Found");
     }
 
     @Test
