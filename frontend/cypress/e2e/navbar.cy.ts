@@ -35,7 +35,9 @@ describe('Navbar Component E2E Tests', () => {
 	});
 
 	it('should display the dropdown menu when hover over "Teams"', () => {
-		cy.get('li.group').contains(/^Teams$/).trigger('mouseover');
+		cy.get('li.group')
+			.contains(/^Teams$/)
+			.trigger('mouseover');
 		cy.get('app-dropdown-menu').should('exist');
 	});
 
@@ -57,8 +59,8 @@ describe('Navbar Component E2E Tests', () => {
 			.invoke('attr', 'href')
 			.then((href) => {
 				cy.visit(href!);
+				cy.url().should('include', '/profile');
 			});
-		cy.url().should('include', '/profile');
 	});
 
 	describe('NavbarComponent as GUEST', () => {
