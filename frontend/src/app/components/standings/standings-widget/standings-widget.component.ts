@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TeamService, StandingsResponse } from '../../../services/team.service';
 import { StandingsData } from '../../../models/standings-data.model';
 import { CommonModule } from '@angular/common';
-import { Team } from '../../../models/team-model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 
 @Component({
     selector: 'app-standings',
     standalone: true,
 	imports: [CommonModule],
+	changeDetection: ChangeDetectionStrategy.Default,
     templateUrl: './standings-widget.component.html',
 })
 export class StandingsWidgetComponent implements OnInit {
@@ -46,7 +46,7 @@ export class StandingsWidgetComponent implements OnInit {
         this.currentIndex = (this.currentIndex + 1) % this.standings.length;
     }
 
-	public getBackgroundColor(team: Team) {
-		return this.backgroundService.getBackgroundColor(team);
+	public getBackgroundColor(abbreviation: string) {
+		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 }

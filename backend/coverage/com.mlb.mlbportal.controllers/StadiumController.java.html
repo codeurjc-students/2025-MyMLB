@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StadiumController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">StadiumController.java</span></div><h1>StadiumController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.services.StadiumService;
+
+import lombok.AllArgsConstructor;
+
+@Tag(name = &quot;Stadiums&quot;, description = &quot;Operations related to MLB stadiums&quot;)
+@RestController
+@RequestMapping(&quot;/api/stadiums&quot;)
+@AllArgsConstructor
+public class StadiumController {
+    private final StadiumService stadiumService;
+
+    @Operation(summary = &quot;Get all stadiums&quot;, description = &quot;Returns a list of all MLB stadiums with basic information such as name, location, and capacity.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of stadiums&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumInitDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;StadiumInitDTO&gt;&gt; getAllStadiums() {
+<span class="fc" id="L37">        List&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllStadiums();</span>
+<span class="fc" id="L38">        return ResponseEntity.ok(response);</span>
+    }
+
+    @Operation(summary = &quot;Get stadium by name&quot;, description = &quot;Returns basic information about a specific MLB stadium identified by its name.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved stadium info&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumInitDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{name}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;StadiumInitDTO&gt; getStadiumByName(@PathVariable(&quot;name&quot;) String name) {
+<span class="fc" id="L49">        return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

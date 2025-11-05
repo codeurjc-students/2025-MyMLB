@@ -1,6 +1,6 @@
-import { Team } from "./team-model";
+import { Team } from "./team.model";
 
-export interface StandingsData {
+export type StandingsData =  {
 	league: string,
 	division: string,
 	teams: Team[]

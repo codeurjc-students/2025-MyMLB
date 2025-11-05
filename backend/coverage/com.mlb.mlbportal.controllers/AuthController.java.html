@@ -31,21 +31,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
+@Tag(name = &quot;Authentication&quot;, description = &quot;Endpoints related to user authentication&quot;)
 @RestController
 @RequestMapping(&quot;/api/auth&quot;)
-@Tag(name = &quot;Authentication&quot;, description = &quot;Endpoints related to user authentication&quot;)
+@AllArgsConstructor
 public class AuthController {
-
     private final UserLoginService userLoginService;
     private final UserService userService;
     private final EmailService emailService;
-
-<span class="fc" id="L44">    public AuthController(UserLoginService userLoginService, UserService userService, EmailService emailService) {</span>
-<span class="fc" id="L45">        this.userLoginService = userLoginService;</span>
-<span class="fc" id="L46">        this.userService = userService;</span>
-<span class="fc" id="L47">        this.emailService = emailService;</span>
-<span class="fc" id="L48">    }</span>
 
     @Operation(summary = &quot;Get the active user&quot;, description = &quot;Obtain details of the currently authenticated user.&quot;, responses = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User successfully authenticated&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = UserRole.class), examples = @ExampleObject(value = &quot;{\&quot;username\&quot;:\&quot;johndoe\&quot;,\&quot;roles\&quot;:[\&quot;USER\&quot;]}&quot;))),
@@ -53,10 +48,10 @@ public class AuthController {
     })
     @GetMapping(&quot;/me&quot;)
     public ResponseEntity&lt;UserRole&gt; getActiveUser(Principal principal) {
-<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (principal == null) {</span>
-<span class="nc" id="L57">            throw new AuthenticationCredentialsNotFoundException(&quot;User Not Authenticated&quot;);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (principal == null) {</span>
+<span class="fc" id="L52">            throw new AuthenticationCredentialsNotFoundException(&quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L59">        return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));</span>
+<span class="fc" id="L54">        return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));</span>
     }
 
     @Operation(summary = &quot;User login&quot;, description = &quot;Authenticates the user and returns JWT tokens (access and refresh).&quot;, responses = {
@@ -66,7 +61,7 @@ public class AuthController {
     @PostMapping(&quot;/login&quot;)
     public ResponseEntity&lt;AuthResponse&gt; login(@Valid @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
-<span class="fc" id="L69">        return this.userLoginService.login(response, loginRequest);</span>
+<span class="fc" id="L64">        return this.userLoginService.login(response, loginRequest);</span>
     }
 
     @Operation(summary = &quot;Register new user&quot;, description = &quot;Creates a new user account in the system.&quot;, responses = {
@@ -76,8 +71,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/register&quot;)
     public ResponseEntity&lt;AuthResponse&gt; register(@Valid @RequestBody RegisterRequest registerRequest) {
-<span class="fc" id="L79">        this.userService.createUser(registerRequest);</span>
-<span class="fc" id="L80">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
+<span class="fc" id="L74">        this.userService.createUser(registerRequest);</span>
+<span class="fc" id="L75">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Refresh JWT token&quot;, description = &quot;Generates new JWT tokens using the refresh token stored in cookies.&quot;, responses = {
@@ -88,7 +83,7 @@ public class AuthController {
     public ResponseEntity&lt;AuthResponse&gt; refreshToken(
             @Parameter(description = &quot;Refresh token (from cookie named RefreshToken)&quot;) @CookieValue(name = &quot;RefreshToken&quot;, required = false) String refreshToken,
             HttpServletResponse response) {
-<span class="nc" id="L91">        return userLoginService.refresh(response, refreshToken);</span>
+<span class="nc" id="L86">        return userLoginService.refresh(response, refreshToken);</span>
     }
 
     @Operation(summary = &quot;User logout&quot;, description = &quot;Clears authentication cookies and invalidates session tokens.&quot;, responses = {
@@ -96,7 +91,7 @@ public class AuthController {
     })
     @PostMapping(&quot;/logout&quot;)
     public ResponseEntity&lt;AuthResponse&gt; logOut(HttpServletResponse response) {
-<span class="nc" id="L99">        return this.userLoginService.logout(response);</span>
+<span class="fc" id="L94">        return this.userLoginService.logout(response);</span>
     }
 
     @Operation(summary = &quot;Request password recovery&quot;, description = &quot;Sends a recovery email to the user containing a reset link or verification code.&quot;, responses = {
@@ -106,8 +101,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/forgot-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-<span class="fc" id="L109">        this.emailService.sendEmail(request.email());</span>
-<span class="fc" id="L110">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
+<span class="fc" id="L104">        this.emailService.sendEmail(request.email());</span>
+<span class="fc" id="L105">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Reset user password&quot;, description = &quot;Allows the user to set a new password using a valid recovery code.&quot;, responses = {
@@ -116,11 +111,11 @@ public class AuthController {
     })
     @PostMapping(&quot;/reset-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-<span class="fc" id="L119">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
-<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (success) {</span>
-<span class="fc" id="L121">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
+<span class="fc" id="L114">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (success) {</span>
+<span class="fc" id="L116">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
         }
-<span class="fc" id="L123">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
+<span class="fc" id="L118">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

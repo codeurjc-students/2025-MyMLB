@@ -7,30 +7,44 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInitDTO;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.repositories.player.PitcherRepository;
+import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class InitController {
 
     private final UserRepository userRepository;
@@ -38,6 +52,9 @@ public class InitController {
 
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
+    private final StadiumRepository stadiumRepository;
+    private final PositionPlayerRepository positionPlayerRepository;
+    private final PitcherRepository pitcherRepository;
 
     private static final Random RANDOM = new Random();
 
@@ -47,19 +64,13 @@ public class InitController {
     @Value("${init.user2.password}")
     private String arminPassword;
 
-    public InitController(UserRepository userRepository, PasswordEncoder passsEncoder, TeamRepository teamRepo, MatchRepository matchRepo) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passsEncoder;
-
-        this.teamRepository = teamRepo;
-        this.matchRepository = matchRepo;
-    }
-
     @PostConstruct
     public void init() {
         this.createAdmins();
         this.setUpTeams();
+        this.setUpStadiums();
         this.setUpMatches();
+        this.setUpPlayers();
     }
 
     private void createAdmins() {
@@ -77,6 +88,7 @@ public class InitController {
 
     private void setUpTeams() {
         ObjectMapper mapper = new ObjectMapper();
+
         try (InputStream input = getClass().getResourceAsStream("/data/teams-2025.json")) {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);
 
@@ -84,14 +96,25 @@ public class InitController {
                 .map(dto -> {
                     League league = League.valueOf(dto.league().toUpperCase());
                     Division division = Division.valueOf(dto.division().toUpperCase());
-                    String logo = dto.abbreviation() + ".png";
 
-                    Team team = new Team(dto.name(), dto.abbreviation(), dto.wins(), dto.losses(), league, division, logo);
+                    Team team = new Team(
+                        dto.name(),
+                        dto.abbreviation(),
+                        dto.wins(),
+                        dto.losses(),
+                        dto.city(),
+                        dto.generalInfo(),
+                        dto.championships() != null ? dto.championships() : List.of(),
+                        league,
+                        division
+                    );
+
                     int totalGames = dto.wins() + dto.losses();
                     team.setTotalGames(totalGames);
                     team.setPct((double) dto.wins() / totalGames);
                     team.setGamesBehind(0);
                     team.setLastTen("0-0");
+                    team.setTeamLogo(dto.abbreviation() + ".png");
 
                     return team;
                 })
@@ -189,5 +212,106 @@ public class InitController {
             team.getAwayMatches().addAll(matches.stream().filter(m -> m.getAwayTeam().equals(team)).toList());
         }
         this.teamRepository.saveAll(allTeams);
+    }
+
+    private void setUpStadiums() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try (InputStream input = getClass().getResourceAsStream("/data/stadiums-2025.json")) {
+            StadiumInitDTO[] stadiumDtos = mapper.readValue(input, StadiumInitDTO[].class);
+
+            List<Team> allTeams = teamRepository.findAll();
+            List<Stadium> stadiums = new ArrayList<>();
+
+            for (StadiumInitDTO dto : stadiumDtos) {
+                Team team = allTeams.stream()
+                    .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
+                    .findFirst()
+                    .orElse(null);
+
+                Stadium stadium = new Stadium(dto.name(), dto.openingDate(), team);
+
+                if (team != null) {
+                    team.setStadium(stadium);
+                }
+
+                stadiums.add(stadium);
+            }
+            this.stadiumRepository.saveAll(stadiums);
+            this.teamRepository.saveAll(allTeams);
+
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error loading stadium data from JSON", e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setUpPlayers() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try (InputStream input = getClass().getResourceAsStream("/data/players-2025.json")) {
+            List<Map<String, Object>> rawPlayers = mapper.readValue(input, List.class);
+            List<Team> allTeams = teamRepository.findAll();
+
+            Map<String, Team> teamMap = allTeams.stream()
+                .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
+
+            Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
+            Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
+
+            for (Map<String, Object> raw : rawPlayers) {
+                String type = (String) raw.get("type");
+                String name = (String) raw.get("name");
+                String teamName = ((String) raw.get("teamName")).toLowerCase();
+
+                Team team = teamMap.get(teamName);
+                if (team == null) continue;
+
+                if ("Pitcher".equalsIgnoreCase(type)) {
+                    Pitcher pitcher = new Pitcher(
+                        name,
+                        team,
+                        PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
+                        ((Number) raw.get("games")).intValue(),
+                        ((Number) raw.get("wins")).intValue(),
+                        ((Number) raw.get("losses")).intValue(),
+                        ((Number) raw.get("inningsPitched")).intValue(),
+                        ((Number) raw.get("totalStrikeouts")).intValue(),
+                        ((Number) raw.get("walks")).intValue(),
+                        ((Number) raw.get("hitsAllowed")).intValue(),
+                        ((Number) raw.get("runsAllowed")).intValue(),
+                        ((Number) raw.get("saves")).intValue(),
+                        ((Number) raw.get("saveOpportunities")).intValue()
+                    );
+                    pitchersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(pitcher);
+                } else {
+                    PositionPlayer player = new PositionPlayer(
+                        name,
+                        team,
+                        PlayerPositions.fromLabel((String) raw.get("position")),
+                        ((Number) raw.get("atBats")).intValue(),
+                        ((Number) raw.get("walks")).intValue(),
+                        ((Number) raw.get("hits")).intValue(),
+                        ((Number) raw.get("doubles")).intValue(),
+                        ((Number) raw.get("triples")).intValue(),
+                        ((Number) raw.get("homeRuns")).intValue(),
+                        ((Number) raw.get("rbis")).intValue()
+                    );
+                    positionPlayersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(player);
+                }
+            }
+
+            for (Team team : allTeams) {
+                List<PositionPlayer> positionPlayers = positionPlayersByTeam.getOrDefault(team, List.of());
+                List<Pitcher> pitchers = pitchersByTeam.getOrDefault(team, List.of());
+
+                team.setPositionPlayers(positionPlayers);
+                team.setPitchers(pitchers);
+            }
+            teamRepository.saveAll(allTeams);
+
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error loading players data", e);
+        }
     }
 }

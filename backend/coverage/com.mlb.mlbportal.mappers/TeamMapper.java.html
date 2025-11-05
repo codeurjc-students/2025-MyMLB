@@ -9,12 +9,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
-@Mapper(componentModel = &quot;spring&quot;)
+@Mapper(componentModel = &quot;spring&quot;, uses = StadiumMapper.class)
 public interface TeamMapper {
     TeamDTO toTeamDTO(Team team);
 
@@ -22,13 +23,13 @@ public interface TeamMapper {
 
     default Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; toGroupedStandings(
             Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
-<span class="nc" id="L25">        return groupedTeams.entrySet().stream()</span>
-<span class="nc" id="L26">                .collect(Collectors.toMap(</span>
-                        Map.Entry::getKey,
-<span class="nc" id="L28">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
-<span class="nc" id="L29">                                .collect(Collectors.toMap(</span>
-                                        Map.Entry::getKey,
-<span class="nc" id="L31">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
+<span class="nc" id="L26">        return groupedTeams.entrySet().stream()</span>
+<span class="nc" id="L27">                .collect(Collectors.toMap(</span>
+<span class="nc" id="L28">                        Map.Entry::getKey,</span>
+<span class="nc" id="L29">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
+<span class="nc" id="L30">                                .collect(Collectors.toMap(</span>
+<span class="nc" id="L31">                                        Map.Entry::getKey,</span>
+<span class="nc" id="L32">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
     }
 
     @Mapping(target = &quot;id&quot;, ignore = true)
@@ -37,5 +38,12 @@ public interface TeamMapper {
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
 
     TeamSummary toTeamSummaryDTO(Team team);
+
+    @Mapping(target = &quot;teamDTO&quot;, source = &quot;team&quot;)
+    @Mapping(target = &quot;positionPlayers&quot;, source = &quot;positionPlayers&quot;) // MapStruct mapea las colecciones
+    @Mapping(target = &quot;pitchers&quot;, source = &quot;pitchers&quot;)
+    TeamInfoDTO toTeamInfoDTO(Team team);
+
+    List&lt;TeamInfoDTO&gt; toTeamInfoDTOList(List&lt;Team&gt; teamList);
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

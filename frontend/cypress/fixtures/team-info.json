@@ -1,0 +1,55 @@
+{
+    "teamStats": {
+        "name": "New York Yankees",
+        "abbreviation": "NYY",
+        "league": "AL",
+        "division": "East",
+        "totalGames": 162,
+        "wins": 95,
+        "losses": 67,
+        "pct": 0.586,
+        "gamesBehind": 2.0,
+        "lastTen": "6-4"
+    },
+	"city": "New York",
+	"generalInfo": "Information",
+	"championships": [2010],
+	"stadium": {
+		"name": "Yankee Stadium",
+		"openingDate": 2009
+	},
+	"positionPlayers": [
+		{
+			"name": "Aaron Judge",
+			"position": "RF",
+			"atBats": 120,
+			"walks": 20,
+			"hits": 40,
+			"doubles": 10,
+			"triples": 0,
+			"homeRuns": 10,
+			"rbis": 21,
+			"obp": 0.566,
+			"ops": 1.013,
+			"slugging": 1.00
+		}
+	],
+	"pitchers": [
+		{
+			"name": "Gerrit Cole",
+			"position": "SP",
+			"games": 10,
+			"wins": 6,
+			"losses": 1,
+			"era": 1.45,
+			"inningsPitched": 53.1,
+			"totalStrikeouts": 43,
+			"walks": 5,
+			"hitsAllowed": 10,
+			"runsAllowed": 1,
+			"whip": 1.10,
+			"saves": 0,
+			"saveOpportunities": 0
+		}
+	]
+}

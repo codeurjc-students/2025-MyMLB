@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "init.user1.password",
+      "type": "java.lang.String",
+      "description": "Password of the user1 account"
+    },
+    {
+      "name": "init.user2.password",
+      "type": "java.lang.String",
+      "description": "Password of the user2 account"
+    }
+  ]
+}

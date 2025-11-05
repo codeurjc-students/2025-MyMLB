@@ -19,17 +19,14 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
     private final Clock clock;
-
-    public MatchService(MatchRepository matchRepo, MatchMapper mapper, Clock clock) {
-        this.matchRepository = matchRepo;
-        this.matchMapper = mapper;
-        this.clock = clock;
-    }
 
     public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
         LocalDate today = LocalDate.now(this.clock);

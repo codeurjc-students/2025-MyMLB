@@ -12,11 +12,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -37,8 +39,6 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-<span class="fc" id="L40">    public Match() {}</span>
-
 <span class="fc" id="L42">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
 <span class="fc" id="L43">        this.homeTeam = homeTeam;</span>
 <span class="fc" id="L44">        this.awayTeam = awayTeam;</span>
@@ -48,4 +48,4 @@ public class Match {
 <span class="fc" id="L48">        this.status = status;</span>
 <span class="fc" id="L49">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

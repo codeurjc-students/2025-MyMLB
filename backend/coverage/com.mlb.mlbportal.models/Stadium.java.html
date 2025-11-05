@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Stadium.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.models</a> &gt; <span class="el_source">Stadium.java</span></div><h1>Stadium.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.models;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreRemove;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@Setter
+public class Stadium {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    private String name;
+
+    private int openingDate;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+<span class="pc" id="L32">    private List&lt;String&gt; pictures = new ArrayList&lt;&gt;();</span>
+
+    @OneToOne(mappedBy = &quot;stadium&quot;)
+    private Team team;
+
+    @PreRemove
+    public void preRemove() {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (team != null) {</span>
+<span class="fc" id="L40">            team.setStadium(null);</span>
+        }
+<span class="fc" id="L42">    }</span>
+
+<span class="nc" id="L44">    public Stadium(String name, int openingDate, List&lt;String&gt; pictures, Team team) {</span>
+<span class="nc" id="L45">        this.name = name;</span>
+<span class="nc" id="L46">        this.openingDate = openingDate;</span>
+<span class="nc" id="L47">        this.pictures = pictures;</span>
+<span class="nc" id="L48">        this.team = team;</span>
+<span class="nc" id="L49">    }</span>
+
+<span class="fc" id="L51">    public Stadium(String name, int openingDate, Team team) {</span>
+<span class="fc" id="L52">        this.name = name;</span>
+<span class="fc" id="L53">        this.openingDate = openingDate;</span>
+<span class="fc" id="L54">        this.team = team;</span>
+<span class="fc" id="L55">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

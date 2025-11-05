@@ -34,6 +34,13 @@ describe('Navbar Component E2E Tests', () => {
 		cy.contains('Edit Info').should('not.exist');
 	});
 
+	it('should display the dropdown menu when hover over "Teams"', () => {
+		cy.get('li.group')
+			.contains(/^Teams$/)
+			.trigger('mouseover');
+		cy.get('app-dropdown-menu').should('exist');
+	});
+
 	it('does not show login/signup when authenticated', () => {
 		cy.contains('Login').should('not.exist');
 		cy.contains('Sign Up').should('not.exist');
@@ -45,16 +52,13 @@ describe('Navbar Component E2E Tests', () => {
 	});
 
 	it('shows avatar and navigates to profile', () => {
-		cy.get('img[alt="Avatar Profile"]')
-			.should('be.visible')
-			.parent('a')
-			.should('have.attr', 'href', '/profile')
-			.invoke('attr', 'href')
-			.then((href) => {
-				cy.visit(href!);
-			});
-		cy.url().should('include', '/profile');
-	});
+        cy.get('img[alt="Avatar Profile"]')
+            .should('be.visible')
+            .parent('a')
+            .should('have.attr', 'href', '/profile').click();
+
+			cy.url().should('include', '/profile');
+    });
 
 	describe('NavbarComponent as GUEST', () => {
 		beforeEach(() => {

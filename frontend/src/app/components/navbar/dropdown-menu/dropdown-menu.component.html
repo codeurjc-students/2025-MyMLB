@@ -1,0 +1,20 @@
+<div class="dropdown-container">
+	<ul class="max-h-48 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownTeamsButton">
+		@for (team of teams; track team.abbreviation) {
+			@if (errorMessage) {
+				<p>{{ errorMessage }}</p>
+			}
+			<li>
+				<a (click)="selectTeam(team.name)" class="dropdown-cell">
+					<div class="dropdown-team-logo-container cursor-pointer" [ngClass]="loadBackgroundColor(team.abbreviation)">
+						<img [src]="'assets/team-logos-new/' + team.league + '/' + team.division + '/' + team.abbreviation + '.png'"
+							[alt]="team.name + ' logo'"
+							class="w-5 h-5 object-contain"
+						/>
+					</div>
+					<span class="whitespace-nowrap">{{ team.name }}</span>
+				</a>
+			</li>
+		}
+	</ul>
+</div>

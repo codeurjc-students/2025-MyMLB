@@ -1,0 +1,214 @@
+<section class="team-section-container" [ngClass]="{
+	'relative transform transition-all animate-scaleIn': !teamStats
+}">
+
+	@if (teamStats) {
+		<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
+			Season Statistics
+		</h2>
+	}
+
+	@if (!teamStats) {
+		<button id="close-button"
+			class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 cursor-pointer hover:text-red-500 text-xl"
+			(click)="closePanel()"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            	<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          	</svg>
+		</button>
+	}
+
+	<div class="flex flex-col md:flex-row items-start gap-x-20">
+
+		<!-- Rank if teamStats / player picture else-->
+		@if (teamStats) {
+			<div class="flex flex-col items-center justify-start mt-7 min-w-[100px]">
+				<p id="rank"
+					class="text-9xl font-extrabold shimmer-number"
+					[ngClass]="{
+						'rank-gold': teamRank === 1,
+						'rank-silver': teamRank === 2,
+						'rank-bronze': teamRank === 3,
+						'rank-neutral': teamRank >= 4
+					}"
+				>
+					{{ teamRank }}
+				</p>
+				<p class="text-sm uppercase tracking-wide mt-2 text-blue-800 dark:text-gray-300">
+					Rank
+				</p>
+			</div>
+		}
+		@else {
+			<div class="flex flex-col items-center justify-center mt-7 min-w-[160px] text-center">
+				<img
+					src="assets/judge.png"
+					alt="{{ player.name }}"
+					class="w-40 h-40 rounded-full object-cover mb-4 shadow-lg"
+				/>
+				<p class="text-2xl uppercase tracking-wide text-blue-800 dark:text-gray-300">
+					{{ player.name }}
+				</p>
+			</div>
+		}
+
+		<!-- Stats Panel -->
+		<div class="grid grid-cols-2 md:grid-cols-3 gap-8 w-full items-center ml-11">
+			@if (teamStats) {
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Abbreviation</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.abbreviation }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">League</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.league }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Division</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.division }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Total Games</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.totalGames }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Wins</p>
+					<p class="text-xl font-bold text-green-600 dark:text-green-400">
+						{{ team?.teamStats?.wins }}
+					</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Losses</p>
+					<p class="text-xl font-bold text-red-600 dark:text-red-400">
+						{{ team?.teamStats?.losses }}
+					</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">PCT</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.pct }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Games Behind</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.gamesBehind }}</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">Last 10</p>
+					<p class="text-xl font-bold">{{ team?.teamStats?.lastTen }}</p>
+				</div>
+			}
+			@else {
+				@if (isPositionPlayer(player)) {
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Position</p>
+						<p class="text-xl font-bold">{{ player.position }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">At Bats</p>
+						<p class="text-xl font-bold">{{ player.atBats }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Walks</p>
+						<p class="text-xl font-bold">{{ player.walks }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Hits</p>
+						<p class="text-xl font-bold">{{ player.hits }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Doubles</p>
+						<p class="text-xl font-bold">
+							{{ player.doubles }}
+						</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Triples</p>
+						<p class="text-xl font-bold">
+							{{ player.triples }}
+						</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Home Runs</p>
+						<p class="text-xl font-bold">{{ player.homeRuns }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">RBIs</p>
+						<p class="text-xl font-bold">{{ player.rbis }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Average</p>
+						<p class="text-xl font-bold">{{ player.average }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">OBP</p>
+						<p class="text-xl font-bold">{{ player.obp }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">Slugging</p>
+						<p class="text-xl font-bold">{{ player.slugging }}</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500 dark:text-gray-400">OPS</p>
+						<p class="text-xl font-bold">{{ player.ops }}</p>
+					</div>
+				}
+				@else {
+					@if(isPitcher(player)) {
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Position</p>
+							<p class="text-xl font-bold">{{ player.position }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Games</p>
+							<p class="text-xl font-bold">{{ player.games }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Losses</p>
+							<p class="text-xl font-bold">{{ player.losses }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">ERA</p>
+							<p class="text-xl font-bold">{{ player.era }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Innings Pitched</p>
+							<p class="text-xl font-bold">
+								{{ player.inningsPitched }}
+							</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Strikeouts</p>
+							<p class="text-xl font-bold">
+								{{ player.totalStrikeouts }}
+							</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Walks</p>
+							<p class="text-xl font-bold">{{ player.walks }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Hits Allowed</p>
+							<p class="text-xl font-bold">{{ player.hitsAllowed }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Runs Allowed</p>
+							<p class="text-xl font-bold">{{ player.runsAllowed }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">WHIP</p>
+							<p class="text-xl font-bold">{{ player.whip }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Saves</p>
+							<p class="text-xl font-bold">{{ player.saves }}</p>
+						</div>
+						<div>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Saves Opportunities</p>
+							<p class="text-xl font-bold">{{ player.saveOpportunities }}</p>
+						</div>
+					}
+				}
+			}
+		</div>
+	</div>
+</section>

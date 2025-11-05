@@ -8,8 +8,8 @@ describe('Profile Component E2E Tests', () => {
 			statusCode: 200,
 			body: {
 				username: 'testUser',
-				roles: ['GUEST', 'USER']
-			}
+				roles: ['GUEST', 'USER'],
+			},
 		}).as('getActiveUser');
 
 		cy.visit('/');
@@ -19,10 +19,8 @@ describe('Profile Component E2E Tests', () => {
 			.should('be.visible')
 			.parent('a')
 			.should('have.attr', 'href', '/profile')
-			.invoke('attr', 'href')
-			.then((href) => {
-				cy.visit(href!);
-			});
+			.click();
+
 		cy.url().should('include', '/profile');
 	});
 
@@ -34,7 +32,10 @@ describe('Profile Component E2E Tests', () => {
 		it('should appear the confirmation modal after clicking on the button', () => {
 			cy.contains('button', 'Logout').click();
 			cy.contains('h2', 'Are you sure you want to log out?').should('be.visible');
-			cy.contains('p', 'You will be signed out of your account and will need to log in again to continue.').should('be.visible');
+			cy.contains(
+				'p',
+				'You will be signed out of your account and will need to log in again to continue.'
+			).should('be.visible');
 			cy.contains('button', 'Cancel').should('be.visible');
 			cy.contains('button', 'Yes, Logout').should('be.visible');
 		});
@@ -42,7 +43,10 @@ describe('Profile Component E2E Tests', () => {
 		it('should close the modal when clicking on the cancel button', () => {
 			cy.contains('button', 'Logout').click();
 			cy.contains('button', 'Cancel').click();
-			cy.contains('p', 'You will be signed out of your account and will need to log in again to continue.').should('not.exist');
+			cy.contains(
+				'p',
+				'You will be signed out of your account and will need to log in again to continue.'
+			).should('not.exist');
 			cy.contains('button', 'Cancel').should('not.exist');
 			cy.contains('button', 'Yes, Logout').should('not.exist');
 			cy.contains('button', 'Logout').should('be.visible');
@@ -53,8 +57,8 @@ describe('Profile Component E2E Tests', () => {
 				statusCode: 200,
 				body: {
 					status: 'SUCCESS',
-					message: 'Logout Successful'
-				}
+					message: 'Logout Successful',
+				},
 			}).as('logout');
 
 			cy.contains('button', 'Logout').click();
