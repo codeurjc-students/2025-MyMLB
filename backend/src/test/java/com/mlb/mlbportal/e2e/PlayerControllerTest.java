@@ -64,7 +64,7 @@ import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class PlayerControllerTest extends BaseE2ETest {
+class PlayerControllerTest extends BaseE2ETest {
 
     private Team team1, team2;
 

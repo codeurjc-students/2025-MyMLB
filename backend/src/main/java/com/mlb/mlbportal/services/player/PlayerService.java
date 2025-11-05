@@ -27,6 +27,7 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -86,6 +87,7 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
+    @Transactional
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
@@ -94,6 +96,7 @@ public class PlayerService {
         return players;
     }
 
+    @Transactional
     public List<Pitcher> getUpdatedPitchersOfTeam(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
