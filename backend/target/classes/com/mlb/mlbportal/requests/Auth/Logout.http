@@ -1,2 +1,0 @@
-### Logout the Authenticated User
-POST https://localhost:8443/api/auth/logout
