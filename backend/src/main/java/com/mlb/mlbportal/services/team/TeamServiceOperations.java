@@ -8,6 +8,8 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 
 public class TeamServiceOperations {
+
+    private TeamServiceOperations() {}
     
     public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
         recalculatePct(team);

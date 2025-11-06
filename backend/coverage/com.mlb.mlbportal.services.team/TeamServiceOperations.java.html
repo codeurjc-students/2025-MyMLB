@@ -7,58 +7,60 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 
-<span class="nc" id="L10">public class TeamServiceOperations {</span>
+public class TeamServiceOperations {
+
+    private TeamServiceOperations() {}
     
     public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
-<span class="fc" id="L13">        recalculatePct(team);</span>
-<span class="fc" id="L14">        calculateGamesBehind(team, teamRepository);</span>
-<span class="fc" id="L15">        calculateLast10Games(team, matchService);</span>
-<span class="fc" id="L16">        teamRepository.save(team);</span>
-<span class="fc" id="L17">    }</span>
+<span class="fc" id="L15">        recalculatePct(team);</span>
+<span class="fc" id="L16">        calculateGamesBehind(team, teamRepository);</span>
+<span class="fc" id="L17">        calculateLast10Games(team, matchService);</span>
+<span class="fc" id="L18">        teamRepository.save(team);</span>
+<span class="fc" id="L19">    }</span>
 
     private static void recalculatePct(Team team) {
-<span class="fc" id="L20">        int totalGames = team.getWins() + team.getLosses();</span>
-<span class="fc" id="L21">        team.setTotalGames(totalGames);</span>
-<span class="fc bfc" id="L22" title="All 2 branches covered.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
-<span class="fc" id="L23">        double truncatedPct = ((int) (pct * 1000)) / 1000.0;</span>
-<span class="fc" id="L24">        team.setPct(truncatedPct);</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L22">        int totalGames = team.getWins() + team.getLosses();</span>
+<span class="fc" id="L23">        team.setTotalGames(totalGames);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
+<span class="fc" id="L25">        double truncatedPct = ((int) (pct * 1000)) / 1000.0;</span>
+<span class="fc" id="L26">        team.setPct(truncatedPct);</span>
+<span class="fc" id="L27">    }</span>
 
     private static void calculateGamesBehind(Team team, TeamRepository teamRepository) {
-<span class="fc" id="L28">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
+<span class="fc" id="L30">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
 
-<span class="fc" id="L30">        divisionTeams.forEach(TeamServiceOperations::recalculatePct);</span>
+<span class="fc" id="L32">        divisionTeams.forEach(TeamServiceOperations::recalculatePct);</span>
 
-<span class="fc" id="L32">        divisionTeams.sort((a, b) -&gt; Double.compare(b.getPct(), a.getPct()));</span>
+<span class="fc" id="L34">        divisionTeams.sort((a, b) -&gt; Double.compare(b.getPct(), a.getPct()));</span>
 
-<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (divisionTeams.isEmpty())</span>
-<span class="fc" id="L35">            return;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (divisionTeams.isEmpty())</span>
+<span class="fc" id="L37">            return;</span>
 
-<span class="fc" id="L37">        Team leader = divisionTeams.get(0);</span>
-<span class="fc" id="L38">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
-<span class="fc" id="L39">        team.setGamesBehind(gamesBehind);</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L39">        Team leader = divisionTeams.get(0);</span>
+<span class="fc" id="L40">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
+<span class="fc" id="L41">        team.setGamesBehind(gamesBehind);</span>
+<span class="fc" id="L42">    }</span>
 
     private static void calculateLast10Games(Team team, MatchService matchService) {
-<span class="fc" id="L43">        List&lt;Match&gt; last10Matches = matchService.getLast10Matches(team);</span>
+<span class="fc" id="L45">        List&lt;Match&gt; last10Matches = matchService.getLast10Matches(team);</span>
         String matchesRecord;
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
-<span class="fc" id="L46">            matchesRecord = &quot;0-0&quot;;</span>
-<span class="fc" id="L47">        }</span>
-        else {
-<span class="fc" id="L49">            int numberOfWins = 0;</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
-<span class="fc" id="L51">                boolean isHomeTeam = team.equals(match.getHomeTeam());</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();</span>
-
-<span class="fc bfc" id="L55" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
-<span class="fc" id="L56">                    numberOfWins++;</span>
-                }
-            }
-<span class="fc" id="L59">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
+<span class="fc" id="L48">            matchesRecord = &quot;0-0&quot;;</span>
         }
-<span class="fc" id="L61">        team.setLastTen(matchesRecord);</span>
-<span class="fc" id="L62">    }</span>
+        else {
+<span class="fc" id="L51">            int numberOfWins = 0;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
+<span class="fc" id="L53">                boolean isHomeTeam = team.equals(match.getHomeTeam());</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
+<span class="fc" id="L58">                    numberOfWins++;</span>
+                }
+<span class="fc" id="L60">            }</span>
+<span class="fc" id="L61">            matchesRecord = numberOfWins + &quot; - &quot; + (last10Matches.size() - numberOfWins);</span>
+        }
+<span class="fc" id="L63">        team.setLastTen(matchesRecord);</span>
+<span class="fc" id="L64">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

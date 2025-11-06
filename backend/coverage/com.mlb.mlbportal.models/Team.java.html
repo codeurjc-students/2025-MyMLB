@@ -66,21 +66,21 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-<span class="fc" id="L70">    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L69">    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)</span>
+    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-<span class="fc" id="L73">    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L72">    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)</span>
+    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = &quot;stadium_id&quot;)
     private Stadium stadium;
 
-    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-<span class="fc" id="L80">    private List&lt;PositionPlayer&gt; positionPlayers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L79">    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span>
+    private List&lt;PositionPlayer&gt; positionPlayers = new ArrayList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-<span class="fc" id="L83">    private List&lt;Pitcher&gt; pitchers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L82">    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span>
+    private List&lt;Pitcher&gt; pitchers = new ArrayList&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
@@ -88,16 +88,16 @@ public class Team {
 <span class="fc" id="L88">            stadium.setTeam(null);</span>
         }
 
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        for (PositionPlayer player: this.positionPlayers) {</span>
-<span class="nc" id="L92">            player.setTeam(null);</span>
-        }
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (PositionPlayer player: this.positionPlayers) {</span>
+<span class="fc" id="L92">            player.setTeam(null);</span>
+<span class="fc" id="L93">        }</span>
 
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        for (Pitcher pitcher : this.pitchers) {</span>
-<span class="nc" id="L96">            pitcher.setTeam(null);</span>
-        }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Pitcher pitcher : this.pitchers) {</span>
+<span class="fc" id="L96">            pitcher.setTeam(null);</span>
+<span class="fc" id="L97">        }</span>
 <span class="fc" id="L98">    }</span>
 
-<span class="fc" id="L100">    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List&lt;Integer&gt; championships, League league, Division division) {</span>
+<span class="fc" id="L100">    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List&lt;Integer&gt; championships) {</span>
 <span class="fc" id="L101">        this.name = name;</span>
 <span class="fc" id="L102">        this.abbreviation = abbreviation;</span>
 <span class="fc" id="L103">        this.wins = wins;</span>
@@ -105,43 +105,41 @@ public class Team {
 <span class="fc" id="L105">        this.city = city;</span>
 <span class="fc" id="L106">        this.generalInfo = info;</span>
 <span class="fc" id="L107">        this.championships = championships;</span>
-<span class="fc" id="L108">        this.league = league;</span>
-<span class="fc" id="L109">        this.division = division;</span>
-<span class="fc" id="L110">        this.lastTen = &quot;0-0&quot;;</span>
-<span class="fc" id="L111">    }</span>
+<span class="fc" id="L108">        this.lastTen = &quot;0-0&quot;;</span>
+<span class="fc" id="L109">    }</span>
 
-<span class="fc" id="L113">    public Team(String name, String abbreviation, int wins, int losses, League league, Division division) {</span>
-<span class="fc" id="L114">        this.name = name;</span>
-<span class="fc" id="L115">        this.abbreviation = abbreviation;</span>
-<span class="fc" id="L116">        this.wins = wins;</span>
-<span class="fc" id="L117">        this.losses = losses;</span>
-<span class="fc" id="L118">        this.league = league;</span>
-<span class="fc" id="L119">        this.division = division;</span>
-<span class="fc" id="L120">        this.lastTen = &quot;0-0&quot;;</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L111">    public Team(String name, String abbreviation, int wins, int losses, League league, Division division) {</span>
+<span class="fc" id="L112">        this.name = name;</span>
+<span class="fc" id="L113">        this.abbreviation = abbreviation;</span>
+<span class="fc" id="L114">        this.wins = wins;</span>
+<span class="fc" id="L115">        this.losses = losses;</span>
+<span class="fc" id="L116">        this.league = league;</span>
+<span class="fc" id="L117">        this.division = division;</span>
+<span class="fc" id="L118">        this.lastTen = &quot;0-0&quot;;</span>
+<span class="fc" id="L119">    }</span>
 
-<span class="fc" id="L123">    public Team(String name, String abbreviation, int wins, int losses, League league, Division division, String teamLogo) {</span>
-<span class="fc" id="L124">        this.name = name;</span>
-<span class="fc" id="L125">        this.abbreviation = abbreviation;</span>
-<span class="fc" id="L126">        this.wins = wins;</span>
-<span class="fc" id="L127">        this.losses = losses;</span>
-<span class="fc" id="L128">        this.league = league;</span>
-<span class="fc" id="L129">        this.division = division;</span>
-<span class="fc" id="L130">        this.teamLogo = teamLogo;</span>
-<span class="fc" id="L131">        this.lastTen = &quot;0-0&quot;;</span>
-<span class="fc" id="L132">    }</span>
+<span class="fc" id="L121">    public Team(String name, String abbreviation, int wins, int losses, League league, Division division, String teamLogo) {</span>
+<span class="fc" id="L122">        this.name = name;</span>
+<span class="fc" id="L123">        this.abbreviation = abbreviation;</span>
+<span class="fc" id="L124">        this.wins = wins;</span>
+<span class="fc" id="L125">        this.losses = losses;</span>
+<span class="fc" id="L126">        this.league = league;</span>
+<span class="fc" id="L127">        this.division = division;</span>
+<span class="fc" id="L128">        this.teamLogo = teamLogo;</span>
+<span class="fc" id="L129">        this.lastTen = &quot;0-0&quot;;</span>
+<span class="fc" id="L130">    }</span>
 
     @Override
     public boolean equals(Object obj) {
-<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (this == obj) return true;</span>
-<span class="pc bpc" id="L137" title="2 of 4 branches missed.">        if (obj == null || getClass() != obj.getClass()) return false;</span>
-<span class="fc" id="L138">        Team other = (Team) obj;</span>
-<span class="pc bpc" id="L139" title="2 of 4 branches missed.">        return name != null &amp;&amp; name.equals(other.name);</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (this == obj) return true;</span>
+<span class="pc bpc" id="L135" title="2 of 4 branches missed.">        if (obj == null || getClass() != obj.getClass()) return false;</span>
+<span class="fc" id="L136">        Team other = (Team) obj;</span>
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">        return name != null &amp;&amp; name.equals(other.name);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc bnc" id="L144" title="All 2 branches missed.">        return name != null ? name.hashCode() : 0;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        return name != null ? name.hashCode() : 0;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

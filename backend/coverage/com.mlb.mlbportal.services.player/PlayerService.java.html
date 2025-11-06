@@ -45,8 +45,8 @@ public class PlayerService {
 <span class="fc" id="L45">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
 <span class="fc" id="L46">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
 
-<span class="fc" id="L48">        positionPlayers.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
-<span class="fc" id="L49">        pitcherList.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
+<span class="fc" id="L48">        this.updateAndSaveStats(positionPlayers);</span>
+<span class="fc" id="L49">        this.updateAndSaveStats(pitcherList);</span>
 
 <span class="fc" id="L51">        List&lt;PositionPlayerDTO&gt; mappedPostionPlayers = this.positionPlayerMapper</span>
 <span class="fc" id="L52">                .toListPositionPlayerDTO(positionPlayers);</span>
@@ -62,70 +62,99 @@ public class PlayerService {
 
     public List&lt;PositionPlayerDTO&gt; getAllPositionPlayers() {
 <span class="fc" id="L64">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
-<span class="fc" id="L65">        this.updateAndSortByName(positionPlayers);</span>
-<span class="fc" id="L66">        return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
+<span class="fc" id="L65">        this.updateAndSaveStats(positionPlayers);</span>
+<span class="fc" id="L66">        positionPlayers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
+<span class="fc" id="L67">        return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
     }
 
     public List&lt;PitcherDTO&gt; getAllPitchers() {
-<span class="fc" id="L70">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findAll();</span>
-<span class="fc" id="L71">        this.updateAndSortByName(pitchers);</span>
-<span class="fc" id="L72">        return this.pitcherMapper.toListPitcherDTO(pitchers);</span>
+<span class="fc" id="L71">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findAll();</span>
+<span class="fc" id="L72">        this.updateAndSaveStats(pitchers);</span>
+<span class="pc" id="L73">        pitchers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
+<span class="fc" id="L74">        return this.pitcherMapper.toListPitcherDTO(pitchers);</span>
     }
 
-    private &lt;T extends Player&gt; void updateAndSortByName(List&lt;T&gt; players) {
-<span class="fc" id="L76">        players.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
-<span class="fc" id="L77">        players.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
-<span class="fc" id="L78">    }</span>
+    private &lt;T extends Player&gt; void updateAndSaveStats(List&lt;T&gt; players) {
+<span class="fc" id="L78">        players.forEach(p -&gt; {</span>
+<span class="fc" id="L79">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">            if (hasChanged) {</span>
+<span class="pc bpc" id="L81" title="1 of 3 branches missed.">                switch (p) {</span>
+<span class="fc" id="L82">                    case PositionPlayer positionPlayer -&gt; this.positionPlayerRepository.save(positionPlayer);</span>
+<span class="fc" id="L83">                    case Pitcher pitcher -&gt; this.pitcherRepository.save(pitcher);</span>
+<span class="nc" id="L84">                    default -&gt; throw new IllegalArgumentException(&quot;Unexpected Player subtype: &quot; + p.getClass().getName());</span>
+                }
+            }
+<span class="fc" id="L87">        });</span>
+<span class="fc" id="L88">    }</span>
 
     public PlayerDTO findPlayerByName(String name) {
-<span class="fc" id="L81">        Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
-<span class="fc" id="L82">        PlayerServiceOperations.updatePlayerStats(player, positionPlayerRepository, pitcherRepository);</span>
-<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (player instanceof PositionPlayer positionPlayer) {</span>
-<span class="fc" id="L84">            return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);</span>
+<span class="fc" id="L91">        Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+
+<span class="fc" id="L93">        boolean hasChanged = PlayerServiceOperations.updatePlayerStats(player);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (hasChanged) {</span>
+<span class="pc bpc" id="L95" title="1 of 3 branches missed.">            switch (player) {</span>
+<span class="fc" id="L96">                case PositionPlayer positionPlayer -&gt; this.positionPlayerRepository.save(positionPlayer);</span>
+<span class="fc" id="L97">                case Pitcher pitcher -&gt; this.pitcherRepository.save(pitcher);</span>
+<span class="nc" id="L98">                default -&gt; throw new IllegalArgumentException(&quot;Unexpected Player subtype: &quot; + player.getClass().getName());</span>
+            }
         }
-<span class="fc" id="L86">        return this.pitcherMapper.toPitcherDTO((Pitcher) player);</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (player instanceof PositionPlayer positionPlayer) {</span>
+<span class="fc" id="L103">            return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);</span>
+        }
+<span class="fc" id="L105">        return this.pitcherMapper.toPitcherDTO((Pitcher) player);</span>
     }
 
-    public List&lt;PositionPlayer&gt; getUpdatedPositionPlayersOfTeam(String teamName) {
-<span class="fc" id="L90">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L91">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
+    public List&lt;PositionPlayer&gt; getUpdatedPositionPlayersOfTeam(Team team) {
+<span class="fc" id="L109">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
 
-<span class="fc" id="L93">        players.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
-<span class="fc" id="L94">        return players;</span>
+<span class="fc" id="L111">        players.forEach(p -&gt; {</span>
+<span class="fc" id="L112">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">            if (hasChanged) {</span>
+<span class="fc" id="L114">                this.positionPlayerRepository.save(p);</span>
+            }
+<span class="fc" id="L116">        });</span>
+<span class="fc" id="L117">        return players;</span>
     }
 
-    public List&lt;Pitcher&gt; getUpdatedPitchersOfTeam(String teamName) {
-<span class="fc" id="L98">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L99">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
+    public List&lt;Pitcher&gt; getUpdatedPitchersOfTeam(Team team) {
+<span class="fc" id="L121">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
 
-<span class="fc" id="L101">        pitchers.forEach(p -&gt; PlayerServiceOperations.updatePlayerStats(p, positionPlayerRepository, pitcherRepository));</span>
-<span class="fc" id="L102">        return pitchers;</span>
+<span class="fc" id="L123">        pitchers.forEach(p -&gt; {</span>
+<span class="fc" id="L124">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (hasChanged) {</span>
+<span class="fc" id="L126">                this.pitcherRepository.save(p);</span>
+            }
+<span class="fc" id="L128">        });</span>
+<span class="fc" id="L129">        return pitchers;</span>
     }
 
     public Page&lt;PositionPlayerSummaryDTO&gt; getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L106">        List&lt;PositionPlayer&gt; players = this.getUpdatedPositionPlayersOfTeam(teamName);</span>
+<span class="fc" id="L133">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L134">        List&lt;PositionPlayer&gt; players = this.getUpdatedPositionPlayersOfTeam(team);</span>
 
-<span class="fc" id="L108">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L109">        int start = Math.min((int) pageable.getOffset(), players.size());</span>
-<span class="fc" id="L110">        int end = Math.min(start + pageable.getPageSize(), players.size());</span>
+<span class="fc" id="L136">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L137">        int start = Math.min((int) pageable.getOffset(), players.size());</span>
+<span class="fc" id="L138">        int end = Math.min(start + pageable.getPageSize(), players.size());</span>
 
-<span class="fc" id="L112">        List&lt;PositionPlayerSummaryDTO&gt; result = players.subList(start, end).stream()</span>
-<span class="fc" id="L113">                .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();</span>
+<span class="fc" id="L140">        List&lt;PositionPlayerSummaryDTO&gt; result = players.subList(start, end).stream()</span>
+<span class="fc" id="L141">                .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();</span>
 
-<span class="fc" id="L115">        return new PageImpl&lt;&gt;(result, pageable, players.size());</span>
+<span class="fc" id="L143">        return new PageImpl&lt;&gt;(result, pageable, players.size());</span>
     }
 
     public Page&lt;PitcherSummaryDTO&gt; getAllPitchersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L119">        List&lt;Pitcher&gt; pitchers = this.getUpdatedPitchersOfTeam(teamName);</span>
+<span class="fc" id="L147">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L148">        List&lt;Pitcher&gt; pitchers = this.getUpdatedPitchersOfTeam(team);</span>
 
-<span class="fc" id="L121">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L122">        int start = Math.min((int) pageable.getOffset(), pitchers.size());</span>
-<span class="fc" id="L123">        int end = Math.min(start + pageable.getPageSize(), pitchers.size());</span>
+<span class="fc" id="L150">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L151">        int start = Math.min((int) pageable.getOffset(), pitchers.size());</span>
+<span class="fc" id="L152">        int end = Math.min(start + pageable.getPageSize(), pitchers.size());</span>
 
-<span class="fc" id="L125">        List&lt;PitcherSummaryDTO&gt; result = pitchers.subList(start, end).stream()</span>
-<span class="fc" id="L126">                .map(this.pitcherMapper::toPitcherSummaryDTO).toList();</span>
+<span class="fc" id="L154">        List&lt;PitcherSummaryDTO&gt; result = pitchers.subList(start, end).stream()</span>
+<span class="fc" id="L155">                .map(this.pitcherMapper::toPitcherSummaryDTO).toList();</span>
 
-<span class="fc" id="L128">        return new PageImpl&lt;&gt;(result, pageable, pitchers.size());</span>
+<span class="fc" id="L157">        return new PageImpl&lt;&gt;(result, pageable, pitchers.size());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

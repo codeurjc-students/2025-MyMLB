@@ -97,7 +97,7 @@ public class Team {
         }
     }
 
-    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league, Division division) {
+    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships) {
         this.name = name;
         this.abbreviation = abbreviation;
         this.wins = wins;
@@ -105,8 +105,6 @@ public class Team {
         this.city = city;
         this.generalInfo = info;
         this.championships = championships;
-        this.league = league;
-        this.division = division;
         this.lastTen = "0-0";
     }
 

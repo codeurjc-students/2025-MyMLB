@@ -28,8 +28,8 @@ public class Stadium {
 
     private int openingDate;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-<span class="pc" id="L32">    private List&lt;String&gt; pictures = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L31">    @ElementCollection(fetch = FetchType.LAZY)</span>
+    private List&lt;String&gt; pictures = new ArrayList&lt;&gt;();
 
     @OneToOne(mappedBy = &quot;stadium&quot;)
     private Team team;

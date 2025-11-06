@@ -1,7 +1,6 @@
 package com.mlb.mlbportal.e2e;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +77,10 @@ public abstract class BaseE2ETest {
 
     protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league,
             Division division) {
-        return this.teamRepository.save(new Team(name, abbreviation, wins, losses, city, info, championships, league, division));
+        Team team = new Team(name, abbreviation, wins, losses, city, info, championships);
+        team.setLeague(league);
+        team.setDivision(division);
+        return this.teamRepository.save(team);
     }
 
     protected void saveTestMatches(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {
@@ -92,12 +94,21 @@ public abstract class BaseE2ETest {
     }
 
     protected void saveTestPositionPlayers(String name, Team team, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
-        PositionPlayer player = new PositionPlayer(name, team, PlayerPositions.CF, atBats, walks, hits, doubles, triples, homeRuns, rbis);
+        PositionPlayer player = new PositionPlayer(name, team, PlayerPositions.CF, atBats, walks, hits, doubles);
+        player.setTriples(triples);
+        player.setHomeRuns(homeRuns);
+        player.setRbis(rbis);
         this.positionPlayerRepository.save(player);
     }
 
     protected void saveTestPitchers(String name, Team team, int games, int wins, int losses, int innings, int so, int walks, int hitsAllowed, int runsAllowed, int saves, int savesOp) {
-        Pitcher pitcher = new Pitcher(name, team, PitcherPositions.SP, games, wins, losses, innings, so, walks, hitsAllowed, runsAllowed, saves, savesOp);
+        Pitcher pitcher = new Pitcher(name, team, PitcherPositions.SP, games, wins, losses, innings);
+        pitcher.setTotalStrikeouts(so);
+        pitcher.setWalks(walks);
+        pitcher.setHitsAllowed(hitsAllowed);
+        pitcher.setRunsAllowed(runsAllowed);
+        pitcher.setSaves(saves);
+        pitcher.setSaveOpportunities(savesOp);
         this.pitcherRepository.save(pitcher);
     }
 }

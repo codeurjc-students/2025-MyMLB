@@ -52,7 +52,7 @@ class MatchServiceTest {
     void setUp() {
         this.teams = BuildMocksFactory.setUpTeamMocks();
         this.matches = BuildMocksFactory.setUpMatches(this.teams, fixedNow);
-        this.mockMatchDTOs = BuildMocksFactory.buildMatchDTOMocks(this.teams, this.matches);
+        this.mockMatchDTOs = BuildMocksFactory.buildMatchDTOMocks(this.matches);
     }
 
     @Test

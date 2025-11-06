@@ -81,7 +81,7 @@ public class PlayerService {
                 switch (p) {
                     case PositionPlayer positionPlayer -> this.positionPlayerRepository.save(positionPlayer);
                     case Pitcher pitcher -> this.pitcherRepository.save(pitcher);
-                    default -> {}
+                    default -> throw new IllegalArgumentException("Unexpected Player subtype: " + p.getClass().getName());
                 }
             }
         });
@@ -95,7 +95,7 @@ public class PlayerService {
             switch (player) {
                 case PositionPlayer positionPlayer -> this.positionPlayerRepository.save(positionPlayer);
                 case Pitcher pitcher -> this.pitcherRepository.save(pitcher);
-                default -> {}
+                default -> throw new IllegalArgumentException("Unexpected Player subtype: " + player.getClass().getName());
             }
         }
 

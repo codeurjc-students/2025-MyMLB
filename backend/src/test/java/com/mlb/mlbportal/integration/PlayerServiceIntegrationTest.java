@@ -185,7 +185,7 @@ class PlayerServiceIntegrationTest {
         
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isEqualTo(0); // page index
+        assertThat(result.getNumber()).isZero(); // page index
         assertThat(result.getSize()).isEqualTo(10);  // requested size
         assertThat(result.hasNext()).isFalse();
         assertThat(result.hasPrevious()).isFalse();
@@ -204,7 +204,7 @@ class PlayerServiceIntegrationTest {
 
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isEqualTo(0); // page index
+        assertThat(result.getNumber()).isZero(); // page index
         assertThat(result.getSize()).isEqualTo(10);  // requested size
         assertThat(result.hasNext()).isFalse();
         assertThat(result.hasPrevious()).isFalse();

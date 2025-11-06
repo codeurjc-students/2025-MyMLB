@@ -3,142 +3,135 @@
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
-import com.mlb.mlbportal.repositories.player.PitcherRepository;
-import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
-<span class="nc" id="L9">public class PlayerServiceOperations {</span>
+public class PlayerServiceOperations {
 
-    public static void updatePlayerStats(Player player,
-            PositionPlayerRepository positionPlayerRepo,
-            PitcherRepository pitcherRepo) {
-<span class="pc bpc" id="L14" title="1 of 3 branches missed.">        switch (player) {</span>
-<span class="fc" id="L15">            case PositionPlayer positionPlayer -&gt; updatePositionPlayerStats(positionPlayer, positionPlayerRepo);</span>
-<span class="fc" id="L16">            case Pitcher pitcher -&gt; updatePitcherStats(pitcher, pitcherRepo);</span>
-            default -&gt; {
-            }
-        }
-<span class="fc" id="L20">    }</span>
+    private PlayerServiceOperations() {}
 
-    private static void updatePositionPlayerStats(PositionPlayer player, PositionPlayerRepository repo) {
-<span class="fc" id="L23">        double oldAvg = player.getAverage();</span>
-<span class="fc" id="L24">        double oldObp = player.getObp();</span>
-<span class="fc" id="L25">        double oldSlg = player.getSlugging();</span>
-<span class="fc" id="L26">        double oldOps = player.getOps();</span>
+    public static boolean updatePlayerStats(Player player) {
+<span class="pc bpc" id="L12" title="1 of 3 branches missed.">        return switch (player) {</span>
+<span class="fc" id="L13">            case PositionPlayer positionPlayer -&gt; updatePositionPlayerStats(positionPlayer);</span>
+<span class="fc" id="L14">            case Pitcher pitcher -&gt; updatePitcherStats(pitcher);</span>
+<span class="nc" id="L15">            default -&gt; false;</span>
+        };
+    }
 
-<span class="fc" id="L28">        calculateAverage(player);</span>
-<span class="fc" id="L29">        calculateOBP(player);</span>
-<span class="fc" id="L30">        calculateSlugging(player);</span>
-<span class="fc" id="L31">        calculateOPS(player);</span>
+    private static boolean updatePositionPlayerStats(PositionPlayer player) {
+<span class="fc" id="L20">        double oldAvg = player.getAverage();</span>
+<span class="fc" id="L21">        double oldObp = player.getObp();</span>
+<span class="fc" id="L22">        double oldSlg = player.getSlugging();</span>
+<span class="fc" id="L23">        double oldOps = player.getOps();</span>
 
-<span class="fc" id="L33">        if (hasStatChanged(player.getAverage(), oldAvg,</span>
-<span class="fc" id="L34">                player.getObp(), oldObp,</span>
-<span class="fc" id="L35">                player.getSlugging(), oldSlg,</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">                player.getOps(), oldOps)) {</span>
-<span class="fc" id="L37">            repo.save(player);</span>
-        }
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L25">        calculateAverage(player);</span>
+<span class="fc" id="L26">        calculateOBP(player);</span>
+<span class="fc" id="L27">        calculateSlugging(player);</span>
+<span class="fc" id="L28">        calculateOPS(player);</span>
 
-    private static void updatePitcherStats(Pitcher pitcher, PitcherRepository repo) {
-<span class="fc" id="L42">        double oldEra = pitcher.getEra();</span>
-<span class="fc" id="L43">        double oldWhip = pitcher.getWhip();</span>
+<span class="fc" id="L30">        return hasStatChanged(player.getAverage(), oldAvg,</span>
+<span class="fc" id="L31">                player.getObp(), oldObp,</span>
+<span class="fc" id="L32">                player.getSlugging(), oldSlg,</span>
+<span class="fc" id="L33">                player.getOps(), oldOps);</span>
+    }
 
-<span class="fc" id="L45">        calculateERA(pitcher);</span>
-<span class="fc" id="L46">        calculateWHIP(pitcher);</span>
+    private static boolean updatePitcherStats(Pitcher pitcher) {
+<span class="fc" id="L37">        double oldEra = pitcher.getEra();</span>
+<span class="fc" id="L38">        double oldWhip = pitcher.getWhip();</span>
 
-<span class="fc" id="L48">        if (hasStatChanged(pitcher.getEra(), oldEra,</span>
-<span class="fc bfc" id="L49" title="All 2 branches covered.">                pitcher.getWhip(), oldWhip)) {</span>
-<span class="fc" id="L50">            repo.save(pitcher);</span>
-        }
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L40">        calculateERA(pitcher);</span>
+<span class="fc" id="L41">        calculateWHIP(pitcher);</span>
+
+<span class="fc" id="L43">        return hasStatChanged(pitcher.getEra(), oldEra,</span>
+<span class="fc" id="L44">                pitcher.getWhip(), oldWhip);</span>
+    }
 
     private static boolean hasStatChanged(double... values) {
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (int i = 0; i &lt; values.length; i += 2) {</span>
-<span class="fc" id="L56">            double newVal = values[i];</span>
-<span class="fc" id="L57">            double oldVal = values[i + 1];</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (Double.compare(newVal, oldVal) != 0)</span>
-<span class="fc" id="L59">                return true;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (int i = 0; i &lt; values.length; i += 2) {</span>
+<span class="fc" id="L49">            double newVal = values[i];</span>
+<span class="fc" id="L50">            double oldVal = values[i + 1];</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (Double.compare(newVal, oldVal) != 0)</span>
+<span class="fc" id="L52">                return true;</span>
         }
-<span class="fc" id="L61">        return false;</span>
+<span class="fc" id="L54">        return false;</span>
     }
 
     private static void calculateAverage(PositionPlayer player) {
-<span class="fc" id="L65">        int atBats = player.getAtBats();</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (atBats == 0) {</span>
-<span class="fc" id="L67">            player.setAverage(0.0);</span>
-<span class="fc" id="L68">            return;</span>
+<span class="fc" id="L58">        int atBats = player.getAtBats();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (atBats == 0) {</span>
+<span class="fc" id="L60">            player.setAverage(0.0);</span>
+<span class="fc" id="L61">            return;</span>
         }
-<span class="fc" id="L70">        double avg = (double) player.getHits() / atBats;</span>
-<span class="fc" id="L71">        player.setAverage(truncateToThreeDecimals(avg));</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L63">        double avg = (double) player.getHits() / atBats;</span>
+<span class="fc" id="L64">        player.setAverage(truncateToThreeDecimals(avg));</span>
+<span class="fc" id="L65">    }</span>
 
     private static void calculateOBP(PositionPlayer player) {
-<span class="fc" id="L75">        int plateAppearances = player.getAtBats() + player.getWalks();</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (plateAppearances == 0) {</span>
-<span class="fc" id="L77">            player.setObp(0.0);</span>
-<span class="fc" id="L78">            return;</span>
+<span class="fc" id="L68">        int plateAppearances = player.getAtBats() + player.getWalks();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (plateAppearances == 0) {</span>
+<span class="fc" id="L70">            player.setObp(0.0);</span>
+<span class="fc" id="L71">            return;</span>
         }
-<span class="fc" id="L80">        double obp = (double) (player.getHits() + player.getWalks()) / plateAppearances;</span>
-<span class="fc" id="L81">        player.setObp(truncateToThreeDecimals(obp));</span>
-<span class="fc" id="L82">    }</span>
+<span class="fc" id="L73">        double obp = (double) (player.getHits() + player.getWalks()) / plateAppearances;</span>
+<span class="fc" id="L74">        player.setObp(truncateToThreeDecimals(obp));</span>
+<span class="fc" id="L75">    }</span>
 
     private static void calculateSlugging(PositionPlayer player) {
-<span class="fc" id="L85">        int atBats = player.getAtBats();</span>
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (atBats == 0) {</span>
-<span class="fc" id="L87">            player.setSlugging(0.0);</span>
-<span class="fc" id="L88">            return;</span>
+<span class="fc" id="L78">        int atBats = player.getAtBats();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (atBats == 0) {</span>
+<span class="fc" id="L80">            player.setSlugging(0.0);</span>
+<span class="fc" id="L81">            return;</span>
         }
-<span class="fc" id="L90">        int totalBases = player.getHits()</span>
-<span class="fc" id="L91">                + player.getDoubles()</span>
-<span class="fc" id="L92">                + 2 * player.getTriples()</span>
-<span class="fc" id="L93">                + 3 * player.getHomeRuns();</span>
-<span class="fc" id="L94">        double slg = (double) totalBases / atBats;</span>
-<span class="fc" id="L95">        player.setSlugging(truncateToThreeDecimals(slg));</span>
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L83">        int totalBases = player.getHits()</span>
+<span class="fc" id="L84">                + player.getDoubles()</span>
+<span class="fc" id="L85">                + 2 * player.getTriples()</span>
+<span class="fc" id="L86">                + 3 * player.getHomeRuns();</span>
+<span class="fc" id="L87">        double slg = (double) totalBases / atBats;</span>
+<span class="fc" id="L88">        player.setSlugging(truncateToThreeDecimals(slg));</span>
+<span class="fc" id="L89">    }</span>
 
     private static void calculateOPS(PositionPlayer player) {
-<span class="fc" id="L99">        double ops = player.getObp() + player.getSlugging();</span>
-<span class="fc" id="L100">        player.setOps(truncateToThreeDecimals(ops));</span>
-<span class="fc" id="L101">    }</span>
+<span class="fc" id="L92">        double ops = player.getObp() + player.getSlugging();</span>
+<span class="fc" id="L93">        player.setOps(truncateToThreeDecimals(ops));</span>
+<span class="fc" id="L94">    }</span>
 
     private static double convertInnings(double rawInnings) {
-<span class="fc" id="L104">        int whole = (int) rawInnings;</span>
-<span class="fc" id="L105">        double decimal = rawInnings - whole;</span>
+<span class="fc" id="L97">        int whole = (int) rawInnings;</span>
+<span class="fc" id="L98">        double decimal = rawInnings - whole;</span>
 
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (Math.abs(decimal - 0.1) &lt; 0.01) {</span>
-<span class="nc" id="L108">            return whole + (1.0 / 3);</span>
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        } else if (Math.abs(decimal - 0.2) &lt; 0.01) {</span>
-<span class="nc" id="L110">            return whole + (2.0 / 3);</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (Math.abs(decimal - 0.1) &lt; 0.01) {</span>
+<span class="nc" id="L101">            return whole + (1.0 / 3);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        } else if (Math.abs(decimal - 0.2) &lt; 0.01) {</span>
+<span class="nc" id="L103">            return whole + (2.0 / 3);</span>
         } else {
-<span class="fc" id="L112">            return rawInnings;</span>
+<span class="fc" id="L105">            return rawInnings;</span>
         }
     }
 
     private static void calculateERA(Pitcher pitcher) {
-<span class="fc" id="L117">        double innings = convertInnings(pitcher.getInningsPitched());</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (innings == 0) {</span>
-<span class="fc" id="L119">            pitcher.setEra(0.0);</span>
-<span class="fc" id="L120">            return;</span>
+<span class="fc" id="L110">        double innings = convertInnings(pitcher.getInningsPitched());</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (innings == 0) {</span>
+<span class="fc" id="L112">            pitcher.setEra(0.0);</span>
+<span class="fc" id="L113">            return;</span>
         }
-<span class="fc" id="L122">        double era = (double) (pitcher.getRunsAllowed() * 9) / innings;</span>
-<span class="fc" id="L123">        pitcher.setEra(truncateToTwoDecimals(era));</span>
-<span class="fc" id="L124">    }</span>
+<span class="fc" id="L115">        double era = (double) (pitcher.getRunsAllowed() * 9) / innings;</span>
+<span class="fc" id="L116">        pitcher.setEra(truncateToTwoDecimals(era));</span>
+<span class="fc" id="L117">    }</span>
 
     private static void calculateWHIP(Pitcher pitcher) {
-<span class="fc" id="L127">        double innings = convertInnings(pitcher.getInningsPitched());</span>
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (innings == 0) {</span>
-<span class="fc" id="L129">            pitcher.setWhip(0.0);</span>
-<span class="fc" id="L130">            return;</span>
+<span class="fc" id="L120">        double innings = convertInnings(pitcher.getInningsPitched());</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (innings == 0) {</span>
+<span class="fc" id="L122">            pitcher.setWhip(0.0);</span>
+<span class="fc" id="L123">            return;</span>
         }
-<span class="fc" id="L132">        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;</span>
-<span class="fc" id="L133">        pitcher.setWhip(truncateToThreeDecimals(whip));</span>
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L125">        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;</span>
+<span class="fc" id="L126">        pitcher.setWhip(truncateToThreeDecimals(whip));</span>
+<span class="fc" id="L127">    }</span>
 
     private static double truncateToThreeDecimals(double value) {
-<span class="fc" id="L137">        return ((int) (value * 1000)) / 1000.0;</span>
+<span class="fc" id="L130">        return ((int) (value * 1000)) / 1000.0;</span>
     }
 
     private static double truncateToTwoDecimals(double value) {
-<span class="fc" id="L141">        return ((int) (value * 100)) / 100.0;</span>
+<span class="fc" id="L134">        return ((int) (value * 100)) / 100.0;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
