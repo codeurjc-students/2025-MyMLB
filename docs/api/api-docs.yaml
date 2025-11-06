@@ -8,6 +8,11 @@ servers:
 tags:
 - name: Authentication
   description: Endpoints related to user authentication
+- name: Stadiums
+  description: Operations related to MLB stadiums
+- name: Players
+  description: "Operations related to MLB players, including position players and\
+    \ pitchers"
 - name: Teams
   description: Operations related to MLB teams and standings
 - name: Matches
@@ -218,18 +223,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamDTO"
-              example:
-              - name: Yankees
-                abbreviation: NYY
-                logo: url
-                league: AL
-                division: EAST
-                totalGames: 162
-                wins: 95
-                losses: 67
-                pct: 0.586
-                gamesBack: 0.0
-                streak: W3
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/teams/{teamName}:
+    get:
+      tags:
+      - Teams
+      summary: Get team info by name
+      description: "Returns detailed information about a specific MLB team, including\
+        \ abbreviation, logo, league, division, total games, wins, losses, win percentage,\
+        \ etc."
+      operationId: getMethodName
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successfully retrieved team info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamInfoDTO"
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
         "500":
           description: Internal server error
           content:
@@ -250,20 +273,224 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamDTO"
-              example:
-                AL:
-                  EAST:
-                  - name: Yankees
-                    abbreviation: NYY
-                    logo: url
-                    league: AL
-                    division: EAST
-                    totalGames: 162
-                    wins: 95
-                    losses: 67
-                    pct: 0.586
-                    gamesBack: 0.0
-                    streak: W3
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/stadiums:
+    get:
+      tags:
+      - Stadiums
+      summary: Get all stadiums
+      description: "Returns a list of all MLB stadiums with basic information such\
+        \ as name, location, and capacity."
+      operationId: getAllStadiums
+      responses:
+        "200":
+          description: Successfully retrieved list of stadiums
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StadiumInitDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/stadiums/{name}:
+    get:
+      tags:
+      - Stadiums
+      summary: Get stadium by name
+      description: Returns basic information about a specific MLB stadium identified
+        by its name.
+      operationId: getStadiumByName
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successfully retrieved stadium info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StadiumInitDTO"
+        "404":
+          description: Stadium not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players:
+    get:
+      tags:
+      - Players
+      summary: Get all players
+      description: "Returns a list of all MLB players, including both position players\
+        \ and pitchers."
+      operationId: getAllPlayers
+      responses:
+        "200":
+          description: Successfully retrieved list of players
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players/{name}:
+    get:
+      tags:
+      - Players
+      summary: Get player by name
+      description: Returns detailed information about a specific player identified
+        by name.
+      operationId: getPlayerByName
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successfully retrieved player info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerDTO"
+        "404":
+          description: Player not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players/position-players:
+    get:
+      tags:
+      - Players
+      summary: Get all position players
+      description: Returns a list of all MLB position players with detailed stats.
+      operationId: getAllPositionPlayers
+      responses:
+        "200":
+          description: Successfully retrieved list of position players
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionPlayerDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players/position-players/{teamName}:
+    get:
+      tags:
+      - Players
+      summary: Get position players of a team
+      description: "Returns a paginated list of position players for a specific team,\
+        \ ordered alphabetically."
+      operationId: getPositionPlayersOfATeam
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: Successfully retrieved position players of the team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionPlayerSummaryDTO"
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players/pitchers:
+    get:
+      tags:
+      - Players
+      summary: Get all pitchers
+      description: Returns a list of all MLB pitchers with detailed stats.
+      operationId: getAllPitchers
+      responses:
+        "200":
+          description: Successfully retrieved list of pitchers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PitcherDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/players/pitchers/{teamName}:
+    get:
+      tags:
+      - Players
+      summary: Get pitchers of a team
+      description: "Returns a paginated list of pitchers for a specific team, ordered\
+        \ alphabetically."
+      operationId: getPitchersOfATeam
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: Successfully retrieved pitchers of the team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PitcherSummaryDTO"
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
         "500":
           description: Internal server error
           content:
@@ -272,11 +499,25 @@ paths:
     get:
       tags:
       - Matches
-      summary: Get the matches of the day
-      description: "Returns a list of matches scheduled for today. Each match includes\
-        \ the home and away teams, scores, scheduled date/time, and current status\
-        \ (Scheduled, InProgress, Finished)."
-      operationId: getMatchesOfTheDay
+      summary: Get the matches of the day (paginated)
+      description: Returns a paginated list of matches scheduled for today. Always
+        10 matches per page.
+      operationId: getMatchesOfTheDayPaginated
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
       responses:
         "200":
           description: Successfully retrieved the matches
@@ -284,27 +525,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchDTO"
-              example:
-              - homeTeam:
-                  name: Los Angeles Dodgers
-                  abbreviation: LAD
-                awayTeam:
-                  name: New York Yankees
-                  abbreviation: NYY
-                homeScore: 0
-                awayScore: 0
-                date: 2025-10-20 19:00
-                status: Scheduled
-              - homeTeam:
-                  name: Toronto Blue Jays
-                  abbreviation: TOR
-                awayTeam:
-                  name: Detroit Tigers
-                  abbreviation: DET
-                homeScore: 3
-                awayScore: 2
-                date: 2025-10-20 21:00
-                status: InProgress
         "500":
           description: Internal server error
           content:
@@ -445,6 +665,248 @@ components:
       - lastTen
       - league
       - name
+    PitcherSummaryDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        position:
+          type: string
+          enum:
+          - SP
+          - RP
+          - CL
+        games:
+          type: integer
+          format: int32
+        wins:
+          type: integer
+          format: int32
+        losses:
+          type: integer
+          format: int32
+        era:
+          type: number
+          format: double
+        inningsPitched:
+          type: integer
+          format: int32
+        totalStrikeouts:
+          type: integer
+          format: int32
+        walks:
+          type: integer
+          format: int32
+        hitsAllowed:
+          type: integer
+          format: int32
+        runsAllowed:
+          type: integer
+          format: int32
+        whip:
+          type: number
+          format: double
+        saves:
+          type: integer
+          format: int32
+        saveOpportunities:
+          type: integer
+          format: int32
+    PositionPlayerSummaryDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        position:
+          type: string
+          enum:
+          - C
+          - 1B
+          - 2B
+          - 3B
+          - DH
+          - SS
+          - RF
+          - LF
+          - CF
+        atBats:
+          type: integer
+          format: int32
+        walks:
+          type: integer
+          format: int32
+        hits:
+          type: integer
+          format: int32
+        doubles:
+          type: integer
+          format: int32
+        triples:
+          type: integer
+          format: int32
+        homeRuns:
+          type: integer
+          format: int32
+        rbis:
+          type: integer
+          format: int32
+        average:
+          type: number
+          format: double
+        obp:
+          type: number
+          format: double
+        ops:
+          type: number
+          format: double
+        slugging:
+          type: number
+          format: double
+    StadiumDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        openingDate:
+          type: integer
+          format: int32
+    TeamInfoDTO:
+      type: object
+      properties:
+        teamStats:
+          $ref: "#/components/schemas/TeamDTO"
+        city:
+          type: string
+        generalInfo:
+          type: string
+        championships:
+          type: array
+          items:
+            type: integer
+            format: int32
+        stadium:
+          $ref: "#/components/schemas/StadiumDTO"
+        positionPlayers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PositionPlayerSummaryDTO"
+        pitchers:
+          type: array
+          items:
+            $ref: "#/components/schemas/PitcherSummaryDTO"
+    StadiumInitDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        openingDate:
+          type: integer
+          format: int32
+        teamName:
+          type: string
+    PlayerDTO:
+      type: object
+    PositionPlayerDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        teamName:
+          type: string
+        position:
+          type: string
+          enum:
+          - C
+          - 1B
+          - 2B
+          - 3B
+          - DH
+          - SS
+          - RF
+          - LF
+          - CF
+        atBats:
+          type: integer
+          format: int32
+        walks:
+          type: integer
+          format: int32
+        hits:
+          type: integer
+          format: int32
+        doubles:
+          type: integer
+          format: int32
+        triples:
+          type: integer
+          format: int32
+        homeRuns:
+          type: integer
+          format: int32
+        rbis:
+          type: integer
+          format: int32
+        average:
+          type: number
+          format: double
+        obp:
+          type: number
+          format: double
+        ops:
+          type: number
+          format: double
+        slugging:
+          type: number
+          format: double
+    PitcherDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        teamName:
+          type: string
+        position:
+          type: string
+          enum:
+          - SP
+          - RP
+          - CL
+        games:
+          type: integer
+          format: int32
+        wins:
+          type: integer
+          format: int32
+        losses:
+          type: integer
+          format: int32
+        era:
+          type: number
+          format: double
+        inningsPitched:
+          type: integer
+          format: int32
+        totalStrikeouts:
+          type: integer
+          format: int32
+        walks:
+          type: integer
+          format: int32
+        hitsAllowed:
+          type: integer
+          format: int32
+        runsAllowed:
+          type: integer
+          format: int32
+        whip:
+          type: number
+          format: double
+        saves:
+          type: integer
+          format: int32
+        saveOpportunities:
+          type: integer
+          format: int32
     MatchDTO:
       type: object
       properties:
@@ -466,9 +928,9 @@ components:
         status:
           type: string
           enum:
-          - Scheduled
-          - InProgress
-          - Finished
+          - SCHEDULED
+          - IN_PROGRESS
+          - FINISHED
       required:
       - awayTeam
       - date
@@ -481,6 +943,17 @@ components:
           type: string
         abbreviation:
           type: string
+        league:
+          type: string
+          enum:
+          - AL
+          - NL
+        division:
+          type: string
+          enum:
+          - EAST
+          - CENTRAL
+          - WEST
     UserRole:
       type: object
       properties:

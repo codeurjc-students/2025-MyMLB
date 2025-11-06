@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-01T20:36:08+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
+    date = &quot;2025-11-06T11:54:15+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
 <span class="fc" id="L19">public class PitcherMapperImpl implements PitcherMapper {</span>
@@ -70,7 +70,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L70">        List&lt;PitcherDTO&gt; list = new ArrayList&lt;PitcherDTO&gt;( pitcherList.size() );</span>
 <span class="fc bfc" id="L71" title="All 2 branches covered.">        for ( Pitcher pitcher : pitcherList ) {</span>
 <span class="fc" id="L72">            list.add( toPitcherDTO( pitcher ) );</span>
-        }
+<span class="fc" id="L73">        }</span>
 
 <span class="fc" id="L75">        return list;</span>
     }
@@ -125,7 +125,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L125">        List&lt;PitcherSummaryDTO&gt; list = new ArrayList&lt;PitcherSummaryDTO&gt;( pitcherList.size() );</span>
 <span class="nc bnc" id="L126" title="All 2 branches missed.">        for ( Pitcher pitcher : pitcherList ) {</span>
 <span class="nc" id="L127">            list.add( toPitcherSummaryDTO( pitcher ) );</span>
-        }
+<span class="nc" id="L128">        }</span>
 
 <span class="nc" id="L130">        return list;</span>
     }

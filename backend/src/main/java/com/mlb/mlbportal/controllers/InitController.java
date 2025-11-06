@@ -37,8 +37,6 @@ import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
-import com.mlb.mlbportal.repositories.player.PitcherRepository;
-import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +51,6 @@ public class InitController {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final StadiumRepository stadiumRepository;
-    private final PositionPlayerRepository positionPlayerRepository;
-    private final PitcherRepository pitcherRepository;
 
     private static final Random RANDOM = new Random();
 
@@ -104,10 +100,10 @@ public class InitController {
                         dto.losses(),
                         dto.city(),
                         dto.generalInfo(),
-                        dto.championships() != null ? dto.championships() : List.of(),
-                        league,
-                        division
+                        dto.championships() != null ? dto.championships() : List.of()
                     );
+                    team.setLeague(league);
+                    team.setDivision(division);
 
                     int totalGames = dto.wins() + dto.losses();
                     team.setTotalGames(totalGames);
@@ -275,14 +271,14 @@ public class InitController {
                         ((Number) raw.get("games")).intValue(),
                         ((Number) raw.get("wins")).intValue(),
                         ((Number) raw.get("losses")).intValue(),
-                        ((Number) raw.get("inningsPitched")).intValue(),
-                        ((Number) raw.get("totalStrikeouts")).intValue(),
-                        ((Number) raw.get("walks")).intValue(),
-                        ((Number) raw.get("hitsAllowed")).intValue(),
-                        ((Number) raw.get("runsAllowed")).intValue(),
-                        ((Number) raw.get("saves")).intValue(),
-                        ((Number) raw.get("saveOpportunities")).intValue()
+                        ((Number) raw.get("inningsPitched")).intValue()
                     );
+                    pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
+                    pitcher.setWalks(((Number) raw.get("walks")).intValue());
+                    pitcher.setHitsAllowed(((Number) raw.get("hitsAllowed")).intValue());
+                    pitcher.setRunsAllowed(((Number) raw.get("runsAllowed")).intValue());
+                    pitcher.setSaves(((Number) raw.get("saves")).intValue());
+                    pitcher.setSaveOpportunities(((Number) raw.get("saveOpportunities")).intValue());
                     pitchersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(pitcher);
                 } else {
                     PositionPlayer player = new PositionPlayer(
@@ -292,11 +288,11 @@ public class InitController {
                         ((Number) raw.get("atBats")).intValue(),
                         ((Number) raw.get("walks")).intValue(),
                         ((Number) raw.get("hits")).intValue(),
-                        ((Number) raw.get("doubles")).intValue(),
-                        ((Number) raw.get("triples")).intValue(),
-                        ((Number) raw.get("homeRuns")).intValue(),
-                        ((Number) raw.get("rbis")).intValue()
+                        ((Number) raw.get("doubles")).intValue()
                     );
+                    player.setTriples(((Number) raw.get("triples")).intValue());
+                    player.setHomeRuns(((Number) raw.get("homeRuns")).intValue());
+                    player.setRbis(((Number) raw.get("rbis")).intValue());
                     positionPlayersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(player);
                 }
             }

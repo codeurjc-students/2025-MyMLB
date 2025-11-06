@@ -1,7 +1,5 @@
 package com.mlb.mlbportal.models.player;
 
-import java.util.Map;
-
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
 
@@ -34,39 +32,20 @@ public class PositionPlayer extends Player {
     private int triples;
     private double slugging;
 
-    public PositionPlayer(String name, Team team, PlayerPositions position, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
+    public PositionPlayer(String name, Team team, PlayerPositions position, int atBats, int walks, int hits, int doubles) {
         super(name, team);
         this.position = position;
         this.atBats = atBats;
         this.hits = hits;
         this.walks = walks;
-        this.homeRuns = homeRuns;
         this.doubles = doubles;
-        this.triples = triples;
-        this.rbis = rbis;
     }
 
-    public PositionPlayer(String name, Team team, String picture, PlayerPositions position, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
+    public PositionPlayer(String name, Team team, String picture, PlayerPositions position, int atBats, int walks, int hits) {
         super(name, team, picture);
         this.position = position;
         this.atBats = atBats;
         this.walks = walks;
         this.hits = hits;
-        this.doubles = doubles;
-        this.triples = triples;
-        this.homeRuns = homeRuns;
-        this.rbis = rbis;
-    }
-
-    @Override
-    public Map<String, Object> getStats() {
-        return Map.of(
-            "Position", this.position,
-            "AVG", this.average,
-            "AB", this.atBats,
-            "H", this.hits,
-            "HR", this.homeRuns,
-            "RBIs", this.rbis 
-        );
     }
 }

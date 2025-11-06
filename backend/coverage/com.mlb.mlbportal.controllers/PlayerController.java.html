@@ -76,7 +76,6 @@ public class PlayerController {
     @Operation(summary = &quot;Get position players of a team&quot;, description = &quot;Returns a paginated list of position players for a specific team, ordered alphabetically.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved position players of the team&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PositionPlayerSummaryDTO.class))),
-            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid pagination parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
@@ -86,16 +85,12 @@ public class PlayerController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (page &lt; 0 || size &lt;= 0) {</span>
-<span class="fc" id="L90">            return ResponseEntity.badRequest().build();</span>
-        }
-<span class="fc" id="L92">        return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));</span>
+<span class="fc" id="L88">        return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));</span>
     }
 
     @Operation(summary = &quot;Get pitchers of a team&quot;, description = &quot;Returns a paginated list of pitchers for a specific team, ordered alphabetically.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved pitchers of the team&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PitcherSummaryDTO.class))),
-            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid pagination parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
@@ -105,10 +100,7 @@ public class PlayerController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="fc bfc" id="L108" title="All 4 branches covered.">        if (page &lt; 0 || size &lt;= 0) {</span>
-<span class="fc" id="L109">            return ResponseEntity.badRequest().build();</span>
-        }
-<span class="fc" id="L111">        return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));</span>
+<span class="fc" id="L103">        return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

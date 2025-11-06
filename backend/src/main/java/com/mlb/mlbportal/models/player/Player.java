@@ -1,7 +1,5 @@
 package com.mlb.mlbportal.models.player;
 
-import java.util.Map;
-
 import com.mlb.mlbportal.models.Team;
 
 import jakarta.persistence.Entity;
@@ -32,16 +30,14 @@ public abstract class Player {
 
     private String picture;
 
-    public Player(String name, Team team) {
+    protected Player(String name, Team team) {
         this.name = name;
         this.team = team;
     }
 
-    public Player(String name, Team team, String picture) {
+    protected Player(String name, Team team, String picture) {
         this.name = name;
         this.team = team;
         this.picture = picture;
     }
-
-    public abstract Map<String, Object> getStats();
 }

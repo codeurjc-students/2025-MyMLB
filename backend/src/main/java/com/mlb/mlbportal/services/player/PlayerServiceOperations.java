@@ -6,6 +6,8 @@ import com.mlb.mlbportal.models.player.PositionPlayer;
 
 public class PlayerServiceOperations {
 
+    private PlayerServiceOperations() {}
+
     public static boolean updatePlayerStats(Player player) {
         return switch (player) {
             case PositionPlayer positionPlayer -> updatePositionPlayerStats(positionPlayer);
