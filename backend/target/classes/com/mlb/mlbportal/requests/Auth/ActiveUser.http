@@ -1,3 +1,0 @@
-### Get Active User
-GET https://localhost:8443/api/auth/me
-Content-Type: application/json
