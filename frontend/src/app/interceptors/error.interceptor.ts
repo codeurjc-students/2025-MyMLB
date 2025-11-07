@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error.service';
@@ -17,7 +17,7 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			const url = req.url;
 
 			if (code === 401 && url.endsWith('/me')) {
-                return throwError(() => error);
+                return of(new HttpResponse({ status: 200, body: null }));
             }
 
 			if (code === 400) {

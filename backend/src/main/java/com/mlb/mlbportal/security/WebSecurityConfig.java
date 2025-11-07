@@ -63,7 +63,6 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                     // Authentication Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
                     .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/refresh").authenticated()
