@@ -2,20 +2,21 @@ package com.mlb.mlbportal.unit;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,18 +25,39 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
+import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
 import com.mlb.mlbportal.models.PasswordResetToken;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD_ENCODED;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -54,6 +76,12 @@ class UserServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private TeamRepository teamRepository;
+
+    @Mock
+    private TeamMapper teamMapper;
+
     @InjectMocks
     private UserService userService;
 
@@ -62,6 +90,8 @@ class UserServiceTest {
     private UserEntity testUser;
     private PasswordResetToken validCode;
     private PasswordResetToken invalidCode;
+    private List<Team> teams;
+    private List<TeamSummary> teamSummaries;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -79,6 +109,11 @@ class UserServiceTest {
         this.validCode.setUser(this.testUser);
         this.invalidCode.setUser(this.testUser);
         this.testUser.setResetToken(this.validCode);
+
+        this.teams = BuildMocksFactory.setUpTeamMocks();
+        this.user1.setFavTeams(new HashSet<>(List.of(this.teams.get(0), this.teams.get(1))));
+
+        this.teamSummaries = BuildMocksFactory.buildTeamSummaryMocks(this.teams);
     }
 
     @Test
@@ -184,5 +219,65 @@ class UserServiceTest {
 
         assertThat(result.username()).isEqualTo(TEST_USER_USERNAME);
         assertThat(result.roles()).contains("USER");
+    }
+
+    @Test
+    @DisplayName("Should return the favourite teams of a certain user")
+    void testGetFavTeams() {
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        Set<TeamSummary> expectedResult = new HashSet<>(List.of(this.teamSummaries.get(0), this.teamSummaries.get(1)));
+        when(this.teamMapper.toTeamSummarySet(new HashSet<>(List.of(this.teams.get(0), this.teams.get(1))))).thenReturn(expectedResult);
+
+        Set<TeamSummary> result = this.userService.getFavTeamsOfAUser(USER1_USERNAME);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(TeamSummary::name).containsExactlyInAnyOrder(TEST_TEAM1_NAME, TEST_TEAM2_NAME);
+        assertThat(result).extracting(TeamSummary::abbreviation).containsExactlyInAnyOrder(TEST_TEAM1_ABBREVIATION, TEST_TEAM2_ABBREVIATION);
+    }
+
+    @Test
+    @DisplayName("Should successfully add a team as favourite")
+    void testAddFavTeam() {
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.teamRepository.findByName(TEST_TEAM3_NAME)).thenReturn(Optional.of(this.teams.get(2)));
+
+        this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM3_NAME);
+        assertThat(this.user1.getFavTeams()).contains(this.teams.get(2));
+        assertThat(this.teams.get(2).getFavoritedByUsers()).contains(this.user1);
+        verify(this.userRepository).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamAlreadyExistsException if the team is already marked as favourite")
+    void testInvalidAddFavTeam() {
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.teams.getFirst()));
+
+        assertThatThrownBy(() -> this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM1_NAME))
+                .isInstanceOf(TeamAlreadyExistsException.class)
+                .hasMessageContaining("Team Already Exists");
+    }
+
+    @Test
+    @DisplayName("Should successfully remove a team as favourite")
+    void testRemoveFavTeam() {
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(this.teams.get(1)));
+
+        this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM2_NAME);
+        assertThat(this.user1.getFavTeams()).doesNotContain(this.teams.get(1));
+        assertThat(this.teams.get(1).getFavoritedByUsers()).doesNotContain(this.user1);
+        verify(this.userRepository).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException if the team to remove is not marked as favourite")
+    void testInvalidRemoveFavTeam() {
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.teamRepository.findByName(TEST_TEAM3_NAME)).thenReturn(Optional.of(this.teams.get(2)));
+
+        assertThatThrownBy(() -> this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM3_NAME))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
     }
 }

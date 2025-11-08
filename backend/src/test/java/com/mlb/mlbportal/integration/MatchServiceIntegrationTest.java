@@ -3,6 +3,7 @@ package com.mlb.mlbportal.integration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,13 +23,6 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
 
 import jakarta.transaction.Transactional;
 
@@ -71,7 +65,7 @@ class MatchServiceIntegrationTest {
         Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.SCHEDULED);
         this.matchRepository.save(match);
 
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME,0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);
@@ -87,7 +81,7 @@ class MatchServiceIntegrationTest {
         Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME, 0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(1);

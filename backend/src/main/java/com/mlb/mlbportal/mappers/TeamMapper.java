@@ -3,6 +3,7 @@ package com.mlb.mlbportal.mappers;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -38,9 +39,11 @@ public interface TeamMapper {
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
 
     TeamSummary toTeamSummaryDTO(Team team);
+    Set<TeamSummary> toTeamSummarySet(Set<Team> teams);
+    Team toTeamFromTeamSummary(TeamSummary teamSummary);
 
     @Mapping(target = "teamStats", source = "team")
-    @Mapping(target = "positionPlayers", source = "positionPlayers") // MapStruct mapea las colecciones
+    @Mapping(target = "positionPlayers", source = "positionPlayers")
     @Mapping(target = "pitchers", source = "pitchers")
     TeamInfoDTO toTeamInfoDTO(Team team);
 

@@ -43,6 +43,7 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @SpringBootTest
@@ -99,7 +100,7 @@ class TeamServiceIntegrationTest {
     @Test
     @DisplayName("Should return standings grouped and sorted by pct")
     void testGetStandings() {
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(TEST_USER_USERNAME);
 
         assertThat(standings).hasSize(2);
         assertThat(standings.get(League.AL)).hasSize(3);
@@ -121,7 +122,7 @@ class TeamServiceIntegrationTest {
         this.matchRepository.deleteAll();
         this.teamRepository.deleteAll(this.teamRepository.findAll());
 
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings("anyUser");
         Map<Division, List<TeamDTO>> nlDivisions = standings.get(League.NL);
         Map<Division, List<TeamDTO>> alDivisions = standings.get(League.AL);
 

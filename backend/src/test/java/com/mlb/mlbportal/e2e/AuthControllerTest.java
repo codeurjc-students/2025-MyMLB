@@ -143,7 +143,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(409)
                 .body("status", equalTo(FAILURE))
-                .body("error", equalTo("User Already Exists in the Database"))
+                .body("error", equalTo("User Already Exists"))
                 .body("message", equalTo("The User Already Exists in the Database"));
     }
 

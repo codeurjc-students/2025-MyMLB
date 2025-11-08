@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,7 +75,7 @@ class MatchServiceTest {
                     .orElseThrow();
         });
 
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(0, 10);
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME,0, 10);
         List<MatchDTO> result = resultPage.getContent();
 
         assertThat(result).hasSize(matches.size()).containsExactlyElementsOf(mockMatchDTOs);

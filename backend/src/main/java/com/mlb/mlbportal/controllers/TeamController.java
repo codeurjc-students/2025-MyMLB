@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.controllers;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +48,9 @@ public class TeamController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/standings", produces = "application/json")
-    public ResponseEntity<Map<League, Map<Division, List<TeamDTO>>>> getStandings() {
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+    public ResponseEntity<Map<League, Map<Division, List<TeamDTO>>>> getStandings(Principal principal) {
+        String username = (principal != null) ? principal.getName() : null;
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(username);
         return ResponseEntity.ok(standings);
     }
 

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,7 @@ import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,6 +53,9 @@ class TeamServiceTest {
 
     @Mock
     private PlayerService playerService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private TeamService teamService;
@@ -101,7 +107,7 @@ class TeamServiceTest {
         when(this.teamMapper.toTeamDTO(team2)).thenReturn(this.mockTeamDTOs.get(1));
         when(this.teamMapper.toTeamDTO(team3)).thenReturn(this.mockTeamDTOs.get(2));
 
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(TEST_USER_USERNAME);
 
         assertThat(standings).hasSize(2);
         assertThat(standings.get(League.AL)).hasSize(3);
@@ -120,7 +126,7 @@ class TeamServiceTest {
     void testGetEmptyStandings() {
         when(this.teamRepository.findAll()).thenReturn(List.of());
 
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings();
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings("anyUser");
 
         assertThat(standings.get(League.AL).values()).allMatch(List::isEmpty);
         assertThat(standings.get(League.NL).values()).allMatch(List::isEmpty);

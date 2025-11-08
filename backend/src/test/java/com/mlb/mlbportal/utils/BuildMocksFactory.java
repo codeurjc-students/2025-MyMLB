@@ -59,6 +59,17 @@ public class BuildMocksFactory {
         return Arrays.asList(dto1, dto2, dto3);
     }
 
+    public static List<TeamSummary> buildTeamSummaryMocks(List<Team> teams) {
+        Team team1 = teams.get(0);
+        Team team2 = teams.get(1);
+        Team team3 = teams.get(2);
+
+        TeamSummary dto1 = new TeamSummary(team1.getName(), team1.getAbbreviation(), team1.getLeague(), team1.getDivision());
+        TeamSummary dto2 = new TeamSummary(team2.getName(), team2.getAbbreviation(), team2.getLeague(), team2.getDivision());
+        TeamSummary dto3 = new TeamSummary(team3.getName(), team3.getAbbreviation(), team3.getLeague(), team3.getDivision());
+        return Arrays.asList(dto1, dto2, dto3);
+    }
+
     public static List<TeamInfoDTO> buildTeamInfoDTOMocks(List<Team> teams) {
         List<TeamDTO> mockList = buildTeamDTOMocks(teams);
 

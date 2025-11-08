@@ -1,8 +1,10 @@
 package com.mlb.mlbportal.models;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -19,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PreRemove;
@@ -82,6 +85,9 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pitcher> pitchers = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "favTeams")
+    private Set<UserEntity> favoritedByUsers = new HashSet<>();
+
     @PreRemove
     public void preRemove() {
         if (stadium != null) {
@@ -95,6 +101,11 @@ public class Team {
         for (Pitcher pitcher : this.pitchers) {
             pitcher.setTeam(null);
         }
+
+        for (UserEntity user : this.favoritedByUsers) {
+            user.getFavTeams().remove(this);
+        }
+        this.favoritedByUsers.clear();
     }
 
     public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships) {
