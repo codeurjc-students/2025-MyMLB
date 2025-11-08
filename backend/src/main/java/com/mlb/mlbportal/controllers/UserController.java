@@ -27,19 +27,19 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("/fav-teams")
-    public ResponseEntity<Set<TeamSummary>> getFavouriteTeams(Principal principal) {
+    @GetMapping("/favorites/teams")
+    public ResponseEntity<Set<TeamSummary>> getFavoriteTeams(Principal principal) {
         return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));
     }
 
-    @PostMapping("/fav-teams/{teamName}")
-    public ResponseEntity<AuthResponse> addFavouriteTeam(Principal principal, @PathVariable("teamName") String teamName) {
+    @PostMapping("/favorites/teams/{teamName}")
+    public ResponseEntity<AuthResponse> addFavoriteTeam(Principal principal, @PathVariable("teamName") String teamName) {
         this.userService.addFavTeam(principal.getName(), teamName);
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Succesfullly Added"));
     }
 
-    @DeleteMapping("/fav-teams/{teamName}")
-    public ResponseEntity<AuthResponse> removeFavouriteTeam(Principal principal, @PathVariable("teamName") String teamName) {
+    @DeleteMapping("/favorites/teams/{teamName}")
+    public ResponseEntity<AuthResponse> removeFavoriteTeam(Principal principal, @PathVariable("teamName") String teamName) {
         this.userService.removeFavTeam(principal.getName(), teamName);
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Succesfullly Remove"));
     }

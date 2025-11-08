@@ -79,7 +79,7 @@ public class UserLoginService {
 
 		if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
 			AuthResponse errorResponse = new AuthResponse(AuthResponse.Status.FAILURE,"There is no user to logout");
-			return ResponseEntity.status(400).body(errorResponse);
+			return ResponseEntity.status(401).body(errorResponse);
 		}
 		SecurityContextHolder.clearContext();
 		response.addCookie(removeTokenCookie(TokenType.ACCESS));

@@ -3,6 +3,7 @@ package com.mlb.mlbportal.e2e;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.mlb.mlbportal.models.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -71,8 +72,10 @@ public abstract class BaseE2ETest {
         this.userRepository.deleteAll();
     }
 
-    protected void saveTestUser(String email, String username, String password) {
-        this.userRepository.save(new com.mlb.mlbportal.models.UserEntity(email, username, passwordEncoder.encode(password)));
+    protected UserEntity saveTestUser(String email, String username, String password) {
+        UserEntity user = new UserEntity(email, username, passwordEncoder.encode(password));
+        user.setRoles(List.of("USER"));
+        return this.userRepository.save(user);
     }
 
     protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league,

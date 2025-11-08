@@ -1,12 +1,13 @@
 package com.mlb.mlbportal.services.team;
 
-import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.mlb.mlbportal.mappers.UserMapper;
-import com.mlb.mlbportal.models.UserEntity;
-import com.mlb.mlbportal.services.UserService;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -14,12 +15,14 @@ import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 
 import jakarta.transaction.Transactional;
@@ -36,7 +39,6 @@ public class TeamService {
     private final MatchService matchService;
     private final PlayerService playerService;
     private final UserService userService;
-    private final UserMapper userMapper;
 
     public List<TeamInfoDTO> getTeams() {
         List<Team> teams = this.teamRepository.findAll();

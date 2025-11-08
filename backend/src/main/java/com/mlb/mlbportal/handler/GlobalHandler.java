@@ -62,7 +62,7 @@ public class GlobalHandler {
         return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
         String errorMsg = "Resource Already Exists";
         if (ex instanceof UserAlreadyExistsException) {
