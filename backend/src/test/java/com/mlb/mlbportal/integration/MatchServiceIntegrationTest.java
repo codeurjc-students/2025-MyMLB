@@ -1,10 +1,24 @@
 package com.mlb.mlbportal.integration;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,19 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
-
-import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.mappers.MatchMapper;
-import com.mlb.mlbportal.models.Match;
-import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.models.enums.Division;
-import com.mlb.mlbportal.models.enums.League;
-import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.repositories.MatchRepository;
-import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MatchService;
-
-import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -38,25 +39,69 @@ class MatchServiceIntegrationTest {
     private TeamRepository teamRepository;
 
     @Autowired
-    private MatchService matchService;
+    private UserRepository userRepository;
 
     @Autowired
-    @SuppressWarnings("unused")
-    private MatchMapper matchMapper;
+    private MatchService matchService;
 
-    private Team team1, team2;
+    private Team team1, team2, team3;
 
     @BeforeEach
-    @SuppressWarnings("unused")
     void setUp() {
         this.matchRepository.deleteAll();
         this.teamRepository.deleteAll();
+        this.userRepository.deleteAll();
 
-        this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL, Division.EAST);
-        this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL, Division.EAST);
+        List<Team> teams = BuildMocksFactory.setUpTeamMocks();
+        this.team1 = this.teamRepository.save(teams.get(0));
+        this.team2 = this.teamRepository.save(teams.get(1));
+        this.team3 = this.teamRepository.save(teams.get(2));
+    }
 
-        this.team1 = this.teamRepository.save(this.team1);
-        this.team2 = this.teamRepository.save(this.team2);
+    @Test
+    @DisplayName("Should only return matches scheduled for today")
+    void testMatchesOfTheDayOnlyToday() {
+        Match todayMatch = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        Match yesterdayMatch = new Match(this.team1, this.team2, 2, 2, LocalDateTime.now().minusDays(1), MatchStatus.SCHEDULED);
+        this.matchRepository.saveAll(List.of(todayMatch, yesterdayMatch));
+
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
+        MatchDTO result = resultPage.getContent().getFirst();
+
+        assertThat(result.date().toLocalDate()).isEqualTo(LocalDateTime.now().toLocalDate());
+    }
+
+    @Test
+    @DisplayName("Should prioritize matches with user's favorite teams")
+    void testMatchesOfTheDayFavoriteTeamOrdering() {
+        Match match1 = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match2 = new Match(this.team3, this.team1, 2, 2, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        this.matchRepository.saveAll(List.of(match1, match2));
+
+        UserEntity user = BuildMocksFactory.setUpUsers().getLast();
+        user.setFavTeams(Set.of(this.team3));
+        this.userRepository.save(user);
+
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME, 0, 10);
+        MatchDTO result = resultPage.getContent().getFirst();
+
+        assertThat(result.homeTeam().name()).isEqualTo(this.team1.getName());
+        assertThat(result.awayTeam().name()).isEqualTo(this.team3.getName());
+    }
+
+    @Test
+    @DisplayName("Should not prioritize matches when username is null")
+    void testMatchesOfTheDayWithoutUsername() {
+        Match match1 = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match2 = new Match(this.team2, this.team3, 2, 2, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        this.matchRepository.saveAll(List.of(match1, match2));
+
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
+        List<MatchDTO> result = resultPage.getContent();
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).awayTeam().name()).isEqualTo(this.team1.getName());
+        assertThat(result.get(1).awayTeam().name()).isEqualTo(this.team2.getName());
     }
 
     @Test
@@ -65,14 +110,11 @@ class MatchServiceIntegrationTest {
         Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.SCHEDULED);
         this.matchRepository.save(match);
 
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME,0, 10);
-        List<MatchDTO> result = resultPage.getContent();
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
+        MatchDTO result = resultPage.getContent().getFirst();
 
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).status()).isEqualTo(MatchStatus.IN_PROGRESS);
-
-        Match updated = this.matchRepository.findById(match.getId()).orElseThrow();
-        assertThat(updated.getStatus()).isEqualTo(MatchStatus.IN_PROGRESS);
+        assertThat(result.status()).isEqualTo(MatchStatus.IN_PROGRESS);
+        assertThat(this.matchRepository.findById(match.getId()).orElseThrow().getStatus()).isEqualTo(MatchStatus.IN_PROGRESS);
     }
 
     @Test
@@ -81,14 +123,11 @@ class MatchServiceIntegrationTest {
         Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(TEST_USER_USERNAME, 0, 10);
-        List<MatchDTO> result = resultPage.getContent();
+        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
+        MatchDTO result = resultPage.getContent().getFirst();
 
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).status()).isEqualTo(MatchStatus.FINISHED);
-
-        Match updated = this.matchRepository.findById(match.getId()).orElseThrow();
-        assertThat(updated.getStatus()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(result.status()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(this.matchRepository.findById(match.getId()).orElseThrow().getStatus()).isEqualTo(MatchStatus.FINISHED);
     }
 
     @Test

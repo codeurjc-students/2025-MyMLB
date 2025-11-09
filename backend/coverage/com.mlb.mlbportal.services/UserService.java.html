@@ -3,19 +3,26 @@
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
+import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
 import com.mlb.mlbportal.models.PasswordResetToken;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -27,61 +34,93 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationMapper authenticationMapper;
     private final UserMapper userMapper;
+    private final TeamMapper teamMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final TeamRepository teamRepository;
 
     public List&lt;ShowUser&gt; getAllUsers() {
-<span class="fc" id="L34">        return this.userMapper.toShowUsers(this.userRepository.findAll());</span>
+<span class="fc" id="L43">        return this.userMapper.toShowUsers(this.userRepository.findAll());</span>
+    }
+
+    public UserEntity getUser(String username) {
+<span class="pc" id="L47">        return this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
     }
 
     private boolean existsUser(RegisterRequest registerRequest) {
-<span class="fc" id="L38">        boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();</span>
-<span class="fc" id="L39">        boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();</span>
-<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        return usernameValidation || emailValidation; </span>
+<span class="fc" id="L51">        boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();</span>
+<span class="fc" id="L52">        boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();</span>
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">        return usernameValidation || emailValidation; </span>
     }
 
     public RegisterRequest createUser(RegisterRequest registerRequest) {
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (this.existsUser(registerRequest)) {</span>
-<span class="fc" id="L45">            throw new UserAlreadyExistsException();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (this.existsUser(registerRequest)) {</span>
+<span class="fc" id="L58">            throw new UserAlreadyExistsException();</span>
         }
-<span class="fc" id="L47">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
-<span class="fc" id="L48">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
-<span class="fc" id="L49">        newUser.getRoles().add(&quot;USER&quot;);</span>
-<span class="fc" id="L50">        this.userRepository.save(newUser);</span>
-<span class="fc" id="L51">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
+<span class="fc" id="L60">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
+<span class="fc" id="L61">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
+<span class="fc" id="L62">        newUser.getRoles().add(&quot;USER&quot;);</span>
+<span class="fc" id="L63">        this.userRepository.save(newUser);</span>
+<span class="fc" id="L64">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
     }
 
     public boolean resetPassword(String code, String newPassword) {
-<span class="fc" id="L55">        Optional&lt;PasswordResetToken&gt; optReset = this.emailService.getCode(code);</span>
+<span class="fc" id="L68">        Optional&lt;PasswordResetToken&gt; optReset = this.emailService.getCode(code);</span>
 
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (optReset.isEmpty()) {</span>
-<span class="fc" id="L58">            return false;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (optReset.isEmpty()) {</span>
+<span class="fc" id="L71">            return false;</span>
         }
         
-<span class="fc" id="L61">        PasswordResetToken passwordReset = optReset.get();</span>
-<span class="fc" id="L62">        UserEntity user = passwordReset.getUser();</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (user == null) {</span>
-<span class="fc" id="L64">            this.emailService.deleteToken(passwordReset);</span>
-<span class="fc" id="L65">            return false;</span>
+<span class="fc" id="L74">        PasswordResetToken passwordReset = optReset.get();</span>
+<span class="fc" id="L75">        UserEntity user = passwordReset.getUser();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L77">            this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L78">            return false;</span>
         }
         
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {</span>
-<span class="nc" id="L69">            passwordReset.getUser().setResetToken(null);</span>
-<span class="nc" id="L70">            this.emailService.deleteToken(passwordReset);</span>
-<span class="nc" id="L71">            return false;</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {</span>
+<span class="nc" id="L82">            passwordReset.getUser().setResetToken(null);</span>
+<span class="nc" id="L83">            this.emailService.deleteToken(passwordReset);</span>
+<span class="nc" id="L84">            return false;</span>
         }
 
-<span class="fc" id="L74">        user.setPassword(this.passwordEncoder.encode(newPassword));</span>
-<span class="fc" id="L75">        this.userRepository.save(user);</span>
+<span class="fc" id="L87">        user.setPassword(this.passwordEncoder.encode(newPassword));</span>
+<span class="fc" id="L88">        this.userRepository.save(user);</span>
 
-<span class="fc" id="L77">        user.setResetToken(null);</span>
-<span class="fc" id="L78">        this.emailService.deleteToken(passwordReset);</span>
-<span class="fc" id="L79">        return true;</span>
+<span class="fc" id="L90">        user.setResetToken(null);</span>
+<span class="fc" id="L91">        this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L92">        return true;</span>
     }
 
     public UserRole getUserRole(String username) {
-<span class="pc" id="L83">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
-<span class="fc" id="L84">        return this.authenticationMapper.toUserRole(user);</span>
+<span class="pc" id="L96">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
+<span class="fc" id="L97">        return this.authenticationMapper.toUserRole(user);</span>
     }
+
+    public Set&lt;TeamSummary&gt; getFavTeamsOfAUser(String username) {
+<span class="pc" id="L101">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
+<span class="fc" id="L102">        return this.teamMapper.toTeamSummarySet(user.getFavTeams());</span>
+    }
+
+    public void addFavTeam(String username, String teamName) {
+<span class="pc" id="L106">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
+<span class="fc" id="L107">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (!user.getFavTeams().add(team)) {</span>
+<span class="fc" id="L109">            throw new TeamAlreadyExistsException();</span>
+        }
+<span class="fc" id="L111">        this.userRepository.save(user);</span>
+<span class="fc" id="L112">        team.getFavoritedByUsers().add(user);</span>
+<span class="fc" id="L113">    }</span>
+
+    public void removeFavTeam(String username, String teamName) {
+<span class="pc" id="L116">        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
+<span class="fc" id="L117">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (!user.getFavTeams().contains(team)) {</span>
+<span class="fc" id="L119">            throw new TeamNotFoundException();</span>
+        }
+<span class="fc" id="L121">        user.getFavTeams().remove(team);</span>
+<span class="fc" id="L122">        this.userRepository.save(user);</span>
+<span class="fc" id="L123">        team.getFavoritedByUsers().remove(user);</span>
+<span class="fc" id="L124">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

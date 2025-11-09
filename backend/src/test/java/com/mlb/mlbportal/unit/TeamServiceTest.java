@@ -1,14 +1,13 @@
 package com.mlb.mlbportal.unit;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,12 +25,14 @@ import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
@@ -85,40 +87,88 @@ class TeamServiceTest {
 
         List<TeamInfoDTO> result = this.teamService.getTeams();
 
-        assertThat(result)
-                .hasSize(3)
-                .containsExactlyElementsOf(this.mockTeamInfoDTOs);
+        assertThat(result).hasSize(3).containsExactlyElementsOf(this.mockTeamInfoDTOs);
     }
 
     @Test
-    @DisplayName("Should return standings grouped by league and division with sorted DTOs")
-    void testGetStandings() {
-        List<Team> mockTeams = new ArrayList<>(List.of(team1, team2, team3));
-        when(this.teamRepository.findAll()).thenReturn(mockTeams);
+    @DisplayName("Should return the team")
+    void testGetTeam() {
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        assertThatNoException().isThrownBy(() -> this.teamService.getTeam(TEST_TEAM1_NAME));
 
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST))
-                .thenReturn(new ArrayList<>(List.of(team1)));
-        when(this.teamRepository.findByLeagueAndDivision(League.NL, Division.CENTRAL))
-                .thenReturn(new ArrayList<>(List.of(team2)));
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.WEST))
-                .thenReturn(new ArrayList<>(List.of(team3)));
+        Team result = this.teamService.getTeam(TEST_TEAM1_NAME);
+        assertThat(result.getName()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.getAbbreviation()).isEqualTo(this.team1.getAbbreviation());
+    }
 
-        when(this.teamMapper.toTeamDTO(team1)).thenReturn(this.mockTeamDTOs.get(0));
-        when(this.teamMapper.toTeamDTO(team2)).thenReturn(this.mockTeamDTOs.get(1));
-        when(this.teamMapper.toTeamDTO(team3)).thenReturn(this.mockTeamDTOs.get(2));
+    @Test
+    @DisplayName("Should throw TeamNotFound for an unknown player")
+    void testGetUnknownTeam() {
+        when(this.teamRepository.findByName(UNKNOWN_TEAM)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.teamService.getTeam(UNKNOWN_TEAM))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
+    @DisplayName("Should return standings grouped and ordered prioritizing user's favorite divisions")
+    void testGetStandingsWithUserFavorites() {
+        this.mockTeamRepositoryAndMapper();
+
+        UserEntity mockUser = BuildMocksFactory.setUpUsers().getLast();
+        mockUser.setFavTeams(new HashSet<>(List.of(team1, team3)));
+        when(this.userService.getUser(TEST_USER_USERNAME)).thenReturn(mockUser);
 
         Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(TEST_USER_USERNAME);
 
-        assertThat(standings).hasSize(2);
-        assertThat(standings.get(League.AL)).hasSize(3);
-        assertThat(standings.get(League.NL)).hasSize(3);
+        this.assertCommonStandingsStructure(standings);
 
-        assertThat(standings.get(League.AL).get(Division.EAST))
-                .containsExactly(mockTeamDTOs.get(0));
-        assertThat(standings.get(League.NL).get(Division.CENTRAL))
-                .containsExactly(mockTeamDTOs.get(1));
-        assertThat(standings.get(League.AL).get(Division.WEST))
-                .containsExactly(mockTeamDTOs.get(2));
+        assertThat(standings.get(team1.getLeague()).get(team1.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(0));
+        assertThat(standings.get(team2.getLeague()).get(team2.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(1));
+        assertThat(standings.get(team3.getLeague()).get(team3.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(2));
+
+        verify(this.userService).getUser(TEST_USER_USERNAME);
+    }
+
+    @Test
+    @DisplayName("Should return standings grouped and ordered correctly when no user is provided")
+    void testGetStandingsWithoutUserFavorites() {
+        this.mockTeamRepositoryAndMapper();
+
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(null);
+
+        this.assertCommonStandingsStructure(standings);
+
+        assertThat(standings.get(team1.getLeague()).get(team1.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(0));
+        assertThat(standings.get(team2.getLeague()).get(team2.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(1));
+        assertThat(standings.get(team3.getLeague()).get(team3.getDivision()))
+                .containsExactly(this.mockTeamDTOs.get(2));
+
+        verify(this.userService, never()).getUser(any());
+    }
+
+    private void mockTeamRepositoryAndMapper() {
+        when(this.teamRepository.findAll()).thenReturn(List.of(team1, team2, team3));
+        when(this.teamMapper.toTeamDTO(team1)).thenReturn(this.mockTeamDTOs.get(0));
+        when(this.teamMapper.toTeamDTO(team2)).thenReturn(this.mockTeamDTOs.get(1));
+        when(this.teamMapper.toTeamDTO(team3)).thenReturn(this.mockTeamDTOs.get(2));
+    }
+
+    private void assertCommonStandingsStructure(Map<League, Map<Division, List<TeamDTO>>> standings) {
+        assertThat(standings).isNotNull()
+                .containsKeys(League.AL, League.NL);
+
+        assertThat(standings.get(League.AL))
+                .containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
+
+        assertThat(standings.get(League.NL))
+                .containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
     }
 
     @Test
