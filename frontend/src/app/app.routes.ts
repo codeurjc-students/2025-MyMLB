@@ -6,7 +6,6 @@ import { PasswordComponent } from './components/password-recovery/password.compo
 import { AuthGuard } from './guards/auth.guard';
 import { ErrorComponent } from './components/error/error.component';
 import { TeamComponent } from './components/team/team.component';
-import { FavTeamComponent } from './components/team/fav-team/fav-team.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -21,6 +20,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/profile/profile.component').then((m) => m.ProfileComponent),
 	},
-	{ path: 'favorite-teams', component: FavTeamComponent },
+	{
+		path: 'favorite-teams',
+		canActivate: [AuthGuard],
+		loadComponent: () =>
+			import('./components/team/fav-team/fav-team.component').then((m) => m.FavTeamComponent)
+	}
 	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];

@@ -1,3 +1,4 @@
+import { SelectedTeamService } from './../../../services/selected-team.service';
 import { SimpliefiedTeam, TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
@@ -7,6 +8,7 @@ import { RemoveConfirmationModalComponent } from '../../remove-confirmation-moda
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-fav-team',
@@ -25,6 +27,9 @@ export class FavTeamComponent implements OnInit {
 	public showSuccessModal = false;
 	public addButtonClicked = false;
 	public availableTeams: SimpliefiedTeam[] = [];
+	public visibleTeams: SimpliefiedTeam[] = [];
+	private pageSize = 10;
+	private currentPage = 0;
 	public removeModalIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
 		<path fill-rule="evenodd" clip-rule="evenodd"
 			d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -35,7 +40,9 @@ export class FavTeamComponent implements OnInit {
 		private userService: UserService,
 		private backgroundService: BackgroundColorService,
 		private teamService: TeamService,
-		private authService: AuthService
+		private selectedTeamService: SelectedTeamService,
+		private authService: AuthService,
+		private router: Router
 	) {}
 
 	ngOnInit() {
@@ -56,6 +63,8 @@ export class FavTeamComponent implements OnInit {
 	private updateAvailableTeams(teams: SimpliefiedTeam[]) {
 		this.favTeams$.pipe(take(1)).subscribe((favs) => {
 			this.availableTeams = teams.filter(team => !favs.some(f => f.name === team.name));
+			this.currentPage = 0;
+			this.visibleTeams = this.availableTeams.slice(0, this.pageSize);
 		});
 	}
 
@@ -123,5 +132,26 @@ export class FavTeamComponent implements OnInit {
 
 	public logoBackground(team: SimpliefiedTeam) {
 		return this.backgroundService.getBackgroundColor(team.abbreviation);
+	}
+
+	// Select Team
+	public selectTeam(teamName: string) {
+		this.teamService.getTeamInfo(teamName).subscribe({
+			next: (response) => {
+				this.selectedTeamService.setSelectedTeam(response);
+				this.router.navigate(['team', teamName]);
+			},
+			error: (err) => {
+				this.errorMessage = err.message;
+			},
+		});
+	}
+
+	// Pagination
+	public loadMoreTeams() {
+		this.currentPage++;
+		const start = this.currentPage * this.pageSize;
+		const end = start + this.pageSize;
+		this.visibleTeams = [...this.visibleTeams, ...this.availableTeams.slice(start, end)];
 	}
 }

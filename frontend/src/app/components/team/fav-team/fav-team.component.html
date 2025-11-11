@@ -24,13 +24,14 @@
                 @for (team of favTeams$ | async; track team.abbreviation) {
                     <div class="flex flex-col items-center space-y-3 relative text-center">
                         <div
-                            class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center"
+                            class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
                             [ngClass]="logoBackground(team)"
+							(click)="selectTeam(team.name)"
                         >
                             <img
                                 src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
                                 alt="{{ team.name }} Logo"
-                                class="w-24 h-24 object-contain"
+                                class="w-24 h-24 object-contain cursor-pointer hover:animate-scale"
                             />
                         </div>
 
@@ -78,7 +79,7 @@
 				</h2>
 
 				<ul class="space-y-2">
-					@for (team of availableTeams; track team.abbreviation) {
+					@for (team of visibleTeams; track team.abbreviation) {
 						<li>
 							<button
 								(click)="addFavoriteTeam(team)"
@@ -97,14 +98,26 @@
 					}
 				</ul>
 
-				<div class="mt-6 text-center">
-					<button
-						(click)="addButtonClicked = false"
-						class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-					>
-						Close
-					</button>
-				</div>
+				@if (visibleTeams.length < availableTeams.length) {
+					<div class="mt-6 text-center">
+						<button
+							(click)="loadMoreTeams()"
+							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+						>
+							Load more teams
+						</button>
+					</div>
+				}
+				@else {
+					<div class="mt-6 text-center">
+						<button
+							(click)="addButtonClicked = false"
+							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+						>
+							Close
+						</button>
+					</div>
+				}
 			</div>
 		</div>
 	}
