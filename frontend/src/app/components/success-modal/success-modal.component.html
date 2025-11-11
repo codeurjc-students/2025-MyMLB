@@ -1,0 +1,31 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+    <div class="relative w-full max-w-md p-6">
+        <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 text-center animate-scaleIn">
+
+            <!-- Success Icon -->
+            <div class="w-14 h-14 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8 text-green-600 dark:text-green-400">
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    />
+                </svg>
+            </div>
+
+            <!-- Message -->
+            <p class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                {{ message }}
+            </p>
+
+            <!-- Continue Button -->
+            <button
+                type="button"
+                (click)="handleConfirm()"
+                class="px-5 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500"
+            >
+                Continue
+            </button>
+        </div>
+    </div>
+</div>

@@ -64,4 +64,8 @@ export class NavbarComponent implements OnInit {
 	public navBarBackgroundColor(abbreviation: string | undefined) {
 		return this.backgroundService.navBarBackground(abbreviation);
 	}
+
+	public redirectToFavTeam() {
+		this.router.navigate(['favorite-teams']);
+	}
 }
