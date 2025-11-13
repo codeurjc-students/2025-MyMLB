@@ -13,7 +13,7 @@ export const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
 	{ path: 'recovery', component: PasswordComponent },
 	{ path: 'team/:name', component: TeamComponent },
-	{ path: 'error', component: ErrorComponent },
+	//{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',
 		canActivate: [AuthGuard],
@@ -25,6 +25,6 @@ export const routes: Routes = [
 		canActivate: [AuthGuard],
 		loadComponent: () =>
 			import('./components/team/fav-team/fav-team.component').then((m) => m.FavTeamComponent)
-	},
-	{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
+	}
+	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];
