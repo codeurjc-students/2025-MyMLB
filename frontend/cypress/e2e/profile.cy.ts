@@ -15,12 +15,7 @@ describe('Profile Component E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getActiveUser');
 
-		cy.get('img[alt="Avatar Profile"]')
-			.should('be.visible')
-			.parent('a')
-			.should('have.attr', 'href', '/profile')
-			.click();
-
+		cy.get('img[alt="Avatar Profile"]').should('be.visible').parent('a').click();
 		cy.url().should('include', '/profile');
 	});
 

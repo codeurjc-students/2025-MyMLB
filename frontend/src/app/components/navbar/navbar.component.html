@@ -46,7 +46,7 @@
 							<a href="#" class="nav-elems" [ngClass]="applyStyle('/my-tickets')">My Tickets</a>
 						</li>
 						<li>
-							<a class="nav-elems" [ngClass]="applyStyle('/favorite-teams')" (click)="redirectToFavTeam()">Fav Teams</a>
+							<a class="nav-elems" [ngClass]="applyStyle('/favorite-teams')" (click)="redirect('fav-teams')">Fav Teams</a>
 						</li>
 						}
 
@@ -99,8 +99,8 @@
 				<!-- Profile -->
 				<div class="flex-shrink-0 ml-2 sm:ml-4">
 					<a
-						[routerLink]="profileLink"
 						class="flex items-center hover:opacity-90 transition duration-300 ease-in-out"
+						(click)="redirect('profile')"
 					>
 						<img
 							src="assets/account-avatar.png"

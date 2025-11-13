@@ -65,7 +65,14 @@ export class NavbarComponent implements OnInit {
 		return this.backgroundService.navBarBackground(abbreviation);
 	}
 
-	public redirectToFavTeam() {
-		this.router.navigate(['favorite-teams']);
+	public redirect(page: string) {
+		switch (page) {
+			case 'profile':
+				this.router.navigate(['profile']);
+				break;
+			case 'fav-teams':
+				this.router.navigate(['favorite-teams']);
+				break;
+		}
 	}
 }

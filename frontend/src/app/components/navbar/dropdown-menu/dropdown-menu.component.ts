@@ -1,6 +1,6 @@
 import { SelectedTeamService } from './../../../services/selected-team.service';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { SimpliefiedTeam, TeamService } from '../../../services/team.service';
+import { SimplifiedTeam, TeamService } from '../../../services/team.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { Router } from '@angular/router';
 import { TeamInfo } from '../../../models/team-info.model';
@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 })
 export class DropdownMenuComponent implements OnInit {
 	public errorMessage = '';
-	public teams: SimpliefiedTeam[] = [];
+	public teams: SimplifiedTeam[] = [];
 	public teamInfoResponse: TeamInfo | null = null;
 
 	constructor(

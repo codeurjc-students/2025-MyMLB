@@ -1,5 +1,5 @@
 import { SelectedTeamService } from './../../../services/selected-team.service';
-import { SimpliefiedTeam, TeamService } from './../../../services/team.service';
+import { SimplifiedTeam, TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
@@ -18,18 +18,18 @@ import { Router } from '@angular/router';
 	templateUrl: './fav-team.component.html',
 })
 export class FavTeamComponent implements OnInit {
-	public favTeams$!: Observable<SimpliefiedTeam[]>;
+	public favTeams$!: Observable<SimplifiedTeam[]>;
 	public username = '';
 	public errorMessage = '';
 	public successMessage = '';
 	public showDeleteModal = false;
-	private teamToDelete!: SimpliefiedTeam;
+	private teamToDelete!: SimplifiedTeam;
 	public showSuccessModal = false;
 	public addButtonClicked = false;
-	public availableTeams: SimpliefiedTeam[] = [];
-	public visibleTeams: SimpliefiedTeam[] = [];
+	public availableTeams: SimplifiedTeam[] = [];
+	public visibleTeams: SimplifiedTeam[] = [];
 	private pageSize = 10;
-	private currentPage = 0;
+	public currentPage = 0;
 	public removeModalIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
 		<path fill-rule="evenodd" clip-rule="evenodd"
 			d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -60,7 +60,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Add Favorite Team
 
-	private updateAvailableTeams(teams: SimpliefiedTeam[]) {
+	private updateAvailableTeams(teams: SimplifiedTeam[]) {
 		this.favTeams$.pipe(take(1)).subscribe((favs) => {
 			this.availableTeams = teams.filter(team => !favs.some(f => f.name === team.name));
 			this.currentPage = 0;
@@ -77,7 +77,7 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 
-	public addFavoriteTeam(team: SimpliefiedTeam) {
+	public addFavoriteTeam(team: SimplifiedTeam) {
 		this.errorMessage = '';
 		this.successMessage = '';
 		this.userService.addFavTeam(team).subscribe({
@@ -102,7 +102,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Remove Favorite Team
 
-	public openDeleteModal(team: SimpliefiedTeam) {
+	public openDeleteModal(team: SimplifiedTeam) {
 		this.showDeleteModal = true;
 		this.teamToDelete = team;
 	}
@@ -130,7 +130,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Background Logo
 
-	public logoBackground(team: SimpliefiedTeam) {
+	public logoBackground(team: SimplifiedTeam) {
 		return this.backgroundService.getBackgroundColor(team.abbreviation);
 	}
 

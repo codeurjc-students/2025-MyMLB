@@ -10,7 +10,7 @@ export type StandingsResponse = {
 	};
 };
 
-export type SimpliefiedTeam = {
+export type SimplifiedTeam = {
 	name: string;
 	abbreviation: string;
 	league: string;
@@ -33,7 +33,7 @@ export class TeamService {
 		return this.http.get<TeamInfo>(`${this.url}/${teamName}`);
 	}
 
-	public getTeamsNamesAndAbbr(): Observable<SimpliefiedTeam[]> {
+	public getTeamsNamesAndAbbr(): Observable<SimplifiedTeam[]> {
 		return this.getStandings().pipe(
 			map((data) => {
 				const result: {

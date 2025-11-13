@@ -1,10 +1,35 @@
+import { SimplifiedTeam } from './../../app/services/team.service';
 import { Pitcher } from '../../app/models/pitcher.model';
 import { PositionPlayer } from '../../app/models/position-player.model';
 import { StadiumSummary } from '../../app/models/stadium-summary.model';
 import { TeamInfo } from '../../app/models/team-info.model';
 import { Team } from '../../app/models/team.model';
+import { User } from '../../app/models/user.model';
+import { AuthResponse } from '../../app/models/auth/auth-response.model';
+import { UserRole } from '../../app/models/auth/user-role.model';
 
 export class MockFactory {
+	static buildUserMocks = (username: string, email: string) => {
+		return {
+			username: username,
+			email: email
+		} as User;
+	};
+
+	static buildMockResponse = (status: string, message: string) => {
+		return {
+			status: status,
+			message: message
+		} as AuthResponse;
+	};
+
+	static buildMockUserRole = (username: string, roles: string[]) => {
+		return {
+			username: username,
+			roles: roles
+		} as UserRole;
+	};
+
 	static buildTeamMocks = (
 		name: string,
 		abbreviation: string,
@@ -29,6 +54,15 @@ export class MockFactory {
 			gamesBehind: gamesBehind,
 			lastTen: lastTen,
 		} as Team;
+	};
+
+	static buildSimpliefiedTeamMock = (name: string, abbreviation: string, league: string, division: string) => {
+		return {
+			name: name,
+			abbreviation: abbreviation,
+			league: league,
+			division: division
+		} as SimplifiedTeam;
 	};
 
 	static buildStadiumMock = (name: string, year: number) => {

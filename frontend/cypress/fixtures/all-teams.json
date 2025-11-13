@@ -1,0 +1,5 @@
+[
+  { "name": "Boston Red Sox", "abbreviation": "BOS", "league": "AL", "division": "East" },
+  { "name": "Chicago Cubs", "abbreviation": "CHC", "league": "NL", "division": "Central" },
+  { "name": "New York Yankees", "abbreviation": "NYY", "league": "AL", "division": "East" }
+]
