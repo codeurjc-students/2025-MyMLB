@@ -1400,9 +1400,18 @@ ul.nav-tabs {
                     <li data-group="Teams" data-name="getStandings" class="">
                       <a href="#api-Teams-getStandings">getStandings</a>
                     </li>
-                  <li class="nav-header" data-group="UserController"><a href="#api-UserController">API Methods - UserController</a></li>
-                    <li data-group="UserController" data-name="getUsers" class="">
-                      <a href="#api-UserController-getUsers">getUsers</a>
+                  <li class="nav-header" data-group="Users"><a href="#api-Users">API Methods - Users</a></li>
+                    <li data-group="Users" data-name="addFavoriteTeam" class="">
+                      <a href="#api-Users-addFavoriteTeam">addFavoriteTeam</a>
+                    </li>
+                    <li data-group="Users" data-name="getFavoriteTeams" class="">
+                      <a href="#api-Users-getFavoriteTeams">getFavoriteTeams</a>
+                    </li>
+                    <li data-group="Users" data-name="getUsers" class="">
+                      <a href="#api-Users-getUsers">getUsers</a>
+                    </li>
+                    <li data-group="Users" data-name="removeFavoriteTeam" class="">
+                      <a href="#api-Users-removeFavoriteTeam">removeFavoriteTeam</a>
                     </li>
           </ul>
         </nav>
@@ -10119,67 +10128,68 @@ pub fn main() {
                       </div>
                       <hr>
                   </section>
-                <section id="api-UserController">
-                  <h1>UserController</h1>
-                    <div id="api-UserController-getUsers">
-                      <article id="api-UserController-getUsers-0" data-group="User" data-name="getUsers" data-version="0">
+                <section id="api-Users">
+                  <h1>Users</h1>
+                    <div id="api-Users-addFavoriteTeam">
+                      <article id="api-Users-addFavoriteTeam-0" data-group="User" data-name="addFavoriteTeam" data-version="0">
                         <div class="pull-left">
-                          <h1>getUsers</h1>
-                          <p></p>
+                          <h1>addFavoriteTeam</h1>
+                          <p>Add a favorite team</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked"></p>
+                        <p class="marked">Adds a team to the authenticated user&#39;s list of favorites.</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/users</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/users/favorites/teams/{teamName}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-UserController-getUsers-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-java">Java</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-dart">Dart</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-UserController-getUsers-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-UserController-getUsers-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-UserController-getUsers-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-UserController-getUsers-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-python">Python</a></li>
-                          <li class=""><a href="#examples-UserController-getUsers-0-rust">Rust</a></li>
+                          <li class="active"><a href="#examples-Users-addFavoriteTeam-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Users-addFavoriteTeam-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Users-addFavoriteTeam-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Users-addFavoriteTeam-0-rust">Rust</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-UserController-getUsers-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: */*" \
- "https://localhost:8443/api/users"
+                          <div class="tab-pane active" id="examples-Users-addFavoriteTeam-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/users/favorites/teams/{teamName}"
 </code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-UserController-getUsers-0-java">
+                          <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-java">
                             <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
 import org.openapitools.client.auth.*;
 import org.openapitools.client.model.*;
-import org.openapitools.client.api.UserControllerApi;
+import org.openapitools.client.api.UsersApi;
 
 import java.io.File;
 import java.util.*;
 
-public class UserControllerApiExample {
+public class UsersApiExample {
     public static void main(String[] args) {
 
         // Create an instance of the API class
-        UserControllerApi apiInstance = new UserControllerApi();
+        UsersApi apiInstance = new UsersApi();
+        String teamName = teamName_example; // String | 
 
         try {
-            array[ShowUser] result = apiInstance.getUsers();
+            AuthResponse result = apiInstance.addFavoriteTeam(teamName);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling UserControllerApi#getUsers");
+            System.err.println("Exception when calling UsersApi#addFavoriteTeam");
             e.printStackTrace();
         }
     }
@@ -10187,51 +10197,55 @@ public class UserControllerApiExample {
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-UserController-getUsers-0-dart">
+                          <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-dart">
                             <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
 
 final api_instance = DefaultApi();
 
+final String teamName = new String(); // String | 
 
 try {
-    final result = await api_instance.getUsers();
+    final result = await api_instance.addFavoriteTeam(teamName);
     print(result);
 } catch (e) {
-    print('Exception when calling DefaultApi->getUsers: $e\n');
+    print('Exception when calling DefaultApi->addFavoriteTeam: $e\n');
 }
 
 </code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-UserController-getUsers-0-android">
-                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UserControllerApi;
+                          <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UsersApi;
 
-public class UserControllerApiExample {
+public class UsersApiExample {
     public static void main(String[] args) {
-        UserControllerApi apiInstance = new UserControllerApi();
+        UsersApi apiInstance = new UsersApi();
+        String teamName = teamName_example; // String | 
 
         try {
-            array[ShowUser] result = apiInstance.getUsers();
+            AuthResponse result = apiInstance.addFavoriteTeam(teamName);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling UserControllerApi#getUsers");
+            System.err.println("Exception when calling UsersApi#addFavoriteTeam");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-UserController-getUsers-0-groovy">
+  <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-objc">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">
 
 // Create an instance of the API class
-UserControllerApi *apiInstance = [[UserControllerApi alloc] init];
+UsersApi *apiInstance = [[UsersApi alloc] init];
+String *teamName = teamName_example; //  (default to null)
 
-[apiInstance getUsersWithCompletionHandler: 
-              ^(array[ShowUser] output, NSError* error) {
+// Add a favorite team
+[apiInstance addFavoriteTeamWith:teamName
+              completionHandler: ^(AuthResponse output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -10242,11 +10256,13 @@ UserControllerApi *apiInstance = [[UserControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-javascript">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
 
 // Create an instance of the API class
-var api = new OpenApiDefinition.UserControllerApi()
+var api = new OpenApiDefinition.UsersApi()
+var teamName = teamName_example; // {String} 
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -10254,14 +10270,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getUsers(callback);
+api.addFavoriteTeam(teamName, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-UserController-getUsers-0-angular">
+                            <!--<div class="tab-pane" id="examples-Users-addFavoriteTeam-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-csharp">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using Org.OpenAPITools.Api;
@@ -10270,19 +10286,21 @@ using Org.OpenAPITools.Model;
 
 namespace Example
 {
-    public class getUsersExample
+    public class addFavoriteTeamExample
     {
         public void main()
         {
 
             // Create an instance of the API class
-            var apiInstance = new UserControllerApi();
+            var apiInstance = new UsersApi();
+            var teamName = teamName_example;  // String |  (default to null)
 
             try {
-                array[ShowUser] result = apiInstance.getUsers();
+                // Add a favorite team
+                AuthResponse result = apiInstance.addFavoriteTeam(teamName);
                 Debug.WriteLine(result);
             } catch (Exception e) {
-                Debug.Print("Exception when calling UserControllerApi.getUsers: " + e.Message );
+                Debug.Print("Exception when calling UsersApi.addFavoriteTeam: " + e.Message );
             }
         }
     }
@@ -10290,40 +10308,42 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-php">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 // Create an instance of the API class
-$api_instance = new OpenAPITools\Client\Api\UserControllerApi();
+$api_instance = new OpenAPITools\Client\Api\UsersApi();
+$teamName = teamName_example; // String | 
 
 try {
-    $result = $api_instance->getUsers();
+    $result = $api_instance->addFavoriteTeam($teamName);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling UserControllerApi->getUsers: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling UsersApi->addFavoriteTeam: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-perl">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::OPenAPIClient::Configuration;
-use WWW::OPenAPIClient::UserControllerApi;
+use WWW::OPenAPIClient::UsersApi;
 
 # Create an instance of the API class
-my $api_instance = WWW::OPenAPIClient::UserControllerApi->new();
+my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+my $teamName = teamName_example; # String | 
 
 eval {
-    my $result = $api_instance->getUsers();
+    my $result = $api_instance->addFavoriteTeam(teamName => $teamName);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling UserControllerApi->getUsers: $@\n";
+    warn "Exception when calling UsersApi->addFavoriteTeam: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-python">
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import openapi_client
@@ -10331,22 +10351,25 @@ from openapi_client.rest import ApiException
 from pprint import pprint
 
 # Create an instance of the API class
-api_instance = openapi_client.UserControllerApi()
+api_instance = openapi_client.UsersApi()
+teamName = teamName_example # String |  (default to null)
 
 try:
-    api_response = api_instance.get_users()
+    # Add a favorite team
+    api_response = api_instance.add_favorite_team(teamName)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UserControllerApi->getUsers: %s\n" % e)</code></pre>
+    print("Exception when calling UsersApi->addFavoriteTeam: %s\n" % e)</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-UserController-getUsers-0-rust">
-                              <pre class="prettyprint"><code class="language-rust">extern crate UserControllerApi;
+                            <div class="tab-pane" id="examples-Users-addFavoriteTeam-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
 
 pub fn main() {
+    let teamName = teamName_example; // String
 
-    let mut context = UserControllerApi::Context::default();
-    let result = client.getUsers(&context).wait();
+    let mut context = UsersApi::Context::default();
+    let result = client.addFavoriteTeam(teamName, &context).wait();
 
     println!("{:?}", result);
 }
@@ -10361,29 +10384,56 @@ pub fn main() {
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">teamName*</td>
+<td>
+
+
+    <div id="d2e199_addFavoriteTeam_teamName">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
 
 
 
 
                           <h2>Responses</h2>
-                            <h3 id="examples-UserController-getUsers-title-200"></h3>
-                            <p id="examples-UserController-getUsers-description-200" class="marked"></p>
+                            <h3 id="examples-Users-addFavoriteTeam-title-200"></h3>
+                            <p id="examples-Users-addFavoriteTeam-description-200" class="marked"></p>
                             <script>
-                              var responseUserController200_description = `OK`;
-                              var responseUserController200_description_break = responseUserController200_description.indexOf('\n');
-                              if (responseUserController200_description_break == -1) {
-                                $("#examples-UserController-getUsers-title-200").text("Status: 200 - " + responseUserController200_description);
+                              var responseUsers200_description = `Team successfully added`;
+                              var responseUsers200_description_break = responseUsers200_description.indexOf('\n');
+                              if (responseUsers200_description_break == -1) {
+                                $("#examples-Users-addFavoriteTeam-title-200").text("Status: 200 - " + responseUsers200_description);
                               } else {
-                                $("#examples-UserController-getUsers-title-200").text("Status: 200 - " + responseUserController200_description.substring(0, responseUserController200_description_break));
-                                $("#examples-UserController-getUsers-description-200").html(responseUserController200_description.substring(responseUserController200_description_break));
+                                $("#examples-Users-addFavoriteTeam-title-200").text("Status: 200 - " + responseUsers200_description.substring(0, responseUsers200_description_break));
+                                $("#examples-Users-addFavoriteTeam-description-200").html(responseUsers200_description.substring(responseUsers200_description_break));
                               }
                             </script>
 
 
-                            <ul id="responses-detail-UserController-getUsers-200" class="nav nav-tabs nav-tabs-examples" >
+                            <ul id="responses-detail-Users-addFavoriteTeam-200" class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-UserController-getUsers-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-Users-addFavoriteTeam-200-schema">Schema</a>
                                 </li>
 
 
@@ -10392,20 +10442,17 @@ pub fn main() {
                             </ul>
 
 
-                            <div class="tab-content" id="responses-UserController-getUsers-200-wrapper" style='margin-bottom: 10px;'>
-                              <div class="tab-pane active" id="responses-UserController-getUsers-200-schema">
-                                <div id="responses-UserController-getUsers-schema-200" class="exampleStyle">
+                            <div class="tab-content" id="responses-Users-addFavoriteTeam-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-addFavoriteTeam-200-schema">
+                                <div id="responses-Users-addFavoriteTeam-schema-200" class="exampleStyle">
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "OK",
+  "description" : "Team successfully added",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/components/schemas/ShowUser"
-        }
+        "$ref" : "#/components/schemas/AuthResponse"
       }
     }
   }
@@ -10436,14 +10483,1639 @@ pub fn main() {
                                       }
 
                                       var view = new JSONSchemaView(schema, 3);
-                                      $('#responses-UserController-getUsers-200-schema-data').val(JSON.stringify(schema));
-                                      var result = $('#responses-UserController-getUsers-schema-200');
+                                      $('#responses-Users-addFavoriteTeam-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-addFavoriteTeam-schema-200');
                                       result.empty();
                                       result.append(view.render());
                                     });
                                   </script>
                                 </div>
-                                <input id='responses-UserController-getUsers-200-schema-data' type='hidden' value=''></input>
+                                <input id='responses-Users-addFavoriteTeam-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-addFavoriteTeam-title-401"></h3>
+                            <p id="examples-Users-addFavoriteTeam-description-401" class="marked"></p>
+                            <script>
+                              var responseUsers401_description = `Unauthorized access`;
+                              var responseUsers401_description_break = responseUsers401_description.indexOf('\n');
+                              if (responseUsers401_description_break == -1) {
+                                $("#examples-Users-addFavoriteTeam-title-401").text("Status: 401 - " + responseUsers401_description);
+                              } else {
+                                $("#examples-Users-addFavoriteTeam-title-401").text("Status: 401 - " + responseUsers401_description.substring(0, responseUsers401_description_break));
+                                $("#examples-Users-addFavoriteTeam-description-401").html(responseUsers401_description.substring(responseUsers401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-addFavoriteTeam-401" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-addFavoriteTeam-401-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-addFavoriteTeam-401-schema">
+                                <div id="responses-Users-addFavoriteTeam-schema-401" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Unauthorized access",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-addFavoriteTeam-401-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-addFavoriteTeam-schema-401');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-addFavoriteTeam-401-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-addFavoriteTeam-title-404"></h3>
+                            <p id="examples-Users-addFavoriteTeam-description-404" class="marked"></p>
+                            <script>
+                              var responseUsers404_description = `Team not found`;
+                              var responseUsers404_description_break = responseUsers404_description.indexOf('\n');
+                              if (responseUsers404_description_break == -1) {
+                                $("#examples-Users-addFavoriteTeam-title-404").text("Status: 404 - " + responseUsers404_description);
+                              } else {
+                                $("#examples-Users-addFavoriteTeam-title-404").text("Status: 404 - " + responseUsers404_description.substring(0, responseUsers404_description_break));
+                                $("#examples-Users-addFavoriteTeam-description-404").html(responseUsers404_description.substring(responseUsers404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-addFavoriteTeam-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-addFavoriteTeam-404-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-addFavoriteTeam-404-schema">
+                                <div id="responses-Users-addFavoriteTeam-schema-404" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Team not found",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-addFavoriteTeam-404-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-addFavoriteTeam-schema-404');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-addFavoriteTeam-404-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-addFavoriteTeam-title-500"></h3>
+                            <p id="examples-Users-addFavoriteTeam-description-500" class="marked"></p>
+                            <script>
+                              var responseUsers500_description = `Internal server error`;
+                              var responseUsers500_description_break = responseUsers500_description.indexOf('\n');
+                              if (responseUsers500_description_break == -1) {
+                                $("#examples-Users-addFavoriteTeam-title-500").text("Status: 500 - " + responseUsers500_description);
+                              } else {
+                                $("#examples-Users-addFavoriteTeam-title-500").text("Status: 500 - " + responseUsers500_description.substring(0, responseUsers500_description_break));
+                                $("#examples-Users-addFavoriteTeam-description-500").html(responseUsers500_description.substring(responseUsers500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-addFavoriteTeam-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-addFavoriteTeam-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-addFavoriteTeam-500-schema">
+                                <div id="responses-Users-addFavoriteTeam-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-addFavoriteTeam-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-addFavoriteTeam-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-addFavoriteTeam-500-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Users-getFavoriteTeams">
+                      <article id="api-Users-getFavoriteTeams-0" data-group="User" data-name="getFavoriteTeams" data-version="0">
+                        <div class="pull-left">
+                          <h1>getFavoriteTeams</h1>
+                          <p>Get favorite teams of a user</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns the list of favorite MLB teams for the authenticated user.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/users/favorites/teams</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Users-getFavoriteTeams-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Users-getFavoriteTeams-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Users-getFavoriteTeams-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Users-getFavoriteTeams-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Users-getFavoriteTeams-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/users/favorites/teams"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.UsersApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        UsersApi apiInstance = new UsersApi();
+
+        try {
+            TeamSummary result = apiInstance.getFavoriteTeams();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#getFavoriteTeams");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getFavoriteTeams();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getFavoriteTeams: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UsersApi;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+        UsersApi apiInstance = new UsersApi();
+
+        try {
+            TeamSummary result = apiInstance.getFavoriteTeams();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#getFavoriteTeams");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+UsersApi *apiInstance = [[UsersApi alloc] init];
+
+// Get favorite teams of a user
+[apiInstance getFavoriteTeamsWithCompletionHandler: 
+              ^(TeamSummary output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.UsersApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getFavoriteTeams(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Users-getFavoriteTeams-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getFavoriteTeamsExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new UsersApi();
+
+            try {
+                // Get favorite teams of a user
+                TeamSummary result = apiInstance.getFavoriteTeams();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling UsersApi.getFavoriteTeams: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\UsersApi();
+
+try {
+    $result = $api_instance->getFavoriteTeams();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UsersApi->getFavoriteTeams: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::UsersApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+
+eval {
+    my $result = $api_instance->getFavoriteTeams();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling UsersApi->getFavoriteTeams: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.UsersApi()
+
+try:
+    # Get favorite teams of a user
+    api_response = api_instance.get_favorite_teams()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling UsersApi->getFavoriteTeams: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getFavoriteTeams-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
+
+pub fn main() {
+
+    let mut context = UsersApi::Context::default();
+    let result = client.getFavoriteTeams(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Users-getFavoriteTeams-title-200"></h3>
+                            <p id="examples-Users-getFavoriteTeams-description-200" class="marked"></p>
+                            <script>
+                              var responseUsers200_description = `Successfully retrieved favorite teams`;
+                              var responseUsers200_description_break = responseUsers200_description.indexOf('\n');
+                              if (responseUsers200_description_break == -1) {
+                                $("#examples-Users-getFavoriteTeams-title-200").text("Status: 200 - " + responseUsers200_description);
+                              } else {
+                                $("#examples-Users-getFavoriteTeams-title-200").text("Status: 200 - " + responseUsers200_description.substring(0, responseUsers200_description_break));
+                                $("#examples-Users-getFavoriteTeams-description-200").html(responseUsers200_description.substring(responseUsers200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-getFavoriteTeams-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Users-getFavoriteTeams-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-getFavoriteTeams-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-getFavoriteTeams-200-schema">
+                                <div id="responses-Users-getFavoriteTeams-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved favorite teams",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/TeamSummary"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-getFavoriteTeams-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-getFavoriteTeams-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-getFavoriteTeams-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-getFavoriteTeams-title-401"></h3>
+                            <p id="examples-Users-getFavoriteTeams-description-401" class="marked"></p>
+                            <script>
+                              var responseUsers401_description = `Unauthorized access`;
+                              var responseUsers401_description_break = responseUsers401_description.indexOf('\n');
+                              if (responseUsers401_description_break == -1) {
+                                $("#examples-Users-getFavoriteTeams-title-401").text("Status: 401 - " + responseUsers401_description);
+                              } else {
+                                $("#examples-Users-getFavoriteTeams-title-401").text("Status: 401 - " + responseUsers401_description.substring(0, responseUsers401_description_break));
+                                $("#examples-Users-getFavoriteTeams-description-401").html(responseUsers401_description.substring(responseUsers401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-getFavoriteTeams-401" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-getFavoriteTeams-401-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-getFavoriteTeams-401-schema">
+                                <div id="responses-Users-getFavoriteTeams-schema-401" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Unauthorized access",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-getFavoriteTeams-401-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-getFavoriteTeams-schema-401');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-getFavoriteTeams-401-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-getFavoriteTeams-title-500"></h3>
+                            <p id="examples-Users-getFavoriteTeams-description-500" class="marked"></p>
+                            <script>
+                              var responseUsers500_description = `Internal server error`;
+                              var responseUsers500_description_break = responseUsers500_description.indexOf('\n');
+                              if (responseUsers500_description_break == -1) {
+                                $("#examples-Users-getFavoriteTeams-title-500").text("Status: 500 - " + responseUsers500_description);
+                              } else {
+                                $("#examples-Users-getFavoriteTeams-title-500").text("Status: 500 - " + responseUsers500_description.substring(0, responseUsers500_description_break));
+                                $("#examples-Users-getFavoriteTeams-description-500").html(responseUsers500_description.substring(responseUsers500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-getFavoriteTeams-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-getFavoriteTeams-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-getFavoriteTeams-500-schema">
+                                <div id="responses-Users-getFavoriteTeams-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-getFavoriteTeams-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-getFavoriteTeams-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-getFavoriteTeams-500-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Users-getUsers">
+                      <article id="api-Users-getUsers-0" data-group="User" data-name="getUsers" data-version="0">
+                        <div class="pull-left">
+                          <h1>getUsers</h1>
+                          <p>Get all users</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Returns a list of all registered users in the system.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/users</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Users-getUsers-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Users-getUsers-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Users-getUsers-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Users-getUsers-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Users-getUsers-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Users-getUsers-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Users-getUsers-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/users"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Users-getUsers-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.UsersApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        UsersApi apiInstance = new UsersApi();
+
+        try {
+            ShowUser result = apiInstance.getUsers();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#getUsers");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-getUsers-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+
+try {
+    final result = await api_instance.getUsers();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getUsers: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-getUsers-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UsersApi;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+        UsersApi apiInstance = new UsersApi();
+
+        try {
+            ShowUser result = apiInstance.getUsers();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#getUsers");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Users-getUsers-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Users-getUsers-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+UsersApi *apiInstance = [[UsersApi alloc] init];
+
+// Get all users
+[apiInstance getUsersWithCompletionHandler: 
+              ^(ShowUser output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getUsers-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.UsersApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getUsers(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Users-getUsers-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Users-getUsers-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class getUsersExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new UsersApi();
+
+            try {
+                // Get all users
+                ShowUser result = apiInstance.getUsers();
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling UsersApi.getUsers: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getUsers-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\UsersApi();
+
+try {
+    $result = $api_instance->getUsers();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UsersApi->getUsers: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getUsers-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::UsersApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+
+eval {
+    my $result = $api_instance->getUsers();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling UsersApi->getUsers: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getUsers-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.UsersApi()
+
+try:
+    # Get all users
+    api_response = api_instance.get_users()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling UsersApi->getUsers: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-getUsers-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
+
+pub fn main() {
+
+    let mut context = UsersApi::Context::default();
+    let result = client.getUsers(&context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Users-getUsers-title-200"></h3>
+                            <p id="examples-Users-getUsers-description-200" class="marked"></p>
+                            <script>
+                              var responseUsers200_description = `Successfully retrieved list of users`;
+                              var responseUsers200_description_break = responseUsers200_description.indexOf('\n');
+                              if (responseUsers200_description_break == -1) {
+                                $("#examples-Users-getUsers-title-200").text("Status: 200 - " + responseUsers200_description);
+                              } else {
+                                $("#examples-Users-getUsers-title-200").text("Status: 200 - " + responseUsers200_description.substring(0, responseUsers200_description_break));
+                                $("#examples-Users-getUsers-description-200").html(responseUsers200_description.substring(responseUsers200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-getUsers-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Users-getUsers-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-getUsers-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-getUsers-200-schema">
+                                <div id="responses-Users-getUsers-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Successfully retrieved list of users",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ShowUser"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-getUsers-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-getUsers-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-getUsers-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-getUsers-title-500"></h3>
+                            <p id="examples-Users-getUsers-description-500" class="marked"></p>
+                            <script>
+                              var responseUsers500_description = `Internal server error`;
+                              var responseUsers500_description_break = responseUsers500_description.indexOf('\n');
+                              if (responseUsers500_description_break == -1) {
+                                $("#examples-Users-getUsers-title-500").text("Status: 500 - " + responseUsers500_description);
+                              } else {
+                                $("#examples-Users-getUsers-title-500").text("Status: 500 - " + responseUsers500_description.substring(0, responseUsers500_description_break));
+                                $("#examples-Users-getUsers-description-500").html(responseUsers500_description.substring(responseUsers500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-getUsers-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-getUsers-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-getUsers-500-schema">
+                                <div id="responses-Users-getUsers-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-getUsers-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-getUsers-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-getUsers-500-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Users-removeFavoriteTeam">
+                      <article id="api-Users-removeFavoriteTeam-0" data-group="User" data-name="removeFavoriteTeam" data-version="0">
+                        <div class="pull-left">
+                          <h1>removeFavoriteTeam</h1>
+                          <p>Remove a favorite team</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Removes a team from the authenticated user&#39;s list of favorites.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/api/users/favorites/teams/{teamName}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Users-removeFavoriteTeam-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-dart">Dart</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Users-removeFavoriteTeam-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Users-removeFavoriteTeam-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-python">Python</a></li>
+                          <li class=""><a href="#examples-Users-removeFavoriteTeam-0-rust">Rust</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Users-removeFavoriteTeam-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE \
+ -H "Accept: application/json" \
+ "https://localhost:8443/api/users/favorites/teams/{teamName}"
+</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-java">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.*;
+import org.openapitools.client.auth.*;
+import org.openapitools.client.model.*;
+import org.openapitools.client.api.UsersApi;
+
+import java.io.File;
+import java.util.*;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+
+        // Create an instance of the API class
+        UsersApi apiInstance = new UsersApi();
+        String teamName = teamName_example; // String | 
+
+        try {
+            AuthResponse result = apiInstance.removeFavoriteTeam(teamName);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#removeFavoriteTeam");
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-dart">
+                            <pre class="prettyprint"><code class="language-dart">import 'package:openapi/api.dart';
+
+final api_instance = DefaultApi();
+
+final String teamName = new String(); // String | 
+
+try {
+    final result = await api_instance.removeFavoriteTeam(teamName);
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->removeFavoriteTeam: $e\n');
+}
+
+</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-android">
+                            <pre class="prettyprint"><code class="language-java">import org.openapitools.client.api.UsersApi;
+
+public class UsersApiExample {
+    public static void main(String[] args) {
+        UsersApi apiInstance = new UsersApi();
+        String teamName = teamName_example; // String | 
+
+        try {
+            AuthResponse result = apiInstance.removeFavoriteTeam(teamName);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi#removeFavoriteTeam");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">
+
+// Create an instance of the API class
+UsersApi *apiInstance = [[UsersApi alloc] init];
+String *teamName = teamName_example; //  (default to null)
+
+// Remove a favorite team
+[apiInstance removeFavoriteTeamWith:teamName
+              completionHandler: ^(AuthResponse output, NSError* error) {
+    if (output) {
+        NSLog(@"%@", output);
+    }
+    if (error) {
+        NSLog(@"Error: %@", error);
+    }
+}];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OpenApiDefinition = require('open_api_definition');
+
+// Create an instance of the API class
+var api = new OpenApiDefinition.UsersApi()
+var teamName = teamName_example; // {String} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.removeFavoriteTeam(teamName, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using Org.OpenAPITools.Api;
+using Org.OpenAPITools.Client;
+using Org.OpenAPITools.Model;
+
+namespace Example
+{
+    public class removeFavoriteTeamExample
+    {
+        public void main()
+        {
+
+            // Create an instance of the API class
+            var apiInstance = new UsersApi();
+            var teamName = teamName_example;  // String |  (default to null)
+
+            try {
+                // Remove a favorite team
+                AuthResponse result = apiInstance.removeFavoriteTeam(teamName);
+                Debug.WriteLine(result);
+            } catch (Exception e) {
+                Debug.Print("Exception when calling UsersApi.removeFavoriteTeam: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Create an instance of the API class
+$api_instance = new OpenAPITools\Client\Api\UsersApi();
+$teamName = teamName_example; // String | 
+
+try {
+    $result = $api_instance->removeFavoriteTeam($teamName);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UsersApi->removeFavoriteTeam: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::OPenAPIClient::Configuration;
+use WWW::OPenAPIClient::UsersApi;
+
+# Create an instance of the API class
+my $api_instance = WWW::OPenAPIClient::UsersApi->new();
+my $teamName = teamName_example; # String | 
+
+eval {
+    my $result = $api_instance->removeFavoriteTeam(teamName => $teamName);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling UsersApi->removeFavoriteTeam: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import openapi_client
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = openapi_client.UsersApi()
+teamName = teamName_example # String |  (default to null)
+
+try:
+    # Remove a favorite team
+    api_response = api_instance.remove_favorite_team(teamName)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling UsersApi->removeFavoriteTeam: %s\n" % e)</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Users-removeFavoriteTeam-0-rust">
+                              <pre class="prettyprint"><code class="language-rust">extern crate UsersApi;
+
+pub fn main() {
+    let teamName = teamName_example; // String
+
+    let mut context = UsersApi::Context::default();
+    let result = client.removeFavoriteTeam(teamName, &context).wait();
+
+    println!("{:?}", result);
+}
+</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Scopes</h2>
+                          <table>
+                            
+                          </table>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">teamName*</td>
+<td>
+
+
+    <div id="d2e199_removeFavoriteTeam_teamName">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3 id="examples-Users-removeFavoriteTeam-title-200"></h3>
+                            <p id="examples-Users-removeFavoriteTeam-description-200" class="marked"></p>
+                            <script>
+                              var responseUsers200_description = `Team successfully removed`;
+                              var responseUsers200_description_break = responseUsers200_description.indexOf('\n');
+                              if (responseUsers200_description_break == -1) {
+                                $("#examples-Users-removeFavoriteTeam-title-200").text("Status: 200 - " + responseUsers200_description);
+                              } else {
+                                $("#examples-Users-removeFavoriteTeam-title-200").text("Status: 200 - " + responseUsers200_description.substring(0, responseUsers200_description_break));
+                                $("#examples-Users-removeFavoriteTeam-description-200").html(responseUsers200_description.substring(responseUsers200_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-removeFavoriteTeam-200" class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-Users-removeFavoriteTeam-200-schema">Schema</a>
+                                </li>
+
+
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-removeFavoriteTeam-200-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-removeFavoriteTeam-200-schema">
+                                <div id="responses-Users-removeFavoriteTeam-schema-200" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Team successfully removed",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/AuthResponse"
+      }
+    }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-removeFavoriteTeam-200-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-removeFavoriteTeam-schema-200');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-removeFavoriteTeam-200-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-removeFavoriteTeam-title-401"></h3>
+                            <p id="examples-Users-removeFavoriteTeam-description-401" class="marked"></p>
+                            <script>
+                              var responseUsers401_description = `Unauthorized access`;
+                              var responseUsers401_description_break = responseUsers401_description.indexOf('\n');
+                              if (responseUsers401_description_break == -1) {
+                                $("#examples-Users-removeFavoriteTeam-title-401").text("Status: 401 - " + responseUsers401_description);
+                              } else {
+                                $("#examples-Users-removeFavoriteTeam-title-401").text("Status: 401 - " + responseUsers401_description.substring(0, responseUsers401_description_break));
+                                $("#examples-Users-removeFavoriteTeam-description-401").html(responseUsers401_description.substring(responseUsers401_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-removeFavoriteTeam-401" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-removeFavoriteTeam-401-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-removeFavoriteTeam-401-schema">
+                                <div id="responses-Users-removeFavoriteTeam-schema-401" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Unauthorized access",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-removeFavoriteTeam-401-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-removeFavoriteTeam-schema-401');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-removeFavoriteTeam-401-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-removeFavoriteTeam-title-404"></h3>
+                            <p id="examples-Users-removeFavoriteTeam-description-404" class="marked"></p>
+                            <script>
+                              var responseUsers404_description = `Team not found`;
+                              var responseUsers404_description_break = responseUsers404_description.indexOf('\n');
+                              if (responseUsers404_description_break == -1) {
+                                $("#examples-Users-removeFavoriteTeam-title-404").text("Status: 404 - " + responseUsers404_description);
+                              } else {
+                                $("#examples-Users-removeFavoriteTeam-title-404").text("Status: 404 - " + responseUsers404_description.substring(0, responseUsers404_description_break));
+                                $("#examples-Users-removeFavoriteTeam-description-404").html(responseUsers404_description.substring(responseUsers404_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-removeFavoriteTeam-404" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-removeFavoriteTeam-404-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-removeFavoriteTeam-404-schema">
+                                <div id="responses-Users-removeFavoriteTeam-schema-404" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Team not found",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-removeFavoriteTeam-404-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-removeFavoriteTeam-schema-404');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-removeFavoriteTeam-404-schema-data' type='hidden' value=''></input>
+                              </div>
+                            </div>
+                            <h3 id="examples-Users-removeFavoriteTeam-title-500"></h3>
+                            <p id="examples-Users-removeFavoriteTeam-description-500" class="marked"></p>
+                            <script>
+                              var responseUsers500_description = `Internal server error`;
+                              var responseUsers500_description_break = responseUsers500_description.indexOf('\n');
+                              if (responseUsers500_description_break == -1) {
+                                $("#examples-Users-removeFavoriteTeam-title-500").text("Status: 500 - " + responseUsers500_description);
+                              } else {
+                                $("#examples-Users-removeFavoriteTeam-title-500").text("Status: 500 - " + responseUsers500_description.substring(0, responseUsers500_description_break));
+                                $("#examples-Users-removeFavoriteTeam-description-500").html(responseUsers500_description.substring(responseUsers500_description_break));
+                              }
+                            </script>
+
+
+                            <ul id="responses-detail-Users-removeFavoriteTeam-500" class="nav nav-tabs nav-tabs-examples" >
+
+
+                            </ul>
+
+
+                            <div class="tab-content" id="responses-Users-removeFavoriteTeam-500-wrapper" style='margin-bottom: 10px;'>
+                              <div class="tab-pane active" id="responses-Users-removeFavoriteTeam-500-schema">
+                                <div id="responses-Users-removeFavoriteTeam-schema-500" class="exampleStyle">
+                                  <script>
+                                    $(document).ready(function() {
+                                      var schemaWrapper = {
+  "description" : "Internal server error",
+  "content" : {
+    "application/json" : { }
+  }
+};
+                                      var schema = findNode('schema',schemaWrapper).schema;
+                                      if (!schema) {
+                                        schema = schemaWrapper.schema;
+                                      }
+                                      if (schema == null) {
+                                        return;
+                                      }
+                                      if (schema.$ref != null) {
+                                        schema = defsParser.$refs.get(schema.$ref);
+                                        if (schema.properties != null) {
+                                          Object.keys(schema.properties).forEach( (item) => {
+                                            if (schema.properties[item].$ref != null) {
+                                              schema.properties[item] = defsParser.$refs.get(schema.properties[item].$ref);
+                                            }
+                                          });
+                                        }
+                                      } else if (schema.items != null && schema.items.$ref != null) {
+                                        schema.items = defsParser.$refs.get(schema.items.$ref);
+                                      } else {
+                                        schemaWrapper.definitions = Object.assign({}, defs);
+                                        $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                          console.log(err);
+                                        });
+                                      }
+
+                                      var view = new JSONSchemaView(schema, 3);
+                                      $('#responses-Users-removeFavoriteTeam-500-schema-data').val(JSON.stringify(schema));
+                                      var result = $('#responses-Users-removeFavoriteTeam-schema-500');
+                                      result.empty();
+                                      result.append(view.render());
+                                    });
+                                  </script>
+                                </div>
+                                <input id='responses-Users-removeFavoriteTeam-500-schema-data' type='hidden' value=''></input>
                               </div>
                             </div>
                         </article>

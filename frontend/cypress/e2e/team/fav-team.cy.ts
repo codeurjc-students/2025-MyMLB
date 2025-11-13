@@ -1,12 +1,14 @@
 /// <reference types="cypress" />
 
+import { SimplifiedTeam } from './../../../src/app/services/team.service';
+
 describe('Favorite Team Component E2E Tests', () => {
 	const AUTH_API_URL = '/api/auth/me';
+	let favTeams: SimplifiedTeam[] = [];
 
 	beforeEach(() => {
 		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
-
 			body: {
 				username: 'testUser',
 
@@ -14,22 +16,27 @@ describe('Favorite Team Component E2E Tests', () => {
 			},
 		}).as('getUser');
 
-		cy.intercept('GET', '/api/users/favorites/teams', {
-			fixture: 'fav-teams.json',
+		cy.intercept('GET', '/api/users/favorites/teams', (req) => {
+			req.reply(favTeams);
 		}).as('getFavTeams');
 
 		cy.intercept('GET', '/api/teams/standings', {
-			fixture: 'all-teams.json',
+			fixture: 'standings.json',
 		}).as('getTeams');
 
-		cy.intercept('POST', '/api/users/favorites/teams/*', {
-			statusCode: 200,
-			body: { status: 'SUCCESS', message: 'Team successfully added' },
+		cy.intercept('POST', '/api/users/favorites/teams/*', (req) => {
+			favTeams.push({
+				name: 'Boston Red Sox',
+				abbreviation: 'BOS',
+				league: 'AL',
+				division: 'EAST'
+			});
+			req.reply({ status: 'SUCCESS', message: 'Team successfully added' });
 		}).as('addFavTeam');
 
-		cy.intercept('DELETE', '/api/users/favorites/teams/New York Yankees', {
-			statusCode: 200,
-			body: { status: 'SUCCESS', message: 'Team successfully removed' },
+		cy.intercept('DELETE', '/api/users/favorites/teams/*', (req) => {
+			favTeams = favTeams.filter(t => t.name !== 'Boston Red Sox');
+			req.reply({ status: 'SUCCESS', message: 'Team successfully removed' });
 		}).as('removeFavTeam');
 
 		cy.visit('/');
@@ -62,6 +69,7 @@ describe('Favorite Team Component E2E Tests', () => {
 	});
 
 	describe('Add Favorite Team', () => {
+
 		it('should add the team to the favorite list and display the confirmation modal', () => {
 			cy.get('button').contains('Add Favorite Team').click();
 
@@ -71,10 +79,6 @@ describe('Favorite Team Component E2E Tests', () => {
 
 			cy.wait('@addFavTeam');
 
-			cy.wait('@getFavTeams');
-
-			cy.wait('@getTeams');
-
 			cy.get('app-success-modal').should('exist');
 
 			cy.get('app-success-modal').contains('Team successfully added');
@@ -83,7 +87,8 @@ describe('Favorite Team Component E2E Tests', () => {
 
 			cy.get('button').contains('Close').click();
 
-			cy.get('span').contains('Boston Red Sox').should('exist').and('be.visible');
+			cy.wait('@getFavTeams');
+			cy.get('.team-section-container span').contains('Boston Red Sox').should('exist').and('be.visible');
 		});
 	});
 
@@ -92,18 +97,17 @@ describe('Favorite Team Component E2E Tests', () => {
 			cy.get('button[title="Remove team"]').first().click();
 
 			cy.get('app-remove-confirmation-modal').should('exist').and('be.visible');
-
 			cy.get('app-remove-confirmation-modal').contains(
 				'Are you sure you want to remove this team as favorite?'
 			);
 
 			cy.get('app-remove-confirmation-modal').get('button').contains('Yes, Remove').click();
-
 			cy.wait('@removeFavTeam');
 
 			cy.get('app-success-modal').get('button').contains('Continue').click();
+			cy.wait('@getFavTeams');
 
-			cy.get('span').contains('Boston Red Sox').should('not.exist');
+			cy.get('.team-section-container').should('not.exist');
 		});
 	});
 });

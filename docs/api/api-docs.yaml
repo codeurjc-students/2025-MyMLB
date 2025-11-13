@@ -15,9 +15,74 @@ tags:
     \ pitchers"
 - name: Teams
   description: Operations related to MLB teams and standings
+- name: Users
+  description: Operations related to MLB Portal users and their favorite teams
 - name: Matches
   description: Operations related to the matches
 paths:
+  /api/users/favorites/teams/{teamName}:
+    post:
+      tags:
+      - Users
+      summary: Add a favorite team
+      description: Adds a team to the authenticated user's list of favorites.
+      operationId: addFavoriteTeam
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Team successfully added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+    delete:
+      tags:
+      - Users
+      summary: Remove a favorite team
+      description: Removes a team from the authenticated user's list of favorites.
+      operationId: removeFavoriteTeam
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Team successfully removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
   /api/auth/reset-password:
     post:
       tags:
@@ -197,17 +262,43 @@ paths:
   /api/users:
     get:
       tags:
-      - user-controller
+      - Users
+      summary: Get all users
+      description: Returns a list of all registered users in the system.
       operationId: getUsers
       responses:
         "200":
-          description: OK
+          description: Successfully retrieved list of users
           content:
-            '*/*':
+            application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ShowUser"
+                $ref: "#/components/schemas/ShowUser"
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+  /api/users/favorites/teams:
+    get:
+      tags:
+      - Users
+      summary: Get favorite teams of a user
+      description: Returns the list of favorite MLB teams for the authenticated user.
+      operationId: getFavoriteTeams
+      responses:
+        "200":
+          description: Successfully retrieved favorite teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamSummary"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
   /api/teams:
     get:
       tags:
@@ -615,6 +706,24 @@ components:
           type: string
         email:
           type: string
+    TeamSummary:
+      type: object
+      properties:
+        name:
+          type: string
+        abbreviation:
+          type: string
+        league:
+          type: string
+          enum:
+          - AL
+          - NL
+        division:
+          type: string
+          enum:
+          - EAST
+          - CENTRAL
+          - WEST
     TeamDTO:
       type: object
       properties:
@@ -936,24 +1045,6 @@ components:
       - date
       - homeTeam
       - status
-    TeamSummary:
-      type: object
-      properties:
-        name:
-          type: string
-        abbreviation:
-          type: string
-        league:
-          type: string
-          enum:
-          - AL
-          - NL
-        division:
-          type: string
-          enum:
-          - EAST
-          - CENTRAL
-          - WEST
     UserRole:
       type: object
       properties:

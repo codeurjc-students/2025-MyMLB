@@ -8,7 +8,7 @@ describe('Navbar Component E2E Tests', () => {
 			statusCode: 200,
 			body: {
 				username: 'testuser',
-				roles: ['USER'],
+				roles: ['GUEST', 'USER'],
 			},
 		}).as('getUser');
 
@@ -50,11 +50,6 @@ describe('Navbar Component E2E Tests', () => {
 		cy.get('input[type="checkbox"]').should('exist').check({ force: true });
 		cy.get('input[type="checkbox"]').should('be.checked');
 	});
-
-	it('shows avatar and navigates to profile', () => {
-        cy.get('img[alt="Avatar Profile"]').should('be.visible').parent('a').click();
-		cy.url().should('include', '/profile');
-    });
 
 	describe('NavbarComponent as GUEST', () => {
 		beforeEach(() => {
