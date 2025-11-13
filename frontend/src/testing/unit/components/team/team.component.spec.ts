@@ -6,6 +6,7 @@ import { BackgroundColorService } from '../../../../app/services/background-colo
 import { MockFactory } from '../../../utils/mock-factory';
 import { of } from 'rxjs';
 import { TeamInfo } from '../../../../app/models/team-info.model';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('Team Component Tests', () => {
 	let component: TeamComponent;
@@ -77,6 +78,7 @@ describe('Team Component Tests', () => {
 		TestBed.configureTestingModule({
 			imports: [TeamComponent],
 			providers: [
+				provideHttpClient(),
 				{
 					provide: SelectedTeamService,
 					useValue: {

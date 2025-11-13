@@ -69,6 +69,9 @@ public class WebSecurityConfig {
                     
                     // User Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/users/favorites/teams").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
 
                     // Team Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/teams").permitAll()

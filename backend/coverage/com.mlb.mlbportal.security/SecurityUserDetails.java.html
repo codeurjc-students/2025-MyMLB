@@ -28,9 +28,9 @@ public class SecurityUserDetails implements UserDetailsService {
 
         // Add the user roles in the way Spring recognize them
 <span class="fc" id="L30">        List&lt;GrantedAuthority&gt; roles = new ArrayList&lt;&gt;();</span>
-<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        for (String role: user.getRoles()) {</span>
-<span class="nc" id="L32">            roles.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + role));</span>
-<span class="nc" id="L33">        }</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        for (String role: user.getRoles()) {</span>
+<span class="fc" id="L32">            roles.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + role));</span>
+<span class="fc" id="L33">        }</span>
 <span class="fc" id="L34">        return new UserPrincipal(user, roles);</span>
     }   
 }

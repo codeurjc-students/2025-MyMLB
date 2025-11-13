@@ -6,7 +6,7 @@ import { SelectedTeamService } from '../../../../app/services/selected-team.serv
 import { Router } from '@angular/router';
 import { MockFactory } from '../../../utils/mock-factory';
 import { of, throwError } from 'rxjs';
-import { SimpliefiedTeam } from '../../../../app/services/team.service';
+import { SimplifiedTeam } from '../../../../app/services/team.service';
 import { TeamInfo } from '../../../../app/models/team-info.model';
 
 describe('Dropdown Menu Component Tests', () => {
@@ -17,7 +17,7 @@ describe('Dropdown Menu Component Tests', () => {
 	let selectedTeamServiceSpy: jasmine.SpyObj<SelectedTeamService>;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const mockTeams: SimpliefiedTeam[] = [
+	const mockTeams: SimplifiedTeam[] = [
 		{ name: 'Yankees', abbreviation: 'NYY', league: 'AL', division: 'East' },
 		{ name: 'Red Sox', abbreviation: 'BOS', league: 'AL', division: 'East' },
 	];

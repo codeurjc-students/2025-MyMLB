@@ -1,9 +1,12 @@
 package com.mlb.mlbportal.integration;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +19,23 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.PasswordResetToken;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
@@ -57,16 +68,22 @@ class UserServiceIntegrationTest {
     @SuppressWarnings("unused")
     private EmailService emailService;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
     private UserEntity user1;
     private UserEntity user2;
 
     private PasswordResetToken validToken;
     private PasswordResetToken invalidToken;
 
+    private List<Team> teams;
+
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        userRepository.deleteAll();
+        this.userRepository.deleteAll();
+        this.teamRepository.deleteAll();
 
         this.user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME, this.passwordEncoder.encode(USER1_PASSWORD));
         this.user2 = new UserEntity(USER2_EMAIL, USER2_USERNAME, this.passwordEncoder.encode(USER2_PASSWORD));
@@ -80,6 +97,12 @@ class UserServiceIntegrationTest {
         this.invalidToken = new PasswordResetToken(INVALID_CODE, this.user2);
         this.invalidToken.setExpirationDate(LocalDateTime.now().minusMinutes(10));
         this.passwordRepository.save(this.invalidToken);
+
+        this.teams = BuildMocksFactory.setUpTeamMocks();
+        this.teamRepository.saveAll(this.teams);
+
+        this.user1.setFavTeams(new HashSet<>(List.of(this.teams.get(0), this.teams.get(1))));
+        this.userRepository.save(this.user1);
     }
 
     @Test
@@ -116,5 +139,51 @@ class UserServiceIntegrationTest {
             userService.createUser(request);
         });
         assertThat(ex.getMessage()).isEqualTo("The User Already Exists in the Database");
+    }
+
+    @Test
+    @DisplayName("Should return correct favorite teams for a user")
+    void testGetFavTeamsOfAUser() {
+        Set<TeamSummary> result = this.userService.getFavTeamsOfAUser(USER1_USERNAME);
+
+        assertThat(result).hasSize(2)
+                .extracting(TeamSummary::name)
+                .containsExactlyInAnyOrder(this.teams.get(0).getName(), this.teams.get(1).getName());
+    }
+
+    @Test
+    @DisplayName("Should add a new team to user's favorites")
+    void testAddFavTeam() {
+        this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM3_NAME);
+
+        UserEntity updatedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(updatedUser.getFavTeams()).contains(this.teams.get(2));
+        assertThat(this.teams.get(2).getFavoritedByUsers()).contains(updatedUser);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamAlreadyExistsException if team is already in favorites")
+    void testAddFavTeamAlreadyExists() {
+        assertThatThrownBy(() -> this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM1_NAME))
+                .isInstanceOf(TeamAlreadyExistsException.class)
+                .hasMessageContaining("Team Already Exists");
+    }
+
+    @Test
+    @DisplayName("Should remove a team from user's favorites")
+    void testRemoveFavTeam() {
+        this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM1_NAME);
+
+        UserEntity updatedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(updatedUser.getFavTeams()).doesNotContain(this.teams.getFirst());
+        assertThat(this.teams.getFirst().getFavoritedByUsers()).doesNotContain(updatedUser);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException if team is not in favorites")
+    void testRemoveNonFavTeam() {
+        assertThatThrownBy(() -> this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM3_NAME))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
     }
 }

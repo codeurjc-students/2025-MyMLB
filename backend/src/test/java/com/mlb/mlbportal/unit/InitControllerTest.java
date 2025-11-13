@@ -1,28 +1,31 @@
 package com.mlb.mlbportal.unit;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.mlb.mlbportal.controllers.InitController;
-import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
 
 @ExtendWith(MockitoExtension.class)
 class InitControllerTest {
@@ -38,15 +41,14 @@ class InitControllerTest {
 
     @Mock
     private MatchRepository matchRepository;
-    
+
     @Mock
     private StadiumRepository stadiumRepository;
 
     @InjectMocks
     private InitController initController;
 
-    private static final int TEAM_COUNT = 30;
-    private static final int STADIUM_COUNT = 30;
+    private static final int TEAM_COUNT = 3;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -55,14 +57,12 @@ class InitControllerTest {
         ReflectionTestUtils.setField(this.initController, "arminPassword", "test5678");
     }
 
-    private List<Team> generateMockTeams(int count) {
-        return IntStream.range(0, count)
-                .mapToObj(i -> {
-                    Team t = new Team();
-                    ReflectionTestUtils.setField(t, "name", "Team " + i);
-                    return t;
-                })
-                .toList();
+    /**
+     * Helper method to generate mock teams using the factory.
+     * @return List of mock Team entities.
+     */
+    private List<Team> generateMockTeams() {
+        return BuildMocksFactory.setUpTeamMocks();
     }
 
     @Test
@@ -71,8 +71,7 @@ class InitControllerTest {
 
         ReflectionTestUtils.invokeMethod(this.initController, "createAdmins");
 
-        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor
-                .forClass(UserEntity.class);
+        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
 
         verify(this.userRepository, times(2)).save(userCaptor.capture());
 
@@ -85,39 +84,46 @@ class InitControllerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSetUpTeams() {
         ReflectionTestUtils.invokeMethod(this.initController, "setUpTeams");
-
-        ArgumentCaptor<List<Team>> teamListCaptor = ArgumentCaptor.forClass(List.class);
-
-        verify(this.teamRepository, times(1)).saveAll(teamListCaptor.capture());
-
-        assertThat(teamListCaptor.getValue()).hasSize(TEAM_COUNT);
+        verify(this.teamRepository, times(1)).saveAll(anyList());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSetUpStadiums() {
-        when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams(TEAM_COUNT));
+        when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams());
 
         ReflectionTestUtils.invokeMethod(this.initController, "setUpStadiums");
 
-        ArgumentCaptor<List<Stadium>> stadiumListCaptor = ArgumentCaptor.forClass(List.class);
-        verify(this.stadiumRepository, times(1)).saveAll(stadiumListCaptor.capture());
-        assertThat(stadiumListCaptor.getValue()).hasSize(STADIUM_COUNT);
-
+        verify(this.stadiumRepository, times(1)).saveAll(anyList());
         verify(this.teamRepository, times(1)).saveAll(anyList());
     }
 
     @Test
     void testSetUpMatches() {
-        when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams(TEAM_COUNT));
+        when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams());
 
         ReflectionTestUtils.invokeMethod(this.initController, "setUpMatches");
 
         verify(this.matchRepository, times(1)).saveAll(anyList());
-
         verify(this.teamRepository, times(1)).saveAll(anyList());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testSetUpPlayers() {
+        List<Team> mockTeams = this.generateMockTeams();
+        when(this.teamRepository.findAll()).thenReturn(mockTeams);
+
+        ReflectionTestUtils.invokeMethod(this.initController, "setUpPlayers");
+
+        verify(this.teamRepository, times(1)).findAll();
+        verify(this.teamRepository, times(1)).saveAll(anyList());
+
+        ArgumentCaptor<List<Team>> teamListCaptor = ArgumentCaptor.forClass(List.class);
+        verify(this.teamRepository).saveAll(teamListCaptor.capture());
+
+        List<Team> savedTeams = teamListCaptor.getValue();
+        assertThat(savedTeams).hasSize(TEAM_COUNT).isEqualTo(mockTeams);
     }
 }

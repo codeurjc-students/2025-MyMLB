@@ -16,6 +16,8 @@ public final class TestConstants {
     public static final String TEST_USER_USERNAME = "testUser";
     public static final String TEST_USER_PASSWORD = "test";
 
+    public static final String FAV_TEAMS_PATH = "/api/users/favorites/teams";
+
     public static final String BASE_URI = "http://localhost";
     public static final String ME_PATH = "/api/auth/me";
     public static final String LOGIN_PATH = "/api/auth/login";

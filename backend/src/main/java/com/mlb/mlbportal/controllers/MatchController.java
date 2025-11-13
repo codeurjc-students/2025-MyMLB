@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
+import java.security.Principal;
+
 @Tag(name = "Matches", description = "Operations related to the matches")
 @RestController
 @RequestMapping("/api/matches")
@@ -32,13 +34,12 @@ public class MatchController {
     })
     @GetMapping(value = "/today", produces = "application/json")
     public ResponseEntity<Page<MatchDTO>> getMatchesOfTheDayPaginated(
+            Principal principal,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<MatchDTO> matchesPage = this.matchService.getMatchesOfTheDay(page, size);
 
-        if (page < 0 || size <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(matchesPage);
+        String username = (principal != null) ? principal.getName() : null;
+        Page<MatchDTO> matches = this.matchService.getMatchesOfTheDay(username, page, size);
+        return ResponseEntity.ok(matches);
     }
 }

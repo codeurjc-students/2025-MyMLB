@@ -2,7 +2,9 @@ package com.mlb.mlbportal.e2e;
 
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,8 @@ import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.LOGOUT_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.ME_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.REGISTER_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.RESET_PASSWORD_PATH;
@@ -53,7 +57,34 @@ class AuthControllerTest extends BaseE2ETest {
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        saveTestUser(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
+        UserEntity user1 = saveTestUser(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
+    }
+
+    @Test
+    @DisplayName("GET /api/auth/me should return the active user")
+    void testGetActiveUser() {
+        given()
+                .header("X-Mock-User", TEST_USER_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .get(ME_PATH)
+                .then()
+                .statusCode(200)
+                .body("username", is(TEST_USER_USERNAME))
+                .body("roles", contains("USER"));
+    }
+
+    @Test
+    @DisplayName("GET /api/auth/me with a non authenticated user should return 401")
+    void testGetActiveUserWithoutAuthentication() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(ME_PATH)
+                .then()
+                .statusCode(401)
+                .body("status", is(FAILURE))
+                .body("message", is("User Not Authenticated"));
     }
 
     @Test
@@ -143,7 +174,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(409)
                 .body("status", equalTo(FAILURE))
-                .body("error", equalTo("User Already Exists in the Database"))
+                .body("error", equalTo("User Already Exists"))
                 .body("message", equalTo("The User Already Exists in the Database"));
     }
 
@@ -165,6 +196,33 @@ class AuthControllerTest extends BaseE2ETest {
                 .body("email", equalTo("The email is required"))
                 .body("username", equalTo("The username is required"))
                 .body("password", equalTo("The password is required"));
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/logout should logout the active user successfully")
+    void testLogout() {
+        given()
+                .header("X-Mock-User", TEST_USER_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .post(LOGOUT_PATH)
+                .then()
+                .statusCode(200)
+                .body("status", is(SUCCESS))
+                .body("message", is("Logout Successful"));
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/logout should return 400 if the user is not authenticated")
+    void testNonAuthenticatedUserLogout() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post(LOGOUT_PATH)
+                .then()
+                .statusCode(401)
+                .body("status", is(FAILURE))
+                .body("message", is("There is no user to logout"));
     }
 
     @Test

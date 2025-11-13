@@ -20,5 +20,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/profile/profile.component').then((m) => m.ProfileComponent),
 	},
+	{
+		path: 'favorite-teams',
+		canActivate: [AuthGuard],
+		loadComponent: () =>
+			import('./components/team/fav-team/fav-team.component').then((m) => m.FavTeamComponent)
+	}
 	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];

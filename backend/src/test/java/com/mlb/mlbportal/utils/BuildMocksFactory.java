@@ -18,6 +18,7 @@ import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
@@ -31,6 +32,14 @@ import static com.mlb.mlbportal.utils.TestConstants.*;
 public class BuildMocksFactory {
 
     private BuildMocksFactory() {}
+
+    public static List<UserEntity> setUpUsers() {
+        UserEntity user1 = new UserEntity(USER1_EMAIL, USER1_USERNAME);
+        UserEntity user2 =  new UserEntity(USER2_EMAIL, USER2_USERNAME);
+        UserEntity user3 =  new UserEntity(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
+
+        return Arrays.asList(user1, user2, user3);
+    }
 
     public static List<Team> setUpTeamMocks() {
         Team team1 = buildTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL, Division.EAST, TEST_TEAM1_LOGO);
@@ -56,6 +65,17 @@ public class BuildMocksFactory {
         TeamDTO dto1 = new TeamDTO(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, team1.getLeague(), team1.getDivision(), team1.getTotalGames(), team1.getWins(), team1.getLosses(), team1.getPct(), 1.0, "0-0");
         TeamDTO dto2 = new TeamDTO(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, team2.getLeague(), team2.getDivision(), team2.getTotalGames(), team2.getWins(), team2.getLosses(), team2.getPct(), 0.0, "0-0");
         TeamDTO dto3 = new TeamDTO(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, team3.getLeague(), team3.getDivision(), team3.getTotalGames(), team3.getWins(), team3.getLosses(), team3.getPct(), 41.0, "0-0");
+        return Arrays.asList(dto1, dto2, dto3);
+    }
+
+    public static List<TeamSummary> buildTeamSummaryMocks(List<Team> teams) {
+        Team team1 = teams.get(0);
+        Team team2 = teams.get(1);
+        Team team3 = teams.get(2);
+
+        TeamSummary dto1 = new TeamSummary(team1.getName(), team1.getAbbreviation(), team1.getLeague(), team1.getDivision());
+        TeamSummary dto2 = new TeamSummary(team2.getName(), team2.getAbbreviation(), team2.getLeague(), team2.getDivision());
+        TeamSummary dto3 = new TeamSummary(team3.getName(), team3.getAbbreviation(), team3.getLeague(), team3.getDivision());
         return Arrays.asList(dto1, dto2, dto3);
     }
 

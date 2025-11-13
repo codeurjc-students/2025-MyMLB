@@ -136,7 +136,7 @@ class UserLoginServiceTest {
 
         ResponseEntity<AuthResponse> result = this.userLoginService.logout(this.response);
 
-        assertThat(result.getStatusCode().value()).isEqualTo(400);
+        assertThat(result.getStatusCode().value()).isEqualTo(401);
         assertThat(result.getBody().getStatus()).isEqualTo(AuthResponse.Status.FAILURE);
         assertThat(result.getBody().getMessage()).isEqualTo("There is no user to logout");
     }
@@ -149,7 +149,7 @@ class UserLoginServiceTest {
 
         ResponseEntity<AuthResponse> result = this.userLoginService.logout(this.response);
 
-        assertThat(result.getStatusCode().value()).isEqualTo(400);
+        assertThat(result.getStatusCode().value()).isEqualTo(401);
         assertThat(result.getBody().getStatus()).isEqualTo(AuthResponse.Status.FAILURE);
         assertThat(result.getBody().getMessage()).isEqualTo("There is no user to logout");
     }

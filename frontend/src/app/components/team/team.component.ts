@@ -7,6 +7,7 @@ import { Pitcher } from '../../models/pitcher.model';
 import { TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
+import { UserService } from '../../services/user.service';
 
 @Component({
 	selector: 'app-team',
@@ -40,7 +41,8 @@ export class TeamComponent implements OnInit {
 	constructor(
 		private selectedTeamService: SelectedTeamService,
 		private teamService: TeamService,
-		private backgroundColorService: BackgroundColorService
+		private backgroundColorService: BackgroundColorService,
+		private userService: UserService
 	) {}
 
 	ngOnInit() {

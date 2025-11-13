@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
+import com.mlb.mlbportal.models.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +28,10 @@ import lombok.AllArgsConstructor;
 public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
+    private final UserService userService;
     private final Clock clock;
 
-    public Page<MatchDTO> getMatchesOfTheDay(int page, int size) {
+    public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
         LocalDate today = LocalDate.now(this.clock);
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
@@ -37,6 +40,19 @@ public class MatchService {
         matchesOfTheDay.forEach(this::updateMatches);
         this.matchRepository.saveAll(matchesOfTheDay);
 
+        UserEntity user = null;
+        if (username != null && !username.isBlank()) {
+            user = this.userService.getUser(username);
+        }
+
+        if (user != null) {
+            Set<Team> favTeams = user.getFavTeams();
+            matchesOfTheDay.sort((a, b) -> {
+                boolean aFav = favTeams.contains(a.getHomeTeam()) || favTeams.contains(a.getAwayTeam());
+                boolean bFav = favTeams.contains(b.getHomeTeam()) || favTeams.contains(b.getAwayTeam());
+                return Boolean.compare(!aFav, !bFav);
+            });
+        }
         Pageable pageable = PageRequest.of(page, size);
         int start = Math.min((int) pageable.getOffset(), matchesOfTheDay.size());
         int end = Math.min(start + pageable.getPageSize(), matchesOfTheDay.size());

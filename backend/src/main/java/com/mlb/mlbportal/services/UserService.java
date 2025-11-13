@@ -3,19 +3,26 @@ package com.mlb.mlbportal.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.UserAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
+import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
 import com.mlb.mlbportal.models.PasswordResetToken;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -27,11 +34,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationMapper authenticationMapper;
     private final UserMapper userMapper;
+    private final TeamMapper teamMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final TeamRepository teamRepository;
 
     public List<ShowUser> getAllUsers() {
         return this.userMapper.toShowUsers(this.userRepository.findAll());
+    }
+
+    public UserEntity getUser(String username) {
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
     }
 
     private boolean existsUser(RegisterRequest registerRequest) {
@@ -82,5 +95,31 @@ public class UserService {
     public UserRole getUserRole(String username) {
         UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         return this.authenticationMapper.toUserRole(user);
+    }
+
+    public Set<TeamSummary> getFavTeamsOfAUser(String username) {
+        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        return this.teamMapper.toTeamSummarySet(user.getFavTeams());
+    }
+
+    public void addFavTeam(String username, String teamName) {
+        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        if (!user.getFavTeams().add(team)) {
+            throw new TeamAlreadyExistsException();
+        }
+        this.userRepository.save(user);
+        team.getFavoritedByUsers().add(user);
+    }
+
+    public void removeFavTeam(String username, String teamName) {
+        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        if (!user.getFavTeams().contains(team)) {
+            throw new TeamNotFoundException();
+        }
+        user.getFavTeams().remove(team);
+        this.userRepository.save(user);
+        team.getFavoritedByUsers().remove(user);
     }
 }

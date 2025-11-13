@@ -3,6 +3,8 @@ package com.mlb.mlbportal.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -60,9 +62,16 @@ public class GlobalHandler {
         return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
-        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "User Already Exists in the Database");
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
+        String errorMsg = "Resource Already Exists";
+        if (ex instanceof UserAlreadyExistsException) {
+            errorMsg = "User Already Exists";
+        }
+        else if (ex instanceof TeamAlreadyExistsException) {
+            errorMsg = "Team Already Exists";
+        }
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), errorMsg);
     }
 
     @ExceptionHandler(NullPointerException.class)

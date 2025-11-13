@@ -3,6 +3,7 @@
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
@@ -23,13 +24,13 @@ public interface TeamMapper {
 
     default Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; toGroupedStandings(
             Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; groupedTeams) {
-<span class="nc" id="L26">        return groupedTeams.entrySet().stream()</span>
-<span class="nc" id="L27">                .collect(Collectors.toMap(</span>
+<span class="nc" id="L27">        return groupedTeams.entrySet().stream()</span>
+<span class="nc" id="L28">                .collect(Collectors.toMap(</span>
                         Map.Entry::getKey,
-<span class="nc" id="L29">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
-<span class="nc" id="L30">                                .collect(Collectors.toMap(</span>
+<span class="nc" id="L30">                        leagueEntry -&gt; leagueEntry.getValue().entrySet().stream()</span>
+<span class="nc" id="L31">                                .collect(Collectors.toMap(</span>
                                         Map.Entry::getKey,
-<span class="nc" id="L32">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
+<span class="nc" id="L33">                                        divisionEntry -&gt; toTeamDTOList(divisionEntry.getValue())))));</span>
     }
 
     @Mapping(target = &quot;id&quot;, ignore = true)
@@ -38,9 +39,11 @@ public interface TeamMapper {
     Team toDomainFromTeamStandings(TeamDTO teamStandings);
 
     TeamSummary toTeamSummaryDTO(Team team);
+    Set&lt;TeamSummary&gt; toTeamSummarySet(Set&lt;Team&gt; teams);
+    Team toTeamFromTeamSummary(TeamSummary teamSummary);
 
     @Mapping(target = &quot;teamStats&quot;, source = &quot;team&quot;)
-    @Mapping(target = &quot;positionPlayers&quot;, source = &quot;positionPlayers&quot;) // MapStruct mapea las colecciones
+    @Mapping(target = &quot;positionPlayers&quot;, source = &quot;positionPlayers&quot;)
     @Mapping(target = &quot;pitchers&quot;, source = &quot;pitchers&quot;)
     TeamInfoDTO toTeamInfoDTO(Team team);
 

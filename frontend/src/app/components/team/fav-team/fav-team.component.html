@@ -1,0 +1,144 @@
+<div
+	class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-24 flex flex-col items-center"
+>
+	<section class="w-full flex justify-center text-center overflow-visible">
+		<h1
+			class="text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]"
+		>
+			{{ username }}'s Favorite Teams
+		</h1>
+	</section>
+
+	@if ((favTeams$ | async)?.length === 0) {
+		<div class="flex justify-center">
+			<button
+			class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+			(click)="loadTeams()"
+			>Add Favorite Team</button>
+		</div>
+	}
+
+	@else {
+        <section class="w-full max-w-6xl team-section-container">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-14 gap-y-16 justify-center">
+                @for (team of favTeams$ | async; track team.abbreviation) {
+                    <div class="flex flex-col items-center space-y-3 relative text-center">
+                        <div
+                            class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
+                            [ngClass]="logoBackground(team)"
+							(click)="selectTeam(team.name)"
+                        >
+                            <img
+                                src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
+                                alt="{{ team.name }} Logo"
+                                class="w-24 h-24 object-contain cursor-pointer hover:animate-scale"
+                            />
+                        </div>
+
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-lg font-semibold text-center">{{ team.name }}</span>
+                            <button
+                                (click)="openDeleteModal(team)"
+                                class="text-red-500 hover:text-red-700 transition cursor-pointer"
+                                title="Remove team"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-12 flex justify-center">
+                <button
+                    (click)="loadTeams()"
+                    class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+                >
+                    Add Favorite Team
+                </button>
+            </div>
+        </section>
+    }
+
+	@if (addButtonClicked) {
+		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+			<div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-11/12 max-w-2xl p-6 overflow-y-auto max-h-[80vh]">
+				<h2 class="text-2xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
+					Select a Team to Add
+				</h2>
+
+				<ul class="space-y-2">
+					@for (team of visibleTeams; track team.abbreviation) {
+						<li>
+							<button
+								(click)="addFavoriteTeam(team)"
+								class="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-lg transition cursor-pointer hover:brightness-110 hover:shadow-md"
+								[ngClass]="logoBackground(team)"
+							>
+								<img
+									src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{
+									team.abbreviation}}.png"
+									alt="{{ team.name }} Logo"
+									class="w-8 h-8"
+								/>
+								<span class="text-white font-medium text-base truncate">{{ team.name }}</span>
+							</button>
+						</li>
+					}
+				</ul>
+
+				@if (visibleTeams.length < availableTeams.length) {
+					<div class="mt-6 text-center">
+						<button
+							(click)="loadMoreTeams()"
+							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+						>
+							Load more teams
+						</button>
+					</div>
+				}
+				@else {
+					<div class="mt-6 text-center">
+						<button
+							(click)="addButtonClicked = false"
+							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+						>
+							Close
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+	}
+
+	<!-- Addition Confirmation Modal -->
+	@if (showSuccessModal) {
+		<app-success-modal
+			[message]="successMessage"
+			(continue)="showSuccessModal = false"
+		></app-success-modal>
+	}
+
+	<!-- Remove Confirmation Modal -->
+	@if (showDeleteModal) {
+		<app-remove-confirmation-modal
+			[title]="'Are you sure you want to remove this team as favorite?'"
+			[contentMessage]="'This action cannot be undone. The team will be removed from your favorites.'"
+			[buttonContent]="'Yes, Remove'"
+			[svg]="removeModalIcon"
+			(confirm)="confirmDeleteTeam()"
+        	(cancel)="cancelDeleteModal()"
+		/>
+	}
+</div>

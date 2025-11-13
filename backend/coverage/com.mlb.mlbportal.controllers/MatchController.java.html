@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
+import java.security.Principal;
+
 @Tag(name = &quot;Matches&quot;, description = &quot;Operations related to the matches&quot;)
 @RestController
 @RequestMapping(&quot;/api/matches&quot;)
@@ -32,14 +34,13 @@ public class MatchController {
     })
     @GetMapping(value = &quot;/today&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfTheDayPaginated(
+            Principal principal,
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
-<span class="nc" id="L37">        Page&lt;MatchDTO&gt; matchesPage = this.matchService.getMatchesOfTheDay(page, size);</span>
 
-<span class="nc bnc" id="L39" title="All 4 branches missed.">        if (page &lt; 0 || size &lt;= 0) {</span>
-<span class="nc" id="L40">            return ResponseEntity.badRequest().build();</span>
-        }
-<span class="nc" id="L42">        return ResponseEntity.ok(matchesPage);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
+<span class="nc" id="L42">        Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
+<span class="nc" id="L43">        return ResponseEntity.ok(matches);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

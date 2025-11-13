@@ -1,7 +1,9 @@
 package com.mlb.mlbportal.models;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -10,7 +12,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreRemove;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,8 +39,24 @@ public class UserEntity {
     @OneToOne(mappedBy="user", cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_fav_teams",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    private Set<Team> favTeams = new HashSet<>();
+
     @ElementCollection(fetch= FetchType.EAGER)
     private List<String> roles = new LinkedList<>();
+
+    @PreRemove
+    public void preRemove() {
+        for (Team team : favTeams) {
+            team.getFavoritedByUsers().remove(this);
+        }
+        this.favTeams.clear();
+    }
 
     public UserEntity() {
         this.roles.add("GUEST");  
