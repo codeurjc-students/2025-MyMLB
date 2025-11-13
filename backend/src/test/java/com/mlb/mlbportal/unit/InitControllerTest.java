@@ -124,7 +124,6 @@ class InitControllerTest {
         verify(this.teamRepository).saveAll(teamListCaptor.capture());
 
         List<Team> savedTeams = teamListCaptor.getValue();
-        assertThat(savedTeams).hasSize(TEAM_COUNT);
-        assertThat(savedTeams).isEqualTo(mockTeams);
+        assertThat(savedTeams).hasSize(TEAM_COUNT).isEqualTo(mockTeams);
     }
 }

@@ -5,13 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.models.UserEntity;
-import com.mlb.mlbportal.repositories.UserRepository;
-import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,12 +21,34 @@ import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.team.TeamService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -93,8 +110,7 @@ class TeamServiceIntegrationTest {
     void testGetStandingsWithoutUserFavorites() {
         Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(null);
 
-        assertThat(standings).isNotNull();
-        assertThat(standings).containsKeys(League.AL, League.NL);
+        assertThat(standings).isNotNull().containsKeys(League.AL, League.NL);
 
         assertThat(standings.get(League.AL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
         assertThat(standings.get(League.NL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
@@ -115,8 +131,7 @@ class TeamServiceIntegrationTest {
 
         Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(USER1_USERNAME);
 
-        assertThat(standings).isNotNull();
-        assertThat(standings).containsKeys(League.AL, League.NL);
+        assertThat(standings).isNotNull().containsKeys(League.AL, League.NL);
 
         assertThat(standings.get(League.AL).get(Division.EAST))
                 .extracting(TeamDTO::abbreviation)
