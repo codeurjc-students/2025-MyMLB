@@ -3,8 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { StandingsResponse, TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StandingsData } from '../../models/standings-data.model';
-import { SelectedTeamService } from '../../services/selected-team.service';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-standings',

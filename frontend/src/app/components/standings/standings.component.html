@@ -35,7 +35,7 @@
                         @for (team of block.teams; track team.abbreviation) {
                             <tr
                                 class="transition-colors duration-200 hover:bg-teal-50 dark:hover:bg-slate-700"
-                                [class]="team.gamesBehind === 0 ? 'shimmer-number rank-gold shadow-md' : ''"
+                                [class]="team.gamesBehind === 0 ? 'shimmer-number rank-gold' : ''"
                             >
                                 <td class="px-3 py-3 text-left justify-center">
 									<div class="flex items-center gap-5 w-full">
@@ -61,10 +61,11 @@
 									</div>
 								</td>
                                 <td class="px-1 py-3 text-center">{{ team.totalGames }}</td>
-                                <td class="px-2 py-3 text-center font-bold text-green-700 dark:text-emerald-400">{{ team.wins }}</td>
-                                <td class="px-2 py-3 text-center font-bold text-red-700 dark:text-red-400">{{ team.losses }}</td>
+                                <td class="px-2 py-3 text-center font-bold" [class]="team.gamesBehind === 0 ? 'shimmer-number rank-gold' : 'text-green-700 dark:text-emerald-400'">{{ team.wins }}</td>
+                                <td class="px-2 py-3 text-center font-bold" [class]="team.gamesBehind === 0 ? 'shimmer-number rank-gold' : 'text-red-700 dark:text-red-400'">{{ team.losses }}</td>
                                 <td class="px-2 py-3 text-center font-bold"
                                     [ngClass]="{
+										'shimmer-number rank-gold': team.gamesBehind === 0,
                                         'text-green-700 dark:text-emerald-400': team.pct >= 0.5,
                                         'text-red-700 dark:text-red-400': team.pct < 0.5
                                     }">
