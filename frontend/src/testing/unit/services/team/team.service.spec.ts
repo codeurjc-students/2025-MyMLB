@@ -5,10 +5,14 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { Team } from '../../../../app/models/team.model';
 import { MockFactory } from '../../../utils/mock-factory';
 import { TeamInfo } from '../../../../app/models/team-info.model';
+import { SelectedTeamService } from '../../../../app/services/selected-team.service';
+import { Router } from '@angular/router';
 
 describe('Team Service Tests', () => {
 	let service: TeamService;
 	let httpMock: HttpTestingController;
+	let mockSelectedTeamService: jasmine.SpyObj<SelectedTeamService>;
+  	let mockRouter: jasmine.SpyObj<Router>;
 	const apiURL = 'https://localhost:8443/api/teams';
 
 	const mockResponse = {
@@ -86,8 +90,17 @@ describe('Team Service Tests', () => {
 	);
 
 	beforeEach(() => {
+		mockSelectedTeamService = jasmine.createSpyObj('SelectedTeamService', ['setSelectedTeam']);
+   	 	mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+
 		TestBed.configureTestingModule({
-			providers: [TeamService, provideHttpClient(withFetch()), provideHttpClientTesting()],
+			providers: [
+				TeamService,
+				provideHttpClient(withFetch()),
+				provideHttpClientTesting(),
+				{ provide: SelectedTeamService, useValue: mockSelectedTeamService },
+				{ provide: Router, useValue: mockRouter }
+			],
 		});
 		service = TestBed.inject(TeamService);
 		httpMock = TestBed.inject(HttpTestingController);
@@ -115,6 +128,32 @@ describe('Team Service Tests', () => {
 		const req = httpMock.expectOne(`${apiURL}/Yankees`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockTeamInfo);
+	});
+
+	it('should fetch team info, set selected team, and navigate', () => {
+		service.selectTeam('Yankees').subscribe((response) => {
+			expect(response).toEqual(mockTeamInfo);
+			expect(mockSelectedTeamService.setSelectedTeam).toHaveBeenCalledWith(mockTeamInfo);
+			expect(mockRouter.navigate).toHaveBeenCalledWith(['team', 'Yankees']);
+		});
+
+		const req = httpMock.expectOne(`${apiURL}/Yankees`);
+		expect(req.request.method).toBe('GET');
+		req.flush(mockTeamInfo);
+	});
+
+	it('should propagate error if team info fetch fails', () => {
+		service.selectTeam('Yankees').subscribe({
+			next: () => fail('Expected error, but got success'),
+			error: (err) => {
+				expect(err.status).toBe(404);
+				expect(mockSelectedTeamService.setSelectedTeam).not.toHaveBeenCalled();
+				expect(mockRouter.navigate).not.toHaveBeenCalled();
+			}
+		});
+
+		const req = httpMock.expectOne(`${apiURL}/Yankees`);
+		req.flush('Team Not Found', { status: 404, statusText: 'Not Found' });
 	});
 
 	it('should return simplified team list sorted by name', () => {

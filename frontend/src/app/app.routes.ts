@@ -6,6 +6,7 @@ import { PasswordComponent } from './components/password-recovery/password.compo
 import { AuthGuard } from './guards/auth.guard';
 import { ErrorComponent } from './components/error/error.component';
 import { TeamComponent } from './components/team/team.component';
+import { StandingsComponent } from './components/standings/standings.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -13,6 +14,7 @@ export const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
 	{ path: 'recovery', component: PasswordComponent },
 	{ path: 'team/:name', component: TeamComponent },
+	{ path: 'standings', component: StandingsComponent },
 	//{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',
