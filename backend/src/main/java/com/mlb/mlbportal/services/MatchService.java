@@ -14,12 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.MatchMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -30,6 +32,7 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final UserService userService;
     private final Clock clock;
+    private final TeamRepository teamRepository;
 
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
         LocalDate today = LocalDate.now(this.clock);
@@ -80,5 +83,15 @@ public class MatchService {
 
     public List<Match> getLast10Matches(Team team) {
         return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);
+    }
+
+    public List<MatchDTO> getHomeMatches(String teamName) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        return this.matchMapper.toMatchDTOList(this.matchRepository.findByHomeTeam(team));
+    }
+
+    public List<MatchDTO> getAwayMatches(String teamName) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        return this.matchMapper.toMatchDTOList(this.matchRepository.findByAwayTeam(team));
     }
 }

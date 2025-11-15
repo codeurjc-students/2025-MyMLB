@@ -2,5 +2,14 @@
 GET https://localhost:8443/api/matches/today
 Content-Type: application/json
 
-###
-GET https://localhost:8443/api/mlb/schedule?from=2026-03-01&to=2026-03-31
+### Get All Matches of the 2026 Season
+GET https://localhost:8443/api/mlb/schedule?from=2026-03-01&to=2026-10-31
+Content-Type: application/json
+
+### Get Home Matches of a certain team
+GET https://localhost:8443/api/matches/home/New York Yankees
+Content-Type: application/json
+
+### Get Away Matches of a certain team
+GET https://localhost:8443/api/matches/away/Boston Red Sox
+Content-Type: application/json

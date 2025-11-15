@@ -3,6 +3,7 @@ package com.mlb.mlbportal.controllers;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name = "Matches", description = "Operations related to the matches")
 @RestController
@@ -41,5 +43,15 @@ public class MatchController {
         String username = (principal != null) ? principal.getName() : null;
         Page<MatchDTO> matches = this.matchService.getMatchesOfTheDay(username, page, size);
         return ResponseEntity.ok(matches);
+    }
+
+    @GetMapping(value = "home/{teamName}", produces = "application/json")
+    public ResponseEntity<List<MatchDTO>> getHomeMatches(@PathVariable("teamName") String teamName) {
+        return ResponseEntity.ok(this.matchService.getHomeMatches(teamName));
+    }
+
+    @GetMapping(value = "away/{teamName}", produces = "application/json")
+    public ResponseEntity<List<MatchDTO>> getAwayMatches(@PathVariable("teamName") String teamName) {
+        return ResponseEntity.ok(this.matchService.getAwayMatches(teamName));
     }
 }

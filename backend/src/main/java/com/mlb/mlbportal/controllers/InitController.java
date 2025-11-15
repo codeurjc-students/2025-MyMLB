@@ -3,7 +3,9 @@ package com.mlb.mlbportal.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +39,7 @@ import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.MlbImportService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,8 @@ public class InitController {
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
     private final StadiumRepository stadiumRepository;
+
+    private final MlbImportService mlbImportService;
 
     private static final Random RANDOM = new Random();
 
@@ -203,11 +208,11 @@ public class InitController {
         List<Match> matches = this.generateBalancedMatches(allTeams);
         this.matchRepository.saveAll(matches);
 
-        for (Team team : allTeams) {
-            team.getHomeMatches().addAll(matches.stream().filter(m -> m.getHomeTeam().equals(team)).toList());
-            team.getAwayMatches().addAll(matches.stream().filter(m -> m.getAwayTeam().equals(team)).toList());
-        }
-        this.teamRepository.saveAll(allTeams);
+        // this.mlbImportService.getOfficialMatches(
+        //     LocalDate.of(2026, Month.MARCH, 1), 
+        //     LocalDate.of(2026, Month.SEPTEMBER, 30)
+        // );
+        this.teamRepository.saveAll(allTeams); 
     }
 
     private void setUpStadiums() {

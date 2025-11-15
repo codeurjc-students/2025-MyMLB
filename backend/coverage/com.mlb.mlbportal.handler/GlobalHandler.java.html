@@ -49,13 +49,13 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 <span class="fc" id="L49">        String errorMsg = &quot;Resource Not Found&quot;;</span>
 <span class="fc bfc" id="L50" title="All 2 branches covered.">        if (ex instanceof UserNotFoundException) {</span>
 <span class="fc" id="L51">            errorMsg = &quot;User Not Found&quot;;</span>
-        }
+<span class="fc" id="L52">        }</span>
 <span class="fc bfc" id="L53" title="All 2 branches covered.">        else if (ex instanceof TeamNotFoundException) {</span>
 <span class="fc" id="L54">            errorMsg = &quot;Team Not Found&quot;;</span>
-        }
+<span class="fc" id="L55">        }</span>
 <span class="fc bfc" id="L56" title="All 2 branches covered.">        else if (ex instanceof StadiumNotFoundException) {</span>
 <span class="fc" id="L57">            errorMsg = &quot;Stadium Not Found&quot;;</span>
-        }
+<span class="fc" id="L58">        }</span>
 <span class="pc bpc" id="L59" title="1 of 2 branches missed.">        else if (ex instanceof PlayerNotFoundException) {</span>
 <span class="fc" id="L60">            errorMsg = &quot;Player Not Found&quot;;</span>
         }
@@ -67,7 +67,7 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 <span class="fc" id="L67">        String errorMsg = &quot;Resource Already Exists&quot;;</span>
 <span class="fc bfc" id="L68" title="All 2 branches covered.">        if (ex instanceof UserAlreadyExistsException) {</span>
 <span class="fc" id="L69">            errorMsg = &quot;User Already Exists&quot;;</span>
-        }
+<span class="fc" id="L70">        }</span>
 <span class="pc bpc" id="L71" title="1 of 2 branches missed.">        else if (ex instanceof TeamAlreadyExistsException) {</span>
 <span class="fc" id="L72">            errorMsg = &quot;Team Already Exists&quot;;</span>
         }
@@ -80,13 +80,13 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 <span class="nc" id="L80">            return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
 <span class="nc" id="L82">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-                &quot;Internal Server Error occurred due to NullPointerException&quot;);
+<span class="nc" id="L83">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
 <span class="nc" id="L88">        return this.buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-                &quot;HTTP method not allowed for this endpoint&quot;);
+<span class="nc" id="L89">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -96,7 +96,7 @@ import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleAllOtherExceptions(Exception ex) {
-<span class="nc" id="L99">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
+<span class="fc" id="L99">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

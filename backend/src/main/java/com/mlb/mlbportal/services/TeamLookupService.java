@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamLookupService {
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
     private final Map<Integer, TeamSummary> cache = new HashMap<>();
 
     private static final Map<String, Division> TEAM_DIVISIONS = Map.ofEntries(

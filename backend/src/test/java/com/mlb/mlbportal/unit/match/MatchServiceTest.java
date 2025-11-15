@@ -1,27 +1,25 @@
-package com.mlb.mlbportal.unit;
+package com.mlb.mlbportal.unit.match;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.mlb.mlbportal.models.UserEntity;
-import com.mlb.mlbportal.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 
@@ -29,9 +27,15 @@ import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.mappers.MatchMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
+import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 
 @ExtendWith(MockitoExtension.class)
 class MatchServiceTest {
@@ -47,6 +51,9 @@ class MatchServiceTest {
 
     @Mock
     private Clock clock;
+
+    @Mock
+    private TeamRepository teamRepository;
 
     @InjectMocks
     private MatchService matchService;
@@ -137,5 +144,35 @@ class MatchServiceTest {
         List<Match> result = this.matchService.getLast10Matches(team1);
 
         assertThat(result).hasSize(matches.size()).containsExactlyElementsOf(matches);
+    }
+
+    @Test
+    @DisplayName("Should return the home matches of a team")
+    void testGetHomeMatchesOfATeam() {
+        Team team1 = this.teams.get(1);
+        List<Match> homeMatches = Arrays.asList(this.matches.getFirst());
+
+        when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(team1));
+        when(this.matchRepository.findByHomeTeam(team1)).thenReturn(homeMatches);
+        when(this.matchMapper.toMatchDTOList(homeMatches))
+            .thenReturn(Arrays.asList(this.mockMatchDTOs.getFirst()));
+
+        List<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM2_NAME);
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should return the away matches of a team")
+    void testGetAwayMatchesOfATeam() {
+        Team team1 = this.teams.getFirst();
+        List<Match> awayMatches = Arrays.asList(this.matches.get(2));
+
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(team1));
+        when(this.matchRepository.findByAwayTeam(team1)).thenReturn(awayMatches);
+        when(this.matchMapper.toMatchDTOList(awayMatches))
+            .thenReturn(Arrays.asList(this.mockMatchDTOs.get(2)));
+
+        List<MatchDTO> result = this.matchService.getAwayMatches(TEST_TEAM1_NAME);
+        assertThat(result).hasSize(1);
     }
 }

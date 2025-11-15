@@ -1,23 +1,27 @@
 package com.mlb.mlbportal.unit.match;
 
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbApi.TeamDetails;
 import com.mlb.mlbportal.dto.mlbApi.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.services.TeamLookupService;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class TeamLookupServiceTest {
@@ -27,6 +31,14 @@ class TeamLookupServiceTest {
 
     @InjectMocks
     private TeamLookupService teamLookupService;
+
+    @BeforeEach
+    @SuppressWarnings("unused")
+    void setUp() throws Exception {
+        var field = TeamLookupService.class.getDeclaredField("restTemplate");
+        field.setAccessible(true);
+        field.set(teamLookupService, restTemplate);
+    }
 
     @Test
     void testGetTeamSummaryFromApi() {
