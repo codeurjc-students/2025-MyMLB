@@ -13,4 +13,5 @@ import com.mlb.mlbportal.models.Team;
 public interface MatchRepository extends JpaRepository<Match, Long> {
     public List<Match> findByDateBetween(LocalDateTime start, LocalDateTime end);
     public List<Match> findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(Team homeTeam, Team awayTeam);
+    public boolean existsByHomeTeamNameAndAwayTeamNameAndDate(String homeTeamName, String awayTeamName, LocalDateTime date);
 }

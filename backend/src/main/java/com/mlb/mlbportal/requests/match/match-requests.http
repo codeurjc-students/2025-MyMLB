@@ -1,3 +1,6 @@
 ### Get Matches of the day
 GET https://localhost:8443/api/matches/today
 Content-Type: application/json
+
+###
+GET https://localhost:8443/api/mlb/schedule?from=2026-03-01&to=2026-03-31
