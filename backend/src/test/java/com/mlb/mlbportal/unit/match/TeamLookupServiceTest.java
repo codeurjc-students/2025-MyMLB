@@ -22,8 +22,9 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
-import com.mlb.mlbportal.dto.mlbApi.TeamDetails;
-import com.mlb.mlbportal.dto.mlbApi.TeamDetailsResponse;
+import com.mlb.mlbportal.dto.mlbapi.LeagueInfo;
+import com.mlb.mlbportal.dto.mlbapi.TeamDetails;
+import com.mlb.mlbportal.dto.mlbapi.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -55,7 +56,7 @@ class TeamLookupServiceTest {
                 1,
                 "New York Yankees",
                 "NYY",
-                new com.mlb.mlbportal.dto.mlbApi.LeagueInfo("American League"),
+                new LeagueInfo("American League"),
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 
@@ -80,7 +81,7 @@ class TeamLookupServiceTest {
                 1,
                 "New York Yankees",
                 "NYY",
-                new com.mlb.mlbportal.dto.mlbApi.LeagueInfo("American League"),
+                new LeagueInfo("American League"),
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 
@@ -115,7 +116,7 @@ class TeamLookupServiceTest {
                 2,
                 "Unknown Team",
                 "XYZ",
-                new com.mlb.mlbportal.dto.mlbApi.LeagueInfo("Some League"),
+                new LeagueInfo("Some League"),
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 

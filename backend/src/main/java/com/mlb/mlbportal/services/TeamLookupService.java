@@ -8,15 +8,14 @@ import javax.naming.ServiceUnavailableException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.mlb.mlbportal.dto.mlbApi.TeamDetailsResponse;
-import com.mlb.mlbportal.dto.mlbApi.TeamDetails;
+import com.mlb.mlbportal.dto.mlbapi.TeamDetails;
+import com.mlb.mlbportal.dto.mlbapi.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -1,3 +1,3 @@
-package com.mlb.mlbportal.dto.mlbApi;
+package com.mlb.mlbportal.dto.mlbapi;
 
 public record Teams(TeamSide home, TeamSide away) {}

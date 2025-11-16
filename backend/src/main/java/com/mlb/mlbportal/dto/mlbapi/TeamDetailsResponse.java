@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.dto.mlbApi;
+package com.mlb.mlbportal.dto.mlbapi;
 
 import java.util.List;
 
