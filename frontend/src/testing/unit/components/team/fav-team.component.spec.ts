@@ -58,8 +58,7 @@ describe('FavTeamComponent', () => {
 		mockTeamService = {
 			getTeamsNamesAndAbbr: jasmine
 				.createSpy('getTeamsNamesAndAbbr')
-				.and.returnValue(of(allTeams)),
-			getTeamInfo: jasmine.createSpy('getTeamInfo').and.returnValue(of({} as TeamInfo)),
+				.and.returnValue(of(allTeams))
 		};
 
 		mockAuthService = {
@@ -184,53 +183,6 @@ describe('FavTeamComponent', () => {
 
 			expect(mockUserService.getFavTeams).toHaveBeenCalledTimes(2);
 			expect(mockTeamService.getTeamsNamesAndAbbr).toHaveBeenCalledTimes(1);
-		});
-	});
-
-	describe('selectTeam', () => {
-		const teamName = 'Team A';
-		const teamInfo: TeamInfo = {
-			teamStats: MockFactory.buildTeamMocks(
-				'Team A',
-				'TA',
-				'L1',
-				'D1',
-				100,
-				50,
-				50,
-				0.5,
-				0,
-				'5-5'
-			),
-			city: 'City A',
-			generalInfo: 'Info A',
-			championships: [2000, 2010],
-			stadium: MockFactory.buildStadiumMock('Stadium A', 1990),
-			positionPlayers: [],
-			pitchers: [],
-		};
-
-		it('should fetch team info, set selected team, and navigate on success', () => {
-			mockTeamService.getTeamInfo.and.returnValue(of(teamInfo));
-
-			component.selectTeam(teamName);
-
-			expect(mockTeamService.getTeamInfo).toHaveBeenCalledWith(teamName);
-			expect(mockSelectedTeamService.setSelectedTeam).toHaveBeenCalledWith(teamInfo);
-			expect(mockRouter.navigate).toHaveBeenCalledWith(['team', teamName]);
-			expect(component.errorMessage).toBe('');
-		});
-
-		it('should set errorMessage on failure to fetch team info', () => {
-			const error = new Error('Team Not Found');
-			mockTeamService.getTeamInfo.and.returnValue(throwError(() => error));
-
-			component.selectTeam(teamName);
-
-			expect(mockTeamService.getTeamInfo).toHaveBeenCalledWith(teamName);
-			expect(mockSelectedTeamService.setSelectedTeam).not.toHaveBeenCalled();
-			expect(mockRouter.navigate).not.toHaveBeenCalled();
-			expect(component.errorMessage).toBe(error.message);
 		});
 	});
 

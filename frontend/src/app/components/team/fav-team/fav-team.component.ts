@@ -1,4 +1,3 @@
-import { SelectedTeamService } from './../../../services/selected-team.service';
 import { SimplifiedTeam, TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
@@ -8,7 +7,6 @@ import { RemoveConfirmationModalComponent } from '../../remove-confirmation-moda
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-fav-team',
@@ -40,9 +38,7 @@ export class FavTeamComponent implements OnInit {
 		private userService: UserService,
 		private backgroundService: BackgroundColorService,
 		private teamService: TeamService,
-		private selectedTeamService: SelectedTeamService,
-		private authService: AuthService,
-		private router: Router
+		private authService: AuthService
 	) {}
 
 	ngOnInit() {
@@ -136,14 +132,8 @@ export class FavTeamComponent implements OnInit {
 
 	// Select Team
 	public selectTeam(teamName: string) {
-		this.teamService.getTeamInfo(teamName).subscribe({
-			next: (response) => {
-				this.selectedTeamService.setSelectedTeam(response);
-				this.router.navigate(['team', teamName]);
-			},
-			error: (err) => {
-				this.errorMessage = err.message;
-			},
+		this.teamService.selectTeam(teamName).subscribe({
+			error: (err) => this.errorMessage = err.message
 		});
 	}
 

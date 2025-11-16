@@ -31,6 +31,7 @@ public final class TestConstants {
     public static final String TEAM_INFO_PATH = "/api/teams/";
 
     public static final String MATCHES_OF_DAY_PATH = "/api/matches/today";
+    public static final String MATCHES_PATH = "/api/matches/";
 
     public static final String ALL_STADIUMS_PATH = "/api/stadiums";
     public static final String STADIUM_PATH = "/api/stadiums/";

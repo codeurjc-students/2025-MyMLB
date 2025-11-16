@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MlbImportService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">MlbImportService.java</span></div><h1>MlbImportService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.dto.mlbApi.GameEntry;
+import com.mlb.mlbportal.dto.mlbApi.ScheduleResponse;
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
+
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
+public class MlbImportService {
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final TeamLookupService teamLookupService;
+    private final MatchRepository matchRepository;
+    private final TeamRepository teamRepository;
+
+    public List&lt;MatchDTO&gt; getOfficialMatches(LocalDate start, LocalDate end) {
+
+<span class="fc" id="L34">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot;</span>
+<span class="fc" id="L35">                + &quot;&amp;startDate=&quot; + start</span>
+<span class="fc" id="L36">                + &quot;&amp;endDate=&quot; + end;</span>
+
+<span class="fc" id="L38">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
+
+<span class="pc bpc" id="L40" title="2 of 4 branches missed.">        if (response == null || response.dates() == null)</span>
+<span class="nc" id="L41">            return List.of();</span>
+
+<span class="fc" id="L43">        List&lt;MatchDTO&gt; result = response.dates().stream()</span>
+<span class="fc" id="L44">                .flatMap(d -&gt; d.games().stream())</span>
+<span class="fc" id="L45">                .map(this::toMatchDTO)</span>
+<span class="fc" id="L46">                .toList();</span>
+
+<span class="fc" id="L48">        List&lt;MatchDTO&gt; savedMatches = result.stream()</span>
+<span class="fc" id="L49">                .filter(this::isMlbTeamMatch)</span>
+<span class="fc" id="L50">                .map(dto -&gt; {</span>
+<span class="fc" id="L51">                    Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name()).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L52">                    Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name()).orElseThrow(TeamNotFoundException::new);</span>
+
+<span class="fc" id="L54">                    Match match = new Match(</span>
+<span class="fc" id="L55">                            awayEntity,</span>
+<span class="fc" id="L56">                            homeEntity,</span>
+<span class="fc" id="L57">                            dto.awayScore(),</span>
+<span class="fc" id="L58">                            dto.homeScore(),</span>
+<span class="fc" id="L59">                            dto.date(),</span>
+<span class="fc" id="L60">                            dto.status());</span>
+
+<span class="fc" id="L62">                    this.matchRepository.save(match);</span>
+<span class="fc" id="L63">                    return dto;</span>
+                })
+<span class="fc" id="L65">                .toList();</span>
+
+<span class="fc" id="L67">        return savedMatches;</span>
+    }
+
+    private boolean isMlbTeamMatch(MatchDTO dto) {
+<span class="fc" id="L71">        boolean homeExists = this.teamRepository.findByName(dto.homeTeam().name()).isPresent();</span>
+<span class="fc" id="L72">        boolean awayExists = this.teamRepository.findByName(dto.awayTeam().name()).isPresent();</span>
+
+<span class="pc bpc" id="L74" title="2 of 4 branches missed.">        return homeExists &amp;&amp; awayExists;</span>
+    }
+
+    private MatchDTO toMatchDTO(GameEntry game) {
+
+<span class="fc" id="L79">        int homeId = game.teams().home().team().id();</span>
+<span class="fc" id="L80">        int awayId = game.teams().away().team().id();</span>
+
+<span class="fc" id="L82">        TeamSummary home = teamLookupService.getTeamSummary(homeId);</span>
+<span class="fc" id="L83">        TeamSummary away = teamLookupService.getTeamSummary(awayId);</span>
+
+<span class="fc" id="L85">        LocalDateTime date = LocalDateTime.parse(game.gameDate().replace(&quot;Z&quot;, &quot;&quot;));</span>
+
+<span class="fc" id="L87">        MatchStatus status = convertStatus(game.status().detailedState());</span>
+<span class="fc" id="L88">        return new MatchDTO(</span>
+<span class="fc" id="L89">                home,</span>
+<span class="fc" id="L90">                away,</span>
+<span class="fc" id="L91">                Objects.requireNonNullElse(game.teams().home().score(), 0),</span>
+<span class="fc" id="L92">                Objects.requireNonNullElse(game.teams().away().score(), 0),</span>
+<span class="fc" id="L93">                date,</span>
+<span class="fc" id="L94">                status);</span>
+    }
+
+    private MatchStatus convertStatus(String apiStatus) {
+<span class="pc bpc" id="L98" title="3 of 4 branches missed.">        return switch (apiStatus) {</span>
+<span class="nc" id="L99">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
+<span class="nc" id="L100">            case &quot;In Progress&quot; -&gt; MatchStatus.IN_PROGRESS;</span>
+<span class="fc" id="L101">            case &quot;Final&quot; -&gt; MatchStatus.FINISHED;</span>
+<span class="nc" id="L102">            default -&gt; MatchStatus.SCHEDULED;</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -3,6 +3,7 @@
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name = &quot;Matches&quot;, description = &quot;Operations related to the matches&quot;)
 @RestController
@@ -38,9 +40,19 @@ public class MatchController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
-<span class="nc" id="L42">        Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
-<span class="nc" id="L43">        return ResponseEntity.ok(matches);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
+<span class="nc" id="L44">        Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
+<span class="nc" id="L45">        return ResponseEntity.ok(matches);</span>
+    }
+
+    @GetMapping(value = &quot;home/{teamName}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getHomeMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
+<span class="fc" id="L50">        return ResponseEntity.ok(this.matchService.getHomeMatches(teamName));</span>
+    }
+
+    @GetMapping(value = &quot;away/{teamName}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getAwayMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
+<span class="fc" id="L55">        return ResponseEntity.ok(this.matchService.getAwayMatches(teamName));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

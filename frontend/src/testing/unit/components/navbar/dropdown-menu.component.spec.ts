@@ -72,8 +72,7 @@ describe('Dropdown Menu Component Tests', () => {
 				{
 					provide: TeamService,
 					useValue: jasmine.createSpyObj('TeamService', [
-						'getTeamsNamesAndAbbr',
-						'getTeamInfo',
+						'getTeamsNamesAndAbbr'
 					]),
 				},
 				{
@@ -114,19 +113,6 @@ describe('Dropdown Menu Component Tests', () => {
 		teamServiceSpy.getTeamsNamesAndAbbr.and.returnValue(throwError(() => new Error('fail')));
 		component.ngOnInit();
 		expect(component.errorMessage).toBe('Error loading the team info');
-	});
-
-	it('should select team and navigate on success', () => {
-		teamServiceSpy.getTeamInfo.and.returnValue(of(mockTeamInfo));
-		component.selectTeam('Yankees');
-		expect(selectedTeamServiceSpy.setSelectedTeam).toHaveBeenCalledWith(mockTeamInfo);
-		expect(routerSpy.navigate).toHaveBeenCalledWith(['team', 'Yankees']);
-	});
-
-	it('should set errorMessage on selectTeam failure', () => {
-		teamServiceSpy.getTeamInfo.and.returnValue(throwError(() => new Error('Team Not Found')));
-		component.selectTeam('UnknownTeam');
-		expect(component.errorMessage).toBe('Team Not Found');
 	});
 
 	it('should return background color from service', () => {

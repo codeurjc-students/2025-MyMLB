@@ -73,6 +73,9 @@ export class NavbarComponent implements OnInit {
 			case 'fav-teams':
 				this.router.navigate(['favorite-teams']);
 				break;
+			case 'standings':
+				this.router.navigate(['standings']);
+				break;
 		}
 	}
 }

@@ -162,7 +162,7 @@
     "stadium": { "name": "Globe Life Field", "openingDate": "2020" }
   },
   {
-    "name": "Sacramento Athletics",
+    "name": "Athletics",
     "abbreviation": "ATH",
     "wins": 76,
     "losses": 86,
@@ -319,7 +319,7 @@
     "division": "WEST",
     "city": "Los Angeles",
     "generalInfo": "Founded in 1883, the Dodgers originally played in Brooklyn before relocating to Los Angeles in 1958. They have won multiple World Series titles, including 2020 and 2024, reflecting a storied tradition of excellence. Dodger Stadium is an iconic venue that has hosted generations of fans. Known for innovative play, strong pitching, and star talent, the Dodgers remain one of MLB’s flagship franchises. Los Angeles baseball combines historic legacy with a strong national and international following.",
-    "championships": [1955, 1959, 1963, 1965, 1981, 1988, 2020, 2024],
+    "championships": [1955, 1959, 1963, 1965, 1981, 1988, 2020, 2024, 2025],
     "stadium": { "name": "Dodger Stadium", "openingDate": "1962" }
   },
   {
@@ -348,7 +348,7 @@
   },
   {
     "name": "Arizona Diamondbacks",
-    "abbreviation": "ARI",
+    "abbreviation": "AZ",
     "wins": 80,
     "losses": 82,
     "league": "NL",

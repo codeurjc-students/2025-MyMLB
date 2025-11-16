@@ -12,7 +12,7 @@ export class BackgroundColorService {
 				return 'bg-sky-500';
 			case 'LAA':
 			case 'CIN':
-			case 'ARI':
+			case 'AZ':
 			case 'PHI':
 			case 'WSH':
 				return 'bg-red-500';
@@ -69,7 +69,7 @@ export class BackgroundColorService {
 				return 'bg-sky-500';
 			case 'LAA':
 			case 'CIN':
-			case 'ARI':
+			case 'AZ':
 			case 'PHI':
 			case 'WSH':
 				return 'bg-red-500';

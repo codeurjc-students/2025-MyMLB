@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-13T13:26:13+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-11-15T23:53:26+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L18">public class StadiumMapperImpl implements StadiumMapper {</span>
@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L43">        List&lt;StadiumDTO&gt; list = new ArrayList&lt;StadiumDTO&gt;( stadiumList.size() );</span>
 <span class="nc bnc" id="L44" title="All 2 branches missed.">        for ( Stadium stadium : stadiumList ) {</span>
 <span class="nc" id="L45">            list.add( toStadiumDTO( stadium ) );</span>
-<span class="nc" id="L46">        }</span>
+        }
 
 <span class="nc" id="L48">        return list;</span>
     }
@@ -76,7 +76,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L76">        List&lt;StadiumInitDTO&gt; list = new ArrayList&lt;StadiumInitDTO&gt;( stadiumList.size() );</span>
 <span class="fc bfc" id="L77" title="All 2 branches covered.">        for ( Stadium stadium : stadiumList ) {</span>
 <span class="fc" id="L78">            list.add( toStadiumInitDTO( stadium ) );</span>
-<span class="fc" id="L79">        }</span>
+        }
 
 <span class="fc" id="L81">        return list;</span>
     }

@@ -49,4 +49,10 @@ export class StandingsWidgetComponent implements OnInit {
 	public getBackgroundColor(abbreviation: string) {
 		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
+
+	public selectTeam(teamName: string) {
+		this.teamService.selectTeam(teamName).subscribe({
+			error: (err) => this.errorMessage = err.message
+		});
+	}
 }

@@ -1,5 +1,7 @@
 package com.mlb.mlbportal.unit;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,7 @@ import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.MlbImportService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +47,9 @@ class InitControllerTest {
 
     @Mock
     private StadiumRepository stadiumRepository;
+
+    @Mock
+    private MlbImportService mlbImportService;
 
     @InjectMocks
     private InitController initController;
@@ -101,12 +107,18 @@ class InitControllerTest {
 
     @Test
     void testSetUpMatches() {
-        when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams());
+        List<Team> mockTeams = this.generateMockTeams();
+        when(this.teamRepository.findAll()).thenReturn(mockTeams);
 
         ReflectionTestUtils.invokeMethod(this.initController, "setUpMatches");
 
         verify(this.matchRepository, times(1)).saveAll(anyList());
-        verify(this.teamRepository, times(1)).saveAll(anyList());
+
+        verify(this.mlbImportService, times(1))
+                .getOfficialMatches(LocalDate.of(2026, Month.MARCH, 1),
+                                    LocalDate.of(2026, Month.SEPTEMBER, 30));
+
+        verify(this.teamRepository, times(1)).saveAll(mockTeams);
     }
 
     @SuppressWarnings("unchecked")
