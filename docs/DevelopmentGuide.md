@@ -36,11 +36,11 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Frontend</td>
-      <td>Angular</td>
+      <td>Angular, TailwindCSS</td>
     </tr>
     <tr>
       <td>Backend</td>
-      <td>Spring Boot</td>
+      <td>Spring Boot, Resilience4J</td>
     </tr>
     <tr>
       <td>Database</td>
@@ -52,7 +52,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
   <tr>
     <td>IDE</td>
-    <td>Visual Studio Code</td>
+    <td>Visual Studio Code, IntelliJ</td>
   </tr>
   <tr>
     <td>Auxiliary Tools</td>
