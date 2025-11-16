@@ -1,9 +1,15 @@
 package com.mlb.mlbportal.unit.match;
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
+
+import javax.naming.ServiceUnavailableException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,10 +43,11 @@ class TeamLookupServiceTest {
     void setUp() throws Exception {
         var field = TeamLookupService.class.getDeclaredField("restTemplate");
         field.setAccessible(true);
-        field.set(teamLookupService, restTemplate);
+        field.set(this.teamLookupService, this.restTemplate);
     }
 
     @Test
+    @DisplayName("Should fetch team summary from MLB API successfully")
     void testGetTeamSummaryFromApi() {
         int teamId = 1;
 
@@ -52,10 +59,10 @@ class TeamLookupServiceTest {
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 
-        when(restTemplate.getForObject("https://statsapi.mlb.com/api/v1/teams/" + teamId,
+        when(this.restTemplate.getForObject("https://statsapi.mlb.com/api/v1/teams/" + teamId,
                 TeamDetailsResponse.class)).thenReturn(response);
 
-        TeamSummary summary = teamLookupService.getTeamSummary(teamId);
+        TeamSummary summary = this.teamLookupService.getTeamSummary(teamId);
 
         assertThat(summary).isNotNull();
         assertThat(summary.name()).isEqualTo("New York Yankees");
@@ -65,6 +72,7 @@ class TeamLookupServiceTest {
     }
 
     @Test
+    @DisplayName("Should return cached team summary on subsequent calls")
     void testGetTeamSummaryCache() {
         int teamId = 1;
 
@@ -76,28 +84,30 @@ class TeamLookupServiceTest {
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 
-        when(restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class)))
+        when(this.restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class)))
                 .thenReturn(response);
 
-        TeamSummary firstCall = teamLookupService.getTeamSummary(teamId);
-        TeamSummary secondCall = teamLookupService.getTeamSummary(teamId);
+        TeamSummary firstCall = this.teamLookupService.getTeamSummary(teamId);
+        TeamSummary secondCall = this.teamLookupService.getTeamSummary(teamId);
 
         assertThat(secondCall).isSameAs(firstCall);
 
-        verify(restTemplate, times(1)).getForObject(anyString(), eq(TeamDetailsResponse.class));
+        verify(this.restTemplate, times(1)).getForObject(anyString(), eq(TeamDetailsResponse.class));
     }
 
     @Test
+    @DisplayName("Should return null when API response is empty")
     void testGetTeamSummaryNullResponse() {
         int teamId = 99;
-        when(restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class))).thenReturn(null);
+        when(this.restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class))).thenReturn(null);
 
-        TeamSummary summary = teamLookupService.getTeamSummary(teamId);
+        TeamSummary summary = this.teamLookupService.getTeamSummary(teamId);
 
         assertThat(summary).isNull();
     }
 
     @Test
+    @DisplayName("Should handle unknown league gracefully with null values")
     void testGetTeamSummaryUnknownLeague() {
         int teamId = 2;
 
@@ -109,12 +119,52 @@ class TeamLookupServiceTest {
                 null);
         TeamDetailsResponse response = new TeamDetailsResponse(List.of(apiTeam));
 
-        when(restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class))).thenReturn(response);
+        when(this.restTemplate.getForObject(anyString(), eq(TeamDetailsResponse.class))).thenReturn(response);
 
-        TeamSummary summary = teamLookupService.getTeamSummary(teamId);
+        TeamSummary summary = this.teamLookupService.getTeamSummary(teamId);
 
         assertThat(summary).isNotNull();
         assertThat(summary.league()).isNull();
         assertThat(summary.division()).isNull();
+    }
+
+    @Test
+    @DisplayName("Fallback should return cached team when API fails")
+    void testFallbackTeamsReturnsCachedTeam() throws Exception {
+        int teamId = 1;
+        TeamSummary cachedSummary = new TeamSummary("Cached Team", "CT", League.AL, Division.EAST);
+
+        var cacheField = TeamLookupService.class.getDeclaredField("cache");
+        cacheField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Integer, TeamSummary> cache = (Map<Integer, TeamSummary>) cacheField.get(this.teamLookupService);
+        cache.put(teamId, cachedSummary);
+
+        Method method = TeamLookupService.class.getDeclaredMethod("fallbackTeams", int.class, Throwable.class);
+        method.setAccessible(true);
+
+        TeamSummary result = (TeamSummary) method.invoke(this.teamLookupService, teamId, new RuntimeException("API down"));
+
+        assertThat(result).isEqualTo(cachedSummary);
+    }
+
+    @Test
+    @DisplayName("Fallback should throw ServiceUnavailableException when API fails and no cache exists")
+    void testFallbackTeamsThrowsServiceUnavailableWhenNoCache() throws Exception {
+        int teamId = 99;
+
+        var cacheField = TeamLookupService.class.getDeclaredField("cache");
+        cacheField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Integer, TeamSummary> cache = (Map<Integer, TeamSummary>) cacheField.get(this.teamLookupService);
+        cache.clear();
+
+        Method method = TeamLookupService.class.getDeclaredMethod("fallbackTeams", int.class, Throwable.class);
+        method.setAccessible(true);
+
+        assertThatThrownBy(() -> method.invoke(this.teamLookupService, teamId, new RuntimeException("API down")))
+            .satisfies(throwable -> assertThat(throwable.getCause())
+                .isInstanceOf(ServiceUnavailableException.class)
+                .hasMessageContaining("MLB API not available and no cached data for teamId = " + teamId));
     }
 }

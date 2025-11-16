@@ -3,100 +3,108 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
-import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import javax.naming.ServiceUnavailableException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
-@ControllerAdvice
-<span class="fc" id="L23">public class GlobalHandler {</span>
+@RestControllerAdvice
+<span class="fc" id="L25">public class GlobalHandler {</span>
     private static final String FAILURE = &quot;FAILURE&quot;;
 
     private ResponseEntity&lt;Map&lt;String, Object&gt;&gt; buildResponse(HttpStatus status, String message, String error) {
-<span class="fc" id="L27">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L28">        body.put(&quot;statusCode&quot;, status.value());</span>
-<span class="fc" id="L29">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L30">        body.put(&quot;message&quot;, message);</span>
-<span class="fc" id="L31">        body.put(&quot;error&quot;, error);</span>
-<span class="fc" id="L32">        return new ResponseEntity&lt;&gt;(body, status);</span>
+<span class="fc" id="L29">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L30">        body.put(&quot;statusCode&quot;, status.value());</span>
+<span class="fc" id="L31">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L32">        body.put(&quot;message&quot;, message);</span>
+<span class="fc" id="L33">        body.put(&quot;error&quot;, error);</span>
+<span class="fc" id="L34">        return new ResponseEntity&lt;&gt;(body, status);</span>
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L37">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L38">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L39">            body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="fc" id="L39">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L40">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="fc" id="L41">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L41">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L42">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L43">        return new ResponseEntity&lt;&gt;(body, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L43">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc" id="L44">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L45">        return new ResponseEntity&lt;&gt;(body, HttpStatus.BAD_REQUEST);</span>
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @SuppressWarnings(&quot;null&quot;)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleResourceNotFound(ResourceNotFoundException ex) {
-<span class="fc" id="L49">        String errorMsg = &quot;Resource Not Found&quot;;</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (ex instanceof UserNotFoundException) {</span>
-<span class="fc" id="L51">            errorMsg = &quot;User Not Found&quot;;</span>
-<span class="fc" id="L52">        }</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        else if (ex instanceof TeamNotFoundException) {</span>
-<span class="fc" id="L54">            errorMsg = &quot;Team Not Found&quot;;</span>
-<span class="fc" id="L55">        }</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        else if (ex instanceof StadiumNotFoundException) {</span>
-<span class="fc" id="L57">            errorMsg = &quot;Stadium Not Found&quot;;</span>
-<span class="fc" id="L58">        }</span>
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        else if (ex instanceof PlayerNotFoundException) {</span>
-<span class="fc" id="L60">            errorMsg = &quot;Player Not Found&quot;;</span>
+<span class="fc" id="L51">        String errorMsg = &quot;Resource Not Found&quot;;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (ex instanceof UserNotFoundException) {</span>
+<span class="fc" id="L53">            errorMsg = &quot;User Not Found&quot;;</span>
         }
-<span class="fc" id="L62">        return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        else if (ex instanceof TeamNotFoundException) {</span>
+<span class="fc" id="L56">            errorMsg = &quot;Team Not Found&quot;;</span>
+        }
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        else if (ex instanceof StadiumNotFoundException) {</span>
+<span class="fc" id="L59">            errorMsg = &quot;Stadium Not Found&quot;;</span>
+        }
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        else if (ex instanceof PlayerNotFoundException) {</span>
+<span class="fc" id="L62">            errorMsg = &quot;Player Not Found&quot;;</span>
+        }
+<span class="fc" id="L64">        return this.buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);</span>
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
-<span class="fc" id="L67">        String errorMsg = &quot;Resource Already Exists&quot;;</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (ex instanceof UserAlreadyExistsException) {</span>
-<span class="fc" id="L69">            errorMsg = &quot;User Already Exists&quot;;</span>
-<span class="fc" id="L70">        }</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        else if (ex instanceof TeamAlreadyExistsException) {</span>
-<span class="fc" id="L72">            errorMsg = &quot;Team Already Exists&quot;;</span>
+<span class="fc" id="L69">        String errorMsg = &quot;Resource Already Exists&quot;;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (ex instanceof UserAlreadyExistsException) {</span>
+<span class="fc" id="L71">            errorMsg = &quot;User Already Exists&quot;;</span>
         }
-<span class="fc" id="L74">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), errorMsg);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        else if (ex instanceof TeamAlreadyExistsException) {</span>
+<span class="fc" id="L74">            errorMsg = &quot;Team Already Exists&quot;;</span>
+        }
+<span class="pc bpc" id="L76" title="2 of 4 branches missed.">        String message = (ex == null || ex.getMessage() == null) ? errorMsg : ex.getMessage();</span>
+<span class="fc" id="L77">        return this.buildResponse(HttpStatus.CONFLICT, message, errorMsg);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleNullPointer(NullPointerException ex) {
-<span class="nc bnc" id="L79" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="nc" id="L80">            return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="nc" id="L83">            return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L82">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-<span class="nc" id="L83">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
+<span class="nc" id="L85">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="nc" id="L88">        return this.buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-<span class="nc" id="L89">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
+<span class="nc" id="L91">        return this.buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleAuthentication(AuthenticationException ex) {
-<span class="fc" id="L94">        return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(),&quot;Unauthorized&quot;);</span>
+<span class="fc" id="L97">        return this.buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(),&quot;Unauthorized&quot;);</span>
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleAllOtherExceptions(Exception ex) {
-<span class="fc" id="L99">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
+<span class="nc" id="L102">        return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleServiceUnavailable(ServiceUnavailableException ex) {
+<span class="nc" id="L107">        return this.buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

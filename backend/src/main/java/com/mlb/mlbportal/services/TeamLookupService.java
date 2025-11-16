@@ -3,6 +3,8 @@ package com.mlb.mlbportal.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.ServiceUnavailableException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,6 +13,9 @@ import com.mlb.mlbportal.dto.mlbApi.TeamDetails;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.Division;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,17 +61,19 @@ public class TeamLookupService {
             Map.entry("SF", Division.WEST),
             Map.entry("SD", Division.WEST),
             Map.entry("COL", Division.WEST),
-            Map.entry("ARI", Division.WEST));
+            Map.entry("ARI", Division.WEST)
+    );
 
+    @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackTeams")
+    @Retry(name = "mlbApi")
     public TeamSummary getTeamSummary(int teamId) {
-
-        if (cache.containsKey(teamId)) {
-            return cache.get(teamId);
+        if (this.cache.containsKey(teamId)) {
+            return this.cache.get(teamId);
         }
 
         String url = "https://statsapi.mlb.com/api/v1/teams/" + teamId;
 
-        TeamDetailsResponse response = restTemplate.getForObject(url, TeamDetailsResponse.class);
+        TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);
 
         if (response == null || response.teams() == null || response.teams().isEmpty()) {
             return null;
@@ -90,7 +97,15 @@ public class TeamLookupService {
                 league,
                 division);
 
-        cache.put(teamId, summary);
+        this.cache.put(teamId, summary);
         return summary;
+    }
+
+    @SuppressWarnings("unused")
+    private TeamSummary fallbackTeams(int teamId, Throwable t) throws ServiceUnavailableException {
+        if (this.cache.containsKey(teamId)) {
+            return this.cache.get(teamId);
+        }
+        throw new ServiceUnavailableException("MLB API not available and no cached data for teamId = " + teamId);
     }
 }

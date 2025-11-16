@@ -29,7 +29,8 @@ public class MlbImportController {
     @Operation(summary = "Fetch official MLB matches from the MLB Stats API", description = "Returns matches between the given date range directly from the official MLB StatsAPI")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Matches retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MatchDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+            @ApiResponse(responseCode = "503", description = "MLB statsAPI Unavailable")
     })
     @GetMapping("/schedule")
     public ResponseEntity<List<MatchDTO>> getOfficialSchedule(@RequestParam LocalDate from, @RequestParam LocalDate to) {

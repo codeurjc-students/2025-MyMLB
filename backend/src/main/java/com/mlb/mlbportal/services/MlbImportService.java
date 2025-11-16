@@ -4,8 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
+import javax.naming.ServiceUnavailableException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.mlbApi.GameEntry;
 import com.mlb.mlbportal.dto.mlbApi.ScheduleResponse;
@@ -16,6 +20,9 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -26,23 +33,66 @@ public class MlbImportService {
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
 
+    @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
+    @Retry(name = "mlbApi")
     public List<MatchDTO> getOfficialMatches(LocalDate start, LocalDate end) {
-        String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" + "&startDate=" + start + "&endDate=" + end;
+        String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" +
+                     "&startDate=" + start + "&endDate=" + end;
+
         ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
-        if (response == null || response.dates() == null)
+
+        if (response == null || response.dates() == null) {
             return List.of();
-        List<MatchDTO> result = response.dates().stream().flatMap(d -> d.games().stream()).map(this::toMatchDTO)
+        }
+
+        return response.dates().stream()
+                .flatMap(d -> d.games().stream())
+                .map(this::toMatchDTO)
+                .filter(this::isMlbTeamMatch)
+                .map(this::saveMatch)
                 .toList();
-        List<MatchDTO> savedMatches = result.stream().filter(this::isMlbTeamMatch).map(dto -> {
-            Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name())
-                    .orElseThrow(TeamNotFoundException::new);
-            Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())
-                    .orElseThrow(TeamNotFoundException::new);
-            Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
-            this.matchRepository.save(match);
-            return dto;
-        }).toList();
-        return savedMatches;
+    }
+
+    private MatchDTO saveMatch(MatchDTO dto) {
+        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name())
+                .orElseThrow(TeamNotFoundException::new);
+        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())
+                .orElseThrow(TeamNotFoundException::new);
+
+        Match match = new Match(awayEntity, homeEntity,
+                dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
+
+        this.matchRepository.save(match);
+        return dto;
+    }
+
+    @SuppressWarnings("unused")
+    private List<MatchDTO> fallbackMatches(LocalDate start, LocalDate end, Throwable t) throws ServiceUnavailableException {
+        List<Match> cachedMatches = this.matchRepository.findByDateBetween(start.atStartOfDay(), end.atTime(23,59));
+
+        if (!cachedMatches.isEmpty()) {
+            return cachedMatches.stream()
+                    .map(m -> new MatchDTO(
+                            new TeamSummary(
+                                m.getHomeTeam().getName(),
+                                m.getHomeTeam().getAbbreviation(),
+                                m.getHomeTeam().getLeague(),
+                                m.getHomeTeam().getDivision()
+                            ),
+                            new TeamSummary(
+                                m.getAwayTeam().getName(),
+                                m.getAwayTeam().getAbbreviation(),
+                                m.getAwayTeam().getLeague(),
+                                m.getAwayTeam().getDivision()
+                            ),
+                            m.getHomeScore(),
+                            m.getAwayScore(),
+                            m.getDate(),
+                            m.getStatus()
+                    ))
+                    .toList();
+        }
+        throw new ServiceUnavailableException("MLB API not available and without cached data");
     }
 
     private boolean isMlbTeamMatch(MatchDTO dto) {

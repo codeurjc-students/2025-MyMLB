@@ -29,12 +29,13 @@ public class MlbImportController {
     @Operation(summary = &quot;Fetch official MLB matches from the MLB Stats API&quot;, description = &quot;Returns matches between the given date range directly from the official MLB StatsAPI&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Matches retrieved successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
-            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;)
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;),
+            @ApiResponse(responseCode = &quot;503&quot;, description = &quot;MLB statsAPI Unavailable&quot;)
     })
     @GetMapping(&quot;/schedule&quot;)
     public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getOfficialSchedule(@RequestParam LocalDate from, @RequestParam LocalDate to) {
-<span class="nc" id="L36">        List&lt;MatchDTO&gt; matches = mlbImportService.getOfficialMatches(from, to);</span>
-<span class="nc" id="L37">        return ResponseEntity.ok(matches);</span>
+<span class="nc" id="L37">        List&lt;MatchDTO&gt; matches = mlbImportService.getOfficialMatches(from, to);</span>
+<span class="nc" id="L38">        return ResponseEntity.ok(matches);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
