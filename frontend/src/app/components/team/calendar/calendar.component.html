@@ -1,0 +1,109 @@
+<div
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn"
+>
+	<!-- Calendario -->
+	<div
+		class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-4 w-full max-w-[48rem] max-h-[calc(100vh-4rem)] overflow-y-auto relative"
+	>
+		<!-- Controles -->
+		<div class="flex items-center justify-between mb-3 text-xs md:text-sm">
+			<button
+				class="px-2 py-1 cursor-pointer bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded shadow hover:brightness-110"
+				(click)="previousMonth()"
+			>
+				←
+			</button>
+
+			<div class="flex-1 text-center">
+				<h2
+					class="text-lg md:text-xl font-bold text-blue-700 dark:text-blue-300 tracking-wide"
+				>
+					{{ viewDate | date : 'MMMM yyyy' }}
+				</h2>
+			</div>
+
+			<button
+				class="px-2 py-1 cursor-pointer bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded shadow hover:brightness-110"
+				(click)="nextMonth()"
+			>
+				→
+			</button>
+		</div>
+
+		<!-- Cabecera -->
+		<div
+			class="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1"
+		>
+			@for (day of ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; track day) {
+			<div class="uppercase">{{ day }}</div>
+			}
+		</div>
+
+		<!-- Celdas -->
+		<div
+			class="grid grid-cols-7 gap-1 transition-opacity duration-500 ease-in-out animate-fadeIn"
+		>
+			@for (day of getFullMonthGrid(viewDate); track day.getTime()) {
+			<div
+				class="min-h-[4rem] rounded-md p-1 flex flex-col items-center justify-start border border-gray-300 dark:border-gray-700 transition-all duration-300 ease-in-out hover:scale-[1.02]"
+				[ngClass]="getCellClass(day)"
+			>
+				<div
+					class="text-[10px] font-bold mb-1"
+					[ngClass]="{
+						'text-black': !isDarkBackground(day) && !isOutsideCurrentMonth(day),
+						'text-white': isDarkBackground(day) && !isOutsideCurrentMonth(day),
+						'text-gray-400': isOutsideCurrentMonth(day)
+					}"
+				>
+					{{ day.getDate() }}
+				</div>
+
+				@for (match of getMatchesOfDay(day); track match.date) {
+				<div
+					(click)="openMatchInfoModal(match)"
+					class="text-[10px] font-medium px-2 py-[2px] rounded-full cursor-pointer bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow"
+				>
+					@if (match.homeTeam.name === team.teamStats.name) {
+					{{ match.awayTeam.abbreviation }}
+					} @if (match.awayTeam.name === team.teamStats.name) {
+					{{ match.homeTeam.abbreviation }}
+					}
+				</div>
+				}
+			</div>
+			}
+		</div>
+
+		<!-- Pie -->
+		<div class="mt-4 flex flex-col gap-2 text-[10px] text-gray-700 dark:text-gray-300">
+			<!-- Leyenda centrada -->
+			<div class="flex justify-center gap-4">
+				<div class="flex items-center gap-1">
+					<div
+						class="w-3 h-3 rounded-full shadow"
+						[ngClass]="backgroundLogo(team.teamStats.abbreviation)"
+					></div>
+					<span>Home</span>
+				</div>
+				<div class="flex items-center gap-1">
+					<div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 shadow"></div>
+					<span>Road</span>
+				</div>
+			</div>
+
+			<div class="flex justify-end">
+				<button
+					(click)="closeCalendar()"
+					class="px-4 py-2 text-sm font-medium text-white rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+				>
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+
+	@if (showMatchInfo) {
+		<app-match-miniature [match]="selectedMatch" (close)="showMatchInfo = false"></app-match-miniature>
+	}
+</div>

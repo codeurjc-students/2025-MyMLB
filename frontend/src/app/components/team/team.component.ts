@@ -8,11 +8,12 @@ import { TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
 import { UserService } from '../../services/user.service';
+import { CalendarComponent } from "./calendar/calendar.component";
 
 @Component({
 	selector: 'app-team',
 	standalone: true,
-	imports: [CommonModule, StatsPanelComponent],
+	imports: [CommonModule, StatsPanelComponent, CalendarComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './team.component.html',
 })
@@ -37,6 +38,8 @@ export class TeamComponent implements OnInit {
 	public isTransitioning: boolean = false;
 
 	public selectedPlayer: Pitcher | PositionPlayer | null = null;
+
+	public showCalendar = false;
 
 	constructor(
 		private selectedTeamService: SelectedTeamService,
@@ -118,5 +121,9 @@ export class TeamComponent implements OnInit {
 
 	public selectPlayer(player: Pitcher | PositionPlayer) {
 		this.selectedPlayer = player;
+	}
+
+	public openCalendar() {
+		this.showCalendar = true;
 	}
 }

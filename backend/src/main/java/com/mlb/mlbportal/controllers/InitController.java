@@ -208,10 +208,10 @@ public class InitController {
         List<Match> matches = this.generateBalancedMatches(allTeams);
         this.matchRepository.saveAll(matches);
 
-        // this.mlbImportService.getOfficialMatches(
-        //     LocalDate.of(2026, Month.MARCH, 1), 
-        //     LocalDate.of(2026, Month.SEPTEMBER, 30)
-        // );
+        this.mlbImportService.getOfficialMatches(
+            LocalDate.of(2026, Month.MARCH, 1), 
+            LocalDate.of(2026, Month.APRIL, 1)
+        );
         this.teamRepository.saveAll(allTeams); 
     }
 
