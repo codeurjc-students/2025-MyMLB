@@ -1,5 +1,7 @@
 package com.mlb.mlbportal.unit;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,21 +105,20 @@ class InitControllerTest {
         verify(this.teamRepository, times(1)).saveAll(anyList());
     }
 
-    // @Test
-    // void testSetUpMatches() {
-    //     List<Team> mockTeams = this.generateMockTeams();
-    //     when(this.teamRepository.findAll()).thenReturn(mockTeams);
+    @Test
+    void testSetUpMatches() {
+        List<Team> mockTeams = this.generateMockTeams();
+        when(this.teamRepository.findAll()).thenReturn(mockTeams);
 
-    //     ReflectionTestUtils.invokeMethod(this.initController, "setUpMatches");
+        ReflectionTestUtils.invokeMethod(this.initController, "setUpMatches");
 
-    //     verify(this.matchRepository, times(1)).saveAll(anyList());
+        verify(this.matchRepository, times(1)).saveAll(anyList());
 
-    //     verify(this.mlbImportService, times(1))
-    //             .getOfficialMatches(LocalDate.of(2026, Month.MARCH, 1),
-    //                                 LocalDate.of(2026, Month.SEPTEMBER, 30));
+        verify(this.mlbImportService, times(1))
+            .getOfficialMatches(LocalDate.of(2026, Month.MARCH, 1),LocalDate.of(2026, Month.SEPTEMBER, 30));
 
-    //     verify(this.teamRepository, times(1)).saveAll(mockTeams);
-    // }
+        verify(this.teamRepository, times(1)).saveAll(mockTeams);
+    }
 
     @SuppressWarnings("unchecked")
     @Test
