@@ -2,32 +2,36 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, 
 import { ShowMatch } from '../../../services/match.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { CommonModule } from '@angular/common';
+import { CloseButtonComponent } from "../../close-button/close-button.component";
 
 @Component({
 	selector: 'app-match-miniature',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, CloseButtonComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './match-miniature.component.html',
 })
 export class MatchMiniatureComponent {
 	@Input() match!: ShowMatch;
-	@Output() close = new EventEmitter<void>();
+	@Input() showMatchMiniature!: boolean;
+	@Input() homeMatch!: boolean;
+	@Output() close = new EventEmitter<boolean>();
+
+	public isClose = false;
 
 	constructor(private bakcgroundColor: BackgroundColorService) {}
 
-	public closeMatchMiniature() {
-		this.close.emit();
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeMatchMiniature();
-		}
-	}
-
 	public getBackgroundColor(abbreviation: string | undefined) {
 		return this.bakcgroundColor.getBackgroundColor(abbreviation);
+	}
+
+	public closeMatchMiniature(trigger: boolean) {
+		if (trigger) {
+			this.isClose = true;
+			setTimeout(() => {
+				this.close.emit(false);
+				this.isClose = false;
+			}, 300);
+		}
 	}
 }

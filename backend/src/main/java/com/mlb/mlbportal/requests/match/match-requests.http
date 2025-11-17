@@ -7,9 +7,9 @@ GET https://localhost:8443/api/mlb/schedule?from=2026-03-01&to=2026-10-31
 Content-Type: application/json
 
 ### Get Home Matches of a certain team
-GET https://localhost:8443/api/matches/home/New York Yankees
+GET https://localhost:8443/api/matches/home/Cincinnati Reds
 Content-Type: application/json
 
 ### Get Away Matches of a certain team
-GET https://localhost:8443/api/matches/away/Boston Red Sox
+GET https://localhost:8443/api/matches/away/Cincinnati Reds
 Content-Type: application/json

@@ -1,6 +1,11 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+<div
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+	[ngClass]="isClose ? 'animate-fade-out-down' : 'animate-fade-in-up'">
 	<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn">
-		<div class="flex items-center justify-between w-full mb-2">
+
+		<app-close-button (close)="closeMatchMiniature($event)"></app-close-button>
+
+		<div class="flex items-center justify-between w-full mb-2 mt-10">
 			<!-- Away team -->
 			<div class="flex items-center gap-2">
 				<div
@@ -58,5 +63,16 @@
 			><br />
 			<span class="text-xs">{{ match.date | date : 'HH:mm' }}</span>
 		</div>
+
+		<!-- Buy Tickets Button -->
+		@if (homeMatch) {
+			<div class="mt-9 flex justify-center">
+				<button
+					class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
+				>
+					Buy Tickets
+				</button>
+			</div>
+		}
 	</div>
 </div>

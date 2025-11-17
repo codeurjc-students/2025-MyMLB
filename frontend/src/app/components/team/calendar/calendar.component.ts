@@ -24,6 +24,7 @@ export class CalendarComponent implements OnInit {
 
 	public showMatchInfo = false;
 	public selectedMatch!: ShowMatch;
+	public isHomeMatch = false;
 
 	constructor(
 		private matchService: MatchService,
@@ -48,13 +49,6 @@ export class CalendarComponent implements OnInit {
 
 	public closeCalendar() {
 		this.close.emit();
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeCalendar();
-		}
 	}
 
 	private indexMatches(matches: ShowMatch[]) {
@@ -87,7 +81,7 @@ export class CalendarComponent implements OnInit {
 		if (homeMatch) {
 			return this.backgroundColorService.getBackgroundColor(this.team.teamStats.abbreviation);
 		}
-		return 'bg-white';
+		return 'bg-white dark:bg-gray-400';
 	}
 
 	public previousMonth() {
@@ -114,5 +108,26 @@ export class CalendarComponent implements OnInit {
 	public openMatchInfoModal(match: ShowMatch) {
 		this.selectedMatch = match;
 		this.showMatchInfo = true;
+
+		const homeName = this.selectedMatch?.homeTeam?.name;
+		const teamName = this.team?.teamStats?.name;
+
+		this.isHomeMatch = homeName === teamName;
+	}
+
+	public getLogoPath(match: ShowMatch): string {
+		const team = match.homeTeam.name === this.team.teamStats.name ? match.awayTeam : match.homeTeam;
+		return `assets/team-logos-new/${team.league}/${team.division}/${team.abbreviation}.png`;
+	}
+
+	public getAbbreviation(match: ShowMatch): string {
+		const team = match.homeTeam.name === this.team.teamStats.name ? match.awayTeam : match.homeTeam;
+		return team.abbreviation;
+	}
+
+	public getLogoBackground(match: ShowMatch): string {
+		const abbreviation = this.getAbbreviation(match);
+		const darkLogos = ['DET', 'TB', 'KC', 'SD', 'MIA'];
+		return darkLogos.includes(abbreviation) ? 'bg-white' : 'bg-transparent';
 	}
 }

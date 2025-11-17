@@ -292,9 +292,7 @@
     "division": "CENTRAL",
     "city": "St. Louis",
     "generalInfo": "Founded in 1882, the St. Louis Cardinals are one of the most successful franchises in Major League Baseball history. They have captured 11 World Series titles, reflecting a consistent tradition of excellence. Busch Stadium provides a modern venue with strong fan engagement and a storied backdrop for games. The Cardinals are known for producing Hall of Fame talent and maintaining passionate fan loyalty. St. Louis baseball embodies enduring success, community pride, and a rich National League heritage.",
-    "championships": [
-      1926, 1931, 1934, 1942, 1944, 1946, 1964, 1967, 1982, 2006, 2011
-    ],
+    "championships": [1926, 1931, 1934, 1942, 1944, 1946, 1964, 1967, 1982, 2006, 2011],
     "stadium": { "name": "Busch Stadium", "openingDate": "2006" }
   },
   {
