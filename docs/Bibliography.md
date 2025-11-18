@@ -11,12 +11,14 @@
 - [Resilience4J (Medium Blog)](https://medium.com/@abrahamstalin1/resilience4j-en-spring-boot-resiliencia-como-valor-estrat%C3%A9gico-en-tus-microservicios-7a769fc91b77)
 - [Railway](https://railway.com/)
 - [Render](https://render.com/)
+- MLB Stats API
 
 ## 🎨 Design
 - [Flowbite (Custom Blocks)](https://flowbite.com/)
 - [Tailwind Animations](https://tailwindcss-animations.vercel.app/)
 - [Tailwind Gradient](https://tailwind-gradient-generator.vercel.app/)
 - [TailBlocks](https://tailblocks.cc/#google_vignette)
+- [Angular Calendar](https://mattlewis92.github.io/angular-calendar/#/kitchen-sink)
 
 ## 🤖 IA Agents
 - GitHub Copilot
