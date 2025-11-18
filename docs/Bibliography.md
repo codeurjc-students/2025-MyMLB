@@ -11,7 +11,10 @@
 - [Resilience4J (Medium Blog)](https://medium.com/@abrahamstalin1/resilience4j-en-spring-boot-resiliencia-como-valor-estrat%C3%A9gico-en-tus-microservicios-7a769fc91b77)
 - [Railway](https://railway.com/)
 - [Render](https://render.com/)
+
+## ☁️ External Services
 - MLB Stats API
+- [Cloudinary](https://cloudinary.com/)
 
 ## 🎨 Design
 - [Flowbite (Custom Blocks)](https://flowbite.com/)
