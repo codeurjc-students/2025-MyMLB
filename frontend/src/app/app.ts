@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ThemeService } from './services/theme.service';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
 	selector: 'app-root',
@@ -15,10 +16,14 @@ export class AppComponent implements OnInit {
 	public hideNavbar = false;
 	public isDarkMode = false;
 
-	constructor(private router: Router, private themeService: ThemeService, private cdr: ChangeDetectorRef) {
-		this.router.events.subscribe(() => {
+	constructor(private router: Router, private themeService: ThemeService, private cdr: ChangeDetectorRef, private viewportScroller: ViewportScroller) {
+		this.router.events.subscribe((event) => {
 			const url = this.router.url;
 			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery') || url.startsWith('/error');
+
+			if (event instanceof NavigationEnd) {
+				this.viewportScroller.scrollToPosition([0, 0]);
+			}
 		});
 	}
 

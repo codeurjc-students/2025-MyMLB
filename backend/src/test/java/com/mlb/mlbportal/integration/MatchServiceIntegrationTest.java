@@ -47,13 +47,14 @@ class MatchServiceIntegrationTest {
     private Team team1, team2, team3;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         this.matchRepository.deleteAll();
         this.teamRepository.deleteAll();
         this.userRepository.deleteAll();
 
         List<Team> teams = BuildMocksFactory.setUpTeamMocks();
-        this.team1 = this.teamRepository.save(teams.get(0));
+        this.team1 = this.teamRepository.save(teams.getFirst());
         this.team2 = this.teamRepository.save(teams.get(1));
         this.team3 = this.teamRepository.save(teams.get(2));
     }

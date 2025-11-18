@@ -1,6 +1,6 @@
 <div
-	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn"
->
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'">
 	<div
 		class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn"
 	>

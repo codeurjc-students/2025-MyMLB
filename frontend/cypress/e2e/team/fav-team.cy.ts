@@ -26,8 +26,8 @@ describe('Favorite Team Component E2E Tests', () => {
 
 		cy.intercept('POST', '/api/users/favorites/teams/*', (req) => {
 			favTeams.push({
-				name: 'Boston Red Sox',
-				abbreviation: 'BOS',
+				name: 'New York Yankees',
+				abbreviation: 'NYY',
 				league: 'AL',
 				division: 'EAST'
 			});
@@ -35,7 +35,7 @@ describe('Favorite Team Component E2E Tests', () => {
 		}).as('addFavTeam');
 
 		cy.intercept('DELETE', '/api/users/favorites/teams/*', (req) => {
-			favTeams = favTeams.filter(t => t.name !== 'Boston Red Sox');
+			favTeams = favTeams.filter(t => t.name !== 'New York Yankees');
 			req.reply({ status: 'SUCCESS', message: 'Team successfully removed' });
 		}).as('removeFavTeam');
 
@@ -69,8 +69,7 @@ describe('Favorite Team Component E2E Tests', () => {
 	});
 
 	describe('Add Favorite Team', () => {
-
-		it('should add the team to the favorite list and display the confirmation modal', () => {
+		beforeEach(() => {
 			cy.get('button').contains('Add Favorite Team').click();
 
 			cy.wait('@getTeams');
@@ -88,7 +87,23 @@ describe('Favorite Team Component E2E Tests', () => {
 			cy.get('button').contains('Close').click();
 
 			cy.wait('@getFavTeams');
-			cy.get('.team-section-container span').contains('Boston Red Sox').should('exist').and('be.visible');
+		});
+
+		it('should add the team to the favorite list and display the confirmation modal', () => {
+			cy.get('.team-section-container span').contains('New York Yankees').should('exist').and('be.visible');
+		});
+
+		it('should navigate to the team page after clicking on one', () => {
+			cy.fixture('team-info.json').then((team) => {
+				cy.intercept('GET', 'https://localhost:8443/api/teams/*', {
+					statusCode: 200,
+					body: team,
+				}).as('getTeam');
+			});
+
+			cy.get('#team-container').click();
+			cy.wait('@getTeam');
+			cy.url().should('include', '/team/New%20York%20Yankees');
 		});
 	});
 

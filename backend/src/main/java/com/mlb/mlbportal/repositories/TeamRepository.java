@@ -14,4 +14,5 @@ import com.mlb.mlbportal.models.enums.League;
 public interface TeamRepository extends JpaRepository<Team, Long> {
     public List<Team> findByLeagueAndDivision(League league, Division division);
     public Optional<Team> findByName(String name);
+    public Optional<Team> findByAbbreviation(String abbreviation);
 }

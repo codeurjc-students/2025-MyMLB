@@ -5,7 +5,7 @@ import { MockFactory } from '../../../utils/mock-factory';
 import { StadiumSummary } from '../../../../app/models/stadium-summary.model';
 import { PositionPlayer } from '../../../../app/models/position-player.model';
 import { Pitcher } from '../../../../app/models/pitcher.model';
-import { TeamInfo } from '../../../../app/models/team-info.model';
+import { TeamInfo } from '../../../../app/models/team.model';
 
 describe('Selected Team Service Tests', () => {
 	let service: SelectedTeamService;

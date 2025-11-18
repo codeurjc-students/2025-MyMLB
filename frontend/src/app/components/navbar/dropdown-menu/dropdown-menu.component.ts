@@ -1,9 +1,7 @@
-import { SelectedTeamService } from './../../../services/selected-team.service';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { SimplifiedTeam, TeamService } from '../../../services/team.service';
+import { TeamService } from '../../../services/team.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
-import { Router } from '@angular/router';
-import { TeamInfo } from '../../../models/team-info.model';
+import { TeamInfo, TeamSummary } from '../../../models/team.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,15 +13,10 @@ import { CommonModule } from '@angular/common';
 })
 export class DropdownMenuComponent implements OnInit {
 	public errorMessage = '';
-	public teams: SimplifiedTeam[] = [];
+	public teams: TeamSummary[] = [];
 	public teamInfoResponse: TeamInfo | null = null;
 
-	constructor(
-		private teamService: TeamService,
-		private backgroundService: BackgroundColorService,
-		private selectedTeamService: SelectedTeamService,
-		private router: Router
-	) {}
+	constructor(private teamService: TeamService,private backgroundService: BackgroundColorService,) {}
 
 	ngOnInit() {
 		this.teamService.getTeamsNamesAndAbbr().subscribe({
@@ -33,14 +26,8 @@ export class DropdownMenuComponent implements OnInit {
 	}
 
 	public selectTeam(teamName: string) {
-		this.teamService.getTeamInfo(teamName).subscribe({
-			next: (response) => {
-				this.selectedTeamService.setSelectedTeam(response);
-				this.router.navigate(['team', teamName]);
-			},
-			error: (err) => {
-				this.errorMessage = err.message;
-			},
+		this.teamService.selectTeam(teamName).subscribe({
+			error: (err) => this.errorMessage = err.message
 		});
 	}
 

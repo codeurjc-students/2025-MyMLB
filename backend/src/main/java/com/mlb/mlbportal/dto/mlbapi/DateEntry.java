@@ -1,0 +1,5 @@
+package com.mlb.mlbportal.dto.mlbapi;
+
+import java.util.List;
+
+public record DateEntry(List<GameEntry> games) {}

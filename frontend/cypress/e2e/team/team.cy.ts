@@ -66,4 +66,9 @@ describe('Team Page E2E Tests', () => {
 		cy.get('#pitcher-card').should('be.visible').click();
 		cy.get('app-stats-panel').should('be.visible');
 	});
+
+	it('should display the "Show Calendar" and make it visible', () => {
+		cy.get('button').contains('Show Calendar').click();
+		cy.get('app-calendar').should('exist').and('be.visible');
+	});
 });

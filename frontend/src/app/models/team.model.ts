@@ -1,3 +1,7 @@
+import { StadiumSummary } from "./stadium-summary.model"
+import { Pitcher } from "./pitcher.model"
+import { PositionPlayer } from "./position-player.model"
+
 export type Team = {
 	name: string,
 	abbreviation: string,
@@ -9,4 +13,21 @@ export type Team = {
 	pct: number,
 	gamesBehind: number,
 	lastTen: string
+}
+
+export type TeamSummary = {
+	name: string;
+	abbreviation: string;
+	league: string;
+	division: string;
+};
+
+export type TeamInfo = {
+	teamStats: Team,
+	city: string,
+	generalInfo: string,
+	championships: number[],
+	stadium: StadiumSummary,
+	positionPlayers: PositionPlayer[],
+	pitchers: Pitcher[]
 }

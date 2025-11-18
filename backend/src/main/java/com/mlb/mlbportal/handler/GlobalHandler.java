@@ -3,23 +3,25 @@ package com.mlb.mlbportal.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
-import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import javax.naming.ServiceUnavailableException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalHandler {
     private static final String FAILURE = "FAILURE";
 
@@ -71,7 +73,8 @@ public class GlobalHandler {
         else if (ex instanceof TeamAlreadyExistsException) {
             errorMsg = "Team Already Exists";
         }
-        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), errorMsg);
+        String message = (ex == null || ex.getMessage() == null) ? errorMsg : ex.getMessage();
+        return this.buildResponse(HttpStatus.CONFLICT, message, errorMsg);
     }
 
     @ExceptionHandler(NullPointerException.class)
@@ -97,5 +100,10 @@ public class GlobalHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllOtherExceptions(Exception ex) {
         return this.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "Internal Server Error");
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Map<String, Object>> handleServiceUnavailable(ServiceUnavailableException ex) {
+        return this.buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), "Service Unavailable");
     }
 }

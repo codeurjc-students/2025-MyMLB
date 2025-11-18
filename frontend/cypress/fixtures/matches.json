@@ -1,0 +1,20 @@
+[
+	{
+		"date": "2025-11-20T18:00:00Z",
+		"homeTeam": {
+			"name": "Cincinnati Reds",
+			"abbreviation": "CIN",
+			"league": "NL",
+			"division": "CENTRAL"
+		},
+		"awayTeam": {
+			"name": "Chicago Cubs",
+			"abbreviation": "CHC",
+			"league": "NL",
+			"division": "CENTRAL"
+		},
+		"status": "SCHEDULED",
+		"homeScore": 0,
+		"awayScore": 0
+	}
+]

@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FavTeamComponent } from '../../../../app/components/team/fav-team/fav-team.component';
 import { UserService } from '../../../../app/services/user.service';
-import { TeamService, SimplifiedTeam } from './../../../../app/services/team.service';
+import { TeamService } from './../../../../app/services/team.service';
 import { AuthService } from '../../../../app/services/auth.service';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { MockFactory } from '../../../utils/mock-factory';
-import { TeamInfo } from '../../../../app/models/team-info.model';
+import { TeamSummary } from '../../../../app/models/team.model';
 
-describe('FavTeamComponent', () => {
+describe('FavTeam Component Tests', () => {
 	let component: FavTeamComponent;
 	let fixture: ComponentFixture<FavTeamComponent>;
 	let mockUserService: any;
@@ -18,28 +18,28 @@ describe('FavTeamComponent', () => {
 	let mockSelectedTeamService: any;
 	let mockRouter: any;
 
-	const mockFavTeams: SimplifiedTeam[] = [
-		MockFactory.buildSimpliefiedTeamMock('Team A', 'TA', 'L1', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team B', 'TB', 'L1', 'D2'),
+	const mockFavTeams: TeamSummary[] = [
+		MockFactory.buildTeamSummaryMock('Team A', 'TA', 'L1', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team B', 'TB', 'L1', 'D2'),
 	];
 
-	const allTeams: SimplifiedTeam[] = [
+	const allTeams: TeamSummary[] = [
 		...mockFavTeams,
-		MockFactory.buildSimpliefiedTeamMock('Team C', 'TC', 'L2', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team D', 'TD', 'L2', 'D2'),
-		MockFactory.buildSimpliefiedTeamMock('Team E', 'TE', 'L1', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team F', 'TF', 'L1', 'D2'),
-		MockFactory.buildSimpliefiedTeamMock('Team G', 'TG', 'L2', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team H', 'TH', 'L2', 'D2'),
-		MockFactory.buildSimpliefiedTeamMock('Team I', 'TI', 'L1', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team J', 'TJ', 'L1', 'D2'),
-		MockFactory.buildSimpliefiedTeamMock('Team K', 'TK', 'L2', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team L', 'TL', 'L2', 'D2'),
-		MockFactory.buildSimpliefiedTeamMock('Team M', 'TM', 'L1', 'D1'),
-		MockFactory.buildSimpliefiedTeamMock('Team N', 'TN', 'L1', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team C', 'TC', 'L2', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team D', 'TD', 'L2', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team E', 'TE', 'L1', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team F', 'TF', 'L1', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team G', 'TG', 'L2', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team H', 'TH', 'L2', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team I', 'TI', 'L1', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team J', 'TJ', 'L1', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team K', 'TK', 'L2', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team L', 'TL', 'L2', 'D2'),
+		MockFactory.buildTeamSummaryMock('Team M', 'TM', 'L1', 'D1'),
+		MockFactory.buildTeamSummaryMock('Team N', 'TN', 'L1', 'D2'),
 	];
 
-	const favTeamsSubject = new BehaviorSubject<SimplifiedTeam[]>(mockFavTeams);
+	const favTeamsSubject = new BehaviorSubject<TeamSummary[]>(mockFavTeams);
 
 	beforeEach(async () => {
 		mockUserService = {
@@ -58,8 +58,7 @@ describe('FavTeamComponent', () => {
 		mockTeamService = {
 			getTeamsNamesAndAbbr: jasmine
 				.createSpy('getTeamsNamesAndAbbr')
-				.and.returnValue(of(allTeams)),
-			getTeamInfo: jasmine.createSpy('getTeamInfo').and.returnValue(of({} as TeamInfo)),
+				.and.returnValue(of(allTeams))
 		};
 
 		mockAuthService = {
@@ -147,7 +146,7 @@ describe('FavTeamComponent', () => {
 	});
 
 	describe('addFavoriteTeam', () => {
-		const teamToAdd = MockFactory.buildSimpliefiedTeamMock('New Team', 'NT', 'L3', 'D3');
+		const teamToAdd = MockFactory.buildTeamSummaryMock('New Team', 'NT', 'L3', 'D3');
 
 		beforeEach(() => {
 			mockTeamService.getTeamsNamesAndAbbr.and.returnValue(of(allTeams));
@@ -184,53 +183,6 @@ describe('FavTeamComponent', () => {
 
 			expect(mockUserService.getFavTeams).toHaveBeenCalledTimes(2);
 			expect(mockTeamService.getTeamsNamesAndAbbr).toHaveBeenCalledTimes(1);
-		});
-	});
-
-	describe('selectTeam', () => {
-		const teamName = 'Team A';
-		const teamInfo: TeamInfo = {
-			teamStats: MockFactory.buildTeamMocks(
-				'Team A',
-				'TA',
-				'L1',
-				'D1',
-				100,
-				50,
-				50,
-				0.5,
-				0,
-				'5-5'
-			),
-			city: 'City A',
-			generalInfo: 'Info A',
-			championships: [2000, 2010],
-			stadium: MockFactory.buildStadiumMock('Stadium A', 1990),
-			positionPlayers: [],
-			pitchers: [],
-		};
-
-		it('should fetch team info, set selected team, and navigate on success', () => {
-			mockTeamService.getTeamInfo.and.returnValue(of(teamInfo));
-
-			component.selectTeam(teamName);
-
-			expect(mockTeamService.getTeamInfo).toHaveBeenCalledWith(teamName);
-			expect(mockSelectedTeamService.setSelectedTeam).toHaveBeenCalledWith(teamInfo);
-			expect(mockRouter.navigate).toHaveBeenCalledWith(['team', teamName]);
-			expect(component.errorMessage).toBe('');
-		});
-
-		it('should set errorMessage on failure to fetch team info', () => {
-			const error = new Error('Team Not Found');
-			mockTeamService.getTeamInfo.and.returnValue(throwError(() => error));
-
-			component.selectTeam(teamName);
-
-			expect(mockTeamService.getTeamInfo).toHaveBeenCalledWith(teamName);
-			expect(mockSelectedTeamService.setSelectedTeam).not.toHaveBeenCalled();
-			expect(mockRouter.navigate).not.toHaveBeenCalled();
-			expect(component.errorMessage).toBe(error.message);
 		});
 	});
 

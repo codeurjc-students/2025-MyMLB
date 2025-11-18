@@ -24,6 +24,13 @@
 			</h1>
 		</section>
 
+		<section>
+			<button (click)="openCalendar()" class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800">Show Calendar</button>
+			@if (showCalendar) {
+				<app-calendar [team]="team" (close)="showCalendar = false"></app-calendar>
+			}
+		</section>
+
 		<!-- Informatiom Section -->
 		<section class="w-full max-w-5xl team-section-container text-center">
 			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">About the Team</h2>

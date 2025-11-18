@@ -1,12 +1,11 @@
-import { SimplifiedTeam } from './../../app/services/team.service';
 import { Pitcher } from '../../app/models/pitcher.model';
 import { PositionPlayer } from '../../app/models/position-player.model';
 import { StadiumSummary } from '../../app/models/stadium-summary.model';
-import { TeamInfo } from '../../app/models/team-info.model';
-import { Team } from '../../app/models/team.model';
+import { Team, TeamInfo, TeamSummary } from '../../app/models/team.model';
 import { User } from '../../app/models/user.model';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
+import { ShowMatch } from '../../app/services/match.service';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {
@@ -56,13 +55,13 @@ export class MockFactory {
 		} as Team;
 	};
 
-	static buildSimpliefiedTeamMock = (name: string, abbreviation: string, league: string, division: string) => {
+	static buildTeamSummaryMock = (name: string, abbreviation: string, league: string, division: string) => {
 		return {
 			name: name,
 			abbreviation: abbreviation,
 			league: league,
 			division: division
-		} as SimplifiedTeam;
+		} as TeamSummary;
 	};
 
 	static buildStadiumMock = (name: string, year: number) => {
@@ -156,5 +155,16 @@ export class MockFactory {
 			positionPlayers: player,
 			pitchers: pitcher,
 		} as TeamInfo;
+	};
+
+	static buildShowMatchMock = (awayTeam: TeamSummary, homeTeam: TeamSummary, awayScore: number, homeScore: number, date: string, status: string) => {
+		return {
+			awayTeam: awayTeam,
+			homeTeam: homeTeam,
+			awayScore: awayScore,
+			homeScore: homeScore,
+			date: date,
+			status: status
+		} as ShowMatch;
 	};
 }

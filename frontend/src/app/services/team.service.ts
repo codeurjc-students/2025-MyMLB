@@ -1,20 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { Team } from '../models/team.model';
-import { TeamInfo } from '../models/team-info.model';
+import { map, Observable, tap } from 'rxjs';
+import { Team, TeamSummary, TeamInfo } from '../models/team.model';
+import { SelectedTeamService } from './selected-team.service';
+import { Router } from '@angular/router';
 
 export type StandingsResponse = {
 	[league: string]: {
 		[division: string]: Team[];
 	};
-};
-
-export type SimplifiedTeam = {
-	name: string;
-	abbreviation: string;
-	league: string;
-	division: string;
 };
 
 @Injectable({
@@ -23,7 +17,7 @@ export type SimplifiedTeam = {
 export class TeamService {
 	private url = 'https://localhost:8443/api/teams';
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
 
 	public getStandings(): Observable<StandingsResponse> {
 		return this.http.get<StandingsResponse>(`${this.url}/standings`);
@@ -33,7 +27,14 @@ export class TeamService {
 		return this.http.get<TeamInfo>(`${this.url}/${teamName}`);
 	}
 
-	public getTeamsNamesAndAbbr(): Observable<SimplifiedTeam[]> {
+	public selectTeam(teamName: string): Observable<TeamInfo> {
+		return this.getTeamInfo(teamName).pipe(
+			tap((response) => this.selectedTeamService.setSelectedTeam(response)),
+			tap(() => this.router.navigate(['team', teamName]))
+		);
+	}
+
+	public getTeamsNamesAndAbbr(): Observable<TeamSummary[]> {
 		return this.getStandings().pipe(
 			map((data) => {
 				const result: {

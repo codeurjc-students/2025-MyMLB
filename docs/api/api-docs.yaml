@@ -13,6 +13,8 @@ tags:
 - name: Players
   description: "Operations related to MLB players, including position players and\
     \ pitchers"
+- name: MLB Official Import
+  description: Endpoints to fetch MLB official data from statsapi.mlb.com
 - name: Teams
   description: Operations related to MLB teams and standings
 - name: Users
@@ -586,6 +588,50 @@ paths:
           description: Internal server error
           content:
             application/json: {}
+  /api/mlb/schedule:
+    get:
+      tags:
+      - MLB Official Import
+      summary: Fetch official MLB matches from the MLB Stats API
+      description: Returns matches between the given date range directly from the
+        official MLB StatsAPI
+      operationId: getOfficialSchedule
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          description: Matches retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchDTO"
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchDTO"
+        "503":
+          description: MLB statsAPI Unavailable
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchDTO"
   /api/matches/today:
     get:
       tags:
@@ -620,6 +666,46 @@ paths:
           description: Internal server error
           content:
             application/json: {}
+  /api/matches/home/{teamName}:
+    get:
+      tags:
+      - Matches
+      operationId: getHomeMatches
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchDTO"
+  /api/matches/away/{teamName}:
+    get:
+      tags:
+      - Matches
+      operationId: getAwayMatches
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchDTO"
   /api/auth/me:
     get:
       tags:
