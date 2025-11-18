@@ -1,13 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-export type TeamSummary = {
-	name: string;
-	abbreviation: string;
-	league: string;
-	division: string;
-};
+import { TeamSummary } from '../models/team.model';
 
 export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
 

@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Team } from '../models/team.model';
-import { TeamInfo } from '../models/team-info.model';
+import { Team, TeamSummary, TeamInfo } from '../models/team.model';
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
 
@@ -10,13 +9,6 @@ export type StandingsResponse = {
 	[league: string]: {
 		[division: string]: Team[];
 	};
-};
-
-export type SimplifiedTeam = {
-	name: string;
-	abbreviation: string;
-	league: string;
-	division: string;
 };
 
 @Injectable({
@@ -42,7 +34,7 @@ export class TeamService {
 		);
 	}
 
-	public getTeamsNamesAndAbbr(): Observable<SimplifiedTeam[]> {
+	public getTeamsNamesAndAbbr(): Observable<TeamSummary[]> {
 		return this.getStandings().pipe(
 			map((data) => {
 				const result: {

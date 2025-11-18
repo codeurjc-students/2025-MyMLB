@@ -1,5 +1,3 @@
-import { SimplifiedTeam } from './../../../app/services/team.service';
-
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -7,6 +5,7 @@ import { UserService } from '../../../app/services/user.service';
 import { User } from '../../../app/models/user.model';
 import { MockFactory } from '../../utils/mock-factory';
 import { skip } from 'rxjs';
+import { TeamSummary } from '../../../app/models/team.model';
 
 describe('User Service Tests', () => {
 	let service: UserService;
@@ -18,9 +17,9 @@ describe('User Service Tests', () => {
 		MockFactory.buildUserMocks('user2', 'user2@gmail.com')
 	];
 
-	const mockFavteams: SimplifiedTeam[] = [
-		MockFactory.buildSimpliefiedTeamMock('team1', 't1', 'AL', 'EAST'),
-		MockFactory.buildSimpliefiedTeamMock('team2', 't2', 'NL', 'WEST'),
+	const mockFavteams: TeamSummary[] = [
+		MockFactory.buildTeamSummaryMock('team1', 't1', 'AL', 'EAST'),
+		MockFactory.buildTeamSummaryMock('team2', 't2', 'NL', 'WEST'),
 	];
 
 	beforeEach(() => {
@@ -61,7 +60,7 @@ describe('User Service Tests', () => {
 	});
 
 	it('should add the team to the favorite list', () => {
-		const newFavTeam = MockFactory.buildSimpliefiedTeamMock('team3', 't3', 'NL', 'CENTRAL');
+		const newFavTeam = MockFactory.buildTeamSummaryMock('team3', 't3', 'NL', 'CENTRAL');
 		const mockResponse = MockFactory.buildMockResponse('SUCCESS', 'Team Succesfullly Added');
 		service.addFavTeam(newFavTeam).subscribe((response) => {
 			expect(response.status).toEqual(mockResponse.status);

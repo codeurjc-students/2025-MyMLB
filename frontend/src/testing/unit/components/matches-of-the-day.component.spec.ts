@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatchesOfTheDayComponent } from '../../../app/components/match/matches-of-the-day/matches-of-the-day.component';
-import { MatchService, PaginatedMatches, TeamSummary } from '../../../app/services/match.service';
-import { BackgroundColorService } from '../../../app/services/background-color.service';
+import { MatchService, PaginatedMatches } from '../../../app/services/match.service';
 import { of, throwError } from 'rxjs';
 
 describe('Matches Of The Day Component Tests', () => {

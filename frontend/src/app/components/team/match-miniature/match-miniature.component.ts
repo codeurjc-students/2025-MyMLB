@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ShowMatch } from '../../../services/match.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { CommonModule } from '@angular/common';

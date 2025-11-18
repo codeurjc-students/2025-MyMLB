@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { TeamInfo } from '../../models/team-info.model';
+import { TeamInfo } from '../../models/team.model';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { PositionPlayer } from '../../models/position-player.model';
 import { Pitcher } from '../../models/pitcher.model';

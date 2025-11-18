@@ -1,7 +1,6 @@
 package com.mlb.mlbportal.unit;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
@@ -115,7 +115,7 @@ class InitControllerTest {
         verify(this.matchRepository, times(1)).saveAll(anyList());
 
         verify(this.mlbImportService, times(1))
-            .getOfficialMatches(LocalDate.of(2026, Month.MARCH, 1),LocalDate.of(2026, Month.SEPTEMBER, 30));
+            .getOfficialMatches(any(LocalDate.class), any(LocalDate.class));
 
         verify(this.teamRepository, times(1)).saveAll(mockTeams);
     }

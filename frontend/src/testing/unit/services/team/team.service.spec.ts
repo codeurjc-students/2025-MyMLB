@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { Team } from '../../../../app/models/team.model';
 import { MockFactory } from '../../../utils/mock-factory';
-import { TeamInfo } from '../../../../app/models/team-info.model';
+import { TeamInfo } from '../../../../app/models/team.model';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Router } from '@angular/router';
 

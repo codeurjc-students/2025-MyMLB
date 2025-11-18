@@ -1,4 +1,4 @@
-import { SimplifiedTeam, TeamService } from './../../../services/team.service';
+import { TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
@@ -7,6 +7,7 @@ import { RemoveConfirmationModalComponent } from '../../remove-confirmation-moda
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
+import { TeamSummary } from '../../../models/team.model';
 
 @Component({
 	selector: 'app-fav-team',
@@ -16,16 +17,16 @@ import { AuthService } from '../../../services/auth.service';
 	templateUrl: './fav-team.component.html',
 })
 export class FavTeamComponent implements OnInit {
-	public favTeams$!: Observable<SimplifiedTeam[]>;
+	public favTeams$!: Observable<TeamSummary[]>;
 	public username = '';
 	public errorMessage = '';
 	public successMessage = '';
 	public showDeleteModal = false;
-	private teamToDelete!: SimplifiedTeam;
+	private teamToDelete!: TeamSummary;
 	public showSuccessModal = false;
 	public addButtonClicked = false;
-	public availableTeams: SimplifiedTeam[] = [];
-	public visibleTeams: SimplifiedTeam[] = [];
+	public availableTeams: TeamSummary[] = [];
+	public visibleTeams: TeamSummary[] = [];
 	private pageSize = 10;
 	public currentPage = 0;
 	public isClose = false;
@@ -57,7 +58,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Add Favorite Team
 
-	private updateAvailableTeams(teams: SimplifiedTeam[]) {
+	private updateAvailableTeams(teams: TeamSummary[]) {
 		this.favTeams$.pipe(take(1)).subscribe((favs) => {
 			this.availableTeams = teams.filter(team => !favs.some(f => f.name === team.name));
 			this.currentPage = 0;
@@ -74,7 +75,7 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 
-	public addFavoriteTeam(team: SimplifiedTeam) {
+	public addFavoriteTeam(team: TeamSummary) {
 		this.errorMessage = '';
 		this.successMessage = '';
 		this.userService.addFavTeam(team).subscribe({
@@ -107,7 +108,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Remove Favorite Team
 
-	public openDeleteModal(team: SimplifiedTeam) {
+	public openDeleteModal(team: TeamSummary) {
 		this.showDeleteModal = true;
 		this.teamToDelete = team;
 	}
@@ -135,7 +136,7 @@ export class FavTeamComponent implements OnInit {
 
 	// Background Logo
 
-	public logoBackground(team: SimplifiedTeam) {
+	public logoBackground(team: TeamSummary) {
 		return this.backgroundService.getBackgroundColor(team.abbreviation);
 	}
 

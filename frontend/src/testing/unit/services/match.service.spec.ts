@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatchService, PaginatedMatches } from '../../../app/services/match.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 

@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { TeamComponent } from '../../app/components/team/team.component';
-import { SelectedTeamService } from '../../app/services/selected-team.service';
-import { TeamService } from '../../app/services/team.service';
-import { BackgroundColorService } from '../../app/services/background-color.service';
-import { MockFactory } from '../utils/mock-factory';
+import { TeamComponent } from '../../../app/components/team/team.component';
+import { SelectedTeamService } from '../../../app/services/selected-team.service';
+import { TeamService } from '../../../app/services/team.service';
+import { BackgroundColorService } from '../../../app/services/background-color.service';
+import { MockFactory } from '../../utils/mock-factory';
 import { of } from 'rxjs';
-import { TeamInfo } from '../../app/models/team-info.model';
+import { TeamInfo } from '../../../app/models/team.model';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('Team Component Integration Tests', () => {
