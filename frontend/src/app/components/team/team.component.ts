@@ -44,8 +44,7 @@ export class TeamComponent implements OnInit {
 	constructor(
 		private selectedTeamService: SelectedTeamService,
 		private teamService: TeamService,
-		private backgroundColorService: BackgroundColorService,
-		private userService: UserService
+		private backgroundColorService: BackgroundColorService
 	) {}
 
 	ngOnInit() {

@@ -79,8 +79,11 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/teams/{teamName}").permitAll()
 
                     // Stadium Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/stadiums/search").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/stadiums").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/stadiums/{name}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/stadiums/*").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/stadiums/*/pictures").permitAll()
 
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/matches/today").permitAll()

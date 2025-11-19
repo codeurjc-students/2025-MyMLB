@@ -24,6 +24,7 @@ import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_AT_BATS;
@@ -141,9 +142,9 @@ public class BuildMocksFactory {
     public static List<TeamInfoDTO> buildTeamInfoDTOMocks(List<Team> teams) {
         List<TeamDTO> mockList = buildTeamDTOMocks(teams);
 
-        StadiumDTO stDto1 = new StadiumDTO(STADIUM1_NAME, STADIUM1_YEAR, Arrays.asList(""));
-        StadiumDTO stDto2 = new StadiumDTO(STADIUM2_NAME, STADIUM2_YEAR, Arrays.asList(""));
-        StadiumDTO stDto3 = new StadiumDTO(STADIUM3_NAME, STADIUM3_YEAR, Arrays.asList(""));
+        StadiumDTO stDto1 = new StadiumDTO(STADIUM1_NAME, STADIUM1_YEAR, Arrays.asList(new PictureInfo()));
+        StadiumDTO stDto2 = new StadiumDTO(STADIUM2_NAME, STADIUM2_YEAR, Arrays.asList(new PictureInfo()));
+        StadiumDTO stDto3 = new StadiumDTO(STADIUM3_NAME, STADIUM3_YEAR, Arrays.asList(new PictureInfo()));
 
         TeamInfoDTO dto1 = new TeamInfoDTO(mockList.get(0), TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(2021, 1999), stDto1, null, null);
         TeamInfoDTO dto2= new TeamInfoDTO(mockList.get(1), TEST_TEAM2_CITY, TEST_TEAM2_INFO, List.of(2010), stDto2,null, null);

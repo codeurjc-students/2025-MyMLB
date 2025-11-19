@@ -26,11 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
-import com.mlb.mlbportal.dto.picture.PictureDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
@@ -122,10 +122,10 @@ class StadiumServiceTest {
 
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
 
-        PictureDTO result = this.stadiumService.addPicture(STADIUM1_NAME, mockFile);
+        PictureInfo result = this.stadiumService.addPicture(STADIUM1_NAME, mockFile);
 
-        assertThat(result.url()).isEqualTo("http://cloudinary.com/test.jpg");
-        assertThat(result.publicId()).isEqualTo("test123");
+        assertThat(result.getUrl()).isEqualTo("http://cloudinary.com/test.jpg");
+        assertThat(result.getPublicId()).isEqualTo("test123");
         verify(this.stadiumRepository).save(stadium);
     }
 
@@ -133,7 +133,13 @@ class StadiumServiceTest {
     @DisplayName("Should throw exception when stadium already has 5 pictures")
     void testAddPictureLimitExceeded() throws Exception {
         Stadium stadium = this.stadiums.get(0);
-        stadium.getPictures().addAll(List.of("1","2","3","4","5"));
+        stadium.getPictures().addAll(List.of(
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", "")
+        ));
 
         MultipartFile mockFile = mock(MultipartFile.class);
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
@@ -147,7 +153,7 @@ class StadiumServiceTest {
     @DisplayName("Should delete picture by publicId")
     void testDeletePicture() throws Exception {
         Stadium stadium = this.stadiums.get(0);
-        stadium.getPictures().add("http://cloudinary.com/test123.jpg");
+        stadium.getPictures().add(new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
 
         Uploader uploader = mock(Uploader.class);
         when(this.cloudinary.uploader()).thenReturn(uploader);

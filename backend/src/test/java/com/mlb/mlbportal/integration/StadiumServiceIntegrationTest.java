@@ -13,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.mlb.mlbportal.dto.picture.PictureDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.StadiumService;
@@ -114,18 +114,27 @@ class StadiumServiceIntegrationTest {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
-        PictureDTO dto = stadiumService.addPicture(STADIUM1_NAME, file);
+        PictureInfo dto = stadiumService.addPicture(STADIUM1_NAME, file);
 
-        assertThat(dto.url()).contains("http://fake.cloudinary.com");
-        assertThat(dto.publicId()).isEqualTo("fake123");
-        assertThat(stadium.getPictures()).contains(dto.url());
+        assertThat(dto.getUrl()).contains("http://fake.cloudinary.com");
+        assertThat(dto.getPublicId()).isEqualTo("fake123");
+        assertThat(stadium.getPictures()).anySatisfy(p -> {
+            assertThat(p.getUrl()).contains("http://fake.cloudinary.com");
+            assertThat(p.getPublicId()).isEqualTo("fake123");
+        });
     }
 
     @Test
     @DisplayName("Should throw exception when stadium already has 5 pictures")
     void testAddPictureLimitExceededIntegration() throws Exception {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
-        stadium.getPictures().addAll(List.of("1","2","3","4","5"));
+        stadium.getPictures().addAll(List.of(
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", "")
+        ));
         stadiumRepository.save(stadium);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
@@ -139,7 +148,7 @@ class StadiumServiceIntegrationTest {
     @DisplayName("Should delete picture by publicId")
     void testDeletePictureIntegration() throws Exception {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
-        stadium.getPictures().add("http://fake.cloudinary.com/fake123.jpg");
+        stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
         stadiumRepository.save(stadium);
 
         stadiumService.deletePicture(STADIUM1_NAME, "fake123");

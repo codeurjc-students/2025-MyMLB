@@ -1,4 +1,7 @@
+import { Pictures } from "./pictures.model"
+
 export type StadiumSummary = {
 	name: string,
-	openingDate: number
+	openingDate: number,
+	pictures: Pictures[]
 }

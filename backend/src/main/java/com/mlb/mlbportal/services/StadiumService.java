@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
-import com.mlb.mlbportal.dto.picture.PictureDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class StadiumService {
     }
 
     @SuppressWarnings("unchecked")
-    public PictureDTO addPicture(String stadiumName, MultipartFile file) throws IOException {
+    public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
         Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
 
         if (stadium.getPictures().size() >= 5) {
@@ -45,10 +45,12 @@ public class StadiumService {
         String publicUrl = (String) uploadResult.get("secure_url");
         String publicId = (String) uploadResult.get("public_id");
 
-        stadium.getPictures().add(publicUrl);
+        PictureInfo pictureInfo = new PictureInfo(publicUrl, publicId);
+
+        stadium.getPictures().add(pictureInfo);
         this.stadiumRepository.save(stadium);
 
-        return new PictureDTO(publicUrl, publicId);
+        return pictureInfo;
     }
 
     public void deletePicture(String stadiumName, String publicId) throws IOException {
@@ -56,7 +58,7 @@ public class StadiumService {
 
         this.cloudinary.uploader().destroy(publicId, Map.of());
 
-        stadium.getPictures().removeIf(url -> url.contains(publicId));
+        stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
         this.stadiumRepository.save(stadium);
     }
 }
