@@ -5,3 +5,10 @@ export type StadiumSummary = {
 	openingDate: number,
 	pictures: Pictures[]
 }
+
+export type Stadium = {
+	name: string,
+	openingDate: number,
+	teamName: string,
+	pictures: Pictures[]
+}

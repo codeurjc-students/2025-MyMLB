@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Team } from '../../../../app/models/team.model';
 import { MockFactory } from '../../../utils/mock-factory';
-import { StadiumSummary } from '../../../../app/models/stadium-summary.model';
+import { StadiumSummary } from '../../../../app/models/stadium.model';
 import { PositionPlayer } from '../../../../app/models/position-player.model';
 import { Pitcher } from '../../../../app/models/pitcher.model';
 import { TeamInfo } from '../../../../app/models/team.model';

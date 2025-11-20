@@ -23,7 +23,3 @@ Content-Type: image/png
 
 ### Delete a picture of a Stadium
 DELETE https://localhost:8443/api/stadiums/Petco Park/pictures?publicId=n83mdgmpa9jmw1rfwpx6
-
-### Search for a Stadium
-GET https://localhost:8443/api/stadiums/search?query=Fen 
-Content-Type: application/json

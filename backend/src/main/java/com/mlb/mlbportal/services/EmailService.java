@@ -13,6 +13,7 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -24,10 +25,12 @@ public class EmailService {
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Optional<PasswordResetToken> getCode(String code) {
         return this.passwordRepository.findByCode(code);
     }
 
+    @Transactional
     public void deleteToken(PasswordResetToken token) {
         this.passwordRepository.delete(token);
     }
@@ -40,6 +43,7 @@ public class EmailService {
         this.mailSender.send(message);
     }
 
+    @Transactional
     public void sendEmail(String destinyEmail) {
         UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -> new UserNotFoundException("There is no user registered with this email"));
         

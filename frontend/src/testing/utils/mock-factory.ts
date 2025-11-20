@@ -1,6 +1,6 @@
 import { Pitcher } from '../../app/models/pitcher.model';
 import { PositionPlayer } from '../../app/models/position-player.model';
-import { StadiumSummary } from '../../app/models/stadium-summary.model';
+import { StadiumSummary } from '../../app/models/stadium.model';
 import { Team, TeamInfo, TeamSummary } from '../../app/models/team.model';
 import { User } from '../../app/models/user.model';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';

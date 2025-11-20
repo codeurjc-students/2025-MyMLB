@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -155,13 +154,10 @@ class StadiumServiceTest {
         Stadium stadium = this.stadiums.get(0);
         stadium.getPictures().add(new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
 
-        Uploader uploader = mock(Uploader.class);
-        when(this.cloudinary.uploader()).thenReturn(uploader);
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
 
         this.stadiumService.deletePicture(STADIUM1_NAME, "test123");
 
-        verify(uploader).destroy(eq("test123"), any(Map.class));
         verify(this.stadiumRepository).save(stadium);
         assertThat(stadium.getPictures()).isEmpty();
     }

@@ -14,6 +14,14 @@ html {
 	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
 }
 
+.app-success-button {
+	@apply text-sm font-medium text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500
+}
+
+.app-page-titles {
+	@apply text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]
+}
+
 .app-background {
 	@apply bg-gradient-to-b from-emerald-50 via-teal-100 to-stone-200 dark:from-gray-900 dark:via-gray-800 dark:to-stone-900;
 }

@@ -15,6 +15,7 @@ import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -24,16 +25,19 @@ public class StadiumService {
     private final StadiumMapper stadiumMapper;
     private final Cloudinary cloudinary;
 
+    @Transactional(readOnly = true)
     public List<StadiumInitDTO> getAllStadiums() {
         return this.stadiumMapper.toListStadiumInitDTO(this.stadiumRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public StadiumInitDTO findStadiumByName(String name) {
         Stadium stadium = this.stadiumRepository.findByName(name).orElseThrow(StadiumNotFoundException::new);
         return this.stadiumMapper.toStadiumInitDTO(stadium);
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
         Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
 
@@ -53,11 +57,9 @@ public class StadiumService {
         return pictureInfo;
     }
 
+    @Transactional
     public void deletePicture(String stadiumName, String publicId) throws IOException {
         Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
-
-        this.cloudinary.uploader().destroy(publicId, Map.of());
-
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
         this.stadiumRepository.save(stadium);
     }

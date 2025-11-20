@@ -1,4 +1,4 @@
-import { StadiumSummary } from "./stadium-summary.model"
+import { StadiumSummary } from "./stadium.model"
 import { Pitcher } from "./pitcher.model"
 import { PositionPlayer } from "./position-player.model"
 

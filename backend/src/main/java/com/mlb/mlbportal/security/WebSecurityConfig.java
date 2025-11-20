@@ -79,7 +79,6 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/teams/{teamName}").permitAll()
 
                     // Stadium Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/stadiums/search").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/stadiums").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/stadiums/*").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/stadiums/*/pictures").permitAll()
@@ -87,6 +86,9 @@ public class WebSecurityConfig {
 
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/matches/today").permitAll()
+
+                    // Search Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/searchs/**").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

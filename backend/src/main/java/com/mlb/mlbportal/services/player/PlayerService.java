@@ -27,6 +27,7 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -41,6 +42,7 @@ public class PlayerService {
 
     private final TeamRepository teamRepository;
 
+    @Transactional
     public List<PlayerDTO> getAllPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
         List<Pitcher> pitcherList = this.pitcherRepository.findAll();
@@ -60,6 +62,7 @@ public class PlayerService {
         return result;
     }
 
+    @Transactional
     public List<PositionPlayerDTO> getAllPositionPlayers() {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
         this.updateAndSaveStats(positionPlayers);
@@ -67,6 +70,7 @@ public class PlayerService {
         return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);
     }
 
+    @Transactional
     public List<PitcherDTO> getAllPitchers() {
         List<Pitcher> pitchers = this.pitcherRepository.findAll();
         this.updateAndSaveStats(pitchers);
@@ -87,6 +91,7 @@ public class PlayerService {
         });
     }
 
+    @Transactional
     public PlayerDTO findPlayerByName(String name) {
         Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);
 
@@ -105,6 +110,7 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
+    @Transactional
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
 
@@ -117,6 +123,7 @@ public class PlayerService {
         return players;
     }
 
+    @Transactional
     public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
 
@@ -129,6 +136,7 @@ public class PlayerService {
         return pitchers;
     }
 
+    @Transactional
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(team);
@@ -143,6 +151,7 @@ public class PlayerService {
         return new PageImpl<>(result, pageable, players.size());
     }
 
+    @Transactional
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<Pitcher> pitchers = this.getUpdatedPitchersOfTeam(team);

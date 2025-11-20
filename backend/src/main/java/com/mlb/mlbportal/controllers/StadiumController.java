@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.models.others.PictureInfo;
-import com.mlb.mlbportal.services.SearchService;
 import com.mlb.mlbportal.services.StadiumService;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @AllArgsConstructor
 public class StadiumController {
     private final StadiumService stadiumService;
-    private final SearchService searchService;
 
     @Operation(summary = "Get all stadiums", description = "Returns a list of all MLB stadiums with basic information such as name, location, and capacity.")
     @ApiResponses(value = {
@@ -67,11 +64,5 @@ public class StadiumController {
     public ResponseEntity<Void> deletePicture(@PathVariable("stadiumName") String stadiumName, @RequestParam("publicId") String publicId) throws IOException {
         this.stadiumService.deletePicture(stadiumName, publicId);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<StadiumInitDTO>> searchStadium(@RequestParam String query) {
-        return ResponseEntity.ok(this.searchService.searchStadiums(query));
     }
 }

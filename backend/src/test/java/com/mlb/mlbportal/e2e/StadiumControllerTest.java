@@ -127,19 +127,4 @@ class StadiumControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(204);
     }
-
-    @Test
-    @DisplayName("GET /api/stadiums/search?query=any should return all the stadium that matches with the query")
-    void testSearchStadium() {
-        String url = STADIUM_PATH + "search";
-        given()
-                .queryParam("query", "St")
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(200)
-                .body("size()", is(3))
-                .body("name", hasItems(STADIUM1_NAME, STADIUM2_NAME, STADIUM3_NAME));
-    }
 }

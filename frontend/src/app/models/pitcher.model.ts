@@ -14,3 +14,21 @@ export type Pitcher = {
 	saves: number;
 	saveOpportunities: number;
 };
+
+export type PitcherGlobal = {
+	name: string;
+	teamName: string;
+	position: string;
+	games: number;
+	wins: number;
+	losses: number;
+	era: number;
+	inningsPitched: number;
+	totalStrikeouts: number;
+	walks: number;
+	hitsAllowed: number;
+	runsAllowed: number;
+	whip: number;
+	saves: number;
+	saveOpportunities: number;
+};

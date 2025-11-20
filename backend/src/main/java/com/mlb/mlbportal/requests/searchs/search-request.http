@@ -1,0 +1,15 @@
+### Search for a Stadium
+GET https://localhost:8443/api/searchs/stadium?query=Fen&page=0&size=10
+Content-Type: application/json
+
+### Search for a Team
+GET https://localhost:8443/api/searchs/team?query=Yank&page=0&size=10
+Content-Type: application/json
+
+### Search for a PositionPlayer
+GET https://localhost:8443/api/searchs/player?query=A&playerType=position&page=0&size=10
+Content-Type: application/json
+
+### Search for a Pitcher
+GET https://localhost:8443/api/searchs/player?query=max&playerType=pitcher&page=0&size=10
+Content-Type: application/json
