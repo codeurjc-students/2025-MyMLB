@@ -1,5 +1,5 @@
 import { Pictures } from './../../../models/pictures.model';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Stadium } from '../../../models/stadium.model';
 import { StadiumService } from '../../../services/stadium.service';
 import { CommonModule } from '@angular/common';
@@ -7,16 +7,19 @@ import { RemoveConfirmationModalComponent } from "../../remove-confirmation-moda
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { finalize } from 'rxjs';
+import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 
 @Component({
 	selector: 'app-edit-stadium',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, LoadingModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, LoadingModalComponent, ErrorModalComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-stadium.component.html'
 })
 export class EditStadiumComponent implements OnInit {
 	@Input() stadium!: Stadium;
+
+	@Output() backToMenu = new EventEmitter<void>();
 
 	public pictures: Pictures[] = [];
 	public pictureToDelete!: Pictures;
@@ -28,6 +31,8 @@ export class EditStadiumComponent implements OnInit {
 
 	public openConfirmationModal = false;
 	public loading = false;
+	public showEditMenu = false;
+	public finish = false;
 
 	public removeModalIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
 		<path fill-rule="evenodd" clip-rule="evenodd"
@@ -117,7 +122,12 @@ export class EditStadiumComponent implements OnInit {
 		}
 	}
 
-	public confirm() {
+	public goToEditMenu() {
+		this.finish = false;
+		this.backToMenu.emit();
+	}
 
+	public confirm() {
+		this.finish = true;
 	}
 }

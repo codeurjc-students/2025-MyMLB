@@ -2,14 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../services/search.service';
-import { RemoveConfirmationModalComponent } from "../../remove-confirmation-modal/remove-confirmation-modal.component";
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { Team } from '../../../models/team.model';
 import { Stadium } from '../../../models/stadium.model';
 import { PositionPlayerGlobal } from '../../../models/position-player.model';
 import { PitcherGlobal } from '../../../models/pitcher.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
-import { PaginatedSearchs } from '../../../models/pagination.model';
 import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
 
 @Component({

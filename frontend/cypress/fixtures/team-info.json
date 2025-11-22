@@ -16,7 +16,13 @@
 	"championships": [2010],
 	"stadium": {
 		"name": "Yankee Stadium",
-		"openingDate": 2009
+		"openingDate": 2009,
+		"pictures": [
+			{
+				"url": "",
+				"publicId": ""
+			}
+		]
 	},
 	"positionPlayers": [
 		{

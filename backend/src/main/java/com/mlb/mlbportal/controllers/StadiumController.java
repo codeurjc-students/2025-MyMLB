@@ -56,18 +56,40 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));
     }
 
-    @GetMapping("/{stadiumName}/pictures")
+    @Operation(summary = "Get stadium pictures", description = "Retrieves all pictures associated with a specific MLB stadium identified by its name.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved stadium pictures", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "404", description = "Stadium not found or no pictures available", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/{stadiumName}/pictures", produces = "application/json")
     public ResponseEntity<List<PictureInfo>> getStadiumPictures(@PathVariable("stadiumName") String stadiumName) {
         return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));
     }
-    
-    @PostMapping("/{stadiumName}/pictures")
-    public ResponseEntity<PictureInfo> uploadPicture(@PathVariable("stadiumName") String stadiumName, @RequestParam("file") MultipartFile picturePath) throws IOException {
+
+    @Operation(summary = "Upload stadium picture", description = "Uploads a new picture for a specific MLB stadium. Only .webp images are supported.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture uploaded successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid file format or request parameters", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping(value = "/{stadiumName}/pictures", produces = "application/json")
+    public ResponseEntity<PictureInfo> uploadPicture(@PathVariable("stadiumName") String stadiumName,
+            @RequestParam("file") MultipartFile picturePath) throws IOException {
         return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));
     }
 
-    @DeleteMapping("/{stadiumName}/pictures")
-    public ResponseEntity<AuthResponse> deletePicture(@PathVariable("stadiumName") String stadiumName, @RequestParam("publicId") String publicId) throws IOException {
+    @Operation(summary = "Delete stadium picture", description = "Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Stadium or picture not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "409", description = "Cannot delete the last picture of a stadium", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping(value = "/{stadiumName}/pictures", produces = "application/json")
+    public ResponseEntity<AuthResponse> deletePicture(@PathVariable("stadiumName") String stadiumName,
+            @RequestParam("publicId") String publicId) throws IOException {
         this.stadiumService.deletePicture(stadiumName, publicId);
         return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, "Picture deleted"));
     }

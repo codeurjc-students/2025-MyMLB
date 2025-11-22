@@ -3,6 +3,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
+
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,30 +30,30 @@ public class Stadium {
 
     private int openingDate;
 
-<span class="pc" id="L31">    @ElementCollection(fetch = FetchType.LAZY)</span>
-    private List&lt;String&gt; pictures = new ArrayList&lt;&gt;();
+<span class="pc" id="L33">    @ElementCollection(fetch = FetchType.LAZY)</span>
+    private List&lt;PictureInfo&gt; pictures = new ArrayList&lt;&gt;();
 
     @OneToOne(mappedBy = &quot;stadium&quot;)
     private Team team;
 
     @PreRemove
     public void preRemove() {
-<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (team != null) {</span>
-<span class="fc" id="L40">            team.setStadium(null);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (team != null) {</span>
+<span class="fc" id="L42">            team.setStadium(null);</span>
         }
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L44">    }</span>
 
-<span class="nc" id="L44">    public Stadium(String name, int openingDate, List&lt;String&gt; pictures, Team team) {</span>
-<span class="nc" id="L45">        this.name = name;</span>
-<span class="nc" id="L46">        this.openingDate = openingDate;</span>
-<span class="nc" id="L47">        this.pictures = pictures;</span>
-<span class="nc" id="L48">        this.team = team;</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L46">    public Stadium(String name, int openingDate, List&lt;PictureInfo&gt; pictures, Team team) {</span>
+<span class="nc" id="L47">        this.name = name;</span>
+<span class="nc" id="L48">        this.openingDate = openingDate;</span>
+<span class="nc" id="L49">        this.pictures = pictures;</span>
+<span class="nc" id="L50">        this.team = team;</span>
+<span class="nc" id="L51">    }</span>
 
-<span class="fc" id="L51">    public Stadium(String name, int openingDate, Team team) {</span>
-<span class="fc" id="L52">        this.name = name;</span>
-<span class="fc" id="L53">        this.openingDate = openingDate;</span>
-<span class="fc" id="L54">        this.team = team;</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L53">    public Stadium(String name, int openingDate, Team team) {</span>
+<span class="fc" id="L54">        this.name = name;</span>
+<span class="fc" id="L55">        this.openingDate = openingDate;</span>
+<span class="fc" id="L56">        this.team = team;</span>
+<span class="fc" id="L57">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

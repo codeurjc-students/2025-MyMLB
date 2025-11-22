@@ -45,14 +45,26 @@ public class MatchController {
 <span class="nc" id="L45">        return ResponseEntity.ok(matches);</span>
     }
 
+    @Operation(summary = &quot;Get home matches of a team&quot;, description = &quot;Returns a list of all matches where the specified team plays at home.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved home matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no home matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @GetMapping(value = &quot;home/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getHomeMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L50">        return ResponseEntity.ok(this.matchService.getHomeMatches(teamName));</span>
+<span class="fc" id="L56">        return ResponseEntity.ok(this.matchService.getHomeMatches(teamName));</span>
     }
 
+    @Operation(summary = &quot;Get away matches of a team&quot;, description = &quot;Returns a list of all matches where the specified team plays away.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved away matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no away matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @GetMapping(value = &quot;away/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getAwayMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L55">        return ResponseEntity.ok(this.matchService.getAwayMatches(teamName));</span>
+<span class="fc" id="L67">        return ResponseEntity.ok(this.matchService.getAwayMatches(teamName));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

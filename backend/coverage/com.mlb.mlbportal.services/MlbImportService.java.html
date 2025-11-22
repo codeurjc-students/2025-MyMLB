@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.mlbApi.GameEntry;
-import com.mlb.mlbportal.dto.mlbApi.ScheduleResponse;
+import com.mlb.mlbportal.dto.mlbapi.GameEntry;
+import com.mlb.mlbportal.dto.mlbapi.ScheduleResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;

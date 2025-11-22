@@ -136,6 +136,6 @@
 		}
 	}
 	@else if (currentView === 'stadium' && isStadium(selectedResult)) {
-		<app-edit-stadium [stadium]="selectedResult"></app-edit-stadium>
+		<app-edit-stadium [stadium]="selectedResult" (backToMenu)="currentView = null"></app-edit-stadium>
 	}
 </div>
