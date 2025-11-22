@@ -9,6 +9,7 @@ import { BackgroundColorService } from '../../services/background-color.service'
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
 import { UserService } from '../../services/user.service';
 import { CalendarComponent } from "./calendar/calendar.component";
+import { Pictures } from '../../models/pictures.model';
 
 @Component({
 	selector: 'app-team',
@@ -26,13 +27,7 @@ export class TeamComponent implements OnInit {
 
 	@ViewChild('carousel') carousel!: ElementRef;
 
-	public stadiumImages: string[] = [
-		'/assets/landing/hero.png',
-		'/assets/landing/hero-dark.png',
-		'/assets/landing/matches.png',
-		'/assets/landing/standings.png',
-		'/assets/landing/teams.png',
-	];
+	public stadiumImages: Pictures[] = [];
 	public currentIndex: number = 0;
 	private autoplayInterval: any;
 	public isTransitioning: boolean = false;
@@ -44,8 +39,7 @@ export class TeamComponent implements OnInit {
 	constructor(
 		private selectedTeamService: SelectedTeamService,
 		private teamService: TeamService,
-		private backgroundColorService: BackgroundColorService,
-		private userService: UserService
+		private backgroundColorService: BackgroundColorService
 	) {}
 
 	ngOnInit() {
@@ -54,6 +48,7 @@ export class TeamComponent implements OnInit {
 			this.positionPlayers = selectedTeam?.positionPlayers ?? [];
 			this.pitchers = selectedTeam?.pitchers ?? [];
 			this.championships = selectedTeam?.championships ?? [];
+			this.stadiumImages = selectedTeam?.stadium.pictures ?? [];
 
 			this.currentIndex = 0;
 			this.restartAutoplay();

@@ -59,6 +59,10 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     <td>REST Client (Visual Studio Extension), JaCoCo, Git and GitHub</td>
   </tr>
   <tr>
+    <td>External Services</td>
+    <td>Cloudinary, statsAPI</td>
+  </tr>
+  <tr>
     <td>Tests</td>
     <td>Unit, Integration and System (e2e) Tests</td>
   </tr>

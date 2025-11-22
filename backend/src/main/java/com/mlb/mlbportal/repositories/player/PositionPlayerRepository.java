@@ -13,4 +13,5 @@ import com.mlb.mlbportal.models.player.PositionPlayer;
 public interface PositionPlayerRepository extends JpaRepository<PositionPlayer, Long> {
     public Optional<PositionPlayer> findByName(String name);
     public List<PositionPlayer> findByTeamOrderByNameAsc(Team team);
+    public List<PositionPlayer> findByNameContainingIgnoreCase(String input);
 }

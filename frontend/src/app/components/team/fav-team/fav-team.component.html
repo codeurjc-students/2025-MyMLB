@@ -2,19 +2,14 @@
 	class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-24 flex flex-col items-center"
 >
 	<section class="w-full flex justify-center text-center overflow-visible">
-		<h1
-			class="text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]"
-		>
+		<h1 class="app-page-titles">
 			{{ username }}'s Favorite Teams
 		</h1>
 	</section>
 
 	@if ((favTeams$ | async)?.length === 0) {
 		<div class="flex justify-center">
-			<button
-			class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-			(click)="loadTeams()"
-			>Add Favorite Team</button>
+			<button class="px-6 py-3 app-button hover:scale-105" (click)="loadTeams()">Add Favorite Team</button>
 		</div>
 	}
 
@@ -61,12 +56,7 @@
             </div>
 
             <div class="mt-12 flex justify-center">
-                <button
-                    (click)="loadTeams()"
-                    class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-                >
-                    Add Favorite Team
-                </button>
+                <button (click)="loadTeams()" class="px-6 py-3 app-button">Add Favorite Team</button>
             </div>
         </section>
     }

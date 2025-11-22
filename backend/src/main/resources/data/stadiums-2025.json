@@ -2,151 +2,517 @@
   {
     "name": "Rogers Centre",
     "openingDate": "1989",
-    "teamName": "Toronto Blue Jays"
+    "teamName": "Toronto Blue Jays",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590278/pic1_epjl8t.webp",
+        "publicId": "pic1_epjl8t"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590277/pic2_bjn43h.webp",
+        "publicId": "pic2_bjn43h"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590276/pic3_j2g5b4.webp",
+        "publicId": "pic3_j2g5b4"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590274/pic4_st9twg.webp",
+        "publicId": "pic4_st9twg"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590274/pic5_cp8yez.webp",
+        "publicId": "pic5_cp8yez"
+      }
+    ]
   },
+
   {
     "name": "Yankee Stadium",
-    "openingDate": "2009",
-    "teamName": "New York Yankees"
+    "openingDate": 2009,
+    "teamName": "New York Yankees",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587438/pic1_lhbjmj.webp",
+        "publicId": "pic1_lhbjmj"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587826/pic2_xl1hid.webp",
+        "publicId": "pic2_xl1hid"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587823/pic3_qoahi4.webp",
+        "publicId": "pic3_qoahi4"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587821/pic4_fwzz8k.webp",
+        "publicId": "pic4_fwzz8k"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587820/pic5_ob8rs7.webp",
+        "publicId": "pic5_ob8rs7"
+      }
+    ]
   },
+
   {
     "name": "Fenway Park",
-    "openingDate": "1912",
-    "teamName": "Boston Red Sox"
+    "openingDate": 1912,
+    "teamName": "Boston Red Sox",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590582/pic1_jerqmp.webp",
+        "publicId": "pic1_jerqmp"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590580/pic2_k8usdp.webp",
+        "publicId": "pic2_k8usdp"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590579/pic3_mfoatq.webp",
+        "publicId": "pic3_mfoatq"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590577/pic4_ediusk.webp",
+        "publicId": "pic4_ediusk"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590576/pic5_pf5xge.webp",
+        "publicId": "pic5_pf5xge"
+      }
+    ]
   },
+
   {
     "name": "Tropicana Field",
     "openingDate": "1990",
-    "teamName": "Tampa Bay Rays"
+    "teamName": "Tampa Bay Rays",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595371/pic1_d4xysp.webp",
+        "publicId": "pic1_d4xysp"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595370/pic2_enejcq.webp",
+        "publicId": "pic2_enejcq"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595370/pic3_jeexuo.webp",
+        "publicId": "pic3_jeexuo"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595369/pic4_laii9w.webp",
+        "publicId": "pic4_laii9w"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595369/pic5_ijzckn.webp",
+        "publicId": "pic5_ijzckn"
+      }
+    ]
   },
+
   {
     "name": "Oriole Park at Camden Yards",
-    "openingDate": "1992",
-    "teamName": "Baltimore Orioles"
+    "openingDate": 1992,
+    "teamName": "Baltimore Orioles",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589223/pic1_wsybpn.webp",
+        "publicId": "pic1_wsybpn"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589222/pic2_joh2u0.webp",
+        "publicId": "pic2_joh2u0"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589222/pic3_bdj8bk.webp",
+        "publicId": "pic3_bdj8bk"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589221/pic4_ukhdta.webp",
+        "publicId": "pic4_ukhdta"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589221/pic5_qh7rbo.webp",
+        "publicId": "pic5_qh7rbo"
+      }
+    ]
   },
+
   {
     "name": "Progressive Field",
     "openingDate": "1994",
-    "teamName": "Cleveland Guardians"
+    "teamName": "Cleveland Guardians",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic1_a15huz.webp",
+        "publicId": "pic1_a15huz"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic2_le3ovo.webp",
+        "publicId": "pic2_le3ovo"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic3_hjxofu.webp",
+        "publicId": "pic3_hjxofu"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic4_ltfifb.webp",
+        "publicId": "pic4_ltfifb"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic5_lhqfol.webp",
+        "publicId": "pic5_lhqfol"
+      }
+    ]
   },
+
   {
     "name": "Comerica Park",
     "openingDate": "2000",
-    "teamName": "Detroit Tigers"
+    "teamName": "Detroit Tigers",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636866/pic1_ku3b9n.webp",
+        "publicId": "pic1_ku3b9n"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636865/pic2_inzve9.webp",
+        "publicId": "pic2_inzve9"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636865/pic3_lwxqrj.webp",
+        "publicId": "pic3_lwxqrj"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636864/pic4_hoscei.webp",
+        "publicId": "pic4_hoscei"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636864/pic5_ancfp9.webp",
+        "publicId": "pic5_ancfp9"
+      }
+    ]
   },
+
   {
     "name": "Kauffman Stadium",
     "openingDate": "1973",
-    "teamName": "Kansas City Royals"
+    "teamName": "Kansas City Royals",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637171/pic1_fnfbpc.webp",
+        "publicId": "pic1_fnfbpc"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637171/pic2_z1jczg.webp",
+        "publicId": "pic2_z1jczg"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637170/pic3_b7gv8o.webp",
+        "publicId": "pic3_b7gv8o"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637170/pic4_aijlsq.webp",
+        "publicId": "pic4_aijlsq"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637169/pic5_yrgzg0.webp",
+        "publicId": "pic5_yrgzg0"
+      }
+    ]
   },
+
   {
     "name": "Target Field",
     "openingDate": "2010",
-    "teamName": "Minnesota Twins"
+    "teamName": "Minnesota Twins",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637714/pic1_ulx5dz.webp",
+        "publicId": "pic1_ulx5dz"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637714/pic2_ryuw0h.webp",
+        "publicId": "pic2_ryuw0h"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637713/pic3_vttoij.webp",
+        "publicId": "pic3_vttoij"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637713/pic4_ndr89w.webp",
+        "publicId": "pic4_ndr89w"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637712/pic5_cnyemd.webp",
+        "publicId": "pic5_cnyemd"
+      }
+    ]
   },
+
   {
     "name": "Guaranteed Rate Field",
     "openingDate": "1991",
-    "teamName": "Chicago White Sox"
+    "teamName": "Chicago White Sox",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638148/pic1_tmwqvb.webp",
+        "publicId": "pic1_tmwqvb"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638148/pic2_ymmu9a.webp",
+        "publicId": "pic2_ymmu9a"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638148/pic3_fpg8ry.webp",
+        "publicId": "pic3_fpg8ry"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638147/pic4_bxr5ic.webp",
+        "publicId": "pic4_bxr5ic"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638147/pic5_bh6r7a.webp",
+        "publicId": "pic5_bh6r7a"
+      }
+    ]
   },
+
   {
     "name": "T-Mobile Park",
     "openingDate": "1999",
-    "teamName": "Seattle Mariners"
+    "teamName": "Seattle Mariners",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638579/pic1_os6fk2.webp",
+        "publicId": "pic1_os6fk2"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638578/pic2_axt35x.webp",
+        "publicId": "pic2_axt35x"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638578/pic3_jsltns.webp",
+        "publicId": "pic3_jsltns"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638578/pic4_nbonr4.webp",
+        "publicId": "pic4_nbonr4"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638577/pic5_bzhcnd.webp",
+        "publicId": "pic5_bzhcnd"
+      }
+    ]
   },
+
   {
     "name": "Daikin Park",
     "openingDate": "2000",
-    "teamName": "Houston Astros"
+    "teamName": "Houston Astros",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639064/pic1_dnaljv.webp",
+        "publicId": "pic1_dnaljv"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639063/pic2_ss2vhf.webp",
+        "publicId": "pic2_ss2vhf"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639062/pic3_yzobsz.webp",
+        "publicId": "pic3_yzobsz"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639062/pic4_ewg4fb.webp",
+        "publicId": "pic4_ewg4fb"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639062/pic5_byoudb.webp",
+        "publicId": "pic5_byoudb"
+      }
+    ]
   },
+
   {
     "name": "Globe Life Field",
     "openingDate": "2020",
-    "teamName": "Texas Rangers"
+    "teamName": "Texas Rangers",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639439/pic1_mddjvg.webp",
+        "publicId": "pic1_mddjvg"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639438/pic2_bomtu8.webp",
+        "publicId": "pic2_bomtu8"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639438/pic3_d14tyw.webp",
+        "publicId": "pic3_d14tyw"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639437/pic4_prk2rk.webp",
+        "publicId": "pic4_prk2rk"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639436/pic5_j2nzrg.webp",
+        "publicId": "pic5_j2nzrg"
+      }
+    ]
   },
+
   {
     "name": "Sutter Health Park",
     "openingDate": "2000",
-    "teamName": "Athletics"
+    "teamName": "Athletics",
+    "pictures": []
   },
+
   {
     "name": "Angel Stadium",
     "openingDate": "1996",
-    "teamName": "Los Angeles Angels"
+    "teamName": "Los Angeles Angels",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic1_wofd6g.webp",
+        "publicId": "pic1_wofd6g"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic2_l5ayry.webp",
+        "publicId": "pic2_l5ayry"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic3_jj2mcu.webp",
+        "publicId": "pic3_jj2mcu"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic4_jjsvun.webp",
+        "publicId": "pic4_jjsvun"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic5_d47m2z.webp",
+        "publicId": "pic5_d47m2z"
+      }
+    ]
   },
+
   {
     "name": "Citizens Bank Park",
     "openingDate": "2004",
-    "teamName": "Philadelphia Phillies"
+    "teamName": "Philadelphia Phillies",
+    "pictures": []
   },
   {
     "name": "Citi Field",
     "openingDate": "2009",
-    "teamName": "New York Mets"
+    "teamName": "New York Mets",
+    "pictures": []
   },
   {
     "name": "Truist Park",
     "openingDate": "2017",
-    "teamName": "Atlanta Braves"
+    "teamName": "Atlanta Braves",
+    "pictures": []
   },
   {
     "name": "LoanDepot Park",
     "openingDate": "2012",
-    "teamName": "Miami Marlins"
+    "teamName": "Miami Marlins",
+    "pictures": []
   },
   {
     "name": "Nationals Park",
     "openingDate": "2008",
-    "teamName": "Washington Nationals"
+    "teamName": "Washington Nationals",
+    "pictures": []
   },
   {
     "name": "American Family Field",
     "openingDate": "2001",
-    "teamName": "Milwaukee Brewers"
+    "teamName": "Milwaukee Brewers",
+    "pictures": []
   },
   {
     "name": "Wrigley Field",
     "openingDate": "1914",
-    "teamName": "Chicago Cubs"
+    "teamName": "Chicago Cubs",
+    "pictures": []
   },
   {
     "name": "Great American Ball Park",
     "openingDate": "2003",
-    "teamName": "Cincinnati Reds"
+    "teamName": "Cincinnati Reds",
+    "pictures": []
   },
   {
     "name": "Busch Stadium",
     "openingDate": "2006",
-    "teamName": "St. Louis Cardinals"
+    "teamName": "St. Louis Cardinals",
+    "pictures": []
   },
+
   {
     "name": "PNC Park",
     "openingDate": "2001",
-    "teamName": "Pittsburgh Pirates"
+    "teamName": "Pittsburgh Pirates",
+    "pictures": []
   },
+
   {
     "name": "Dodger Stadium",
-    "openingDate": "1962",
-    "teamName": "Los Angeles Dodgers"
+    "openingDate": 1962,
+    "teamName": "Los Angeles Dodgers",
+    "pictures": [
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589479/pic1_zj3ep9.webp",
+        "publicId": "pic1_zj3ep9"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589742/pic2_xsnqiu.webp",
+        "publicId": "pic2_xsnqiu"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589742/pic3_g9oglj.webp",
+        "publicId": "pic3_g9oglj"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589741/pic4_dcpmsx.webp",
+        "publicId": "pic4_dcpmsx"
+      },
+      {
+        "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589741/pic5_ckztq6.webp",
+        "publicId": "pic5_ckztq6"
+      }
+    ]
   },
+
   {
     "name": "Petco Park",
     "openingDate": "2004",
-    "teamName": "San Diego Padres"
+    "teamName": "San Diego Padres",
+    "pictures": []
   },
+
   {
     "name": "Oracle Park",
     "openingDate": "2000",
-    "teamName": "San Francisco Giants"
+    "teamName": "San Francisco Giants",
+    "pictures": []
   },
+
   {
     "name": "Chase Field",
     "openingDate": "1998",
-    "teamName": "Arizona Diamondbacks"
+    "teamName": "Arizona Diamondbacks",
+    "pictures": []
   },
+
   {
     "name": "Coors Field",
     "openingDate": "1995",
-    "teamName": "Colorado Rockies"
+    "teamName": "Colorado Rockies",
+    "pictures": []
   }
 ]

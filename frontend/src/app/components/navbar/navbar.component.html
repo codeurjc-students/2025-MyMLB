@@ -62,7 +62,7 @@
 
 						@else if (roles.includes("ADMIN")) {
 							<li>
-								<a href="#" class="nav-elems" [ngClass]="applyStyle('/edit-menu')">Edit Info</a>
+								<a class="nav-elems" [ngClass]="applyStyle('/edit-menu')" (click)="redirect('edit-menu')">Edit Info</a>
 							</li>
 							<li>
 								<a href="#" class="nav-elems" [ngClass]="applyStyle('/matches')">Matches</a>

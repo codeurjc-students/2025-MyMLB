@@ -17,9 +17,7 @@
 				class="w-24 h-24 object-contain"
 				/>
 			</div>
-			<h1
-				class="text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]"
-			>
+			<h1 class="app-page-titles">
 				{{ team.teamStats.name }}
 			</h1>
 		</section>
@@ -72,7 +70,7 @@
 				<!-- Image Track -->
 				<div class="relative w-full flex justify-center h-80">
 					<img
-						[src]="stadiumImages[currentIndex]"
+						[src]="stadiumImages[currentIndex].url"
 						class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
 						[ngClass]="{
 							'opacity-0': isTransitioning,

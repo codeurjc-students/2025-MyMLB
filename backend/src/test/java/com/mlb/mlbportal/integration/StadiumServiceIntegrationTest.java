@@ -5,17 +5,21 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.StadiumService;
@@ -104,5 +108,99 @@ class StadiumServiceIntegrationTest {
         assertThat(team).isNotNull();
         assertThat(team.getStadium()).isEqualTo(stadium);
         assertThat(team.getName()).isEqualTo(TEST_TEAM1_NAME);
+    }
+
+    @Test
+    @DisplayName("Should return the stadium's pictures")
+    void testGetStadiumPictures() {
+        Stadium stadium = this.stadiums.getFirst();
+        PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+        stadium.getPictures().add(picture);
+        this.stadiumRepository.save(stadium);
+
+        List<PictureInfo> result = this.stadiumService.getStadiumPictures(STADIUM1_NAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getPublicId()).isEqualTo(picture.getPublicId());
+    }
+
+    @Test
+    @DisplayName("Should upload picture and persist URL + publicId")
+    void testAddPictureIntegration() throws Exception {
+        Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+
+        MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
+        PictureInfo dto = stadiumService.addPicture(STADIUM1_NAME, file);
+
+        assertThat(dto.getUrl()).contains("http://fake.cloudinary.com");
+        assertThat(dto.getPublicId()).isEqualTo("fake123");
+        assertThat(stadium.getPictures()).anySatisfy(p -> {
+            assertThat(p.getUrl()).contains("http://fake.cloudinary.com");
+            assertThat(p.getPublicId()).isEqualTo("fake123");
+        });
+    }
+
+    @Test
+    @DisplayName("Should throw exception when stadium already has 5 pictures")
+    void testAddPictureLimitExceededIntegration() throws Exception {
+        Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        stadium.getPictures().addAll(List.of(
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", ""),
+            new PictureInfo("", "")
+        ));
+        stadiumRepository.save(stadium);
+
+        MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
+
+        assertThatThrownBy(() -> stadiumService.addPicture(STADIUM1_NAME, file))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Maximum amount of pictures reached");
+    }
+
+    /**
+     * Initializes a stadium with one or two pictures for deletion tests.
+     * <p>
+     * This helper method centralizes test setup logic to avoid duplicating
+     * picture initialization across multiple test cases, thereby adhering
+     * to the DRY (Don't Repeat Yourself) principle.
+     * </p>
+     *
+     * @param success true to allow a valid deletion scenario (two pictures),
+     *                false to enforce the "cannot delete last picture" rule (one picture).
+     */
+    private void deletePictureTestSetUp(boolean success) {
+        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        if (success) {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake124.jpg", "fake124"));
+        }
+        else {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+        }
+        this.stadiumRepository.save(stadium);
+    }
+
+    @Test
+    @DisplayName("Should delete picture by publicId")
+    void testDeletePicture() {
+        this.deletePictureTestSetUp(true);
+
+        this.stadiumService.deletePicture(STADIUM1_NAME, "fake123");
+
+        Stadium updated = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        assertThat(updated.getPictures()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should throw LastPictureDeletionException when trying to delete the last picture")
+    void testDeleteLastPicture() {
+        this.deletePictureTestSetUp(false);
+
+        assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "test123"))
+                .isInstanceOf(LastPictureDeletionException.class)
+                .hasMessageContaining("Cannot delete the last picture of a stadium");
     }
 }

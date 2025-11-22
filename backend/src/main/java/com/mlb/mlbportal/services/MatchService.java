@@ -23,6 +23,7 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -34,6 +35,7 @@ public class MatchService {
     private final Clock clock;
     private final TeamRepository teamRepository;
 
+    @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
         LocalDate today = LocalDate.now(this.clock);
         LocalDateTime startOfDay = today.atStartOfDay();
@@ -81,15 +83,18 @@ public class MatchService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Match> getLast10Matches(Team team) {
         return this.matchRepository.findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(team, team);
     }
 
+    @Transactional(readOnly = true)
     public List<MatchDTO> getHomeMatches(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         return this.matchMapper.toMatchDTOList(this.matchRepository.findByHomeTeam(team));
     }
 
+    @Transactional(readOnly = true)
     public List<MatchDTO> getAwayMatches(String teamName) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         return this.matchMapper.toMatchDTOList(this.matchRepository.findByAwayTeam(team));

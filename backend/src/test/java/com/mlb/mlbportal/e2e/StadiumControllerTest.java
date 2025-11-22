@@ -88,4 +88,78 @@ class StadiumControllerTest extends BaseE2ETest {
                 .body("message", is("Stadium Not Found"))
                 .body("error", is("Stadium Not Found"));
     }
+
+    @Test
+    @DisplayName("POST /api/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
+    void testAddPicture() {
+        String url = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+        given()
+                .multiPart("file", "test.png", "fake-image".getBytes())
+                .accept(ContentType.JSON)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(200)
+                .body("url", is("http://fake.cloudinary.com/test.jpg"))
+                .body("publicId", is("fake123"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/stadiums/{stadiumName}/pictures should remove picture from stadium")
+    void testDeletePicture() {
+        String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+        String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+
+        given()
+                .multiPart("file", "test.png", "fake-image".getBytes())
+                .accept(ContentType.JSON)
+                .when()
+                .post(postUrl)
+                .then()
+                .statusCode(200)
+                .body("publicId", is("fake123"));
+
+        given()
+                .multiPart("file", "test2.png", "fake2-image".getBytes())
+                .accept(ContentType.JSON)
+                .when()
+                .post(postUrl)
+                .then()
+                .statusCode(200)
+                .body("publicId", is("fake123"));
+
+        given()
+                .queryParam("publicId", "fake123")
+                .accept(ContentType.JSON)
+                .when()
+                .delete(deleteUrl)
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/stadiums/{stadiumName}/pictures should throw 409 if only one picture remains")
+    void testDeleteLastPicture() {
+        String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+        String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+
+        given()
+                .multiPart("file", "test.png", "fake-image".getBytes())
+                .accept(ContentType.JSON)
+                .when()
+                .post(postUrl)
+                .then()
+                .statusCode(200)
+                .body("publicId", is("fake123"));
+
+        given()
+                .queryParam("publicId", "fake123")
+                .accept(ContentType.JSON)
+                .when()
+                .delete(deleteUrl)
+                .then()
+                .statusCode(409)
+                .body("status", is(FAILURE))
+                .body("message", is("Cannot delete the last picture of a stadium"));
+    }
 }

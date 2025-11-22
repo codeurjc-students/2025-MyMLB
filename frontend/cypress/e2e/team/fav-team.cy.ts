@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 
-import { SimplifiedTeam } from './../../../src/app/services/team.service';
+import { TeamSummary } from './../../../src/app/models/team.model';
 
 describe('Favorite Team Component E2E Tests', () => {
 	const AUTH_API_URL = '/api/auth/me';
-	let favTeams: SimplifiedTeam[] = [];
+	let favTeams: TeamSummary[] = [];
 
 	beforeEach(() => {
 		cy.intercept('GET', AUTH_API_URL, {

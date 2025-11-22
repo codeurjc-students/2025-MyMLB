@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Team } from '../../../../app/models/team.model';
 import { MockFactory } from '../../../utils/mock-factory';
-import { StadiumSummary } from '../../../../app/models/stadium-summary.model';
+import { StadiumSummary } from '../../../../app/models/stadium.model';
 import { PositionPlayer } from '../../../../app/models/position-player.model';
 import { Pitcher } from '../../../../app/models/pitcher.model';
 import { TeamInfo } from '../../../../app/models/team.model';
@@ -23,7 +23,7 @@ describe('Selected Team Service Tests', () => {
 		'7-3'
 	);
 
-	const stadium: StadiumSummary = MockFactory.buildStadiumMock('Yankee Stadium', 2009);
+	const stadium: StadiumSummary = MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]);
 
 	const positionPlayers: PositionPlayer[] = [
 		MockFactory.buildPositionPlayerMock(

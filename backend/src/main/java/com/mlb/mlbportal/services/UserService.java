@@ -12,8 +12,8 @@ import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
-import com.mlb.mlbportal.handler.UserAlreadyExistsException;
-import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
@@ -25,6 +25,7 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -39,10 +40,12 @@ public class UserService {
     private final EmailService emailService;
     private final TeamRepository teamRepository;
 
+    @Transactional(readOnly = true)
     public List<ShowUser> getAllUsers() {
         return this.userMapper.toShowUsers(this.userRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public UserEntity getUser(String username) {
         return this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
     }
@@ -53,6 +56,7 @@ public class UserService {
         return usernameValidation || emailValidation; 
     }
 
+    @Transactional
     public RegisterRequest createUser(RegisterRequest registerRequest) {
         if (this.existsUser(registerRequest)) {
             throw new UserAlreadyExistsException();
@@ -64,6 +68,7 @@ public class UserService {
         return this.authenticationMapper.toRegisterRequest(newUser);
     }
 
+    @Transactional
     public boolean resetPassword(String code, String newPassword) {
         Optional<PasswordResetToken> optReset = this.emailService.getCode(code);
 
@@ -92,16 +97,19 @@ public class UserService {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public UserRole getUserRole(String username) {
         UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         return this.authenticationMapper.toUserRole(user);
     }
 
+    @Transactional(readOnly = true)
     public Set<TeamSummary> getFavTeamsOfAUser(String username) {
         UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         return this.teamMapper.toTeamSummarySet(user.getFavTeams());
     }
 
+    @Transactional
     public void addFavTeam(String username, String teamName) {
         UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
@@ -112,6 +120,7 @@ public class UserService {
         team.getFavoritedByUsers().add(user);
     }
 
+    @Transactional
     public void removeFavTeam(String username, String teamName) {
         UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);

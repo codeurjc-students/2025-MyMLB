@@ -1,49 +1,62 @@
 <div class="auth-container">
-  <div class="auth-inputs-panel">
+	<div class="auth-inputs-panel">
+		<!-- Login Form -->
+		<div class="flex items-center justify-center p-8">
+			<div class="w-full max-w-md">
+				<h2 class="auth-main-title">Sign In</h2>
+				<form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4">
+					<input
+						formControlName="username"
+						type="text"
+						placeholder="Username"
+						class="text-inputs"
+					/>
+					@if (getUsername()?.invalid && getUsername()?.touched) {
+					<div class="text-red-600 text-sm">
+						@if (getUsername()?.errors?.['required']) {
+						<small>The username is required</small>
+						}
+					</div>
+					}
 
-    <!-- Login Form -->
-    <div class="flex items-center justify-center p-8">
-      <div class="w-full max-w-md">
-        <h2 class="auth-main-title">Sign In</h2>
-        <form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4">
-          <input formControlName="username" type="text" placeholder="Username" class="text-inputs"/>
-          @if (getUsername()?.invalid && getUsername()?.touched) {
-            <div class="text-red-600 text-sm">
-              @if (getUsername()?.errors?.['required']) {
-                <small>The username is required</small>
-              }
-            </div>
-          }
+					<input
+						formControlName="password"
+						type="password"
+						placeholder="Password"
+						class="text-inputs"
+					/>
+					@if (getPassword()?.invalid && getPassword()?.touched) {
+					<div class="text-red-600 text-sm">
+						@if (getPassword()?.errors?.['required']) {
+						<small>The password is required</small>
+						}
+					</div>
+					}
 
-          <input formControlName="password" type="password" placeholder="Password" class="text-inputs"/>
-          @if (getPassword()?.invalid && getPassword()?.touched) {
-            <div class="text-red-600 text-sm">
-              @if (getPassword()?.errors?.['required']) {
-                <small>The password is required</small>
-              }
-            </div>
-          }
+					<div class="text-right">
+						<a
+							class="text-sm text-blue-500 hover:underline cursor-pointer"
+							(click)="redirectToForgotPassword()"
+							>Forgot Your Password?</a
+						>
+					</div>
 
-          <div class="text-right">
-            <a class="text-sm text-blue-500 hover:underline cursor-pointer" (click)="redirectToForgotPassword()">Forgot Your Password?</a>
-          </div>
+					<button type="submit" class="app-button w-full">SIGN IN</button>
 
-          <button type="submit" class="app-button">SIGN IN</button>
+					@if (errorMessage) {
+					<p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>
+					}
+				</form>
+			</div>
+		</div>
 
-          @if (errorMessage) {
-            <p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>
-          }
-        </form>
-      </div>
-    </div>
-
-    <!-- Sign Up Section -->
-    <div class="auth-panel">
-      <h2 class="text-3xl font-bold mb-4">Hello, Friend!</h2>
-      <p class="mb-6 text-center text-2xl">
-        Enter your personal details and start your journey with us
-      </p>
-      <button class="auth-toggle-button" (click)="toggleToRegisterForm()"> SIGN UP </button>
-    </div>
-  </div>
+		<!-- Sign Up Section -->
+		<div class="auth-panel">
+			<h2 class="text-3xl font-bold mb-4">Hello, Friend!</h2>
+			<p class="mb-6 text-center text-2xl">
+				Enter your personal details and start your journey with us
+			</p>
+			<button class="auth-toggle-button" (click)="toggleToRegisterForm()">SIGN UP</button>
+		</div>
+	</div>
 </div>

@@ -1,0 +1,63 @@
+<div
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+>
+	<div
+		class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn"
+	>
+		<!-- X Button -->
+		<button
+			type="button"
+			(click)="handleCancel()"
+			class="absolute top-3 right-3 text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200 transition"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="2"
+				stroke="currentColor"
+				class="w-6 h-6"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		</button>
+
+		<!-- Danger Symbol -->
+		<div class="flex justify-center items-center mb-4">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 64 64"
+				class="w-16 h-16 text-red-500 dark:text-red-400"
+				aria-label="Danger symbol"
+			>
+				<defs>
+					<linearGradient id="warnGrad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="#FFD54F" />
+						<stop offset="100%" stop-color="#F57C00" />
+					</linearGradient>
+				</defs>
+				<!-- Triangle -->
+				<path
+					d="M31.06 6.65a2 2 0 0 1 1.88 0.99l25.1 43.44A2 2 0 0 1 56.17 54H7.83a2 2 0 0 1 -1.86 -2.92l25.1 -43.44a2 2 0 0 1 1.99 -0.99z"
+					fill="url(#warnGrad)"
+					stroke="#5D4037"
+					stroke-width="2"
+				/>
+				<!-- Exclamation mark -->
+				<rect x="30" y="22" width="4" height="18" rx="2" fill="#2E2E2E" />
+				<circle cx="32" cy="44" r="3" fill="#2E2E2E" />
+			</svg>
+		</div>
+
+		<!-- Text Content -->
+		<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ title }}</h2>
+
+		<div class="flex justify-center gap-4 py-5">
+			<button (click)="handleCancel()"
+				class="px-4 py-2 text-sm font-medium cursor-pointer text-white bg-gradient-to-r from-red-500 to-rose-600 rounded-lg shadow-md hover:scale-105 hover:shadow-lg transition">
+				Go Back
+			</button>
+		</div>
+	</div>
+</div>

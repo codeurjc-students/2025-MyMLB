@@ -1,11 +1,13 @@
-import { Pitcher } from '../../app/models/pitcher.model';
+import { Pitcher, PitcherGlobal } from '../../app/models/pitcher.model';
 import { PositionPlayer } from '../../app/models/position-player.model';
-import { StadiumSummary } from '../../app/models/stadium-summary.model';
+import { Stadium, StadiumSummary } from '../../app/models/stadium.model';
 import { Team, TeamInfo, TeamSummary } from '../../app/models/team.model';
 import { User } from '../../app/models/user.model';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
 import { ShowMatch } from '../../app/services/match.service';
+import { Pictures } from '../../app/models/pictures.model';
+import { PaginatedSearchs } from '../../app/models/pagination.model';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {
@@ -64,11 +66,21 @@ export class MockFactory {
 		} as TeamSummary;
 	};
 
-	static buildStadiumMock = (name: string, year: number) => {
+	static buildStadiumMock = (name: string, year: number, pictures: Pictures[]) => {
 		return {
 			name: name,
 			openingDate: year,
+			pictures: pictures
 		} as StadiumSummary;
+	};
+
+	static buildStadiumCompleteMock = (name: string, year: number, teamName: string, pictures: Pictures[]) => {
+		return {
+			name: name,
+			openingDate: year,
+			teamName: teamName,
+			pictures: pictures
+		} as Stadium;
 	};
 
 	static buildPositionPlayerMock = (
@@ -137,6 +149,42 @@ export class MockFactory {
 		} as Pitcher;
 	};
 
+	static buildPitcherGlobalMock = (
+		name: string,
+		teamName: string,
+		position: string,
+		games: number,
+		wins: number,
+		losses: number,
+		era: number,
+		innings: number,
+		so: number,
+		walks: number,
+		ha: number,
+		ra: number,
+		whip: number,
+		saves: number,
+		savesOp: number
+	) => {
+		return {
+			name: name,
+			teamName: teamName,
+			position: position,
+			games: games,
+			wins: wins,
+			losses: losses,
+			era: era,
+			inningsPitched: innings,
+			totalStrikeouts: so,
+			walks: walks,
+			hitsAllowed: ha,
+			runsAllowed: ra,
+			whip: whip,
+			saves: saves,
+			saveOpportunities: savesOp,
+		} as PitcherGlobal;
+	};
+
 	static buildTeamInfoMock = (
 		team: Team,
 		city: string,
@@ -166,5 +214,33 @@ export class MockFactory {
 			date: date,
 			status: status
 		} as ShowMatch;
+	};
+
+	static buildPaginatedSearchsForTeam = (team: Team) => {
+		return {
+			content: [
+				team
+			],
+			page: {
+				size: 10,
+				number: 0,
+				totalElements: 1,
+				totalPages: 1
+			}
+		} as PaginatedSearchs
+	};
+
+	static buildPaginatedSearchsForPlayer = (player: PitcherGlobal) => {
+		return {
+			content: [
+				player
+			],
+			page: {
+				size: 5,
+				number: 2,
+				totalElements: 1,
+				totalPages: 1
+			}
+		} as PaginatedSearchs
 	};
 }

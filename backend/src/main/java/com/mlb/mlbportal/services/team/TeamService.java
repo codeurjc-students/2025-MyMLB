@@ -25,7 +25,7 @@ import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -40,12 +40,14 @@ public class TeamService {
     private final PlayerService playerService;
     private final UserService userService;
 
+    @Transactional(readOnly = true)
     public List<TeamInfoDTO> getTeams() {
         List<Team> teams = this.teamRepository.findAll();
         teams.forEach(team -> TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));
         return this.teamMapper.toTeamInfoDTOList(teams);
     }
 
+    @Transactional(readOnly = true)
     public Team getTeam(String teamName) {
         return this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
     }
@@ -85,6 +87,7 @@ public class TeamService {
         return ordered;
     }
 
+    @Transactional(readOnly = true)
     public Map<League, Map<Division, List<TeamDTO>>> getStandings(String username) {
         UserEntity user = null;
         if (username != null && !username.isBlank()) {

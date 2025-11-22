@@ -11,7 +11,15 @@ html {
 }
 
 .app-button {
-	@apply w-full bg-gradient-to-br from-sky-600 via-sky-700 to-sky-700 text-white py-2 rounded cursor-pointer transition-all duration-500 ease-out hover:brightness-150 hover:shadow-lg dark:from-indigo-950 dark:via-blue-950 dark:to-sky-900;
+	@apply text-lg py-2 font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800;
+}
+
+.app-success-button {
+	@apply text-sm font-medium text-white bg-green-600 rounded-lg shadow-md cursor-pointer hover:bg-green-700 hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500
+}
+
+.app-page-titles {
+	@apply text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]
 }
 
 .app-background {
@@ -248,4 +256,14 @@ html {
 
 .animate-fadeInUpSmooth {
     animation: fadeInUpSmooth 0.6s ease-out forwards;
+}
+
+/* Loading Modal */
+@keyframes spinInfinite {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-infinite {
+  animation: spinInfinite 1s linear infinite;
 }

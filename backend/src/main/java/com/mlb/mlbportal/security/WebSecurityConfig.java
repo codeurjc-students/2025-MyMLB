@@ -80,10 +80,15 @@ public class WebSecurityConfig {
 
                     // Stadium Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/stadiums").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/stadiums/{name}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/stadiums/*").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/stadiums/*/pictures").permitAll()
 
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/matches/today").permitAll()
+
+                    // Search Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/searchs/**").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

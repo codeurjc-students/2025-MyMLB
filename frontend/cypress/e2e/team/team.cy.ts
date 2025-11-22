@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { TeamInfo } from './../../../src/app/models/team-info.model';
+import { TeamInfo } from './../../../src/app/models/team.model';
 
 declare global {
 	interface Window {

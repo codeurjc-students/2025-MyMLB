@@ -13,45 +13,49 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class EmailService {
-<span class="fc" id="L21">    private static final Random RANDOM = new Random();</span>
+<span class="fc" id="L22">    private static final Random RANDOM = new Random();</span>
 
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Optional&lt;PasswordResetToken&gt; getCode(String code) {
-<span class="fc" id="L28">        return this.passwordRepository.findByCode(code);</span>
+<span class="fc" id="L30">        return this.passwordRepository.findByCode(code);</span>
     }
 
+    @Transactional
     public void deleteToken(PasswordResetToken token) {
-<span class="fc" id="L32">        this.passwordRepository.delete(token);</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L35">        this.passwordRepository.delete(token);</span>
+<span class="fc" id="L36">    }</span>
 
     private void sendEmailHelper(String destinyEmail, String subject, String body) {
-<span class="fc" id="L36">        SimpleMailMessage message = new SimpleMailMessage();</span>
-<span class="fc" id="L37">        message.setTo(destinyEmail);</span>
-<span class="fc" id="L38">        message.setSubject(subject);</span>
-<span class="fc" id="L39">        message.setText(body);</span>
-<span class="fc" id="L40">        this.mailSender.send(message);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L39">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L40">        message.setTo(destinyEmail);</span>
+<span class="fc" id="L41">        message.setSubject(subject);</span>
+<span class="fc" id="L42">        message.setText(body);</span>
+<span class="fc" id="L43">        this.mailSender.send(message);</span>
+<span class="fc" id="L44">    }</span>
 
+    @Transactional
     public void sendEmail(String destinyEmail) {
-<span class="fc" id="L44">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
+<span class="fc" id="L48">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
         
-<span class="fc" id="L46">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
+<span class="fc" id="L50">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
         
-<span class="fc" id="L48">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
+<span class="fc" id="L52">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
         
-<span class="fc" id="L50">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
-<span class="fc" id="L51">        this.passwordRepository.save(resetToken);</span>
+<span class="fc" id="L54">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
+<span class="fc" id="L55">        this.passwordRepository.save(resetToken);</span>
 
-<span class="fc" id="L53">        String subject = &quot;Password Recovery&quot;;</span>
-<span class="fc" id="L54">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L57">        String subject = &quot;Password Recovery&quot;;</span>
+<span class="fc" id="L58">        String body = &quot;&quot;&quot;</span>
                 Hello %s,
 
                 You have requested to generate a new password for your account.
@@ -62,11 +66,11 @@ public class EmailService {
                 This code will expire in 15 minutes.
 
                 If you do not authorize this procedure, ignore this email.
-<span class="fc" id="L65">                &quot;&quot;&quot;.formatted(</span>
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
+<span class="fc" id="L69">                &quot;&quot;&quot;.formatted(</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
                     code
                 );
-<span class="fc" id="L69">        this.sendEmailHelper(destinyEmail, subject, body);</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L73">        this.sendEmailHelper(destinyEmail, subject, body);</span>
+<span class="fc" id="L74">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -41,7 +41,7 @@ describe('Team Service Tests', () => {
 		'7-3'
 	);
 
-	const stadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009);
+	const stadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]);
 	const positionPlayers = [
 		MockFactory.buildPositionPlayerMock(
 			'Aaron Judge',

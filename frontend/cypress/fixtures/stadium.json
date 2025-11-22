@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "name": "Yankee Stadium",
+      "openingDate": 2009,
+      "teamName": "New York Yankees",
+      "pictures": [
+        { "url": "http://test.com/pic1.webp", "publicId": "pic1" },
+        { "url": "http://test.com/pic2.webp", "publicId": "pic2" },
+        { "url": "http://test.com/pic3.webp", "publicId": "pic3" }
+      ]
+    }
+  ],
+  "page": {
+    "size": 10,
+    "number": 0,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}

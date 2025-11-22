@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { ErrorComponent } from './components/error/error.component';
 import { TeamComponent } from './components/team/team.component';
 import { StandingsComponent } from './components/standings/standings.component';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -27,6 +28,12 @@ export const routes: Routes = [
 		canActivate: [AuthGuard],
 		loadComponent: () =>
 			import('./components/team/fav-team/fav-team.component').then((m) => m.FavTeamComponent)
+	},
+	{
+		path: 'edit-menu',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/admin/edit-menu/edit-menu.component').then((m) => m.EditMenuComponent)
 	}
 	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];

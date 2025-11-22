@@ -232,6 +232,10 @@ public class InitController {
 
                 Stadium stadium = new Stadium(dto.name(), dto.openingDate(), team);
 
+                if (dto.pictures() != null) {
+                    stadium.getPictures().addAll(dto.pictures());
+                }
+
                 if (team != null) {
                     team.setStadium(stadium);
                 }

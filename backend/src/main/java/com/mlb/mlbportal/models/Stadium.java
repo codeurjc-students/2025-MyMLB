@@ -3,6 +3,8 @@ package com.mlb.mlbportal.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
+
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,7 +31,7 @@ public class Stadium {
     private int openingDate;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> pictures = new ArrayList<>();
+    private List<PictureInfo> pictures = new ArrayList<>();
 
     @OneToOne(mappedBy = "stadium")
     private Team team;
@@ -41,7 +43,7 @@ public class Stadium {
         }
     }
 
-    public Stadium(String name, int openingDate, List<String> pictures, Team team) {
+    public Stadium(String name, int openingDate, List<PictureInfo> pictures, Team team) {
         this.name = name;
         this.openingDate = openingDate;
         this.pictures = pictures;

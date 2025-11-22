@@ -49,6 +49,7 @@
 		"@angular/cli": "^20.2.2",
 		"@angular/compiler-cli": "^20.2.0",
 		"@types/jasmine": "~5.1.0",
+		"baseline-browser-mapping": "^2.8.30",
 		"cypress": "^15.2.0",
 		"cypress-real-events": "^1.15.0",
 		"jasmine-core": "~5.9.0",
