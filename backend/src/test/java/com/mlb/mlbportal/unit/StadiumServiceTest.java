@@ -1,27 +1,31 @@
 package com.mlb.mlbportal.unit;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
@@ -31,7 +35,6 @@ import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StadiumServiceTest {
@@ -112,8 +115,7 @@ class StadiumServiceTest {
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
         List<PictureInfo> result = this.stadiumService.getStadiumPictures(STADIUM1_NAME);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).containsExactlyElementsOf(List.of(picture));
+        assertThat(result).hasSize(1).containsExactlyElementsOf(List.of(picture));
     }
 
     @Test
@@ -141,7 +143,7 @@ class StadiumServiceTest {
 
     @Test
     @DisplayName("Should throw exception when stadium already has 5 pictures")
-    void testAddPictureLimitExceeded() throws Exception {
+    void testAddPictureLimitExceeded() {
         Stadium stadium = this.stadiums.get(0);
         stadium.getPictures().addAll(List.of(
             new PictureInfo("", ""),

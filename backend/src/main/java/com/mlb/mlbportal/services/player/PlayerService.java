@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.dto.player.PitcherDTO;
 import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
@@ -27,7 +28,6 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -110,7 +110,6 @@ public class PlayerService {
         return this.pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
-    @Transactional
     public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
 
@@ -122,8 +121,7 @@ public class PlayerService {
         });
         return players;
     }
-
-    @Transactional
+    
     public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
         List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
 
