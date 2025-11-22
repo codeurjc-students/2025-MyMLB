@@ -1,6 +1,4 @@
-package com.mlb.mlbportal.handler;
-
-import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
+package com.mlb.mlbportal.handler.conflict;
 
 public class UserAlreadyExistsException extends ResourceAlreadyExistsException {
     public UserAlreadyExistsException() {

@@ -38,7 +38,7 @@ describe('Calendar Component Tests', () => {
 		'7-3'
 	);
 
-	const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009);
+	const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]);
 
 	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
 		mockTeamStats,

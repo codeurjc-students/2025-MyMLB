@@ -23,7 +23,7 @@ describe('Selected Team Service Tests', () => {
 		'7-3'
 	);
 
-	const stadium: StadiumSummary = MockFactory.buildStadiumMock('Yankee Stadium', 2009);
+	const stadium: StadiumSummary = MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]);
 
 	const positionPlayers: PositionPlayer[] = [
 		MockFactory.buildPositionPlayerMock(

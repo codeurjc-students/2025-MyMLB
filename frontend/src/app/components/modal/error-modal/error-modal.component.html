@@ -1,6 +1,7 @@
 <div
 	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'">
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+>
 	<div
 		class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn"
 	>
@@ -22,24 +23,39 @@
 			</svg>
 		</button>
 
-		<div class="mb-4">
-			<div class="w-12 h-12 mx-auto text-red-500 dark:text-red-400">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
-					<path fill-rule="evenodd" clip-rule="evenodd"
-						d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-					></path>
-				</svg>
-			</div>
+		<!-- Danger Symbol -->
+		<div class="flex justify-center items-center mb-4">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 64 64"
+				class="w-16 h-16 text-red-500 dark:text-red-400"
+				aria-label="Danger symbol"
+			>
+				<defs>
+					<linearGradient id="warnGrad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="#FFD54F" />
+						<stop offset="100%" stop-color="#F57C00" />
+					</linearGradient>
+				</defs>
+				<!-- Triangle -->
+				<path
+					d="M31.06 6.65a2 2 0 0 1 1.88 0.99l25.1 43.44A2 2 0 0 1 56.17 54H7.83a2 2 0 0 1 -1.86 -2.92l25.1 -43.44a2 2 0 0 1 1.99 -0.99z"
+					fill="url(#warnGrad)"
+					stroke="#5D4037"
+					stroke-width="2"
+				/>
+				<!-- Exclamation mark -->
+				<rect x="30" y="22" width="4" height="18" rx="2" fill="#2E2E2E" />
+				<circle cx="32" cy="44" r="3" fill="#2E2E2E" />
+			</svg>
 		</div>
 
 		<!-- Text Content -->
 		<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ title }}</h2>
 
-		<div class="flex justify-center gap-4">
-			<button
-				(click)="handleCancel()"
-				class="px-4 py-2 text-sm font-medium cursor-pointer text-white bg-gradient-to-r from-red-500 to-rose-600 rounded-lg shadow-md hover:scale-105 hover:shadow-lg transition"
-			>
+		<div class="flex justify-center gap-4 py-5">
+			<button (click)="handleCancel()"
+				class="px-4 py-2 text-sm font-medium cursor-pointer text-white bg-gradient-to-r from-red-500 to-rose-600 rounded-lg shadow-md hover:scale-105 hover:shadow-lg transition">
 				Go Back
 			</button>
 		</div>

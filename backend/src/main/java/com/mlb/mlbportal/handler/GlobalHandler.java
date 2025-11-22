@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.mlb.mlbportal.handler.alreadyExists.ResourceAlreadyExistsException;
-import com.mlb.mlbportal.handler.alreadyExists.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
@@ -70,6 +72,12 @@ public class GlobalHandler {
         }
         String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();
         return buildResponse(HttpStatus.CONFLICT, message, errorMsg);
+    }
+
+    @ExceptionHandler(LastPictureDeletionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleLastPictureDeletion(LastPictureDeletionException ex) {
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "Cannot delete the last picture of a stadium");
     }
 
     @ExceptionHandler(NullPointerException.class)

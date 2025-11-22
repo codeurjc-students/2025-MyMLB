@@ -9,10 +9,7 @@
 
 	@if ((favTeams$ | async)?.length === 0) {
 		<div class="flex justify-center">
-			<button
-			class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-			(click)="loadTeams()"
-			>Add Favorite Team</button>
+			<button class="px-6 py-3 app-button hover:scale-105" (click)="loadTeams()">Add Favorite Team</button>
 		</div>
 	}
 
@@ -59,12 +56,7 @@
             </div>
 
             <div class="mt-12 flex justify-center">
-                <button
-                    (click)="loadTeams()"
-                    class="px-6 py-3 text-lg font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-                >
-                    Add Favorite Team
-                </button>
+                <button (click)="loadTeams()" class="px-6 py-3 app-button">Add Favorite Team</button>
             </div>
         </section>
     }

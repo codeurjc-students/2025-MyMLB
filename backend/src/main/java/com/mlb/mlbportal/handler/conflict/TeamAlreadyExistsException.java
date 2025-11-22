@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.handler.alreadyExists;
+package com.mlb.mlbportal.handler.conflict;
 
 public class TeamAlreadyExistsException extends ResourceAlreadyExistsException {
     public TeamAlreadyExistsException() {

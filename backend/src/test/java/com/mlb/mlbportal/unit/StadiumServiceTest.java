@@ -1,13 +1,12 @@
 package com.mlb.mlbportal.unit;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +31,7 @@ import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StadiumServiceTest {
@@ -106,6 +103,20 @@ class StadiumServiceTest {
     }
 
     @Test
+    @DisplayName("Should return the stadium's pictures")
+    void testGetStadiumPictures() {
+        Stadium stadium = this.stadiums.getFirst();
+        PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+        stadium.getPictures().add(picture);
+
+        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        List<PictureInfo> result = this.stadiumService.getStadiumPictures(STADIUM1_NAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result).containsExactlyElementsOf(List.of(picture));
+    }
+
+    @Test
     @DisplayName("Should upload picture and return PictureDTO")
     void testAddPicture() throws Exception {
         Stadium stadium = this.stadiums.get(0);
@@ -148,17 +159,53 @@ class StadiumServiceTest {
             .hasMessageContaining("Maximum amount of pictures reached");
     }
 
+    /**
+     * Initializes a stadium with one or two pictures for deletion tests.
+     * <p>
+     * This helper method centralizes test setup logic to avoid duplicating
+     * picture initialization across multiple test cases, thereby adhering
+     * to the DRY (Don't Repeat Yourself) principle.
+     * </p>
+     *
+     * @param success true to allow a valid deletion scenario (two pictures),
+     *                false to enforce the "cannot delete last picture" rule (one picture).
+     */
+    private Stadium deletePictureTestSetUp(boolean success) {
+        Stadium stadium = this.stadiums.getFirst();
+        if (success) {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake124.jpg", "fake124"));
+        }
+        else {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+        }
+        return stadium;
+    }
+
     @Test
     @DisplayName("Should delete picture by publicId")
-    void testDeletePicture() throws Exception {
-        Stadium stadium = this.stadiums.get(0);
-        stadium.getPictures().add(new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
+    void testDeletePicture() {
+        Stadium stadium = this.deletePictureTestSetUp(true);
 
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
 
-        this.stadiumService.deletePicture(STADIUM1_NAME, "test123");
+        this.stadiumService.deletePicture(STADIUM1_NAME, "fake123");
 
         verify(this.stadiumRepository).save(stadium);
-        assertThat(stadium.getPictures()).isEmpty();
+        assertThat(stadium.getPictures()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should throw LastPictureDeletionException when trying to delete the last picture")
+    void testDeleteLastPicture() {
+        Stadium stadium = this.deletePictureTestSetUp(false);
+
+        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+
+        assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "fake123"))
+                .isInstanceOf(LastPictureDeletionException.class)
+                .hasMessageContaining("Cannot delete the last picture of a stadium");
+
+        verify(this.stadiumRepository, never()).save(stadium);
     }
 }

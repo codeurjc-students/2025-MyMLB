@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../services/search.service';
 import { RemoveConfirmationModalComponent } from "../../remove-confirmation-modal/remove-confirmation-modal.component";
@@ -10,11 +10,12 @@ import { PositionPlayerGlobal } from '../../../models/position-player.model';
 import { PitcherGlobal } from '../../../models/pitcher.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { PaginatedSearchs } from '../../../models/pagination.model';
+import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
 
 @Component({
 	selector: 'app-edit-menu',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ErrorModalComponent],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-menu.component.html',
 })
@@ -29,17 +30,26 @@ export class EditMenuComponent implements OnInit {
     public readonly pageSize = 10;
     public hasMore = true;
 	public lastSearch = '';
+	public noResultsMessage = '';
+	public isSearchTypeOpen = false;
+	public isPlayerTypeOpen = false;
+	public currentView: 'team' | 'stadium' | 'player' | null = null;
+	public selectedResult!: Team | Stadium | PositionPlayerGlobal | PitcherGlobal;
 
 	constructor(private searchService: SearchService, private backgroundService: BackgroundColorService) {}
 
 	ngOnInit(): void {}
 
 	public performSearch(page: number = 0): void {
-		if (!this.searchQuery.trim()) return;
+		if (!this.searchQuery.trim()) {
+			this.error = true;
+			this.errorMessage = 'Please enter the team, stadium or player you want to edit';
+			return;
+		}
 
 		if (this.searchType === 'player' && !this.playerType) {
 			this.error = true;
-			this.errorMessage = 'Please select the type of player';
+			this.errorMessage = 'Please select the type of player you want to edit';
 			return;
 		}
 
@@ -57,6 +67,12 @@ export class EditMenuComponent implements OnInit {
 			.search(this.searchType, this.searchQuery, page, this.pageSize, this.playerType ?? undefined)
 			.subscribe({
 				next: (results) => {
+					if (results.content.length === 0) {
+						this.noResultsMessage = 'No results were found';
+					}
+					else {
+						this.noResultsMessage = '';
+					}
 					if (page === 0) {
 						this.searchResults = results.content;
 					}
@@ -73,6 +89,13 @@ export class EditMenuComponent implements OnInit {
 			});
 	}
 
+	@HostListener('document:keydown', ['$event'])
+	public handleEnter(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			this.performSearch();
+		}
+	}
+
 	public loadNextPage() {
 		if (this.hasMore) {
 			this.performSearch(this.currentPage + 1);
@@ -80,7 +103,16 @@ export class EditMenuComponent implements OnInit {
 	}
 
 	public edit(result: any): void {
-		console.log('Edit:', result);
+		if (this.isTeam(result)) {
+			this.currentView = 'team';
+		}
+		else if (this.isStadium(result)) {
+			this.currentView = 'stadium';
+		}
+		else if (this.isPositionPlayer(result) || this.isPitcher(result)) {
+			this.currentView = 'player';
+		}
+		this.selectedResult = result;
 	}
 
 	public isPitcher(obj: any): obj is PitcherGlobal {
@@ -101,5 +133,13 @@ export class EditMenuComponent implements OnInit {
 
 	public getBackgroundColor(abbreviation: string) {
 		return this.backgroundService.getBackgroundColor(abbreviation);
+	}
+
+	public toggleSearchType(state: boolean) {
+		this.isSearchTypeOpen = state;
+	}
+
+	public togglePlayerType(state: boolean) {
+		this.isPlayerTypeOpen = state;
 	}
 }

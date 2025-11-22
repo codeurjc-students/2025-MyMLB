@@ -5,6 +5,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -109,6 +111,20 @@ class StadiumServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should return the stadium's pictures")
+    void testGetStadiumPictures() {
+        Stadium stadium = this.stadiums.getFirst();
+        PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+        stadium.getPictures().add(picture);
+        this.stadiumRepository.save(stadium);
+
+        List<PictureInfo> result = this.stadiumService.getStadiumPictures(STADIUM1_NAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getPublicId()).isEqualTo(picture.getPublicId());
+    }
+
+    @Test
     @DisplayName("Should upload picture and persist URL + publicId")
     void testAddPictureIntegration() throws Exception {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
@@ -144,16 +160,47 @@ class StadiumServiceIntegrationTest {
             .hasMessageContaining("Maximum amount of pictures reached");
     }
 
+    /**
+     * Initializes a stadium with one or two pictures for deletion tests.
+     * <p>
+     * This helper method centralizes test setup logic to avoid duplicating
+     * picture initialization across multiple test cases, thereby adhering
+     * to the DRY (Don't Repeat Yourself) principle.
+     * </p>
+     *
+     * @param success true to allow a valid deletion scenario (two pictures),
+     *                false to enforce the "cannot delete last picture" rule (one picture).
+     */
+    private void deletePictureTestSetUp(boolean success) {
+        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        if (success) {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake124.jpg", "fake124"));
+        }
+        else {
+            stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
+        }
+        this.stadiumRepository.save(stadium);
+    }
+
     @Test
     @DisplayName("Should delete picture by publicId")
-    void testDeletePictureIntegration() throws Exception {
-        Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
-        stadium.getPictures().add(new PictureInfo("http://fake.cloudinary.com/fake123.jpg", "fake123"));
-        stadiumRepository.save(stadium);
+    void testDeletePicture() {
+        this.deletePictureTestSetUp(true);
 
-        stadiumService.deletePicture(STADIUM1_NAME, "fake123");
+        this.stadiumService.deletePicture(STADIUM1_NAME, "fake123");
 
-        Stadium updated = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
-        assertThat(updated.getPictures()).isEmpty();
+        Stadium updated = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        assertThat(updated.getPictures()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should throw LastPictureDeletionException when trying to delete the last picture")
+    void testDeleteLastPicture() {
+        this.deletePictureTestSetUp(false);
+
+        assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "test123"))
+                .isInstanceOf(LastPictureDeletionException.class)
+                .hasMessageContaining("Cannot delete the last picture of a stadium");
     }
 }

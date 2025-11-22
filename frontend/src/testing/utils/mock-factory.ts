@@ -6,6 +6,7 @@ import { User } from '../../app/models/user.model';
 import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
 import { ShowMatch } from '../../app/services/match.service';
+import { Pictures } from '../../app/models/pictures.model';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {
@@ -64,10 +65,11 @@ export class MockFactory {
 		} as TeamSummary;
 	};
 
-	static buildStadiumMock = (name: string, year: number) => {
+	static buildStadiumMock = (name: string, year: number, pictures: Pictures[]) => {
 		return {
 			name: name,
 			openingDate: year,
+			pictures: pictures
 		} as StadiumSummary;
 	};
 

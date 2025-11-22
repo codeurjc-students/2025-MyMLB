@@ -5,17 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -34,6 +35,12 @@ public class StadiumService {
     public StadiumInitDTO findStadiumByName(String name) {
         Stadium stadium = this.stadiumRepository.findByName(name).orElseThrow(StadiumNotFoundException::new);
         return this.stadiumMapper.toStadiumInitDTO(stadium);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PictureInfo> getStadiumPictures(String stadiumName) {
+        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+        return stadium.getPictures();
     }
 
     @SuppressWarnings("unchecked")
@@ -58,8 +65,11 @@ public class StadiumService {
     }
 
     @Transactional
-    public void deletePicture(String stadiumName, String publicId) throws IOException {
+    public void deletePicture(String stadiumName, String publicId) {
         Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+        if (stadium.getPictures().size() <= 1) {
+            throw new LastPictureDeletionException("Cannot delete the last picture of a stadium");
+        }
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
         this.stadiumRepository.save(stadium);
     }

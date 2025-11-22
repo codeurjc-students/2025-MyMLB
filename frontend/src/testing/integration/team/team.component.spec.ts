@@ -17,7 +17,7 @@ describe('Team Component Integration Tests', () => {
 		'New York',
 		'Founded in 1901',
 		[1903, 1923, 1996, 2009],
-		MockFactory.buildStadiumMock('Yankee Stadium', 2009),
+		MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]),
 		[
 			MockFactory.buildPositionPlayerMock(
 				'Aaron Judge',
