@@ -39,12 +39,13 @@ export class AuthService {
 		return this.http.get<UserRole>(`${this.apiUrl}/me`, { withCredentials: true });
 	}
 
-	public loginUser(loginRequest: LoginRequest): Observable<UserRole> {
+	public loginUser(loginRequest: LoginRequest): Observable<AuthResponse> {
 		return this.http
 			.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
 			.pipe(
-				switchMap(() => this.getActiveUser()),
-				tap((user) => this.currentUserSubject.next(user))
+				tap(() => {
+					this.getActiveUser().subscribe((user) => this.currentUserSubject.next(user));
+				})
 			);
 	}
 
