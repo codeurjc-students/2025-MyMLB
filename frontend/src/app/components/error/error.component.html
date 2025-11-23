@@ -1,20 +1,19 @@
 <div
 	class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white flex items-center justify-center min-h-screen px-4 transition-colors duration-300"
+	role="alert"
 >
 	<div class="text-center">
-		<!-- Imagen ilustrativa -->
-		<img src="assets/not-found.png" alt="404 Illustration" class="mx-auto mb-8 w-72 h-auto" />
+		<img
+			src="assets/not-found.png"
+			alt="404 Illustration"
+			class="mx-auto mb-8 w-72 max-w-full h-auto"
+		/>
 
-		<!-- Mensaje -->
 		<h1 class="text-5xl font-bold mb-4">404 Not Found</h1>
-		<p class="text-lg text-gray-600 dark:text-gray-300 mb-6">Whoops! Esa página no existe.</p>
+		<p class="text-lg text-gray-700 dark:text-gray-200 mb-6">Whoops! This page doesn't exist.</p>
 
-		<!-- Botón de regreso -->
-		<a
-			class="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 hover:from-blue-500 hover:via-blue-600 hover:to-indigo-700 text-white font-semibold rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out cursor-pointer dark:from-blue-700 dark:via-blue-800 dark:to-indigo-900 dark:hover:from-blue-600 dark:hover:via-blue-700 dark:hover:to-indigo-800"
-			(click)="navigateToHome()"
-		>
-			Volver al inicio
-		</a>
+		<button class="inline-block px-6 py-3 app-button scale-105" (click)="navigateToHome()">
+			Go Back to Home.
+		</button>
 	</div>
 </div>

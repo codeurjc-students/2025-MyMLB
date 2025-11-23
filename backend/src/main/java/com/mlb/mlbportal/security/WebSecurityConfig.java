@@ -17,22 +17,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.mlb.mlbportal.handler.CustomAccessDeniedHandler;
+import com.mlb.mlbportal.handler.CustomAuthenticationEntryPoint;
 import com.mlb.mlbportal.security.jwt.JwtRequestFilter;
-import com.mlb.mlbportal.security.jwt.UnauthorizedHandlerJwt;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class WebSecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
-    private final UnauthorizedHandlerJwt unauthorizedHandlerJwt;
     private final SecurityUserDetails securityUserDetails;
-
-    public WebSecurityConfig(JwtRequestFilter jwtRequestFilter, UnauthorizedHandlerJwt unauthorizedHandlerJwt,
-        SecurityUserDetails securityUserDetails) {
-        this.jwtRequestFilter = jwtRequestFilter;
-        this.unauthorizedHandlerJwt = unauthorizedHandlerJwt;
-        this.securityUserDetails = securityUserDetails;
-    }
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,7 +56,10 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http
                 .securityMatcher("/api/**")
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
+                .exceptionHandling(ex -> 
+                    ex.authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler)
+                );
 
         http
                 .authorizeHttpRequests(authorize -> authorize

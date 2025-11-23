@@ -16,7 +16,7 @@ export const routes: Routes = [
 	{ path: 'recovery', component: PasswordComponent },
 	{ path: 'team/:name', component: TeamComponent },
 	{ path: 'standings', component: StandingsComponent },
-	//{ path: 'error', component: ErrorComponent },
+	{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',
 		canActivate: [AuthGuard],
@@ -34,6 +34,6 @@ export const routes: Routes = [
 		canActivate: [AdminGuard],
 		loadComponent: () =>
 			import('./components/admin/edit-menu/edit-menu.component').then((m) => m.EditMenuComponent)
-	}
-	//{ path: '**', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
+	},
+	{ path: '**', redirectTo: 'error', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
 ];
