@@ -16,31 +16,28 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			let code = error.status;
 			const url = req.url;
 
-			if (code === 401 && url.endsWith('/me')) {
-                return of(new HttpResponse({ status: 200, body: null }));
+			if (code === 401) {
+                return throwError(() => error);
             }
-
-			if (code === 400) {
-				message = 'Invalid request. Please check the submitted data.';
-			} else if (code === 401) {
-				message = 'Invalid credentials';
-			} else if (code === 403) {
+			else if (code === 403) {
 				message = 'Forbidden. You do not have access to this page';
-			} else if (code === 404) {
+			}
+			else if (code === 404) {
 				message = 'Resource Not Found';
-			} else if (code === 409) {
+			}
+			else if (code === 409) {
 				message = 'User already exists.';
-			} else if (code === 500) {
+			}
+			else if (code === 500) {
 				message = 'Something went wrong in the server, try again later';
-			} else if (error.error?.message) {
+			}
+			else if (error.error?.message) {
 				message = error.error.message;
 			}
 
 			errorService.setError(code, message);
-			if (code !== 401) {
-				router.navigate(['/error']);
-			}
-			return throwError(() => new Error(message));
+			router.navigate(['error']);
+			return throwError(() => error);
 		})
 	);
 };

@@ -52,13 +52,13 @@ describe('Login Component Tests', () => {
 
 	it('should show error on failed login', () => {
 		authServiceSpy.loginUser.and.returnValue(
-			throwError(() => new Error('Invalid credentials'))
+			throwError(() => new Error('Invalid Credentials'))
 		);
 
 		loginComponent.loginForm.setValue({ username: 'user', password: 'wrong' });
 		loginComponent.login();
 
-		expect(loginComponent.errorMessage).toBe('Invalid credentials');
+		expect(loginComponent.errorMessage).toBe('Invalid Credentials');
 		expect(routerSpy.navigate).not.toHaveBeenCalled();
 	});
 

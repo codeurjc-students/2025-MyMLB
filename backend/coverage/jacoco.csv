@@ -8,8 +8,9 @@ MLBPortal,com.mlb.mlbportal.models.player,Player,244,77,25,9,5,4,36,8,22,5
 MLBPortal,com.mlb.mlbportal.models.player,Pitcher,176,553,17,73,6,7,19,71,3,42
 MLBPortal,com.mlb.mlbportal.models.others,PictureInfo,84,41,10,6,0,0,11,5,3,5
 MLBPortal,com.mlb.mlbportal.configuration,TimeConfig,0,7,0,0,0,2,0,2,0,2
-MLBPortal,com.mlb.mlbportal.configuration,WebConfig,0,20,0,0,0,4,0,2,0,2
+MLBPortal,com.mlb.mlbportal.configuration,ErrorHandler,5,0,0,0,2,0,2,0,2,0
 MLBPortal,com.mlb.mlbportal.configuration,CloudinaryConfig,30,0,0,0,6,0,2,0,2,0
+MLBPortal,com.mlb.mlbportal.configuration,WebAppController,5,0,0,0,2,0,2,0,2,0
 MLBPortal,com.mlb.mlbportal.services.player,PlayerServiceOperations,11,328,3,18,3,76,3,21,0,13
 MLBPortal,com.mlb.mlbportal.services.player,PlayerService,22,334,5,11,2,67,6,18,1,14
 MLBPortal,com.mlb.mlbportal.mappers,StadiumMapperImpl,66,82,11,7,20,25,9,6,1,5
@@ -53,9 +54,11 @@ MLBPortal,com.mlb.mlbportal.security,CSRFHandlerInterceptor,13,6,3,1,3,3,2,2,0,2
 MLBPortal,com.mlb.mlbportal.security,MockAuthenticationFilter,0,24,0,2,0,7,0,3,0,2
 MLBPortal,com.mlb.mlbportal.security,TestSecurityConfig,0,66,0,0,0,14,0,5,0,5
 MLBPortal,com.mlb.mlbportal.security,SecurityUserDetails,5,44,0,2,0,9,1,3,1,2
-MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,283,31,0,0,32,10,4,4,4,4
+MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,286,19,0,0,34,5,4,3,4,3
 MLBPortal,com.mlb.mlbportal.handler,GlobalHandler,45,141,7,11,6,29,9,13,4,9
 MLBPortal,com.mlb.mlbportal.handler,InvalidSearchTypeException,0,4,0,0,0,2,0,1,0,1
+MLBPortal,com.mlb.mlbportal.handler,CustomAuthenticationEntryPoint,40,3,0,0,9,1,1,1,1,1
+MLBPortal,com.mlb.mlbportal.handler,CustomAccessDeniedHandler,40,3,0,0,9,1,1,1,1,1
 MLBPortal,com.mlb.mlbportal.services,MatchService,0,200,3,23,0,35,3,16,0,6
 MLBPortal,com.mlb.mlbportal.services,SearchService,0,105,0,0,0,13,0,5,0,5
 MLBPortal,com.mlb.mlbportal.services,StadiumService,0,120,0,4,0,21,0,8,0,6
@@ -74,7 +77,7 @@ MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumInitDTO,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumPicturesDTO,9,0,0,0,1,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MlbImportController,9,0,0,0,2,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MatchController,17,12,2,0,3,2,2,2,1,2
-MLBPortal,com.mlb.mlbportal.controllers,InitController,197,569,9,29,40,129,11,27,3,16
+MLBPortal,com.mlb.mlbportal.controllers,InitController,195,571,8,30,40,129,10,28,3,16
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,5,55,1,7,1,8,1,5,0,1
 MLBPortal,com.mlb.mlbportal.controllers,PlayerController,0,37,0,0,0,6,0,6,0,6
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,25,1,1,0,6,1,3,0,3

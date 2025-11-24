@@ -89,7 +89,7 @@ public class StadiumController {
     })
     @DeleteMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; deletePicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
-            @RequestParam(&quot;publicId&quot;) String publicId) throws IOException {
+            @RequestParam(&quot;publicId&quot;) String publicId) {
 <span class="fc" id="L93">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
 <span class="fc" id="L94">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
     }

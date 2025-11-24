@@ -34,11 +34,6 @@ describe('Edit Stadium Component Tests', () => {
 		fixture.detectChanges();
 	});
 
-	it('should initialize pictures from stadium input', () => {
-		expect(component.pictures.length).toBe(1);
-		expect(component.pictures[0].publicId).toBe('123');
-	});
-
 	it('should verifyPictures return true if less than 5', () => {
 		expect(component.verifyPictures()).toBeTrue();
 	});

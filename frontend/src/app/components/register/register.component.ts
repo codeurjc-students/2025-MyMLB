@@ -68,8 +68,8 @@ export class RegisterComponent {
 					this.errorMessage = response.message;
 				}
 			},
-			error: (err) => {
-				this.errorMessage = err.message;
+			error: (_) => {
+				this.errorMessage = 'User already exists';
 			}
 		});
 	}

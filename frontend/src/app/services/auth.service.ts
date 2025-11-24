@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginRequest } from '../models/auth/login-request.model';
-import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, of, switchMap } from 'rxjs';
 import { AuthResponse } from '../models/auth/auth-response.model';
 import { RegisterRequest } from '../models/auth/register-request.model';
 import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
@@ -12,10 +12,10 @@ import { UserRole } from '../models/auth/user-role.model';
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = "https://localhost:8443/api/auth";
+	private apiUrl = 'https://localhost:8443/api/auth';
 
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
-	private currentUserSubject = new BehaviorSubject<UserRole | null>(null);
+	private currentUserSubject = new BehaviorSubject<UserRole>(this.defaultGuestUser);
 	public currentUser$ = this.currentUserSubject.asObservable();
 
 	constructor(private http: HttpClient) {
@@ -23,27 +23,28 @@ export class AuthService {
 	}
 
 	private fetchInitialUserStatus(): void {
-        this.getActiveUser().pipe(
-            tap(user => {
-                this.currentUserSubject.next(user);
-            }),
-            catchError(error => {
-                console.warn('Failed to fetch active user status, defaulting to GUEST:', error);
-                this.currentUserSubject.next(this.defaultGuestUser);
-                return of(this.defaultGuestUser);
-            })
-        ).subscribe();
-    }
+		this.getActiveUser()
+			.pipe(
+				tap((user) => this.currentUserSubject.next(user)),
+				catchError((error) => {
+					console.warn('Failed to fetch active user status, defaulting to GUEST:', error);
+					this.currentUserSubject.next(this.defaultGuestUser);
+					return of(this.defaultGuestUser);
+				})
+			)
+			.subscribe();
+	}
 
 	public getActiveUser(): Observable<UserRole> {
 		return this.http.get<UserRole>(`${this.apiUrl}/me`, { withCredentials: true });
 	}
 
 	public loginUser(loginRequest: LoginRequest): Observable<AuthResponse> {
-		return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
+		return this.http
+			.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
 			.pipe(
 				tap(() => {
-					this.getActiveUser().subscribe(user => this.currentUserSubject.next(user));
+					this.getActiveUser().subscribe((user) => this.currentUserSubject.next(user));
 				})
 			);
 	}
@@ -53,12 +54,9 @@ export class AuthService {
 	}
 
 	public logoutUser(): Observable<AuthResponse> {
-		return this.http.post<AuthResponse>(`${this.apiUrl}/logout`, {}, { withCredentials: true })
-			.pipe(
-				tap(() => {
-					this.currentUserSubject.next(this.defaultGuestUser);
-				})
-			);
+		return this.http
+			.post<AuthResponse>(`${this.apiUrl}/logout`, {}, { withCredentials: true })
+			.pipe(tap(() => this.currentUserSubject.next(this.defaultGuestUser)));
 	}
 
 	public forgotPassword(forgotPassRequest: ForgotPasswordRequest): Observable<AuthResponse> {
@@ -67,5 +65,18 @@ export class AuthService {
 
 	public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/reset-password`, resetPasswordRequest);
+	}
+
+	public silentRefresh(): Observable<any> {
+		return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
+	}
+
+	public handleSessionExpired(): void {
+		this.currentUserSubject.next(this.defaultGuestUser);
+		if (window.location.pathname.includes('/edit-menu')) {
+			window.location.href = '/error';
+		} else {
+			window.location.href = '/auth';
+		}
 	}
 }

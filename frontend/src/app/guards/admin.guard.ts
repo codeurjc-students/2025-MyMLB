@@ -12,16 +12,17 @@ export class AdminGuard implements CanActivate {
 	canActivate() {
 		return this.authService.getActiveUser().pipe(
 			map((user) => {
-				if (user.roles.includes('ADMIN')) {
+				if (user && user.roles.includes('ADMIN')) {
 					return true;
 				}
 				else {
-					this.router.navigate(['auth']); // CAMBIAR A /error
+					this.router.navigate(['error']);
 					return false;
 				}
 			}),
+
 			catchError(() => {
-				this.router.navigate(['auth']); // CAMBIAR A /error
+				this.router.navigate(['error']);
 				return of(false);
 			})
 		);
