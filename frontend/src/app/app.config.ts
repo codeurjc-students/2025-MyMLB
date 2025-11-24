@@ -15,13 +15,18 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { DateAdapter, provideCalendar } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { RefreshInterceptor } from './interceptors/refresh.interceptor';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideBrowserGlobalErrorListeners(),
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes),
-		provideHttpClient(withInterceptors([ErrorInterceptor, RefreshInterceptor])),
+		provideHttpClient(
+			withInterceptors([
+				...(!environment.disableInterceptors ? [ErrorInterceptor, RefreshInterceptor] : [])
+			])
+		),
 		provideCalendar({
 			provide: DateAdapter,
 			useFactory: adapterFactory,

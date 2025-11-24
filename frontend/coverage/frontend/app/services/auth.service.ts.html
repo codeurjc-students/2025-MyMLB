@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">80.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/21</span>
+                <span class='fraction'>21/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">86.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>13/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>20/25</span>
             </div>
         
             
@@ -133,7 +133,18 @@
 <a name='L68'></a><a href='#L68'>68</a>
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -162,10 +173,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -176,6 +187,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -190,23 +202,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginRequest } from '../models/auth/login-request.model';
-import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { Observable, BehaviorSubject, tap, catchError, of, switchMap } from 'rxjs';
 import { AuthResponse } from '../models/auth/auth-response.model';
 import { RegisterRequest } from '../models/auth/register-request.model';
 import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
@@ -217,10 +239,10 @@ import { UserRole } from '../models/auth/user-role.model';
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = "https://localhost:8443/api/auth";
+	private apiUrl = 'https://localhost:8443/api/auth';
 &nbsp;
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
-	private currentUserSubject = new BehaviorSubject&lt;UserRole | null&gt;(null);
+	private currentUserSubject = new BehaviorSubject&lt;UserRole&gt;(this.defaultGuestUser);
 	public currentUser$ = this.currentUserSubject.asObservable();
 &nbsp;
 	constructor(private http: HttpClient) {
@@ -228,27 +250,28 @@ export class AuthService {
 	}
 &nbsp;
 	private fetchInitialUserStatus(): void {
-        this.getActiveUser().pipe(
-            tap(user =&gt; {
-                this.currentUserSubject.next(user);
-            }),
-            catchError(error =&gt; {
-                console.warn('Failed to fetch active user status, defaulting to GUEST:', error);
-                this.currentUserSubject.next(this.defaultGuestUser);
-                return of(this.defaultGuestUser);
-            })
-        ).subscribe();
-    }
+		this.getActiveUser()
+			.pipe(
+				tap((user) =&gt; this.currentUserSubject.next(user)),
+				catchError((error) =&gt; {
+					console.warn('Failed to fetch active user status, defaulting to GUEST:', error);
+					this.currentUserSubject.next(this.defaultGuestUser);
+					return of(this.defaultGuestUser);
+				})
+			)
+			.subscribe();
+	}
 &nbsp;
 	public getActiveUser(): Observable&lt;UserRole&gt; {
 		return this.http.get&lt;UserRole&gt;(`${this.apiUrl}/me`, { withCredentials: true });
 	}
 &nbsp;
 	public loginUser(loginRequest: LoginRequest): Observable&lt;AuthResponse&gt; {
-		return this.http.post&lt;AuthResponse&gt;(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
+		return this.http
+			.post&lt;AuthResponse&gt;(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
 			.pipe(
 				tap(() =&gt; {
-					this.getActiveUser().subscribe(user =&gt; this.currentUserSubject.next(user));
+					this.getActiveUser().subscribe((user) =&gt; this.currentUserSubject.next(user));
 				})
 			);
 	}
@@ -258,12 +281,9 @@ export class AuthService {
 	}
 &nbsp;
 	public logoutUser(): Observable&lt;AuthResponse&gt; {
-		return this.http.post&lt;AuthResponse&gt;(`${this.apiUrl}/logout`, {}, { withCredentials: true })
-			.pipe(
-				tap(() =&gt; {
-					this.currentUserSubject.next(this.defaultGuestUser);
-				})
-			);
+		return this.http
+			.post&lt;AuthResponse&gt;(`${this.apiUrl}/logout`, {}, { withCredentials: true })
+			.pipe(tap(() =&gt; this.currentUserSubject.next(this.defaultGuestUser)));
 	}
 &nbsp;
 	public forgotPassword(forgotPassRequest: ForgotPasswordRequest): Observable&lt;AuthResponse&gt; {
@@ -273,6 +293,19 @@ export class AuthService {
 	public resetPassword(resetPasswordRequest: ResetPasswordRequest): Observable&lt;AuthResponse&gt; {
 		return this.http.post&lt;AuthResponse&gt;(`${this.apiUrl}/reset-password`, resetPasswordRequest);
 	}
+&nbsp;
+	public <span class="fstat-no" title="function not covered" >silentRefresh(</span>): Observable&lt;any&gt; {
+<span class="cstat-no" title="statement not covered" >		return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true });</span>
+	}
+&nbsp;
+	public <span class="fstat-no" title="function not covered" >handleSessionExpired(</span>): void {
+<span class="cstat-no" title="statement not covered" >		this.currentUserSubject.next(this.defaultGuestUser);</span>
+<span class="cstat-no" title="statement not covered" >		if (window.location.pathname.includes('/edit-menu')) {</span>
+<span class="cstat-no" title="statement not covered" >			window.location.href = '/error';</span>
+		} else {
+<span class="cstat-no" title="statement not covered" >			window.location.href = '/auth';</span>
+		}
+	}
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -280,7 +313,7 @@ export class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-22T16:41:22.891Z
+                at 2025-11-24T17:37:24.761Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

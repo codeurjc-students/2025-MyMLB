@@ -157,7 +157,7 @@ jobs:
         run: npm install
         working-directory: ./frontend
       - name: Serve Angular in background
-        run: npx ng serve --port 4200 --host 0.0.0.0 &
+        run: npx ng serve -c=e2e --port 4200 --host 0.0.0.0 &
         working-directory: ./frontend
       - name: Wait for Angular to be ready
         run: npx wait-on http://localhost:4200

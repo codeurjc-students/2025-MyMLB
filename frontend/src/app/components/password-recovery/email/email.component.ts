@@ -40,9 +40,9 @@ export class EmailPhaseComponent {
 				this.loading = false;
 				this.emailSent.emit();
 			},
-			error: (err) => {
+			error: (_) => {
 				this.loading = false;
-				this.errorMessage = err.message;
+				this.errorMessage = 'Resource Not Found';
 			}
 		});
 	}

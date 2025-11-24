@@ -77,14 +77,14 @@ describe('Auth Forms E2E Tests', () => {
 		it('should show error on invalid login', () => {
 			cy.intercept('POST', '/api/auth/login', {
 				statusCode: 401,
-				body: { status: 'FAILURE', message: 'Invalid credentials' },
+				body: { status: 'FAILURE', message: 'Invalid Credentials' },
 			}).as('loginFail');
 
 			fillLoginForm('wrongUser', 'wrongPass');
 			cy.get('app-login button').contains('SIGN IN').click();
 
 			cy.wait('@loginFail');
-			cy.get('app-login').contains('Invalid credentials').should('be.visible');
+			cy.get('app-login').contains('Invalid Credentials').should('be.visible');
 		});
 	});
 

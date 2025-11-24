@@ -35,5 +35,5 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/admin/edit-menu/edit-menu.component').then((m) => m.EditMenuComponent)
 	},
-	{ path: '**', redirectTo: 'error', component: ErrorComponent, data: { code: 404, message: 'Page Not Found' } },
+	{ path: '**', redirectTo: 'error' },
 ];

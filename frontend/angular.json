@@ -42,6 +42,23 @@
 							"outputHashing": "all"
 						},
 						"development": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.ts"
+								}
+							],
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						},
+						"e2e": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.e2e.ts"
+								}
+							],
 							"optimization": false,
 							"extractLicenses": false,
 							"sourceMap": true
@@ -49,6 +66,7 @@
 					},
 					"defaultConfiguration": "production"
 				},
+
 				"serve": {
 					"builder": "@angular/build:dev-server",
 					"configurations": {
@@ -57,13 +75,18 @@
 						},
 						"development": {
 							"buildTarget": "frontend:build:development"
+						},
+						"e2e": {
+							"buildTarget": "frontend:build:e2e"
 						}
 					},
 					"defaultConfiguration": "development"
 				},
+
 				"extract-i18n": {
 					"builder": "@angular/build:extract-i18n"
 				},
+
 				"test": {
 					"builder": "@angular/build:karma",
 					"options": {

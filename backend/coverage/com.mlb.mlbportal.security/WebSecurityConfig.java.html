@@ -17,104 +17,105 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.mlb.mlbportal.handler.CustomAccessDeniedHandler;
+import com.mlb.mlbportal.handler.CustomAuthenticationEntryPoint;
 import com.mlb.mlbportal.security.jwt.JwtRequestFilter;
-import com.mlb.mlbportal.security.jwt.UnauthorizedHandlerJwt;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class WebSecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
-    private final UnauthorizedHandlerJwt unauthorizedHandlerJwt;
     private final SecurityUserDetails securityUserDetails;
-
-    public WebSecurityConfig(JwtRequestFilter jwtRequestFilter, UnauthorizedHandlerJwt unauthorizedHandlerJwt,
-<span class="fc" id="L31">        SecurityUserDetails securityUserDetails) {</span>
-<span class="fc" id="L32">        this.jwtRequestFilter = jwtRequestFilter;</span>
-<span class="fc" id="L33">        this.unauthorizedHandlerJwt = unauthorizedHandlerJwt;</span>
-<span class="fc" id="L34">        this.securityUserDetails = securityUserDetails;</span>
-<span class="fc" id="L35">    }</span>
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-<span class="fc" id="L39">        return new BCryptPasswordEncoder();</span>
+<span class="fc" id="L37">        return new BCryptPasswordEncoder();</span>
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-<span class="fc" id="L44">        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(securityUserDetails);</span>
-<span class="fc" id="L45">        authProvider.setPasswordEncoder(passwordEncoder());</span>
-<span class="fc" id="L46">        return authProvider;</span>
+<span class="fc" id="L42">        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(securityUserDetails);</span>
+<span class="fc" id="L43">        authProvider.setPasswordEncoder(passwordEncoder());</span>
+<span class="fc" id="L44">        return authProvider;</span>
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-<span class="fc" id="L51">        return authConfig.getAuthenticationManager();</span>
+<span class="fc" id="L49">        return authConfig.getAuthenticationManager();</span>
     }
 
     @Bean
     @Order(1)
     @Profile(&quot;!test&quot;)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-<span class="nc" id="L58">        http.authenticationProvider(authenticationProvider());</span>
-<span class="nc" id="L59">        http</span>
-<span class="nc" id="L60">                .securityMatcher(&quot;/api/**&quot;)</span>
-<span class="nc" id="L61">                .exceptionHandling(handling -&gt; handling.authenticationEntryPoint(unauthorizedHandlerJwt));</span>
+<span class="nc" id="L56">        http.authenticationProvider(authenticationProvider());</span>
+<span class="nc" id="L57">        http</span>
+<span class="nc" id="L58">                .securityMatcher(&quot;/api/**&quot;)</span>
+<span class="nc" id="L59">                .exceptionHandling(ex -&gt; </span>
+<span class="nc" id="L60">                    ex.authenticationEntryPoint(customAuthenticationEntryPoint)</span>
+<span class="nc" id="L61">                    .accessDeniedHandler(customAccessDeniedHandler)</span>
+                );
 
-<span class="nc" id="L63">        http</span>
-<span class="nc" id="L64">                .authorizeHttpRequests(authorize -&gt; authorize</span>
+<span class="nc" id="L64">        http</span>
+<span class="nc" id="L65">                .authorizeHttpRequests(authorize -&gt; authorize</span>
                     // Authentication Endpoints
-<span class="nc" id="L66">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/login&quot;).permitAll()</span>
-<span class="nc" id="L67">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/register&quot;).permitAll()</span>
-<span class="nc" id="L68">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/refresh&quot;).authenticated()</span>
+<span class="nc" id="L67">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/login&quot;).permitAll()</span>
+<span class="nc" id="L68">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/register&quot;).permitAll()</span>
+<span class="nc" id="L69">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/refresh&quot;).authenticated()</span>
                     
                     // User Endpoints
-<span class="nc" id="L71">                    .requestMatchers(HttpMethod.GET, &quot;/api/users&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L72">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
-<span class="nc" id="L73">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
-<span class="nc" id="L74">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L72">                    .requestMatchers(HttpMethod.GET, &quot;/api/users&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L73">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L74">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L75">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
 
                     // Team Endpoints
-<span class="nc" id="L77">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams&quot;).permitAll()</span>
-<span class="nc" id="L78">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/standings&quot;).permitAll()</span>
-<span class="nc" id="L79">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/{teamName}&quot;).permitAll()</span>
+<span class="nc" id="L78">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams&quot;).permitAll()</span>
+<span class="nc" id="L79">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/standings&quot;).permitAll()</span>
+<span class="nc" id="L80">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/{teamName}&quot;).permitAll()</span>
 
                     // Stadium Endpoints
-<span class="nc" id="L82">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums&quot;).permitAll()</span>
-<span class="nc" id="L83">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums/*&quot;).permitAll()</span>
-<span class="nc" id="L84">                    .requestMatchers(HttpMethod.POST, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
-<span class="nc" id="L85">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
+<span class="nc" id="L83">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums&quot;).permitAll()</span>
+<span class="nc" id="L84">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums/*&quot;).permitAll()</span>
+<span class="nc" id="L85">                    .requestMatchers(HttpMethod.POST, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
+<span class="nc" id="L86">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
 
                     // Matches Endpoints
-<span class="nc" id="L88">                    .requestMatchers(HttpMethod.GET, &quot;/api/matches/today&quot;).permitAll()</span>
+<span class="nc" id="L89">                    .requestMatchers(HttpMethod.GET, &quot;/api/matches/today&quot;).permitAll()</span>
 
                     // Search Endpoints
-<span class="nc" id="L91">                    .requestMatchers(HttpMethod.GET, &quot;/api/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L92">                    .requestMatchers(HttpMethod.GET, &quot;/api/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
                     
                     // API Docs Endpoints
-<span class="nc" id="L94">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
-<span class="nc" id="L95">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="nc" id="L96">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="nc" id="L95">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
+<span class="nc" id="L96">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+<span class="nc" id="L97">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
                 
                 
                     // PUBLIC ENDPOINTS:
-<span class="nc" id="L100">                    .anyRequest().permitAll());</span>
+<span class="nc" id="L101">                    .anyRequest().permitAll());</span>
 
         // Disable Form login Authentication
-<span class="nc" id="L103">        http.formLogin(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L104">        http.formLogin(AbstractHttpConfigurer::disable);</span>
 
         // Disable CSRF protection.
-<span class="nc" id="L106">        http.csrf(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L107">        http.csrf(AbstractHttpConfigurer::disable);</span>
 
         // Disable Basic Authentication.
-<span class="nc" id="L109">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L110">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
 
         // Stateless session.
-<span class="nc" id="L112">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="nc" id="L113">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
 
         // Add JWT Token filter
-<span class="nc" id="L115">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="nc" id="L116">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
 
-<span class="nc" id="L117">        return http.build();</span>
+<span class="nc" id="L118">        return http.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

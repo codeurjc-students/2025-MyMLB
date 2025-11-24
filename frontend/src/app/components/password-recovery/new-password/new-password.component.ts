@@ -46,7 +46,7 @@ export class PasswordPhaseComponent {
 				this.successMessage = res.message;
 				this.showSuccess = true;
 			},
-			error: (err) => this.errorMessage = err.message
+			error: (_) => this.errorMessage = 'Invalid request. Please check the submitted data.'
 		});
 	}
 

@@ -19,10 +19,6 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			if (code === 401) {
                 return throwError(() => error);
             }
-
-			if (code === 400) {
-				message = 'Invalid request. Please check the submitted data.';
-			}
 			else if (code === 403) {
 				message = 'Forbidden. You do not have access to this page';
 			}
