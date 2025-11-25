@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
+import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -39,6 +43,7 @@ public class TeamService {
     private final MatchService matchService;
     private final PlayerService playerService;
     private final UserService userService;
+    private final StadiumRepository stadiumRepository;
 
     @Transactional(readOnly = true)
     public List<TeamInfoDTO> getTeams() {
@@ -124,5 +129,22 @@ public class TeamService {
                     .put(division, sorted);
         }
         return standings;
+    }
+
+    @Transactional
+    public void updateTeam(String teamName, UpdateTeamRequest request) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+
+        request.city().ifPresent(team::setCity);
+        request.newChampionship().ifPresent(team.getChampionships()::addLast);
+        request.newInfo().ifPresent(team::setGeneralInfo);
+        request.newStadiumName().ifPresent(stadiumName -> {
+            Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+            if (stadium.getTeam() != null) {
+                throw new IllegalArgumentException("The stadium " + stadium.getName() + " already has a team");
+            }
+            team.setStadium(stadium);
+        });
+        this.teamRepository.save(team);
     }
 }

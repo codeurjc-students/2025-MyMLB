@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
@@ -48,6 +49,12 @@ public class GlobalHandler {
         return body;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleIllegalArgument(IllegalArgumentException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "");
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleResourceNotFound(ResourceNotFoundException ex) {
@@ -69,6 +76,9 @@ public class GlobalHandler {
         }
         else if (ex instanceof UserAlreadyExistsException) {
             errorMsg = "User Already Exists";
+        }
+        else if (ex instanceof StadiumAlreadyExistsException) {
+            errorMsg = "Stadium Already Exists";
         }
         String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();
         return buildResponse(HttpStatus.CONFLICT, message, errorMsg);

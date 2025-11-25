@@ -13,3 +13,48 @@ Content-Type: application/json
 ### Get Non Existent Team Information
 GET https://localhost:8443/api/v1/teams/Team1
 Content-Type: application/json
+
+### Update Team with city, championships and general information
+PATCH https://localhost:8443/api/v1/teams/New York Yankees
+Content-Type: application/json
+
+{
+  "city": "Perú",
+  "newChampionship": 2025,
+  "newInfo": "New Info Test",
+  "newStadiumName": "Shippet Stadium"
+}
+
+### Update Team with only one field
+PATCH https://localhost:8443/api/v1/teams/New York Yankees
+Content-Type: application/json
+
+{
+  "city": "Memphis"
+}
+
+### Update team with an invalid stadium. An invalid stadium is one that already has a team assigned.
+PATCH https://localhost:8443/api/v1/teams/New York Yankees
+Content-Type: application/json
+
+{
+  "newStadiumName": "Petco Park"
+}
+
+### Update Team with a non existent stadium
+PATCH https://localhost:8443/api/v1/teams/New York Yankees
+Content-Type: application/json
+
+{
+  "newStadiumName": "Stadium1"
+}
+
+### Update a non existent Team
+PATCH https://localhost:8443/api/v1/teams/Team1
+Content-Type: application/json
+
+{
+  "city": "Perú",
+  "newChampionship": 2025,
+  "newInfo": "New Info Test"
+}

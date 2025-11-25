@@ -1,13 +1,18 @@
-package com.mlb.mlbportal.unit;
+package com.mlb.mlbportal.unit.team;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,9 +41,6 @@ import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -58,6 +60,9 @@ class TeamServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private StadiumRepository stadiumRepository;
 
     @InjectMocks
     private TeamService teamService;
@@ -218,5 +223,110 @@ class TeamServiceTest {
         assertThatThrownBy(() -> this.teamService.getTeamInfo(UNKNOWN_TEAM))
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
+    @DisplayName("Should update city, championship and info when provided")
+    void testUpdateTeamBasicFields() {
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.of("City1"),
+                Optional.of(2025),
+                Optional.of("Test Info"),
+                Optional.empty()
+        );
+
+        this.teamService.updateTeam(TEST_TEAM1_NAME, request);
+
+        assertThat(this.team1.getCity()).isEqualTo("City1");
+        assertThat(this.team1.getChampionships()).contains(2025);
+        assertThat(this.team1.getGeneralInfo()).isEqualTo("Test Info");
+
+        verify(this.teamRepository).save(this.team1);
+    }
+
+    @Test
+    @DisplayName("Should update stadium when provided and free")
+    void testUpdateTeamWithStadium() {
+        Stadium stadium = new Stadium();
+        stadium.setName("New Stadium");
+
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        when(this.stadiumRepository.findByName("New Stadium")).thenReturn(Optional.of(stadium));
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of("New Stadium")
+        );
+
+        this.teamService.updateTeam(TEST_TEAM1_NAME, request);
+
+        assertThat(this.team1.getStadium()).isEqualTo(stadium);
+        verify(this.teamRepository).save(this.team1);
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException when stadium already has a team")
+    void testUpdateTeamWithOccupiedStadium() {
+        Stadium stadium = new Stadium();
+        stadium.setName(OCCUPIED_STADIUM);
+        stadium.setTeam(new Team());
+
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        when(this.stadiumRepository.findByName(OCCUPIED_STADIUM)).thenReturn(Optional.of(stadium));
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(OCCUPIED_STADIUM)
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(TEST_TEAM1_NAME, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already has a team");
+
+        verify(this.teamRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException when team does not exist")
+    void testUpdateTeamWithUnknownTeam() {
+        when(this.teamRepository.findByName(UNKNOWN_TEAM)).thenReturn(Optional.empty());
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.of("City"),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(UNKNOWN_TEAM, request))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
+
+        verify(this.teamRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumNotFoundException when stadium does not exist")
+    void testUpdateTeamWithUnknownStadium() {
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        when(this.stadiumRepository.findByName(UNKNOWN_STADIUM)).thenReturn(Optional.empty());
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(UNKNOWN_STADIUM)
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(TEST_TEAM1_NAME, request))
+                .isInstanceOf(com.mlb.mlbportal.handler.notFound.StadiumNotFoundException.class);
+
+        verify(this.teamRepository, never()).save(any());
     }
 }

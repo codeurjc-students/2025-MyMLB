@@ -1,4 +1,11 @@
 package com.mlb.mlbportal.dto.team;
 
-public record UpdateTeamRequest() {
+import java.util.Optional;
+
+public record UpdateTeamRequest(
+        Optional<String> city,
+        Optional<Integer> newChampionship,
+        Optional<String> newInfo,
+        Optional<String> newStadiumName
+) {
 }

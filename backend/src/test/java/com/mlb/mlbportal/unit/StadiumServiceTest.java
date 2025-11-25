@@ -5,20 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +36,6 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class StadiumServiceTest {
@@ -121,7 +122,7 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should upload picture and return PictureDTO")
     void testAddPicture() throws Exception {
-        Stadium stadium = this.stadiums.get(0);
+        Stadium stadium = this.stadiums.getFirst();
         stadium.getPictures().clear();
 
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -209,5 +210,33 @@ class StadiumServiceTest {
                 .hasMessageContaining("Cannot delete the last picture of a stadium");
 
         verify(this.stadiumRepository, never()).save(stadium);
+    }
+
+    @Test
+    @DisplayName("Should create a new stadium")
+    void testCreateStadium() {
+        CreateStadiumRequest request = new CreateStadiumRequest(NEW_STADIUM, NEW_STADIUM_YEAR);
+        StadiumDTO newStadium = new StadiumDTO(NEW_STADIUM, NEW_STADIUM_YEAR, Collections.emptyList());
+
+        when(this.stadiumRepository.findByName(NEW_STADIUM)).thenReturn(Optional.empty());
+        when(this.stadiumMapper.toDomainFromStadiumDTO(newStadium)).thenReturn(this.stadiums.getLast());
+
+        StadiumDTO result = this.stadiumService.createStadium(request);
+        assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo(newStadium.name());
+        verify(this.stadiumRepository, times(1)).save(this.stadiums.getLast());
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumAlreadyExists when trying to create a stadium already created")
+    void testInvalidStadiumCreation() {
+        CreateStadiumRequest request = new CreateStadiumRequest(STADIUM1_NAME, STADIUM1_YEAR);
+
+        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(this.stadiums.getFirst()));
+        assertThatThrownBy(() -> this.stadiumService.createStadium(request))
+                .isInstanceOf(StadiumAlreadyExistsException.class)
+                .hasMessageContaining("Stadium Already Exists");
+
+        verify(this.stadiumRepository, never()).save(any());
     }
 }

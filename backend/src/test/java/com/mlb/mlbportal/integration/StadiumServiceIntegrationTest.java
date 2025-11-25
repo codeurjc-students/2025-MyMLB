@@ -2,11 +2,16 @@ package com.mlb.mlbportal.integration;
 
 import java.util.List;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +29,6 @@ import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 import jakarta.transaction.Transactional;
 
@@ -88,7 +89,7 @@ class StadiumServiceIntegrationTest {
         assertThat(result).isNotNull();
         assertThat(result.name()).isEqualTo(STADIUM1_NAME);
         assertThat(result.openingDate()).isEqualTo(STADIUM1_YEAR);
-        assertThat(result.teamName()).isEqualTo(stadiumDtos.get(0).teamName());
+        assertThat(result.teamName()).isEqualTo(stadiumDtos.getFirst().teamName());
     }
 
     @Test
@@ -126,7 +127,7 @@ class StadiumServiceIntegrationTest {
 
     @Test
     @DisplayName("Should upload picture and persist URL + publicId")
-    void testAddPictureIntegration() throws Exception {
+    void testAddPicture() throws Exception {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
@@ -202,5 +203,26 @@ class StadiumServiceIntegrationTest {
         assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "test123"))
                 .isInstanceOf(LastPictureDeletionException.class)
                 .hasMessageContaining("Cannot delete the last picture of a stadium");
+    }
+
+    @Test
+    @DisplayName("Should create a new stadium")
+    void testCreateStadium() {
+        CreateStadiumRequest request = new CreateStadiumRequest(NEW_STADIUM, NEW_STADIUM_YEAR);
+        StadiumDTO result = this.stadiumService.createStadium(request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo(NEW_STADIUM);
+        assertThat(result.openingDate()).isEqualTo(NEW_STADIUM_YEAR);
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumAlreadyExists when trying to create a stadium already created")
+    void testInvalidStadiumCreation() {
+        CreateStadiumRequest request = new CreateStadiumRequest(STADIUM1_NAME, STADIUM1_YEAR);
+
+        assertThatThrownBy(() -> this.stadiumService.createStadium(request))
+                .isInstanceOf(StadiumAlreadyExistsException.class)
+                .hasMessageContaining("Stadium Already Exists");
     }
 }

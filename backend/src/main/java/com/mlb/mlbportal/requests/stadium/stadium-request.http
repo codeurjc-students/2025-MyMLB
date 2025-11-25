@@ -23,3 +23,29 @@ Content-Type: image/png
 
 ### Delete a picture of a Stadium
 DELETE https://localhost:8443/api/v1/stadiums/Petco Park/pictures?publicId=n83mdgmpa9jmw1rfwpx6
+
+### Create a new Stadium
+POST https://localhost:8443/api/v1/stadiums
+Content-Type: application/json
+
+{
+  "name": "Shippet Stadium",
+  "openingDate": 1914
+}
+
+### Create a new Stadium with incomplete fields
+POST https://localhost:8443/api/v1/stadiums
+Content-Type: application/json
+
+{
+  "name": "Shippet Stadium"
+}
+
+### Create a new Stadium with an existing stadium name
+POST https://localhost:8443/api/v1/stadiums
+Content-Type: application/json
+
+{
+  "name": "Petco Park",
+  "openingDate": 1914
+}

@@ -18,4 +18,6 @@ public interface StadiumMapper {
     StadiumInitDTO toStadiumInitDTO(Stadium stadium);
 
     List<StadiumInitDTO> toListStadiumInitDTO(List<Stadium> stadiumList);
+
+    Stadium toDomainFromStadiumDTO(StadiumDTO stadiumDTO);
 }

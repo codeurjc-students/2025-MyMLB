@@ -3,10 +3,15 @@ package com.mlb.mlbportal.integration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,25 +35,6 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -66,6 +52,9 @@ class TeamServiceIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private StadiumRepository stadiumRepository;
+
     private Team team1, team2, team3;
 
     @BeforeEach
@@ -74,6 +63,7 @@ class TeamServiceIntegrationTest {
         this.matchRepository.deleteAll();
         this.teamRepository.deleteAll();
         this.userRepository.deleteAll();
+        this.stadiumRepository.deleteAll();
 
         this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL,
                 Division.EAST, TEST_TEAM1_LOGO);
@@ -174,5 +164,99 @@ class TeamServiceIntegrationTest {
         assertThat(persistedStadium).isNotNull();
         assertThat(persistedStadium.getName()).isEqualTo("Stadium1");
         assertThat(persistedStadium.getTeam()).isEqualTo(persistedTeam);
+    }
+
+    @Test
+    @DisplayName("Should update team city, info and championships")
+    void testUpdateTeamBasicFieldsIntegration() {
+        this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.of("Updated City"),
+                Optional.of(28),
+                Optional.of("Updated Info"),
+                Optional.empty()
+        );
+
+        this.teamService.updateTeam(TEST_TEAM1_NAME, request);
+
+        Team updatedTeam = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+        assertThat(updatedTeam.getCity()).isEqualTo("Updated City");
+        assertThat(updatedTeam.getChampionships()).contains(28);
+        assertThat(updatedTeam.getGeneralInfo()).isEqualTo("Updated Info");
+    }
+
+    @Test
+    @DisplayName("Should update stadium when provided and free")
+    void testUpdateTeamWithStadiumIntegration() {
+        Team team = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+        Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, null);
+        this.stadiumRepository.save(stadium);
+        this.teamRepository.save(team);
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(STADIUM1_NAME)
+        );
+
+        this.teamService.updateTeam(TEST_TEAM1_NAME, request);
+
+        Team updatedTeam = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+        assertThat(updatedTeam.getStadium()).isNotNull();
+        assertThat(updatedTeam.getStadium().getName()).isEqualTo(STADIUM1_NAME);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException when updating non existent team")
+    void testUpdateTeamUnknownTeamIntegration() {
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.of("City"),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(UNKNOWN_TEAM, request))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessageContaining("Team Not Found");
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumNotFoundException when stadium does not exist")
+    void testUpdateTeamUnknownStadiumIntegration() {
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(UNKNOWN_STADIUM)
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(TEST_TEAM1_NAME, request))
+                .isInstanceOf(com.mlb.mlbportal.handler.notFound.StadiumNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException when stadium already has a team")
+    void testUpdateTeamOccupiedStadiumIntegration() {
+       this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+
+        Team otherTeam = new Team(UNKNOWN_TEAM, UNKNOWN_TEAM_ABBREVIATION, 0, 0, League.AL, Division.WEST);
+        this.teamRepository.save(otherTeam);
+
+        Stadium stadium = new Stadium(OCCUPIED_STADIUM, 2000, otherTeam);
+        this.stadiumRepository.save(stadium);
+
+        UpdateTeamRequest request = new UpdateTeamRequest(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(stadium.getName())
+        );
+
+        assertThatThrownBy(() -> this.teamService.updateTeam(TEST_TEAM1_NAME, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("already has a team");
     }
 }

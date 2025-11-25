@@ -1,9 +1,8 @@
 package com.mlb.mlbportal.e2e;
 
 import java.util.Collections;
+import java.util.Map;
 
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import com.mlb.mlbportal.models.enums.League;
 import static com.mlb.mlbportal.utils.TestConstants.*;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -89,15 +90,28 @@ class StadiumControllerTest extends BaseE2ETest {
                 .body("error", is("Stadium Not Found"));
     }
 
-    @Test
-    @DisplayName("POST /api/v1/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
-    void testAddPicture() {
-        String url = STADIUM_PATH + STADIUM1_NAME + "/pictures";
+    private String picturesUrl(String stadiumName) {
+        return STADIUM_PATH + stadiumName + "/pictures";
+    }
+
+    /**
+     * Helper method that uploads a picture for stadium picture test cases.
+     * <p>
+     * This method is used to avoid duplication in E2E tests by encapsulating
+     * the RestAssured call that posts a picture to the stadium endpoint and
+     * validates the expected response. It ensures that the picture upload
+     * returns a successful status code and the expected URL and publicId.
+     * </p>
+     *
+     * @param fileName the name of the file to be uploaded (e.g. "test.png")
+     * @param content the content of the file as a string, which will be converted to bytes
+     */
+    private void uploadPicture(String fileName, String content) {
         given()
-                .multiPart("file", "test.png", "fake-image".getBytes())
+                .multiPart("file", fileName, content.getBytes())
                 .accept(ContentType.JSON)
                 .when()
-                .post(url)
+                .post(this.picturesUrl(STADIUM1_NAME))
                 .then()
                 .statusCode(200)
                 .body("url", is("http://fake.cloudinary.com/test.jpg"))
@@ -105,34 +119,38 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/stadiums/{stadiumName}/pictures should return all pictures of the stadium")
+    void testGetStadiumPictures() {
+        this.uploadPicture("test.png", "fake-image");
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(this.picturesUrl(STADIUM1_NAME))
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThanOrEqualTo(1))
+                .body("[0].url", is("http://fake.cloudinary.com/test.jpg"))
+                .body("[0].publicId", is("fake123"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
+    void testAddPicture() {
+        this.uploadPicture("test.png", "fake-image");
+    }
+
+    @Test
     @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should remove picture from stadium")
     void testDeletePicture() {
-        String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
-        String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
-
-        given()
-                .multiPart("file", "test.png", "fake-image".getBytes())
-                .accept(ContentType.JSON)
-                .when()
-                .post(postUrl)
-                .then()
-                .statusCode(200)
-                .body("publicId", is("fake123"));
-
-        given()
-                .multiPart("file", "test2.png", "fake2-image".getBytes())
-                .accept(ContentType.JSON)
-                .when()
-                .post(postUrl)
-                .then()
-                .statusCode(200)
-                .body("publicId", is("fake123"));
+        this.uploadPicture("test.png", "fake-image");
+        this.uploadPicture("test2.png", "fake2-image");
 
         given()
                 .queryParam("publicId", "fake123")
                 .accept(ContentType.JSON)
                 .when()
-                .delete(deleteUrl)
+                .delete(this.picturesUrl(STADIUM1_NAME))
                 .then()
                 .statusCode(200);
     }
@@ -140,26 +158,74 @@ class StadiumControllerTest extends BaseE2ETest {
     @Test
     @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should throw 409 if only one picture remains")
     void testDeleteLastPicture() {
-        String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
-        String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
-
-        given()
-                .multiPart("file", "test.png", "fake-image".getBytes())
-                .accept(ContentType.JSON)
-                .when()
-                .post(postUrl)
-                .then()
-                .statusCode(200)
-                .body("publicId", is("fake123"));
+        this.uploadPicture("test.png", "fake-image");
 
         given()
                 .queryParam("publicId", "fake123")
                 .accept(ContentType.JSON)
                 .when()
-                .delete(deleteUrl)
+                .delete(this.picturesUrl(STADIUM1_NAME))
                 .then()
                 .statusCode(409)
                 .body("status", is(FAILURE))
                 .body("message", is("Cannot delete the last picture of a stadium"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/stadiums should create a new stadium and return 201 with Location header")
+    void testCreateStadium() {
+        Map<String, Object> requestBody = Map.of(
+                "name", NEW_STADIUM,
+                "openingDate", NEW_STADIUM_YEAR
+        );
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(ALL_STADIUMS_PATH)
+                .then()
+                .statusCode(201)
+                .header("Location", containsString(STADIUM_PATH +"New%20Stadium"))
+                .body("name", is(NEW_STADIUM))
+                .body("openingDate", is(NEW_STADIUM_YEAR));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/stadiums should return 404 if the body is incomplete")
+    void testCreateStadiumWithIncompleteFields() {
+        Map<String, Object> requestBody = Map.of("name", NEW_STADIUM);
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(ALL_STADIUMS_PATH)
+                .then()
+                .statusCode(400)
+                .body("status", is(FAILURE))
+                .body("openingDate", is("The opening date of the new stadium is required"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/stadiums should return 409 if stadium already exists")
+    void testInvalidStadiumCreation() {
+        Map<String, Object> requestBody = Map.of(
+                "name", STADIUM1_NAME,
+                "openingDate", STADIUM1_YEAR
+        );
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(ALL_STADIUMS_PATH)
+                .then()
+                .statusCode(409)
+                .body("status", is(FAILURE))
+                .body("message", is("Stadium Already Exists"));
     }
 }

@@ -1,6 +1,7 @@
 package com.mlb.mlbportal.services;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -9,8 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
@@ -72,5 +76,16 @@ public class StadiumService {
         }
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
         this.stadiumRepository.save(stadium);
+    }
+
+    @Transactional
+    public StadiumDTO createStadium(CreateStadiumRequest request) {
+        if (this.stadiumRepository.findByName(request.name()).isPresent()) {
+            throw new StadiumAlreadyExistsException();
+        }
+        StadiumDTO newStadium = new StadiumDTO(request.name(), request.openingDate(), Collections.emptyList());
+        Stadium stadium = this.stadiumMapper.toDomainFromStadiumDTO(newStadium);
+        this.stadiumRepository.save(stadium);
+        return newStadium;
     }
 }

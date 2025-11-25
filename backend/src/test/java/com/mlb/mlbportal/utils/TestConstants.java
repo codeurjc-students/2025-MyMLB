@@ -75,6 +75,7 @@ public final class TestConstants {
     public static final String TEST_TEAM3_INFO = "Information3";
     
     public static final String UNKNOWN_TEAM = "AnyTeam";
+    public static final String UNKNOWN_TEAM_ABBREVIATION = "AT";
 
     public static final String STADIUM1_NAME = "Stadium1";
     public static final int STADIUM1_YEAR = 1985;
@@ -86,6 +87,11 @@ public final class TestConstants {
     public static final int STADIUM3_YEAR = 2001;
 
     public static final String UNKNOWN_STADIUM = "AnyStadium";
+
+    public static final String NEW_STADIUM = "New Stadium";
+    public static final int NEW_STADIUM_YEAR = 2004;
+
+    public static final String OCCUPIED_STADIUM = "Occupied Stadium";
 
     public static final String PLAYER1_NAME = "Player1";
     public static final int PLAYER1_AT_BATS = 200;

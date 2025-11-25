@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-24T18:37:47+0100&quot;,
+    date = &quot;2025-11-25T23:02:15+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -92,12 +92,30 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L92">        return list;</span>
     }
 
-    private String stadiumTeamName(Stadium stadium) {
-<span class="fc" id="L96">        Team team = stadium.getTeam();</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+    @Override
+    public Stadium toDomainFromStadiumDTO(StadiumDTO stadiumDTO) {
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if ( stadiumDTO == null ) {</span>
 <span class="nc" id="L98">            return null;</span>
         }
-<span class="fc" id="L100">        return team.getName();</span>
+
+<span class="fc" id="L101">        Stadium stadium = new Stadium();</span>
+
+<span class="fc" id="L103">        stadium.setName( stadiumDTO.name() );</span>
+<span class="fc" id="L104">        stadium.setOpeningDate( stadiumDTO.openingDate() );</span>
+<span class="fc" id="L105">        List&lt;PictureInfo&gt; list = stadiumDTO.pictures();</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if ( list != null ) {</span>
+<span class="fc" id="L107">            stadium.setPictures( new ArrayList&lt;PictureInfo&gt;( list ) );</span>
+        }
+
+<span class="fc" id="L110">        return stadium;</span>
+    }
+
+    private String stadiumTeamName(Stadium stadium) {
+<span class="fc" id="L114">        Team team = stadium.getTeam();</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc" id="L116">            return null;</span>
+        }
+<span class="fc" id="L118">        return team.getName();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

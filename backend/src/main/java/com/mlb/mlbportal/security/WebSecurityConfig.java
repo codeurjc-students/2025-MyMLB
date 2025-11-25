@@ -78,11 +78,13 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams/standings").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams/{teamName}").permitAll()
+                    .requestMatchers(HttpMethod.PATCH, "/api/v1/teams/**").hasRole("ADMIN")
 
                     // Stadium Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/*").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/stadiums").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/stadiums/*/pictures").permitAll()
 
                     // Matches Endpoints
