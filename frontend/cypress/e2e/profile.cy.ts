@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Profile Component E2E Tests', () => {
-	const AUTH_API_URL = '/api/auth';
+	const AUTH_API_URL = '/api/v1/auth';
 
 	beforeEach(() => {
 		cy.intercept('GET', `${AUTH_API_URL}/me`, {

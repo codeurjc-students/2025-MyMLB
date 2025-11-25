@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Teams", description = "Operations related to MLB teams and standings")
 @RestController
-@RequestMapping("/api/teams")
+@RequestMapping("/api/v1/teams")
 @AllArgsConstructor
 public class TeamController {
     private final TeamService teamService;

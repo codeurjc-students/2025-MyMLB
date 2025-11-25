@@ -1,17 +1,17 @@
 ### Get All Stadiums
-GET https://localhost:8443/api/stadiums
+GET https://localhost:8443/api/v1/stadiums
 Content-Type: application/json
 
 ### Get Stadium by Name
-GET https://localhost:8443/api/stadiums/Petco Park
+GET https://localhost:8443/api/v1/stadiums/Petco Park
 Content-Type: application/json
 
 ### Get Non Existent Stadium
-GET https://localhost:8443/api/stadiums/Stadium1
+GET https://localhost:8443/api/v1/stadiums/Stadium1
 Content-Type: application/json
 
 ### Add a Picture to a Stadium
-POST https://localhost:8443/api/stadiums/Petco Park/pictures
+POST https://localhost:8443/api/v1/stadiums/Petco Park/pictures
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -22,4 +22,4 @@ Content-Type: image/png
 --WebAppBoundary--
 
 ### Delete a picture of a Stadium
-DELETE https://localhost:8443/api/stadiums/Petco Park/pictures?publicId=n83mdgmpa9jmw1rfwpx6
+DELETE https://localhost:8443/api/v1/stadiums/Petco Park/pictures?publicId=n83mdgmpa9jmw1rfwpx6

@@ -56,7 +56,7 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/teams should return all teams with the correct data")
+    @DisplayName("GET /api/v1/teams should return all teams with the correct data")
     void testGetAllTeams() {
         given()
                 .accept(ContentType.JSON)
@@ -74,7 +74,7 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/teams/standings return standings grouped by league and division, ordered by pct")
+    @DisplayName("GET /api/v1/teams/standings return standings grouped by league and division, ordered by pct")
     void testGetStandingsEndpoint() {
         given()
                 .accept(ContentType.JSON)
@@ -93,7 +93,7 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/teams/{teamName} should return the information of a team based on its name")
+    @DisplayName("GET /api/v1/teams/{teamName} should return the information of a team based on its name")
     void testGetTeamInformation() {
         String url = TEAM_INFO_PATH + TEST_TEAM1_NAME;
         given()
@@ -108,7 +108,7 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/teams/{teamName} should return a 404 if the team does not exists")
+    @DisplayName("GET /api/v1/teams/{teamName} should return a 404 if the team does not exists")
     void testGetNonExistentTeamInformation() {
         String url = TEAM_INFO_PATH + UNKNOWN_TEAM;
         given()

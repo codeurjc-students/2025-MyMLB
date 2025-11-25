@@ -35,7 +35,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Authentication", description = "Endpoints related to user authentication")
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 public class AuthController {
     private final UserLoginService userLoginService;

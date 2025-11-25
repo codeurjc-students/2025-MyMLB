@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Search", description = "Operations related to searching stadiums, teams, and players")
 @RestController
-@RequestMapping("api/searchs")
+@RequestMapping("api/v1/searchs")
 @AllArgsConstructor
 public class SearchController {
     private final SearchService searchService;

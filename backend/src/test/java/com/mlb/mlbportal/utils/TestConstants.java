@@ -16,29 +16,29 @@ public final class TestConstants {
     public static final String TEST_USER_USERNAME = "testUser";
     public static final String TEST_USER_PASSWORD = "test";
 
-    public static final String FAV_TEAMS_PATH = "/api/users/favorites/teams";
+    public static final String FAV_TEAMS_PATH = "/api/v1/users/favorites/teams";
 
     public static final String BASE_URI = "http://localhost";
-    public static final String ME_PATH = "/api/auth/me";
-    public static final String LOGIN_PATH = "/api/auth/login";
-    public static final String REGISTER_PATH = "/api/auth/register";
-    public static final String LOGOUT_PATH = "/api/auth/logout";
-    public static final String FORGOT_PASSWORD_PATH = "/api/auth/forgot-password";
-    public static final String RESET_PASSWORD_PATH = "/api/auth/reset-password";
+    public static final String ME_PATH = "/api/v1/auth/me";
+    public static final String LOGIN_PATH = "/api/v1/auth/login";
+    public static final String REGISTER_PATH = "/api/v1/auth/register";
+    public static final String LOGOUT_PATH = "/api/v1/auth/logout";
+    public static final String FORGOT_PASSWORD_PATH = "/api/v1/auth/forgot-password";
+    public static final String RESET_PASSWORD_PATH = "/api/v1/auth/reset-password";
 
-    public static final String ALL_TEAMS_PATH = "/api/teams";
-    public static final String STANDINGS_PATH = "/api/teams/standings";
-    public static final String TEAM_INFO_PATH = "/api/teams/";
+    public static final String ALL_TEAMS_PATH = "/api/v1/teams";
+    public static final String STANDINGS_PATH = "/api/v1/teams/standings";
+    public static final String TEAM_INFO_PATH = "/api/v1/teams/";
 
-    public static final String MATCHES_OF_DAY_PATH = "/api/matches/today";
-    public static final String MATCHES_PATH = "/api/matches/";
+    public static final String MATCHES_OF_DAY_PATH = "/api/v1/matches/today";
+    public static final String MATCHES_PATH = "/api/v1/matches/";
 
-    public static final String ALL_STADIUMS_PATH = "/api/stadiums";
-    public static final String STADIUM_PATH = "/api/stadiums/";
+    public static final String ALL_STADIUMS_PATH = "/api/v1/stadiums";
+    public static final String STADIUM_PATH = "/api/v1/stadiums/";
 
-    public static final String ALL_PLAYERS_PATH = "/api/players";
-    public static final String ALL_POSITION_PLAYERS_PATH = "/api/players/position-players";
-    public static final String ALL_PITCHERS_PATH = "/api/players/pitchers";
+    public static final String ALL_PLAYERS_PATH = "/api/v1/players";
+    public static final String ALL_POSITION_PLAYERS_PATH = "/api/v1/players/position-players";
+    public static final String ALL_PITCHERS_PATH = "/api/v1/players/pitchers";
 
     public static final String SUCCESS = "SUCCESS";
     public static final String FAILURE = "FAILURE";

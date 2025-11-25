@@ -14,7 +14,7 @@ export class SearchService {
 		size: number = 10,
 		playerType?: 'position' | 'pitcher'
 	): Observable<PaginatedSearchs> {
-		let url = `/api/searchs/${type}?query=${encodeURIComponent(
+		let url = `/api/v1/searchs/${type}?query=${encodeURIComponent(
 			query
 		)}&page=${page}&size=${size}`;
 		if (type === 'player' && playerType) {

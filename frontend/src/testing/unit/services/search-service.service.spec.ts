@@ -10,7 +10,7 @@ describe('Search Service Tests', () => {
 	let service: SearchService;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = '/api/searchs';
+	const apiUrl = '/api/v1/searchs';
 
 	const mockTeam = MockFactory.buildTeamMocks(
 		'New York Yankees',

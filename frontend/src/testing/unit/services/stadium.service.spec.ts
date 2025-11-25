@@ -9,7 +9,7 @@ describe('Stadium Service Tests', () => {
 	let service: StadiumService;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/stadiums';
+	const apiUrl = 'https://localhost:8443/api/v1/stadiums';
 
 	const mockPicture: Pictures = {
 		url: 'https://example.com/image.webp',

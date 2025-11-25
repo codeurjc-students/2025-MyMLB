@@ -86,7 +86,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players should return all players with the correct data")
+    @DisplayName("GET /api/v1/players should return all players with the correct data")
     void testGetAllPlayers() {
         given()
                 .accept(ContentType.JSON)
@@ -100,7 +100,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/position-players should return all position players with the correct data")
+    @DisplayName("GET /api/v1/players/position-players should return all position players with the correct data")
     void testGetAllPositionPlayers() {
         given()
                 .accept(ContentType.JSON)
@@ -114,7 +114,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/pitchers should return all pitchers with the correct data")
+    @DisplayName("GET /api/v1/players/pitchers should return all pitchers with the correct data")
     void testGetAllPitchers() {
         given()
                 .accept(ContentType.JSON)
@@ -128,7 +128,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/{name} should return the position player with their respective name")
+    @DisplayName("GET /api/v1/players/{name} should return the position player with their respective name")
     void testGetPositionPlayerByName() {
         String url = ALL_PLAYERS_PATH + "/" + PLAYER1_NAME;
         given()
@@ -143,7 +143,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/{name} should return the pitcher with their respective name")
+    @DisplayName("GET /api/v1/players/{name} should return the pitcher with their respective name")
     void testGetPitcherByName() {
         String url = ALL_PLAYERS_PATH + "/" + PLAYER3_NAME;
         given()
@@ -158,7 +158,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/{name} should return 404 if no player exists with the given name")
+    @DisplayName("GET /api/v1/players/{name} should return 404 if no player exists with the given name")
     void testGetNonExistentPlayer() {
         String url = ALL_PLAYERS_PATH + "/" + UNKNOWN_PLAYER;
         given()
@@ -173,7 +173,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/position-players/{teamName} should return all position players of the given team")
+    @DisplayName("GET /api/v1/players/position-players/{teamName} should return all position players of the given team")
     void testGetAllPositionsPlayerOfATeam() {
         String url = ALL_POSITION_PLAYERS_PATH + "/" + TEST_TEAM1_NAME;
         given()
@@ -191,7 +191,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/pitchers/{teamName} should return all pitchers of the given team")
+    @DisplayName("GET /api/v1/players/pitchers/{teamName} should return all pitchers of the given team")
     void testGetAllPitchersOfATeam() {
         String url = ALL_PITCHERS_PATH + "/" + TEST_TEAM2_NAME;
         given()
@@ -209,7 +209,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/players/pitchers/{teamName} should return 404 if no team exists with the given name")
+    @DisplayName("GET /api/v1/players/pitchers/{teamName} should return 404 if no team exists with the given name")
     void testGetPlayersFromNonExistentTeam() {
         String url = ALL_PITCHERS_PATH + "/" + UNKNOWN_TEAM;
         given()

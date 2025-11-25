@@ -64,32 +64,32 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                     // Authentication Endpoints
-                    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/auth/refresh").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").authenticated()
                     
                     // User Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/users/favorites/teams").hasAnyRole("USER", "ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/users/favorites/teams").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/users/favorites/teams/**").hasAnyRole("USER", "ADMIN")
 
                     // Team Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/teams").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/teams/standings").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/teams/{teamName}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/teams").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/teams/standings").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/teams/{teamName}").permitAll()
 
                     // Stadium Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/stadiums").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/stadiums/*").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/stadiums/*/pictures").permitAll()
-                    .requestMatchers(HttpMethod.DELETE, "/api/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/stadiums").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/*").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/stadiums/*/pictures").permitAll()
 
                     // Matches Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/matches/today").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
 
                     // Search Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/searchs/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/searchs/**").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

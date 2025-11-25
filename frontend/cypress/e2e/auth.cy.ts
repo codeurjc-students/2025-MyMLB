@@ -32,7 +32,7 @@ describe('Auth Forms E2E Tests', () => {
 
 	describe('Registration', () => {
 		it('should successfully register a new user', () => {
-			cy.intercept('POST', '/api/auth/register', {
+			cy.intercept('POST', '/api/v1/auth/register', {
 				statusCode: 200,
 				body: { status: 'SUCCESS', message: 'User registered successfully' },
 			}).as('registerRequest');
@@ -46,7 +46,7 @@ describe('Auth Forms E2E Tests', () => {
 		});
 
 		it('should show an error on invalid registration', () => {
-			cy.intercept('POST', '/api/auth/register', {
+			cy.intercept('POST', '/api/v1/auth/register', {
 				statusCode: 409,
 				body: { status: 'FAILURE', message: 'User already exists' },
 			}).as('registerRequest');
@@ -62,7 +62,7 @@ describe('Auth Forms E2E Tests', () => {
 
 	describe('Login', () => {
 		it('should successfully login a user after registration', () => {
-			cy.intercept('POST', '/api/auth/login', {
+			cy.intercept('POST', '/api/v1/auth/login', {
 				statusCode: 200,
 				body: { status: 'SUCCESS', message: 'Login successful' },
 			}).as('loginRequest');
@@ -75,7 +75,7 @@ describe('Auth Forms E2E Tests', () => {
 		});
 
 		it('should show error on invalid login', () => {
-			cy.intercept('POST', '/api/auth/login', {
+			cy.intercept('POST', '/api/v1/auth/login', {
 				statusCode: 401,
 				body: { status: 'FAILURE', message: 'Invalid Credentials' },
 			}).as('loginFail');

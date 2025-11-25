@@ -3,7 +3,7 @@
 import { TeamSummary } from './../../../src/app/models/team.model';
 
 describe('Favorite Team Component E2E Tests', () => {
-	const AUTH_API_URL = '/api/auth/me';
+	const AUTH_API_URL = '/api/v1/auth/me';
 	let favTeams: TeamSummary[] = [];
 
 	beforeEach(() => {
@@ -16,15 +16,15 @@ describe('Favorite Team Component E2E Tests', () => {
 			},
 		}).as('getUser');
 
-		cy.intercept('GET', '/api/users/favorites/teams', (req) => {
+		cy.intercept('GET', '/api/v1/users/favorites/teams', (req) => {
 			req.reply(favTeams);
 		}).as('getFavTeams');
 
-		cy.intercept('GET', '/api/teams/standings', {
+		cy.intercept('GET', '/api/v1/teams/standings', {
 			fixture: 'standings.json',
 		}).as('getTeams');
 
-		cy.intercept('POST', '/api/users/favorites/teams/*', (req) => {
+		cy.intercept('POST', '/api/v1/users/favorites/teams/*', (req) => {
 			favTeams.push({
 				name: 'New York Yankees',
 				abbreviation: 'NYY',
@@ -34,7 +34,7 @@ describe('Favorite Team Component E2E Tests', () => {
 			req.reply({ status: 'SUCCESS', message: 'Team successfully added' });
 		}).as('addFavTeam');
 
-		cy.intercept('DELETE', '/api/users/favorites/teams/*', (req) => {
+		cy.intercept('DELETE', '/api/v1/users/favorites/teams/*', (req) => {
 			favTeams = favTeams.filter(t => t.name !== 'New York Yankees');
 			req.reply({ status: 'SUCCESS', message: 'Team successfully removed' });
 		}).as('removeFavTeam');
@@ -95,7 +95,7 @@ describe('Favorite Team Component E2E Tests', () => {
 
 		it('should navigate to the team page after clicking on one', () => {
 			cy.fixture('team-info.json').then((team) => {
-				cy.intercept('GET', 'https://localhost:8443/api/teams/*', {
+				cy.intercept('GET', 'https://localhost:8443/api/v1/teams/*', {
 					statusCode: 200,
 					body: team,
 				}).as('getTeam');

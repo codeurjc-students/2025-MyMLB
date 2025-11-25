@@ -45,7 +45,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/stadiums should return all stadiums with the correct data")
+    @DisplayName("GET /api/v1/stadiums should return all stadiums with the correct data")
     void testGetAllStadiums() {
         given()
                 .accept(ContentType.JSON)
@@ -60,7 +60,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/stadiums/{name} should return the information of a stadium based on its name")
+    @DisplayName("GET /api/v1/stadiums/{name} should return the information of a stadium based on its name")
     void testGetStadiumByName() {
         String url = STADIUM_PATH + STADIUM1_NAME;
         given()
@@ -75,7 +75,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/stadiums/{name} should return a 404 if the stadium does not exists")
+    @DisplayName("GET /api/v1/stadiums/{name} should return a 404 if the stadium does not exists")
     void testGetNonExistentStadium() {
         String url = STADIUM_PATH + UNKNOWN_STADIUM;
         given()
@@ -90,7 +90,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
+    @DisplayName("POST /api/v1/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
     void testAddPicture() {
         String url = STADIUM_PATH + STADIUM1_NAME + "/pictures";
         given()
@@ -105,7 +105,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("DELETE /api/stadiums/{stadiumName}/pictures should remove picture from stadium")
+    @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should remove picture from stadium")
     void testDeletePicture() {
         String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
         String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
@@ -138,7 +138,7 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("DELETE /api/stadiums/{stadiumName}/pictures should throw 409 if only one picture remains")
+    @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should throw 409 if only one picture remains")
     void testDeleteLastPicture() {
         String postUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";
         String deleteUrl = STADIUM_PATH + STADIUM1_NAME + "/pictures";

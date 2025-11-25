@@ -15,7 +15,7 @@ export type StandingsResponse = {
 	providedIn: 'root',
 })
 export class TeamService {
-	private url = 'https://localhost:8443/api/teams';
+	private url = 'https://localhost:8443/api/v1/teams';
 
 	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
 

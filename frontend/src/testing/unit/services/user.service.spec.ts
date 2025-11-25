@@ -10,7 +10,7 @@ import { TeamSummary } from '../../../app/models/team.model';
 describe('User Service Tests', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
-	const apiUrl = 'https://localhost:8443/api/users';
+	const apiUrl = 'https://localhost:8443/api/v1/users';
 
 	const mockUsers: User[] = [
 		MockFactory.buildUserMocks('user1', 'user1@gmail.com'),

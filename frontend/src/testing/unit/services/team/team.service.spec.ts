@@ -13,7 +13,7 @@ describe('Team Service Tests', () => {
 	let httpMock: HttpTestingController;
 	let mockSelectedTeamService: jasmine.SpyObj<SelectedTeamService>;
   	let mockRouter: jasmine.SpyObj<Router>;
-	const apiURL = 'https://localhost:8443/api/teams';
+	const apiURL = 'https://localhost:8443/api/v1/teams';
 
 	const mockResponse = {
 		American: {

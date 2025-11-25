@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Stadiums", description = "Operations related to MLB stadiums")
 @RestController
-@RequestMapping("/api/stadiums")
+@RequestMapping("/api/v1/stadiums")
 @AllArgsConstructor
 public class StadiumController {
     private final StadiumService stadiumService;

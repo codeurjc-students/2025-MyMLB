@@ -28,7 +28,7 @@ export type PaginatedMatches = {
 	providedIn: 'root',
 })
 export class MatchService {
-	private apiUrl = 'https://localhost:8443/api/matches';
+	private apiUrl = 'https://localhost:8443/api/v1/matches';
 
 	constructor(private http: HttpClient) {}
 

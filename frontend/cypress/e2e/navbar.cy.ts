@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Navbar Component E2E Tests', () => {
-	const AUTH_API_URL = '/api/auth/me';
+	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
 		cy.intercept('GET', AUTH_API_URL, {

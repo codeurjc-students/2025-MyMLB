@@ -1,15 +1,15 @@
 ### Get All Teams
-GET https://localhost:8443/api/teams
+GET https://localhost:8443/api/v1/teams
 Content-Type: application/json
 
 ### Get Standings
-GET https://localhost:8443/api/teams/standings
+GET https://localhost:8443/api/v1/teams/standings
 Content-Type: application/json
 
 ### Get Team Information
-GET https://localhost:8443/api/teams/Cincinnati Reds
+GET https://localhost:8443/api/v1/teams/Cincinnati Reds
 Content-Type: application/json
 
 ### Get Non Existent Team Information
-GET https://localhost:8443/api/teams/Team1
+GET https://localhost:8443/api/v1/teams/Team1
 Content-Type: application/json

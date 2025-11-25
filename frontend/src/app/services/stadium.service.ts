@@ -8,7 +8,7 @@ import { AuthResponse } from '../models/auth/auth-response.model';
 	providedIn: 'root',
 })
 export class StadiumService {
-	private apiUrl = 'https://localhost:8443/api/stadiums';
+	private apiUrl = 'https://localhost:8443/api/v1/stadiums';
 
 	constructor(private http: HttpClient) {}
 

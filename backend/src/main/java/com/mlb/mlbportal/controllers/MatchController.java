@@ -24,7 +24,7 @@ import java.util.List;
 
 @Tag(name = "Matches", description = "Operations related to the matches")
 @RestController
-@RequestMapping("/api/matches")
+@RequestMapping("/api/v1/matches")
 @AllArgsConstructor
 public class MatchController {
     private final MatchService matchService;

@@ -14,7 +14,7 @@ describe("Login Component Integration Test", () => {
     let httpMock: HttpTestingController;
     let routerSpy: jasmine.SpyObj<Router>;
 
-    const apiUrl = "https://localhost:8443/api/auth";
+    const apiUrl = "https://localhost:8443/api/v1/auth";
     const loginUrl = `${apiUrl}/login`;
     const meUrl = `${apiUrl}/me`;
     const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
