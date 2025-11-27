@@ -34,7 +34,7 @@ public class StadiumService {
     private final StadiumMapper stadiumMapper;
     private final Cloudinary cloudinary;
 
-    private Page<StadiumInitDTO> refactor(int page, int size, boolean allAvailable) {
+    private Page<StadiumInitDTO> generatePagination(int page, int size, boolean allAvailable) {
         List<Stadium> stadiums;
         if (!allAvailable) {
             stadiums = this.stadiumRepository.findAll();
@@ -54,12 +54,12 @@ public class StadiumService {
 
     @Transactional(readOnly = true)
     public Page<StadiumInitDTO> getAllStadiums(int page, int size) {
-        return this.refactor(page, size, false);
+        return this.generatePagination(page, size, false);
     }
 
     @Transactional(readOnly = true)
-    public Page<StadiumInitDTO> gettAllAvailableStadiums(int page, int size) {
-        return this.refactor(page, size, true);
+    public Page<StadiumInitDTO> getAllAvailableStadiums(int page, int size) {
+        return this.generatePagination(page, size, true);
     }
 
     @Transactional(readOnly = true)

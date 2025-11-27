@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-25T23:02:15+0100&quot;,
+    date = &quot;2025-11-27T13:38:35+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -196,41 +196,41 @@ import org.springframework.stereotype.Component;
     }
 
     protected PositionPlayerSummaryDTO positionPlayerToPositionPlayerSummaryDTO(PositionPlayer positionPlayer) {
-<span class="nc bnc" id="L199" title="All 2 branches missed.">        if ( positionPlayer == null ) {</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        if ( positionPlayer == null ) {</span>
 <span class="nc" id="L200">            return null;</span>
         }
 
-<span class="nc" id="L203">        String name = null;</span>
-<span class="nc" id="L204">        PlayerPositions position = null;</span>
-<span class="nc" id="L205">        int atBats = 0;</span>
-<span class="nc" id="L206">        int walks = 0;</span>
-<span class="nc" id="L207">        int hits = 0;</span>
-<span class="nc" id="L208">        int doubles = 0;</span>
-<span class="nc" id="L209">        int triples = 0;</span>
-<span class="nc" id="L210">        int homeRuns = 0;</span>
-<span class="nc" id="L211">        int rbis = 0;</span>
-<span class="nc" id="L212">        double average = 0.0d;</span>
-<span class="nc" id="L213">        double obp = 0.0d;</span>
-<span class="nc" id="L214">        double ops = 0.0d;</span>
-<span class="nc" id="L215">        double slugging = 0.0d;</span>
+<span class="fc" id="L203">        String name = null;</span>
+<span class="fc" id="L204">        PlayerPositions position = null;</span>
+<span class="fc" id="L205">        int atBats = 0;</span>
+<span class="fc" id="L206">        int walks = 0;</span>
+<span class="fc" id="L207">        int hits = 0;</span>
+<span class="fc" id="L208">        int doubles = 0;</span>
+<span class="fc" id="L209">        int triples = 0;</span>
+<span class="fc" id="L210">        int homeRuns = 0;</span>
+<span class="fc" id="L211">        int rbis = 0;</span>
+<span class="fc" id="L212">        double average = 0.0d;</span>
+<span class="fc" id="L213">        double obp = 0.0d;</span>
+<span class="fc" id="L214">        double ops = 0.0d;</span>
+<span class="fc" id="L215">        double slugging = 0.0d;</span>
 
-<span class="nc" id="L217">        name = positionPlayer.getName();</span>
-<span class="nc" id="L218">        position = positionPlayer.getPosition();</span>
-<span class="nc" id="L219">        atBats = positionPlayer.getAtBats();</span>
-<span class="nc" id="L220">        walks = positionPlayer.getWalks();</span>
-<span class="nc" id="L221">        hits = positionPlayer.getHits();</span>
-<span class="nc" id="L222">        doubles = positionPlayer.getDoubles();</span>
-<span class="nc" id="L223">        triples = positionPlayer.getTriples();</span>
-<span class="nc" id="L224">        homeRuns = positionPlayer.getHomeRuns();</span>
-<span class="nc" id="L225">        rbis = positionPlayer.getRbis();</span>
-<span class="nc" id="L226">        average = positionPlayer.getAverage();</span>
-<span class="nc" id="L227">        obp = positionPlayer.getObp();</span>
-<span class="nc" id="L228">        ops = positionPlayer.getOps();</span>
-<span class="nc" id="L229">        slugging = positionPlayer.getSlugging();</span>
+<span class="fc" id="L217">        name = positionPlayer.getName();</span>
+<span class="fc" id="L218">        position = positionPlayer.getPosition();</span>
+<span class="fc" id="L219">        atBats = positionPlayer.getAtBats();</span>
+<span class="fc" id="L220">        walks = positionPlayer.getWalks();</span>
+<span class="fc" id="L221">        hits = positionPlayer.getHits();</span>
+<span class="fc" id="L222">        doubles = positionPlayer.getDoubles();</span>
+<span class="fc" id="L223">        triples = positionPlayer.getTriples();</span>
+<span class="fc" id="L224">        homeRuns = positionPlayer.getHomeRuns();</span>
+<span class="fc" id="L225">        rbis = positionPlayer.getRbis();</span>
+<span class="fc" id="L226">        average = positionPlayer.getAverage();</span>
+<span class="fc" id="L227">        obp = positionPlayer.getObp();</span>
+<span class="fc" id="L228">        ops = positionPlayer.getOps();</span>
+<span class="fc" id="L229">        slugging = positionPlayer.getSlugging();</span>
 
-<span class="nc" id="L231">        PositionPlayerSummaryDTO positionPlayerSummaryDTO = new PositionPlayerSummaryDTO( name, position, atBats, walks, hits, doubles, triples, homeRuns, rbis, average, obp, ops, slugging );</span>
+<span class="fc" id="L231">        PositionPlayerSummaryDTO positionPlayerSummaryDTO = new PositionPlayerSummaryDTO( name, position, atBats, walks, hits, doubles, triples, homeRuns, rbis, average, obp, ops, slugging );</span>
 
-<span class="nc" id="L233">        return positionPlayerSummaryDTO;</span>
+<span class="fc" id="L233">        return positionPlayerSummaryDTO;</span>
     }
 
     protected List&lt;PositionPlayerSummaryDTO&gt; positionPlayerListToPositionPlayerSummaryDTOList(List&lt;PositionPlayer&gt; list) {
@@ -239,51 +239,51 @@ import org.springframework.stereotype.Component;
         }
 
 <span class="fc" id="L241">        List&lt;PositionPlayerSummaryDTO&gt; list1 = new ArrayList&lt;PositionPlayerSummaryDTO&gt;( list.size() );</span>
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">        for ( PositionPlayer positionPlayer : list ) {</span>
-<span class="nc" id="L243">            list1.add( positionPlayerToPositionPlayerSummaryDTO( positionPlayer ) );</span>
-<span class="nc" id="L244">        }</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        for ( PositionPlayer positionPlayer : list ) {</span>
+<span class="fc" id="L243">            list1.add( positionPlayerToPositionPlayerSummaryDTO( positionPlayer ) );</span>
+<span class="fc" id="L244">        }</span>
 
 <span class="fc" id="L246">        return list1;</span>
     }
 
     protected PitcherSummaryDTO pitcherToPitcherSummaryDTO(Pitcher pitcher) {
-<span class="nc bnc" id="L250" title="All 2 branches missed.">        if ( pitcher == null ) {</span>
+<span class="pc bpc" id="L250" title="1 of 2 branches missed.">        if ( pitcher == null ) {</span>
 <span class="nc" id="L251">            return null;</span>
         }
 
-<span class="nc" id="L254">        String name = null;</span>
-<span class="nc" id="L255">        PitcherPositions position = null;</span>
-<span class="nc" id="L256">        int games = 0;</span>
-<span class="nc" id="L257">        int wins = 0;</span>
-<span class="nc" id="L258">        int losses = 0;</span>
-<span class="nc" id="L259">        double era = 0.0d;</span>
-<span class="nc" id="L260">        int inningsPitched = 0;</span>
-<span class="nc" id="L261">        int totalStrikeouts = 0;</span>
-<span class="nc" id="L262">        int walks = 0;</span>
-<span class="nc" id="L263">        int hitsAllowed = 0;</span>
-<span class="nc" id="L264">        int runsAllowed = 0;</span>
-<span class="nc" id="L265">        double whip = 0.0d;</span>
-<span class="nc" id="L266">        int saves = 0;</span>
-<span class="nc" id="L267">        int saveOpportunities = 0;</span>
+<span class="fc" id="L254">        String name = null;</span>
+<span class="fc" id="L255">        PitcherPositions position = null;</span>
+<span class="fc" id="L256">        int games = 0;</span>
+<span class="fc" id="L257">        int wins = 0;</span>
+<span class="fc" id="L258">        int losses = 0;</span>
+<span class="fc" id="L259">        double era = 0.0d;</span>
+<span class="fc" id="L260">        int inningsPitched = 0;</span>
+<span class="fc" id="L261">        int totalStrikeouts = 0;</span>
+<span class="fc" id="L262">        int walks = 0;</span>
+<span class="fc" id="L263">        int hitsAllowed = 0;</span>
+<span class="fc" id="L264">        int runsAllowed = 0;</span>
+<span class="fc" id="L265">        double whip = 0.0d;</span>
+<span class="fc" id="L266">        int saves = 0;</span>
+<span class="fc" id="L267">        int saveOpportunities = 0;</span>
 
-<span class="nc" id="L269">        name = pitcher.getName();</span>
-<span class="nc" id="L270">        position = pitcher.getPosition();</span>
-<span class="nc" id="L271">        games = pitcher.getGames();</span>
-<span class="nc" id="L272">        wins = pitcher.getWins();</span>
-<span class="nc" id="L273">        losses = pitcher.getLosses();</span>
-<span class="nc" id="L274">        era = pitcher.getEra();</span>
-<span class="nc" id="L275">        inningsPitched = (int) pitcher.getInningsPitched();</span>
-<span class="nc" id="L276">        totalStrikeouts = pitcher.getTotalStrikeouts();</span>
-<span class="nc" id="L277">        walks = pitcher.getWalks();</span>
-<span class="nc" id="L278">        hitsAllowed = pitcher.getHitsAllowed();</span>
-<span class="nc" id="L279">        runsAllowed = pitcher.getRunsAllowed();</span>
-<span class="nc" id="L280">        whip = pitcher.getWhip();</span>
-<span class="nc" id="L281">        saves = pitcher.getSaves();</span>
-<span class="nc" id="L282">        saveOpportunities = pitcher.getSaveOpportunities();</span>
+<span class="fc" id="L269">        name = pitcher.getName();</span>
+<span class="fc" id="L270">        position = pitcher.getPosition();</span>
+<span class="fc" id="L271">        games = pitcher.getGames();</span>
+<span class="fc" id="L272">        wins = pitcher.getWins();</span>
+<span class="fc" id="L273">        losses = pitcher.getLosses();</span>
+<span class="fc" id="L274">        era = pitcher.getEra();</span>
+<span class="fc" id="L275">        inningsPitched = (int) pitcher.getInningsPitched();</span>
+<span class="fc" id="L276">        totalStrikeouts = pitcher.getTotalStrikeouts();</span>
+<span class="fc" id="L277">        walks = pitcher.getWalks();</span>
+<span class="fc" id="L278">        hitsAllowed = pitcher.getHitsAllowed();</span>
+<span class="fc" id="L279">        runsAllowed = pitcher.getRunsAllowed();</span>
+<span class="fc" id="L280">        whip = pitcher.getWhip();</span>
+<span class="fc" id="L281">        saves = pitcher.getSaves();</span>
+<span class="fc" id="L282">        saveOpportunities = pitcher.getSaveOpportunities();</span>
 
-<span class="nc" id="L284">        PitcherSummaryDTO pitcherSummaryDTO = new PitcherSummaryDTO( name, position, games, wins, losses, era, inningsPitched, totalStrikeouts, walks, hitsAllowed, runsAllowed, whip, saves, saveOpportunities );</span>
+<span class="fc" id="L284">        PitcherSummaryDTO pitcherSummaryDTO = new PitcherSummaryDTO( name, position, games, wins, losses, era, inningsPitched, totalStrikeouts, walks, hitsAllowed, runsAllowed, whip, saves, saveOpportunities );</span>
 
-<span class="nc" id="L286">        return pitcherSummaryDTO;</span>
+<span class="fc" id="L286">        return pitcherSummaryDTO;</span>
     }
 
     protected List&lt;PitcherSummaryDTO&gt; pitcherListToPitcherSummaryDTOList(List&lt;Pitcher&gt; list) {
@@ -292,9 +292,9 @@ import org.springframework.stereotype.Component;
         }
 
 <span class="fc" id="L294">        List&lt;PitcherSummaryDTO&gt; list1 = new ArrayList&lt;PitcherSummaryDTO&gt;( list.size() );</span>
-<span class="pc bpc" id="L295" title="1 of 2 branches missed.">        for ( Pitcher pitcher : list ) {</span>
-<span class="nc" id="L296">            list1.add( pitcherToPitcherSummaryDTO( pitcher ) );</span>
-<span class="nc" id="L297">        }</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        for ( Pitcher pitcher : list ) {</span>
+<span class="fc" id="L296">            list1.add( pitcherToPitcherSummaryDTO( pitcher ) );</span>
+<span class="fc" id="L297">        }</span>
 
 <span class="fc" id="L299">        return list1;</span>
     }

@@ -46,7 +46,7 @@ export class EditTeamComponent implements OnInit {
 	constructor(private teamService: TeamService, private stadiumService: StadiumService, private backgroundService: BackgroundColorService) {}
 
 	ngOnInit(): void { // No se si hace falta
-		this.loadMoreStadiums(0);
+		this.stadiumInput = this.team.stadium.name;
 	}
 
 	public showStadiumsModal() {

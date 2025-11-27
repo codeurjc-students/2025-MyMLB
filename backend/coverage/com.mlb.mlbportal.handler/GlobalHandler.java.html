@@ -5,10 +5,13 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,110 +28,116 @@ import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
 @RestControllerAdvice
-<span class="fc" id="L28">public class GlobalHandler {</span>
+<span class="fc" id="L31">public class GlobalHandler {</span>
     private static final String FAILURE = &quot;FAILURE&quot;;
 
     private Map&lt;String, Object&gt; buildResponse(HttpStatus status, String message, String error) {
-<span class="fc" id="L32">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L33">        body.put(&quot;statusCode&quot;, status.value());</span>
-<span class="fc" id="L34">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L35">        body.put(&quot;message&quot;, message);</span>
-<span class="fc" id="L36">        body.put(&quot;error&quot;, error);</span>
-<span class="fc" id="L37">        return body;</span>
+<span class="fc" id="L35">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L36">        body.put(&quot;statusCode&quot;, status.value());</span>
+<span class="fc" id="L37">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L38">        body.put(&quot;message&quot;, message);</span>
+<span class="fc" id="L39">        body.put(&quot;error&quot;, error);</span>
+<span class="fc" id="L40">        return body;</span>
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L43">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L44">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L45">            body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="fc" id="L46">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L47">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="fc" id="L48">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L47">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L48">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L49">        return body;</span>
+<span class="fc" id="L50">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="fc" id="L51">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L52">        return body;</span>
+    }
+
+    @ExceptionHandler(MaxiumPicturesExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map&lt;String, Object&gt; handleMaximumPicturesExceeded(MaxiumPicturesExceededException ex) {
+<span class="nc" id="L58">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;A maximum of 5 images is required&quot;);</span>
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleIllegalArgument(IllegalArgumentException ex) {
-<span class="nc" id="L55">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;&quot;);</span>
+<span class="nc" id="L64">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;&quot;);</span>
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map&lt;String, Object&gt; handleResourceNotFound(ResourceNotFoundException ex) {
-<span class="fc" id="L61">        String errorMsg = &quot;Resource Not Found&quot;;</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (ex instanceof UserNotFoundException) errorMsg = &quot;User Not Found&quot;;</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">        else if (ex instanceof TeamNotFoundException) errorMsg = &quot;Team Not Found&quot;;</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">        else if (ex instanceof StadiumNotFoundException) errorMsg = &quot;Stadium Not Found&quot;;</span>
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        else if (ex instanceof PlayerNotFoundException) errorMsg = &quot;Player Not Found&quot;;</span>
+<span class="fc" id="L70">        String errorMsg = &quot;Resource Not Found&quot;;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (ex instanceof UserNotFoundException) errorMsg = &quot;User Not Found&quot;;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        else if (ex instanceof TeamNotFoundException) errorMsg = &quot;Team Not Found&quot;;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        else if (ex instanceof StadiumNotFoundException) errorMsg = &quot;Stadium Not Found&quot;;</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        else if (ex instanceof PlayerNotFoundException) errorMsg = &quot;Player Not Found&quot;;</span>
 
-<span class="fc" id="L67">        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);</span>
+<span class="fc" id="L76">        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);</span>
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
-<span class="fc" id="L73">        String errorMsg = &quot;Resource Already Exists&quot;;</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (ex instanceof TeamAlreadyExistsException) {</span>
-<span class="fc" id="L75">            errorMsg = &quot;Team Already Exists&quot;;</span>
+<span class="fc" id="L82">        String errorMsg = &quot;Resource Already Exists&quot;;</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (ex instanceof TeamAlreadyExistsException) {</span>
+<span class="fc" id="L84">            errorMsg = &quot;Team Already Exists&quot;;</span>
         }
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        else if (ex instanceof UserAlreadyExistsException) {</span>
-<span class="fc" id="L78">            errorMsg = &quot;User Already Exists&quot;;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        else if (ex instanceof UserAlreadyExistsException) {</span>
+<span class="fc" id="L87">            errorMsg = &quot;User Already Exists&quot;;</span>
         }
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        else if (ex instanceof StadiumAlreadyExistsException) {</span>
-<span class="fc" id="L81">            errorMsg = &quot;Stadium Already Exists&quot;;</span>
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        else if (ex instanceof StadiumAlreadyExistsException) {</span>
+<span class="fc" id="L90">            errorMsg = &quot;Stadium Already Exists&quot;;</span>
         }
-<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();</span>
-<span class="fc" id="L84">        return buildResponse(HttpStatus.CONFLICT, message, errorMsg);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();</span>
+<span class="fc" id="L93">        return buildResponse(HttpStatus.CONFLICT, message, errorMsg);</span>
     }
 
     @ExceptionHandler(LastPictureDeletionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleLastPictureDeletion(LastPictureDeletionException ex) {
-<span class="fc" id="L90">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
+<span class="fc" id="L99">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map&lt;String, Object&gt; handleNullPointer(NullPointerException ex) {
-<span class="nc bnc" id="L96" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="nc" id="L97">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
+<span class="nc bnc" id="L105" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="nc" id="L106">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L99">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
+<span class="nc" id="L108">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
                 &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map&lt;String, Object&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="nc" id="L106">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+<span class="nc" id="L115">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
                 &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map&lt;String, Object&gt; handleAuthentication(AuthenticationException ex) {
-<span class="fc" id="L113">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
+<span class="fc" id="L122">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
     }
 
     @ExceptionHandler(InvalidSearchTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleInvalidSearchType(InvalidSearchTypeException ex) {
-<span class="fc" id="L119">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
+<span class="fc" id="L128">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map&lt;String, Object&gt; handleAllOtherExceptions(Exception ex) {
-<span class="nc" id="L125">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), &quot;Internal Server Error&quot;);</span>
+    public ResponseEntity&lt;String&gt; handleException(Exception ex) {
+<span class="nc" id="L133">        ex.printStackTrace();</span>
+<span class="nc" id="L134">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());</span>
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Map&lt;String, Object&gt; handleServiceUnavailable(ServiceUnavailableException ex) {
-<span class="nc" id="L131">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
+<span class="nc" id="L140">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

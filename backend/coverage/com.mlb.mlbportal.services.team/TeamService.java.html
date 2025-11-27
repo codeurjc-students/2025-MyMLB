@@ -135,17 +135,21 @@ public class TeamService {
     public void updateTeam(String teamName, UpdateTeamRequest request) {
 <span class="fc" id="L136">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
 
-<span class="fc" id="L138">        request.city().ifPresent(team::setCity);</span>
-<span class="fc" id="L139">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
-<span class="fc" id="L140">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
-<span class="fc" id="L141">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
-<span class="fc" id="L142">            Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
-<span class="fc" id="L144">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
+<span class="fc" id="L138">        request.city().ifPresent(newCity -&gt; {</span>
+<span class="fc" id="L139">            String updatedName = team.getName().replace(team.getCity(), newCity);</span>
+<span class="fc" id="L140">            team.setCity(newCity);</span>
+<span class="fc" id="L141">            team.setName(updatedName);</span>
+<span class="fc" id="L142">        });</span>
+<span class="fc" id="L143">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
+<span class="fc" id="L144">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
+<span class="fc" id="L145">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
+<span class="fc" id="L146">            Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
+<span class="fc" id="L148">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
             }
-<span class="fc" id="L146">            team.setStadium(stadium);</span>
-<span class="fc" id="L147">        });</span>
-<span class="fc" id="L148">        this.teamRepository.save(team);</span>
-<span class="fc" id="L149">    }</span>
+<span class="fc" id="L150">            team.setStadium(stadium);</span>
+<span class="fc" id="L151">        });</span>
+<span class="fc" id="L152">        this.teamRepository.save(team);</span>
+<span class="fc" id="L153">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

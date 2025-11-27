@@ -80,6 +80,26 @@ class StadiumServiceTest {
     }
 
     @Test
+    @DisplayName("Should return all available stadiums")
+    void testGetAvailableStadiums() {
+        Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
+
+        when(this.stadiumRepository.findByTeamIsNull()).thenReturn(List.of(stadium));
+
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(dto);
+
+        Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(1).containsExactly(dto);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
     @DisplayName("Should return an empty list if there are no registered stadiums")
     void testGetEmptyStadiums() {
         when(this.stadiumRepository.findAll()).thenReturn(Collections.emptyList());

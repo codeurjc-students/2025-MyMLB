@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-25T23:02:15+0100&quot;,
+    date = &quot;2025-11-27T13:38:34+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -20,24 +20,24 @@ import org.springframework.stereotype.Component;
 
     @Override
     public StadiumDTO toStadiumDTO(Stadium stadium) {
-<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if ( stadium == null ) {</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if ( stadium == null ) {</span>
 <span class="fc" id="L24">            return null;</span>
         }
 
-<span class="nc" id="L27">        String name = null;</span>
-<span class="nc" id="L28">        int openingDate = 0;</span>
-<span class="nc" id="L29">        List&lt;PictureInfo&gt; pictures = null;</span>
+<span class="fc" id="L27">        String name = null;</span>
+<span class="fc" id="L28">        int openingDate = 0;</span>
+<span class="fc" id="L29">        List&lt;PictureInfo&gt; pictures = null;</span>
 
-<span class="nc" id="L31">        name = stadium.getName();</span>
-<span class="nc" id="L32">        openingDate = stadium.getOpeningDate();</span>
-<span class="nc" id="L33">        List&lt;PictureInfo&gt; list = stadium.getPictures();</span>
-<span class="nc bnc" id="L34" title="All 2 branches missed.">        if ( list != null ) {</span>
-<span class="nc" id="L35">            pictures = new ArrayList&lt;PictureInfo&gt;( list );</span>
+<span class="fc" id="L31">        name = stadium.getName();</span>
+<span class="fc" id="L32">        openingDate = stadium.getOpeningDate();</span>
+<span class="fc" id="L33">        List&lt;PictureInfo&gt; list = stadium.getPictures();</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if ( list != null ) {</span>
+<span class="fc" id="L35">            pictures = new ArrayList&lt;PictureInfo&gt;( list );</span>
         }
 
-<span class="nc" id="L38">        StadiumDTO stadiumDTO = new StadiumDTO( name, openingDate, pictures );</span>
+<span class="fc" id="L38">        StadiumDTO stadiumDTO = new StadiumDTO( name, openingDate, pictures );</span>
 
-<span class="nc" id="L40">        return stadiumDTO;</span>
+<span class="fc" id="L40">        return stadiumDTO;</span>
     }
 
     @Override

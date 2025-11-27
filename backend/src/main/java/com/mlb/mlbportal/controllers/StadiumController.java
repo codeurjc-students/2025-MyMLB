@@ -60,7 +60,7 @@ public class StadiumController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<StadiumInitDTO> response = this.stadiumService.gettAllAvailableStadiums(page, size);
+        Page<StadiumInitDTO> response = this.stadiumService.getAllAvailableStadiums(page, size);
         return ResponseEntity.ok(response);
     }
 

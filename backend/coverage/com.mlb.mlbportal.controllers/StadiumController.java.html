@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,9 +47,21 @@ public class StadiumController {
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;List&lt;StadiumInitDTO&gt;&gt; getAllStadiums() {
-<span class="fc" id="L50">        List&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllStadiums();</span>
-<span class="fc" id="L51">        return ResponseEntity.ok(response);</span>
+    public ResponseEntity&lt;Page&lt;StadiumInitDTO&gt;&gt; getAllStadiums(
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;10&quot;) int size) {
+
+<span class="fc" id="L54">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllStadiums(page, size);</span>
+<span class="fc" id="L55">        return ResponseEntity.ok(response);</span>
+    }
+
+    @GetMapping(value = &quot;/available&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;StadiumInitDTO&gt;&gt; getAllAvailableStadiums(
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;10&quot;) int size) {
+
+<span class="nc" id="L63">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllAvailableStadiums(page, size);</span>
+<span class="nc" id="L64">        return ResponseEntity.ok(response);</span>
     }
 
     @Operation(summary = &quot;Get stadium by name&quot;, description = &quot;Returns basic information about a specific MLB stadium identified by its name.&quot;)
@@ -59,7 +72,7 @@ public class StadiumController {
     })
     @GetMapping(value = &quot;/{name}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;StadiumInitDTO&gt; getStadiumByName(@PathVariable(&quot;name&quot;) String name) {
-<span class="fc" id="L62">        return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));</span>
+<span class="fc" id="L75">        return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));</span>
     }
 
     @Operation(summary = &quot;Get stadium pictures&quot;, description = &quot;Retrieves all pictures associated with a specific MLB stadium identified by its name.&quot;)
@@ -70,7 +83,7 @@ public class StadiumController {
     })
     @GetMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;PictureInfo&gt;&gt; getStadiumPictures(@PathVariable(&quot;stadiumName&quot;) String stadiumName) {
-<span class="fc" id="L73">        return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));</span>
+<span class="fc" id="L86">        return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));</span>
     }
 
     @Operation(summary = &quot;Upload stadium picture&quot;, description = &quot;Uploads a new picture for a specific MLB stadium. Only .webp images are supported.&quot;)
@@ -83,7 +96,7 @@ public class StadiumController {
     @PostMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; uploadPicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;file&quot;) MultipartFile picturePath) throws IOException {
-<span class="fc" id="L86">        return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));</span>
+<span class="fc" id="L99">        return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));</span>
     }
 
     @Operation(summary = &quot;Delete stadium picture&quot;, description = &quot;Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.&quot;)
@@ -96,26 +109,27 @@ public class StadiumController {
     @DeleteMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; deletePicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;publicId&quot;) String publicId) {
-<span class="fc" id="L99">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
-<span class="fc" id="L100">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
+<span class="fc" id="L112">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
+<span class="fc" id="L113">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
     }
 
     @Operation(summary = &quot;Create a new stadium&quot;, description = &quot;Creates a new MLB stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Stadium created successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumDTO.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request body or missing required fields&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request body or missing required fields&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Stadium already exists&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping
     public ResponseEntity&lt;StadiumDTO&gt; createStadium(@Valid @RequestBody CreateStadiumRequest request) {
-<span class="fc" id="L112">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
+<span class="fc" id="L126">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L114">                .fromCurrentRequest()</span>
-<span class="fc" id="L115">                .path(&quot;/{name}&quot;)</span>
-<span class="fc" id="L116">                .buildAndExpand(newStadium.name())</span>
-<span class="fc" id="L117">                .toUri();</span>
-<span class="fc" id="L118">        return ResponseEntity.created(location).body(newStadium);</span>
+<span class="fc" id="L128">                .fromCurrentRequest()</span>
+<span class="fc" id="L129">                .path(&quot;/{name}&quot;)</span>
+<span class="fc" id="L130">                .buildAndExpand(newStadium.name())</span>
+<span class="fc" id="L131">                .toUri();</span>
+<span class="fc" id="L132">        return ResponseEntity.created(location).body(newStadium);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

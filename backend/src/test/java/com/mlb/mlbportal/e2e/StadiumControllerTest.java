@@ -64,6 +64,26 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/stadiums/available should return all available stadiums")
+    void testGetAvailableStadiums() {
+        saveTestStadiums(NEW_STADIUM, NEW_STADIUM_YEAR, null);
+        String url = ALL_STADIUMS_PATH + "/available";
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(1))
+                .body("content.name", hasItem(NEW_STADIUM))
+                .body("content.openingDate", hasItem(NEW_STADIUM_YEAR))
+                .body("content.teamName", everyItem(nullValue()))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(1))
+                .body("page.totalPages", is(1));
+    }
+
+    @Test
     @DisplayName("GET /api/v1/stadiums/{name} should return the information of a stadium based on its name")
     void testGetStadiumByName() {
         String url = STADIUM_PATH + STADIUM1_NAME;

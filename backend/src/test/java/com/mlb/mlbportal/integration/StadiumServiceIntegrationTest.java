@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.integration;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
@@ -72,6 +73,22 @@ class StadiumServiceIntegrationTest {
 
         assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
         assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should return all available stadiums")
+    void testGetAvailableStadiums() {
+        Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
+        this.stadiumRepository.save(stadium);
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(1).containsExactly(dto);
+        assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getTotalPages()).isEqualTo(1);
         assertThat(result.getNumber()).isZero();
         assertThat(result.getSize()).isEqualTo(10);
