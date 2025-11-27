@@ -5,17 +5,16 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;

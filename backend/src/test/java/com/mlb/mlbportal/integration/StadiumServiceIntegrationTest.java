@@ -3,16 +3,9 @@ package com.mlb.mlbportal.integration;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
-import com.mlb.mlbportal.dto.stadium.StadiumDTO;
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
-import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -31,6 +28,12 @@ import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 import jakarta.transaction.Transactional;
 
@@ -104,7 +107,7 @@ class StadiumServiceIntegrationTest {
         Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
 
         assertThat(result.getContent()).isEmpty();
-        assertThat(result.getTotalElements()).isEqualTo(0);
+        assertThat(result.getTotalElements()).isZero();
     }
 
     @Test
