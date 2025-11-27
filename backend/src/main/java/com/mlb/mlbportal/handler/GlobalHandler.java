@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.naming.ServiceUnavailableException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -125,12 +124,6 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleInvalidSearchType(InvalidSearchTypeException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "Invalid Search Type");
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
-        ex.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
