@@ -54,10 +54,13 @@ class StadiumControllerTest extends BaseE2ETest {
                 .get(ALL_STADIUMS_PATH)
                 .then()
                 .statusCode(200)
-                .body("size()", is(3))
-                .body("name", hasItems(STADIUM1_NAME, STADIUM2_NAME, STADIUM3_NAME))
-                .body("openingDate", hasItems(STADIUM1_YEAR, STADIUM2_YEAR, STADIUM3_YEAR))
-                .body("teamName", hasItems(this.team1.getName(), this.team2.getName(), this.team3.getName()));
+                .body("content.size()", is(3))
+                .body("content.name", hasItems(STADIUM1_NAME, STADIUM2_NAME, STADIUM3_NAME))
+                .body("content.openingDate", hasItems(STADIUM1_YEAR, STADIUM2_YEAR, STADIUM3_YEAR))
+                .body("content.teamName", hasItems(this.team1.getName(), this.team2.getName(), this.team3.getName()))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(3))
+                .body("page.totalPages", is(1));
     }
 
     @Test

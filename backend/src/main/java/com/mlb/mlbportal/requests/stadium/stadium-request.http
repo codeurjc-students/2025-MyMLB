@@ -2,6 +2,10 @@
 GET https://localhost:8443/api/v1/stadiums
 Content-Type: application/json
 
+### Get All Available Stadiums
+GET https://localhost:8443/api/v1/stadiums/available
+Content-Type: application/json
+
 ### Get Stadium by Name
 GET https://localhost:8443/api/v1/stadiums/Petco Park
 Content-Type: application/json

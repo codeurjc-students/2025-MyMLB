@@ -79,7 +79,7 @@ class SearchControllerTest extends BaseE2ETest {
         .then()
             .statusCode(200)
             .body("content.size()", is(3))
-            .body("content.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+            .body("content.teamStats.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
             .body("page.totalElements", is(3));
     }
 

@@ -8,11 +8,12 @@ import { SuccessModalComponent } from "../../success-modal/success-modal.compone
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { finalize } from 'rxjs';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
+import { ActionButtonsComponent } from "../action-buttons/action-buttons.component";
 
 @Component({
 	selector: 'app-edit-stadium',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, LoadingModalComponent, ErrorModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, LoadingModalComponent, ErrorModalComponent, ActionButtonsComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-stadium.component.html'
 })
@@ -31,14 +32,7 @@ export class EditStadiumComponent implements OnInit {
 
 	public openConfirmationModal = false;
 	public loading = false;
-	public showEditMenu = false;
 	public finish = false;
-
-	public removeModalIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
-		<path fill-rule="evenodd" clip-rule="evenodd"
-			d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-		></path>
-	</svg>`;
 
 	constructor(private stadiumService: StadiumService) {}
 
@@ -93,7 +87,7 @@ export class EditStadiumComponent implements OnInit {
 			},
 			error: (_) => {
 				this.error = true;
-				this.errorMessage = 'Cannot delete the last picture of a stadium';
+				this.errorMessage = 'An error occurred while trying to delete the image';
 			}
 		});
 	}

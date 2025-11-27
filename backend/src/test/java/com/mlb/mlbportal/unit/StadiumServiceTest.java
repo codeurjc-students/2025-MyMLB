@@ -23,6 +23,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -65,18 +66,27 @@ class StadiumServiceTest {
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
         when(this.stadiumRepository.findAll()).thenReturn(this.stadiums);
-        when(this.stadiumMapper.toListStadiumInitDTO(this.stadiums)).thenReturn(this.stadiumDtos);
+        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(this.stadiumDtos.getFirst(), this.stadiumDtos.get(1), this.stadiumDtos.get(2));
 
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+        List<StadiumInitDTO> content = result.getContent();
+
+        assertThat(content).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
     }
 
     @Test
     @DisplayName("Should return an empty list if there are no registered stadiums")
     void testGetEmptyStadiums() {
         when(this.stadiumRepository.findAll()).thenReturn(Collections.emptyList());
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).isEmpty();
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(0);
     }
 
     @Test

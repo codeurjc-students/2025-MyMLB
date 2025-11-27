@@ -12,3 +12,8 @@ export type Stadium = {
 	teamName: string,
 	pictures: Pictures[]
 }
+
+export type CreateStadiumRequest = {
+	name: string,
+	openingDate: number
+}

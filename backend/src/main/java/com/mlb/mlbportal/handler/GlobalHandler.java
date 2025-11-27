@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -47,6 +48,12 @@ public class GlobalHandler {
         body.put("statusCode", HttpStatus.BAD_REQUEST.value());
         body.put("status", FAILURE);
         return body;
+    }
+
+    @ExceptionHandler(MaxiumPicturesExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleMaximumPicturesExceeded(MaxiumPicturesExceededException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "A maximum of 5 images is required");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

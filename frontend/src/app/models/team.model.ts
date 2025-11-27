@@ -31,3 +31,10 @@ export type TeamInfo = {
 	positionPlayers: PositionPlayer[],
 	pitchers: Pitcher[]
 }
+
+export type UpdateTeamRequest = {
+	city?: string,
+	newChampionship?: number,
+	newInfo?: string,
+	newStadiumName?: string
+}

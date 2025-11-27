@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,8 +47,20 @@ public class StadiumController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<StadiumInitDTO>> getAllStadiums() {
-        List<StadiumInitDTO> response = this.stadiumService.getAllStadiums();
+    public ResponseEntity<Page<StadiumInitDTO>> getAllStadiums(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<StadiumInitDTO> response = this.stadiumService.getAllStadiums(page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/available", produces = "application/json")
+    public ResponseEntity<Page<StadiumInitDTO>> getAllAvailableStadiums(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<StadiumInitDTO> response = this.stadiumService.gettAllAvailableStadiums(page, size);
         return ResponseEntity.ok(response);
     }
 
@@ -103,6 +116,7 @@ public class StadiumController {
     @Operation(summary = "Create a new stadium", description = "Creates a new MLB stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Stadium created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StadiumDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "Stadium already exists", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))

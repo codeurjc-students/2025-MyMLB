@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -67,8 +68,14 @@ class StadiumServiceIntegrationTest {
     @Test
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
     }
 
     @Test
@@ -76,8 +83,11 @@ class StadiumServiceIntegrationTest {
     void testGetEmptyStadiums() {
         this.stadiumRepository.deleteAll();
         this.teamRepository.deleteAll();
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).isEmpty();
+
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(0);
     }
 
     @Test

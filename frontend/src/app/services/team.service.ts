@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Team, TeamSummary, TeamInfo } from '../models/team.model';
+import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.model';
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
+import { AuthResponse } from '../models/auth/auth-response.model';
 
 export type StandingsResponse = {
 	[league: string]: {
@@ -80,5 +81,9 @@ export class TeamService {
 				return -1;
 			})
 		);
+	}
+
+	public updateTeam(teamName: string, request: UpdateTeamRequest): Observable<AuthResponse> {
+		return this.http.patch<AuthResponse>(`${this.url}/${teamName}`, request);
 	}
 }

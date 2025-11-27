@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,9 +34,32 @@ public class StadiumService {
     private final StadiumMapper stadiumMapper;
     private final Cloudinary cloudinary;
 
+    private Page<StadiumInitDTO> refactor(int page, int size, boolean allAvailable) {
+        List<Stadium> stadiums;
+        if (!allAvailable) {
+            stadiums = this.stadiumRepository.findAll();
+        }
+        else {
+            stadiums = this.stadiumRepository.findByTeamIsNull();
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        int start = Math.min((int) pageable.getOffset(), stadiums.size());
+        int end = Math.min(start + pageable.getPageSize(), stadiums.size());
+
+        List<StadiumInitDTO> result = stadiums.subList(start, end).stream()
+                .map(this.stadiumMapper::toStadiumInitDTO).toList();
+
+        return new PageImpl<>(result, pageable, stadiums.size());
+    }
+
     @Transactional(readOnly = true)
-    public List<StadiumInitDTO> getAllStadiums() {
-        return this.stadiumMapper.toListStadiumInitDTO(this.stadiumRepository.findAll());
+    public Page<StadiumInitDTO> getAllStadiums(int page, int size) {
+        return this.refactor(page, size, false);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StadiumInitDTO> gettAllAvailableStadiums(int page, int size) {
+        return this.refactor(page, size, true);
     }
 
     @Transactional(readOnly = true)

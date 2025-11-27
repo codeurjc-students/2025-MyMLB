@@ -135,7 +135,11 @@ public class TeamService {
     public void updateTeam(String teamName, UpdateTeamRequest request) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
 
-        request.city().ifPresent(team::setCity);
+        request.city().ifPresent(newCity -> {
+            String updatedName = team.getName().replace(team.getCity(), newCity);
+            team.setCity(newCity);
+            team.setName(updatedName);
+        });
         request.newChampionship().ifPresent(team.getChampionships()::addLast);
         request.newInfo().ifPresent(team::setGeneralInfo);
         request.newStadiumName().ifPresent(stadiumName -> {

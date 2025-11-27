@@ -102,7 +102,7 @@ class PlayerServiceTest {
 
         assertThat(result).hasSize(3);
         assertThat(result.get(0).name()).isEqualTo(PLAYER1_NAME);
-        assertThat(result.get(0).teamName()).isEqualTo(this.teams.get(0).getName());
+        assertThat(result.get(0).teamName()).isEqualTo(this.teams.getFirst().getName());
         assertThat(result.get(1).name()).isEqualTo(PLAYER2_NAME);
         assertThat(result.get(1).teamName()).isEqualTo(this.teams.get(0).getName());
         assertThat(result.get(2).name()).isEqualTo(PLAYER3_NAME);
@@ -133,16 +133,16 @@ class PlayerServiceTest {
         List<PitcherDTO> result = this.playerService.getAllPitchers();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).name()).isEqualTo(PLAYER3_NAME);
-        assertThat(result.get(0).position()).isEqualTo(PitcherPositions.SP);
+        assertThat(result.getFirst().name()).isEqualTo(PLAYER3_NAME);
+        assertThat(result.getFirst().position()).isEqualTo(PitcherPositions.SP);
     }
 
     @Test
     @DisplayName("Should return the position player by its name")
     void testFindPositionPlayerByName() {
-        PositionPlayer player = this.positionPlayers.get(0);
+        PositionPlayer player = this.positionPlayers.getFirst();
         when(this.playerRepository.findByName(PLAYER1_NAME)).thenReturn(Optional.of(player));
-        when(this.positionPlayerMapper.toPositionPlayerDTO(player)).thenReturn(this.positionPlayerDTOs.get(0));
+        when(this.positionPlayerMapper.toPositionPlayerDTO(player)).thenReturn(this.positionPlayerDTOs.getFirst());
 
         assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER1_NAME));
         PlayerDTO result = this.playerService.findPlayerByName(player.getName());
@@ -153,9 +153,9 @@ class PlayerServiceTest {
     @Test
     @DisplayName("Should return the pitcher by its name")
     void testFindPitcherByName() {
-        Pitcher pitcher = this.pitchers.get(0);
+        Pitcher pitcher = this.pitchers.getFirst();
         when(this.playerRepository.findByName(PLAYER3_NAME)).thenReturn(Optional.of(pitcher));
-        when(this.pitcherMapper.toPitcherDTO(pitcher)).thenReturn(this.pitcherDTOs.get(0));
+        when(this.pitcherMapper.toPitcherDTO(pitcher)).thenReturn(this.pitcherDTOs.getFirst());
 
         assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER3_NAME));
         PlayerDTO result = this.playerService.findPlayerByName(pitcher.getName());
@@ -176,14 +176,14 @@ class PlayerServiceTest {
     @Test
     @DisplayName("Should return updated position players of a known team")
     void testGetUpdatedPositionPlayersOfTeam() {
-        Team team = this.teams.get(0);
+        Team team = this.teams.getFirst();
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
 
-        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(this.teams.get(0));
+        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(this.teams.getFirst());
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
-        assertThat(result.get(0).getName()).isEqualTo(PLAYER1_NAME);
+        assertThat(result.getFirst().getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.getFirst().getName()).isEqualTo(PLAYER1_NAME);
     }
 
     @Test
@@ -195,17 +195,17 @@ class PlayerServiceTest {
         List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(this.teams.get(1));
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
-        assertThat(result.get(0).getName()).isEqualTo(PLAYER3_NAME);
+        assertThat(result.getFirst().getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
+        assertThat(result.getFirst().getName()).isEqualTo(PLAYER3_NAME);
     }
 
     @Test
     @DisplayName("Should return paginated position players of a team")
     void testGetPositionPlayersOfTeam() {
-        Team team = this.teams.get(0);
+        Team team = this.teams.getFirst();
         when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
-        when(this.positionPlayerMapper.toPositionPlayerSummaryDTO(any())).thenReturn(this.positionSummaryDTOs.get(0), this.positionSummaryDTOs.get(1));
+        when(this.positionPlayerMapper.toPositionPlayerSummaryDTO(any())).thenReturn(this.positionSummaryDTOs.getFirst(), this.positionSummaryDTOs.get(1));
 
         Page<PositionPlayerSummaryDTO> result = this.playerService.getAllPositionPlayersOfATeam(TEST_TEAM1_NAME, 0, 10);
         List<PositionPlayerSummaryDTO> resultContent = result.getContent();
@@ -230,13 +230,13 @@ class PlayerServiceTest {
         Team team = this.teams.get(1);
         when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(pitchers);
-        when(this.pitcherMapper.toPitcherSummaryDTO(any())).thenReturn(this.pitcherSummaryDTOs.get(0));
+        when(this.pitcherMapper.toPitcherSummaryDTO(any())).thenReturn(this.pitcherSummaryDTOs.getFirst());
 
         Page<PitcherSummaryDTO> result = this.playerService.getAllPitchersOfATeam(TEST_TEAM2_NAME, 0, 10);
         List<PitcherSummaryDTO> resultContent = result.getContent();
 
         assertThat(resultContent).hasSize(1);
-        assertThat(resultContent.get(0).name()).isEqualTo(PLAYER3_NAME);
+        assertThat(resultContent.getFirst().name()).isEqualTo(PLAYER3_NAME);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getTotalPages()).isEqualTo(1);

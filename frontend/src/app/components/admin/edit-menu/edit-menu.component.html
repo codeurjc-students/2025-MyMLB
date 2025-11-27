@@ -80,10 +80,10 @@
 					<div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 flex justify-between items-center">
 						<div class="flex items-center gap-5">
 							@if (isTeam(result)) {
-								<div class="team-logo-container" [ngClass]="getBackgroundColor(result.abbreviation)">
+								<div class="team-logo-container" [ngClass]="getBackgroundColor(result.teamStats.abbreviation)">
 									<img
-										src="assets/team-logos-new/{{ result.league }}/{{ result.division }}/{{ result.abbreviation }}.png"
-										alt="{{ result.abbreviation }}"
+										src="assets/team-logos-new/{{ result.teamStats.league }}/{{ result.teamStats.division }}/{{ result.teamStats.abbreviation }}.png"
+										alt="{{ result.teamStats.abbreviation }}"
 										class="w-9 h-9 object-contain"
 									/>
 								</div>
@@ -106,7 +106,12 @@
 								</svg>
 							}
 							<span class="text-xl font-bold">
-								{{ result.name }}
+								@if (isTeam(result)) {
+									{{ result.teamStats.name }}
+								}
+								@else {
+									{{ result.name }}
+								}
 								@if (isPitcher(result) || isPositionPlayer(result)) {
 									<span class="text-base font-medium">({{ result.position }})</span>
 								}
@@ -136,5 +141,8 @@
 	}
 	@else if (currentView === 'stadium' && isStadium(selectedResult)) {
 		<app-edit-stadium [stadium]="selectedResult" (backToMenu)="currentView = null"></app-edit-stadium>
+	}
+	@else if (currentView === 'team' && isTeam(selectedResult)) {
+		<app-edit-team [team]="selectedResult" (backToMenu)="currentView = null"></app-edit-team>
 	}
 </div>

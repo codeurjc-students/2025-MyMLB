@@ -1,6 +1,7 @@
 <div
 	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'">
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+>
 	<div
 		class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn"
 	>
@@ -22,9 +23,35 @@
 			</svg>
 		</button>
 
-		<div class="mb-4">
-			<div [innerHTML]="safeSvg" class="w-12 h-12 mx-auto text-red-500 dark:text-red-400"></div>
+		<div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+			@if (isDelete) {
+				<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto text-red-500 dark:text-red-400">
+					<path fill-rule="evenodd" clip-rule="evenodd"
+						d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+					></path>
+				</svg>
+			}
+			@else {
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="2"
+					stroke="currentColor"
+					class="w-12 h-12 mx-auto text-red-500 dark:text-red-400"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+					/>
+				</svg>
+			}
 		</div>
+
+		<!-- <div class="mb-4">
+			<div [innerHTML]="safeSvg" class="w-12 h-12 mx-auto text-red-500 dark:text-red-400"></div>
+		</div> -->
 
 		<!-- Text Content -->
 		<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ title }}</h2>
