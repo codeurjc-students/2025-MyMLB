@@ -199,8 +199,8 @@ public class InitController {
     private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
 <span class="fc" id="L200">        LocalDateTime now = LocalDateTime.now();</span>
 <span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
-<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
-<span class="nc" id="L203">        return MatchStatus.IN_PROGRESS;</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
+<span class="fc" id="L203">        return MatchStatus.IN_PROGRESS;</span>
     }
 
     private void setUpMatches() {

@@ -81,6 +81,7 @@ class StadiumControllerTest extends BaseE2ETest {
                 .body("page.size", is(10))
                 .body("page.totalElements", is(1))
                 .body("page.totalPages", is(1));
+        cleanDatabase();
     }
 
     @Test

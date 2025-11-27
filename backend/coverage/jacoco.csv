@@ -81,7 +81,7 @@ MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumInitDTO,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumPicturesDTO,9,0,0,0,1,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MlbImportController,9,0,0,0,2,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MatchController,17,12,2,0,3,2,2,2,1,2
-MLBPortal,com.mlb.mlbportal.controllers,InitController,197,569,9,29,40,129,11,27,3,16
+MLBPortal,com.mlb.mlbportal.controllers,InitController,195,571,8,30,39,130,10,28,3,16
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,5,55,1,7,1,8,1,5,0,1
 MLBPortal,com.mlb.mlbportal.controllers,PlayerController,0,37,0,0,0,6,0,6,0,6
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,37,1,1,0,8,1,4,0,4
