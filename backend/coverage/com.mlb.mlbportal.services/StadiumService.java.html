@@ -36,11 +36,11 @@ public class StadiumService {
 
     private Page&lt;StadiumInitDTO&gt; generatePagination(int page, int size, boolean allAvailable) {
         List&lt;Stadium&gt; stadiums;
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (!allAvailable) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (!allAvailable) {</span>
 <span class="fc" id="L40">            stadiums = this.stadiumRepository.findAll();</span>
         }
         else {
-<span class="nc" id="L43">            stadiums = this.stadiumRepository.findByTeamIsNull();</span>
+<span class="fc" id="L43">            stadiums = this.stadiumRepository.findByTeamIsNull();</span>
         }
 <span class="fc" id="L45">        Pageable pageable = PageRequest.of(page, size);</span>
 <span class="fc" id="L46">        int start = Math.min((int) pageable.getOffset(), stadiums.size());</span>
@@ -59,7 +59,7 @@ public class StadiumService {
 
     @Transactional(readOnly = true)
     public Page&lt;StadiumInitDTO&gt; getAllAvailableStadiums(int page, int size) {
-<span class="nc" id="L62">        return this.generatePagination(page, size, true);</span>
+<span class="fc" id="L62">        return this.generatePagination(page, size, true);</span>
     }
 
     @Transactional(readOnly = true)

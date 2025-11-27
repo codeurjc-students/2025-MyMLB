@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-27T13:38:34+0100&quot;,
+    date = &quot;2025-11-27T22:11:57+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -80,16 +80,16 @@ import org.springframework.stereotype.Component;
 
     @Override
     public List&lt;StadiumInitDTO&gt; toListStadiumInitDTO(List&lt;Stadium&gt; stadiumList) {
-<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if ( stadiumList == null ) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if ( stadiumList == null ) {</span>
 <span class="nc" id="L84">            return null;</span>
         }
 
-<span class="fc" id="L87">        List&lt;StadiumInitDTO&gt; list = new ArrayList&lt;StadiumInitDTO&gt;( stadiumList.size() );</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">        for ( Stadium stadium : stadiumList ) {</span>
-<span class="fc" id="L89">            list.add( toStadiumInitDTO( stadium ) );</span>
-<span class="fc" id="L90">        }</span>
+<span class="nc" id="L87">        List&lt;StadiumInitDTO&gt; list = new ArrayList&lt;StadiumInitDTO&gt;( stadiumList.size() );</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        for ( Stadium stadium : stadiumList ) {</span>
+<span class="nc" id="L89">            list.add( toStadiumInitDTO( stadium ) );</span>
+<span class="nc" id="L90">        }</span>
 
-<span class="fc" id="L92">        return list;</span>
+<span class="nc" id="L92">        return list;</span>
     }
 
     @Override
@@ -112,8 +112,8 @@ import org.springframework.stereotype.Component;
 
     private String stadiumTeamName(Stadium stadium) {
 <span class="fc" id="L114">        Team team = stadium.getTeam();</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if ( team == null ) {</span>
-<span class="nc" id="L116">            return null;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if ( team == null ) {</span>
+<span class="fc" id="L116">            return null;</span>
         }
 <span class="fc" id="L118">        return team.getName();</span>
     }

@@ -60,8 +60,8 @@ public class StadiumController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="nc" id="L63">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllAvailableStadiums(page, size);</span>
-<span class="nc" id="L64">        return ResponseEntity.ok(response);</span>
+<span class="fc" id="L63">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllAvailableStadiums(page, size);</span>
+<span class="fc" id="L64">        return ResponseEntity.ok(response);</span>
     }
 
     @Operation(summary = &quot;Get stadium by name&quot;, description = &quot;Returns basic information about a specific MLB stadium identified by its name.&quot;)
