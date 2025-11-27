@@ -16,7 +16,7 @@ import org.springframework.data.domain.Page;
 import com.mlb.mlbportal.dto.player.PitcherDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
-import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
@@ -65,7 +65,7 @@ class SearchServiceTest {
     private List<StadiumInitDTO> stadiumsDtos;
 
     private List<Team> teams;
-    private List<TeamDTO> teamDtos;
+    private List<TeamInfoDTO> teamDtos;
 
     private List<PositionPlayer> positionPlayers;
     private List<PositionPlayerDTO> positionPlayerDtos;
@@ -80,7 +80,7 @@ class SearchServiceTest {
         this.stadiumsDtos = BuildMocksFactory.buildStadiumInitDTOMocks();
 
         this.teams = BuildMocksFactory.setUpTeamMocks();
-        this.teamDtos = BuildMocksFactory.buildTeamDTOMocks(this.teams);
+        this.teamDtos = BuildMocksFactory.buildTeamInfoDTOMocks(this.teams);
 
         this.positionPlayers = BuildMocksFactory.buildPositionPlayers(this.teams);
         this.positionPlayerDtos = BuildMocksFactory.buildPositionPlayerDTOs();
@@ -109,11 +109,11 @@ class SearchServiceTest {
     @DisplayName("Should return paginated teams that match the input search")
     void testSearchTeam() {
         when(this.teamRepository.findByNameContainingIgnoreCase("Te")).thenReturn(this.teams);
-        when(this.teamMapper.toTeamDTO(this.teams.getFirst())).thenReturn(this.teamDtos.getFirst());
-        when(this.teamMapper.toTeamDTO(this.teams.get(1))).thenReturn(this.teamDtos.get(1));
-        when(this.teamMapper.toTeamDTO(this.teams.get(2))).thenReturn(this.teamDtos.get(2));
+        when(this.teamMapper.toTeamInfoDTO(this.teams.getFirst())).thenReturn(this.teamDtos.getFirst());
+        when(this.teamMapper.toTeamInfoDTO(this.teams.get(1))).thenReturn(this.teamDtos.get(1));
+        when(this.teamMapper.toTeamInfoDTO(this.teams.get(2))).thenReturn(this.teamDtos.get(2));
 
-        Page<TeamDTO> result = this.searchService.searchTeams("Te", 0, 10);
+        Page<TeamInfoDTO> result = this.searchService.searchTeams("Te", 0, 10);
 
         assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(this.teamDtos);
         assertThat(result.getTotalElements()).isEqualTo(3);

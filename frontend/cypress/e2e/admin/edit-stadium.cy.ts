@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Edit Stadium E2E Tests', () => {
-	const AUTH_API_URL = '/api/auth/me';
+	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
 		cy.intercept('GET', AUTH_API_URL, {
@@ -14,7 +14,7 @@ describe('Edit Stadium E2E Tests', () => {
 
 		cy.contains('Edit Info').click();
 
-		cy.intercept('GET', '/api/searchs/stadium*', { fixture: 'stadium.json' }).as('searchStadium');
+		cy.intercept('GET', '/api/v1/searchs/stadium*', { fixture: 'stadium.json' }).as('searchStadium');
 
 		cy.get('select').first().select('stadium');
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankee Stadium');
@@ -27,29 +27,19 @@ describe('Edit Stadium E2E Tests', () => {
 	it('should render stadium info', () => {
 		cy.contains('Edit Yankee Stadium').should('be.visible');
 
-		cy.contains('label', 'Name')
-			.parent()
-			.find('input')
-			.should('have.value', 'Yankee Stadium');
-
-		cy.contains('label', 'Opening Date')
-			.parent()
-			.find('input')
-			.should('have.value', '2009');
-
-		cy.contains('label', 'Team')
-			.parent()
-			.find('input')
-			.should('have.value', 'New York Yankees');
+		cy.get('.team-section-container').within(() => {
+			cy.contains('Name').prev('p').should('contain.text', 'Yankee Stadium');
+			cy.contains('Opening Date').prev('p').should('contain.text', '2009');
+			cy.contains('Team').prev('p').should('contain.text', 'New York Yankees');
+		});
 	});
 
 	it('should render pictures', () => {
 		cy.get('img[alt="Stadium picture"]').should('have.length.at.least', 2);
 	});
 
-
 	it('should show error modal when upload fails', () => {
-		cy.intercept('POST', '/api/stadiums/*/pictures', {
+		cy.intercept('POST', '/api/v1/stadiums/*/pictures', {
 			statusCode: 500,
 		}).as('uploadError');
 
@@ -60,7 +50,7 @@ describe('Edit Stadium E2E Tests', () => {
 	});
 
 	it('should show loading modal when uploading', () => {
-		cy.intercept('POST', '/api/stadiums/*/pictures', (req) => {
+		cy.intercept('POST', '/api/v1/stadiums/*/pictures', (req) => {
 			req.reply({
 				url: 'http://test.com/new.webp',
 				publicId: 'newPic',

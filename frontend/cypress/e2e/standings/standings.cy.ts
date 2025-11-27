@@ -3,7 +3,7 @@
 describe('Standings Component E2E Tests', () => {
 	beforeEach(() => {
 		cy.fixture('standings.json').then((standings) => {
-			cy.intercept('GET', 'https://localhost:8443/api/teams/standings', {
+			cy.intercept('GET', 'https://localhost:8443/api/v1/teams/standings', {
 				statusCode: 200,
 				body: standings,
 			}).as('getStandings');
@@ -35,7 +35,7 @@ describe('Standings Component E2E Tests', () => {
 
 	it('should navigate to the team page after clicking on one', () => {
 		cy.fixture('team-info.json').then((team) => {
-			cy.intercept('GET', 'https://localhost:8443/api/teams/*', {
+			cy.intercept('GET', 'https://localhost:8443/api/v1/teams/*', {
 				statusCode: 200,
 				body: team,
 			}).as('getTeam');

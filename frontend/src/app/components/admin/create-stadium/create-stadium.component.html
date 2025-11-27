@@ -1,0 +1,45 @@
+<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center">
+	<div class="w-full max-w-3xl team-section-container space-y-10 animate-fade-in">
+		<!-- Title -->
+		<h2 class="text-xl text-center app-page-titles">Create Stadium</h2>
+
+		<!-- Form fields -->
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<!-- Name -->
+			<div class="flex flex-col">
+				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Name</label>
+				<input
+					type="text"
+					[(ngModel)]="nameInput"
+					placeholder="e.g., Shippett Stadium"
+					class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
+				/>
+			</div>
+
+			<!-- Opening year -->
+			<div class="flex flex-col">
+				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Opening year</label>
+				<input
+					type="number"
+					[(ngModel)]="openingDateInput"
+					placeholder="e.g., 1923"
+					min="1800"
+					max="{{getCurrentYear()}}"
+					class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
+				/>
+			</div>
+		</div>
+
+		<!-- Actions -->
+		<app-action-buttons (goBack)="returnToHome()" (confirm)="saveChanges()"></app-action-buttons>
+
+		<!-- Modals -->
+		@if (success) {
+			<app-success-modal [message]="successMessage" (continue)="returnToHome()"></app-success-modal>
+		}
+
+		@if (error) {
+			<app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+		}
+	</div>
+</div>

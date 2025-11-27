@@ -65,51 +65,58 @@
 				Opening Date: {{ team.stadium.openingDate }}
 			</p>
 
-			<!-- Carousel Container -->
-			<div class="relative">
-				<!-- Image Track -->
-				<div class="relative w-full flex justify-center h-80">
-					<img
-						[src]="stadiumImages[currentIndex].url"
-						class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
-						[ngClass]="{
-							'opacity-0': isTransitioning,
-							'opacity-100': !isTransitioning
-						}"
-						alt="Stadium image"
-					/>
-				</div>
-
-				<!-- Left Button -->
-				<button
-					(click)="scrollCarousel('left')"
-					class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
-				>
-					←
-				</button>
-
-				<!-- Right Button -->
-				<button
-					(click)="scrollCarousel('right')"
-					class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
-				>
-					→
-				</button>
-
-				<!-- Dots -->
-				<div class="flex justify-center mt-4 space-x-2">
-					@for (img of stadiumImages; let i = $index; track img) {
-						<div
-							class="w-3 h-3 rounded-full cursor-pointer transition-all"
+			@if (stadiumImages.length === 0) {
+				<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+					No pictures available for this stadium
+				</p>
+			}
+			@else {
+				<!-- Carousel Container -->
+				<div class="relative">
+					<!-- Image Track -->
+					<div class="relative w-full flex justify-center h-80">
+						<img
+							[src]="stadiumImages[currentIndex].url"
+							class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
 							[ngClass]="{
-								'bg-blue-700': i === currentIndex,
-								'bg-gray-400 dark:bg-gray-600': i !== currentIndex
+								'opacity-0': isTransitioning,
+								'opacity-100': !isTransitioning
 							}"
-							(click)="goToSlide(i)"
-						></div>
-					}
+							alt="Stadium image"
+						/>
+					</div>
+
+					<!-- Left Button -->
+					<button
+						(click)="scrollCarousel('left')"
+						class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+					>
+						←
+					</button>
+
+					<!-- Right Button -->
+					<button
+						(click)="scrollCarousel('right')"
+						class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+					>
+						→
+					</button>
+
+					<!-- Dots -->
+					<div class="flex justify-center mt-4 space-x-2">
+						@for (img of stadiumImages; let i = $index; track img) {
+							<div
+								class="w-3 h-3 rounded-full cursor-pointer transition-all"
+								[ngClass]="{
+									'bg-blue-700': i === currentIndex,
+									'bg-gray-400 dark:bg-gray-600': i !== currentIndex
+								}"
+								(click)="goToSlide(i)"
+							></div>
+						}
+					</div>
 				</div>
-			</div>
+			}
 		</section>
 
 		<!-- Stats Section -->

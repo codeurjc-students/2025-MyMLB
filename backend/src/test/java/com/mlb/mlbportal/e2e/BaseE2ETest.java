@@ -92,8 +92,13 @@ public abstract class BaseE2ETest {
 
     protected void saveTestStadiums(String name, int openingDate, Team team) {
         Stadium stadium = new Stadium(name, openingDate, team);
-        team.setStadium(stadium);
-        this.teamRepository.save(team);
+        if (team != null) {
+            team.setStadium(stadium);
+            this.teamRepository.save(team);
+        }
+        else {
+            this.stadiumRepository.save(stadium);
+        }
     }
 
     protected void saveTestPositionPlayers(String name, Team team, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {

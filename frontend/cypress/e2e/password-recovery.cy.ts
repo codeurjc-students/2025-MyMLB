@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import { should } from 'chai';
-
 describe('Password Recovery E2E Tests', () => {
 	beforeEach(() => {
 		cy.visit('/recovery');
@@ -25,7 +23,7 @@ describe('Password Recovery E2E Tests', () => {
 
 	describe('Email Phase', () => {
 		it('should successfully send the recovery email with a valid email', () => {
-			cy.intercept('POST', '/api/auth/forgot-password', {
+			cy.intercept('POST', '/api/v1/auth/forgot-password', {
 				statusCode: 200,
 				body: { status: 'SUCCESS', message: 'Recovery email sent successfully' },
 			}).as('succesfulEmail');
@@ -39,7 +37,7 @@ describe('Password Recovery E2E Tests', () => {
 		});
 
 		it('should show an error message if the email is not registered in the backend', () => {
-			cy.intercept('POST', '/api/auth/forgot-password', {
+			cy.intercept('POST', '/api/v1/auth/forgot-password', {
 				statusCode: 404,
 				body: { status: 'FAILURE', message: 'Resource Not Found' },
 			}).as('invalidEmail');
@@ -108,7 +106,7 @@ describe('Password Recovery E2E Tests', () => {
 		};
 
 		it('should send the password, reset it and navigate to the login form', () => {
-			cy.intercept('POST', '/api/auth/reset-password', {
+			cy.intercept('POST', '/api/v1/auth/reset-password', {
 				statusCode: 200,
 				body: { status: 'SUCCESS', message: 'Password restored' },
 			}).as('successfulReset');
@@ -130,7 +128,7 @@ describe('Password Recovery E2E Tests', () => {
 		});
 
 		it('should show an error if the request goes wrong in the backend', () => {
-			cy.intercept('POST', '/api/auth/reset-password', {
+			cy.intercept('POST', '/api/v1/auth/reset-password', {
 				statusCode: 400,
 				body: {
 					status: 'FAILURE',

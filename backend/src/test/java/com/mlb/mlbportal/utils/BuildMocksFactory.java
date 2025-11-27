@@ -103,8 +103,11 @@ public class BuildMocksFactory {
 
     public static List<Team> setUpTeamMocks() {
         Team team1 = buildTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+        team1.setCity(TEST_TEAM1_CITY);
         Team team2 = buildTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.NL, Division.CENTRAL, TEST_TEAM2_LOGO);
+        team2.setCity(TEST_TEAM2_CITY);
         Team team3 = buildTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.AL, Division.WEST, TEST_TEAM3_LOGO);
+        team3.setCity(TEST_TEAM3_CITY);
 
         return Arrays.asList(team1, team2, team3);
     }

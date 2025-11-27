@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Edit Menu E2E Tests', () => {
-	const AUTH_API_URL = '/api/auth/me';
+	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
 		cy.intercept('GET', AUTH_API_URL, {
@@ -19,7 +19,7 @@ describe('Edit Menu E2E Tests', () => {
 	});
 
 	it('should perform search and show team results', () => {
-		cy.intercept('GET', '/api/searchs/team*', { fixture: 'team-paginated.json' }).as('searchTeam');
+		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'team-paginated.json' }).as('searchTeam');
 
 		cy.contains('Edit Menu').should('be.visible');
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankees');
@@ -31,7 +31,7 @@ describe('Edit Menu E2E Tests', () => {
 	});
 
 	it('should show no results message when search returns empty', () => {
-		cy.intercept('GET', '/api/searchs/team*', { fixture: 'empty.json' }).as('searchEmpty');
+		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'empty.json' }).as('searchEmpty');
 
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type(
 			'Unknown'
@@ -43,7 +43,7 @@ describe('Edit Menu E2E Tests', () => {
 	});
 
 	it('should show Load More button when hasMore is true', () => {
-		cy.intercept('GET', '/api/searchs/team*', { fixture: 'team-paginated.json' }).as(
+		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'team-paginated.json' }).as(
 			'searchPaginated'
 		);
 
@@ -57,7 +57,7 @@ describe('Edit Menu E2E Tests', () => {
 	});
 
 	it('should show error modal when backend fails', () => {
-		cy.intercept('GET', '/api/searchs/team*', { statusCode: 500 }).as('searchError');
+		cy.intercept('GET', '/api/v1/searchs/team*', { statusCode: 500 }).as('searchError');
 
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type(
 			'Yankees'

@@ -1,0 +1,157 @@
+<div class="w-full max-w-4xl team-section-container space-y-10 animate-fade-in">
+    <h2 class="text-xl text-center app-page-titles">Edit {{ team.teamStats.name }}</h2>
+
+    <!-- Logo + Basic Info -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
+        <!-- Logo -->
+        <div class="flex justify-center md:justify-start">
+			<div
+				class="p-4 rounded-xl shadow-md border border-gray-300 dark:border-gray-600"
+				[ngClass]="getBackgroundColor(team.teamStats.abbreviation)"
+			>
+				<img
+					src="assets/team-logos-new/{{ team.teamStats.league }}/{{ team.teamStats.division }}/{{ team.teamStats.abbreviation }}.png"
+					alt="{{ team.teamStats.name }} logo"
+					class="w-24 h-24 object-contain"
+				/>
+			</div>
+		</div>
+
+        <!-- Info -->
+        <div class="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-6 text-center">
+			<!-- Abbreviation -->
+			<div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow flex flex-col items-center justify-center gap-1">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+				</svg>
+				<p class="text-lg font-bold text-gray-800 dark:text-white">{{ team.teamStats.abbreviation }}</p>
+				<p class="text-sm text-gray-600 dark:text-gray-300">Abbreviation</p>
+			</div>
+
+			<!-- League -->
+			<div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow flex flex-col items-center justify-center gap-1">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
+				</svg>
+				<p class="text-lg font-bold text-gray-800 dark:text-white">{{ team.teamStats.league }}</p>
+				<p class="text-sm text-gray-600 dark:text-gray-300">League</p>
+			</div>
+
+			<!-- Division -->
+			<div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow flex flex-col items-center justify-center gap-1">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
+				</svg>
+				<p class="text-lg font-bold text-gray-800 dark:text-white">{{ team.teamStats.division }}</p>
+				<p class="text-sm text-gray-600 dark:text-gray-300">Division</p>
+			</div>
+		</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
+        <div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow">
+            <p class="text-lg font-bold text-black dark:text-white">{{ team.teamStats.totalGames }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Games</p>
+        </div>
+        <div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow">
+            <p class="text-lg font-bold text-green-600">{{ team.teamStats.wins }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Wins</p>
+        </div>
+        <div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow">
+            <p class="text-lg font-bold text-red-600">{{ team.teamStats.losses }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Losses</p>
+        </div>
+        <div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow">
+            <p class="text-lg font-bold text-black dark:text-white">{{ team.teamStats.pct | number:'1.3-3' }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Win %</p>
+        </div>
+        <div class="min-w-[6rem] p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow">
+            <p class="text-lg font-bold text-black dark:text-white">{{ team.teamStats.lastTen }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Last Ten</p>
+        </div>
+    </div>
+
+    <!-- Editable Fields -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- City -->
+        <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">City</label>
+            <input
+                type="text"
+                [placeholder]="team.city"
+                [(ngModel)]="cityInput"
+                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
+            />
+        </div>
+
+        <!-- Stadium -->
+		<div class="flex flex-col">
+			<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Stadium</label>
+			<button (click)="showStadiumsModal()" class="px-5 py-2.5 app-button hover:scale-[1.02]">
+				{{ stadiumInput }}
+			</button>
+		</div>
+
+        <!-- General Info -->
+        <div class="md:col-span-2 flex flex-col">
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">General Info</label>
+            <textarea
+                [(ngModel)]="infoInput"
+                [placeholder]="team.generalInfo"
+                rows="4"
+                class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
+            ></textarea>
+        </div>
+
+        <!-- Championships -->
+        <div class="md:col-span-2 flex flex-col">
+            <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Championships</label>
+            <div class="flex flex-col gap-4 md:flex-row md:items-center">
+                <ul class="flex gap-2 flex-wrap">
+                    @for (year of team.championships; track year) {
+                        <li class="px-3 py-1 bg-indigo-100 dark:bg-indigo-600 text-indigo-800 dark:text-white rounded-full text-sm shadow">
+                            {{ year }}
+                        </li>
+                    }
+                </ul>
+                <div class="flex gap-2">
+                    <input
+                        type="number"
+                        placeholder="Add year..."
+                        [(ngModel)]="newChampionshipInput"
+                        class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+	<app-action-buttons (goBack)="goToEditMenu()" (confirm)="confirm()"></app-action-buttons>
+
+	<app-select-element-modal
+		[teamElements]="false"
+		[openModal]="selectStadiumButtonClicked"
+		[isClose]="isClose"
+		[hasMore]="hasMore"
+		[elements]="availableStadiums"
+		(select)="selectStadium($event)"
+		(loadNextPageFunction)="loadNextPage()"
+		(closeModal)="closeStadiumModal()">
+	</app-select-element-modal>
+
+    <!-- Modals -->
+    @if (finish) {
+        <app-success-modal [message]="'Changes applied successfully'" (continue)="goToEditMenu()"></app-success-modal>
+    }
+
+	@if (success) {
+		<app-success-modal [message]="successMessage" (continue)="success = false"></app-success-modal>
+	}
+
+    @if (error) {
+        <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+    }
+</div>

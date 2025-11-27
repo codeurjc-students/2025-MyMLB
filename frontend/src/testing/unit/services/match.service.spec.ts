@@ -56,7 +56,7 @@ describe('Match Service Tests', () => {
 			expect(data.content[0].status).toBe('FINISHED');
 		});
 
-		const req = httpMock.expectOne('https://localhost:8443/api/matches/today?page=0&size=10');
+		const req = httpMock.expectOne('https://localhost:8443/api/v1/matches/today?page=0&size=10');
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});

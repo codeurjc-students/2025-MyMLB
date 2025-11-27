@@ -3,17 +3,18 @@ import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angul
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../services/search.service';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
-import { Team } from '../../../models/team.model';
+import { Team, TeamInfo } from '../../../models/team.model';
 import { Stadium } from '../../../models/stadium.model';
 import { PositionPlayerGlobal } from '../../../models/position-player.model';
 import { PitcherGlobal } from '../../../models/pitcher.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
+import { EditTeamComponent } from "../edit-team/edit-team.component";
 
 @Component({
 	selector: 'app-edit-menu',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-menu.component.html',
 })
@@ -21,7 +22,7 @@ export class EditMenuComponent implements OnInit {
 	public searchQuery: string = '';
 	public searchType: 'player' | 'team' | 'stadium' = 'team';
 	public playerType: 'position' | 'pitcher' | null = null;
-	public searchResults: (Team | Stadium | PositionPlayerGlobal | PitcherGlobal)[] = [];
+	public searchResults: (TeamInfo | Stadium | PositionPlayerGlobal | PitcherGlobal)[] = [];
 	public error: boolean = false;
 	public errorMessage = '';
 	public currentPage = 0;
@@ -121,8 +122,8 @@ export class EditMenuComponent implements OnInit {
 		return 'atBats' in obj && 'homeRuns' in obj;
 	}
 
-	public isTeam(obj: any): obj is Team {
-		return 'division' in obj && 'league' in obj;
+	public isTeam(obj: any): obj is TeamInfo {
+		return 'teamStats' in obj;
 	}
 
 	public isStadium(obj: any): obj is Stadium {

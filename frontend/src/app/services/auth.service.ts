@@ -12,7 +12,7 @@ import { UserRole } from '../models/auth/user-role.model';
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = 'https://localhost:8443/api/auth';
+	private apiUrl = 'https://localhost:8443/api/v1/auth';
 
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 	private currentUserSubject = new BehaviorSubject<UserRole>(this.defaultGuestUser);

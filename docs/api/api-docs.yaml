@@ -24,7 +24,7 @@ tags:
 - name: Search
   description: "Operations related to searching stadiums, teams, and players"
 paths:
-  /api/users/favorites/teams/{teamName}:
+  /api/v1/users/favorites/teams/{teamName}:
     post:
       tags:
       - Users
@@ -38,8 +38,20 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "404":
+          description: Team not found
           content:
             application/json: {}
         "409":
@@ -50,20 +62,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Team not found
-          content:
-            application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -85,8 +85,20 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "404":
+          description: Team not found
           content:
             application/json: {}
         "409":
@@ -97,20 +109,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Team not found
-          content:
-            application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -119,7 +119,121 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
-  /api/stadiums/{stadiumName}/pictures:
+  /api/v1/stadiums:
+    get:
+      tags:
+      - Stadiums
+      summary: Get all stadiums
+      description: "Returns a list of all MLB stadiums with basic information such\
+        \ as name, location, and capacity."
+      operationId: getAllStadiums
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved list of stadiums
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StadiumInitDTO"
+    post:
+      tags:
+      - Stadiums
+      summary: Create a new stadium
+      description: "Creates a new MLB stadium with the provided name and opening date.\
+        \ If the stadium already exists, a conflict error will be returned."
+      operationId: createStadium
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStadiumRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid request body or missing required fields
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Stadium already exists
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "201":
+          description: Stadium created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StadiumDTO"
+  /api/v1/stadiums/{stadiumName}/pictures:
     get:
       tags:
       - Stadiums
@@ -134,20 +248,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -158,14 +268,18 @@ paths:
           description: Stadium not found or no pictures available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved stadium pictures
           content:
@@ -197,24 +311,8 @@ paths:
               required:
               - file
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: Invalid file format or request parameters
-          content:
-            application/json: {}
-        "404":
-          description: Stadium not found
           content:
             application/json: {}
         "401":
@@ -225,6 +323,22 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Stadium not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture uploaded successfully
           content:
@@ -250,16 +364,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Cannot delete the last picture of a stadium
-          content:
-            application/json: {}
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -270,21 +384,21 @@ paths:
           description: Stadium or picture not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Cannot delete the last picture of a stadium
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
-  /api/auth/reset-password:
+  /api/v1/auth/reset-password:
     post:
       tags:
       - Authentication
@@ -298,8 +412,18 @@ paths:
               $ref: "#/components/schemas/ResetPasswordRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Invalid or expired recovery code
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -314,18 +438,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Invalid or expired recovery code
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -341,7 +455,7 @@ paths:
               example:
                 status: SUCCESS
                 message: Password restored
-  /api/auth/register:
+  /api/v1/auth/register:
     post:
       tags:
       - Authentication
@@ -355,18 +469,16 @@ paths:
               $ref: "#/components/schemas/RegisterRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Invalid registration data
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "409":
-          description: User already exists in the database
-        "400":
-          description: Invalid registration data
         "404":
           description: Not Found
           content:
@@ -375,8 +487,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: User already exists in the database
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -392,7 +506,7 @@ paths:
               example:
                 status: SUCCESS
                 message: User registered successfully
-  /api/auth/refresh:
+  /api/v1/auth/refresh:
     post:
       tags:
       - Authentication
@@ -407,8 +521,18 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Invalid or expired refresh token
+        "404":
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -423,24 +547,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Invalid or expired refresh token
         "200":
           description: Token refreshed successfully
           content:
@@ -450,7 +564,7 @@ paths:
               example:
                 status: SUCCESS
                 message: Tokens refreshed
-  /api/auth/logout:
+  /api/v1/auth/logout:
     post:
       tags:
       - Authentication
@@ -458,24 +572,16 @@ paths:
       description: Clears authentication cookies and invalidates session tokens.
       operationId: logOut
       responses:
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -490,8 +596,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -507,7 +621,7 @@ paths:
               example:
                 status: SUCCESS
                 message: logout successfully
-  /api/auth/login:
+  /api/v1/auth/login:
     post:
       tags:
       - Authentication
@@ -521,8 +635,18 @@ paths:
               $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Invalid credentials
+        "404":
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -537,24 +661,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Invalid credentials
         "200":
           description: Login successful
           content:
@@ -564,7 +678,7 @@ paths:
               example:
                 status: SUCCESS
                 message: Auth successful. Tokens are created in cookie.
-  /api/auth/forgot-password:
+  /api/v1/auth/forgot-password:
     post:
       tags:
       - Authentication
@@ -579,14 +693,18 @@ paths:
               $ref: "#/components/schemas/ForgotPasswordRequest"
         required: true
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Invalid email address
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: There is no user registered with this email
         "409":
           description: Conflict
           content:
@@ -595,12 +713,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Invalid email address
-        "404":
-          description: There is no user registered with this email
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -616,154 +730,7 @@ paths:
               example:
                 status: SUCCESS
                 message: Recovery email sent successfully
-  /api/users:
-    get:
-      tags:
-      - Users
-      summary: Get all users
-      description: Returns a list of all registered users in the system.
-      operationId: getUsers
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of users
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ShowUser"
-  /api/users/favorites/teams:
-    get:
-      tags:
-      - Users
-      summary: Get favorite teams of a user
-      description: Returns the list of favorite MLB teams for the authenticated user.
-      operationId: getFavoriteTeams
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized access
-          content:
-            application/json: {}
-        "200":
-          description: Successfully retrieved favorite teams
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TeamSummary"
-  /api/teams:
-    get:
-      tags:
-      - Teams
-      summary: Get all teams
-      description: "Returns a list of all MLB teams with calculated stats, including\
-        \ wins, losses, total games, and win percentage."
-      operationId: getAllTeams
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of teams
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TeamDTO"
-  /api/teams/{teamName}:
+  /api/v1/teams/{teamName}:
     get:
       tags:
       - Teams
@@ -771,7 +738,7 @@ paths:
       description: "Returns detailed information about a specific MLB team, including\
         \ abbreviation, logo, league, division, total games, wins, losses, win percentage,\
         \ etc."
-      operationId: getMethodName
+      operationId: getTeamInfo
       parameters:
       - name: teamName
         in: path
@@ -779,20 +746,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -803,6 +766,48 @@ paths:
           description: Team not found
           content:
             application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved team info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamInfoDTO"
+    patch:
+      tags:
+      - Teams
+      summary: Update team information
+      description: "Updates specific fields of an MLB team identified by its name.\
+        \ Supports partial updates such as wins, losses, or team details."
+      operationId: updateTeam
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTeamRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid request body or missing required fields
+          content:
+            application/json: {}
         "401":
           description: Unauthorized
           content:
@@ -811,13 +816,176 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
-          description: Successfully retrieved team info
+          description: Team successfully updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TeamInfoDTO"
-  /api/teams/standings:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/users:
+    get:
+      tags:
+      - Users
+      summary: Get all users
+      description: Returns a list of all registered users in the system.
+      operationId: getUsers
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved list of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShowUser"
+  /api/v1/users/favorites/teams:
+    get:
+      tags:
+      - Users
+      summary: Get favorite teams of a user
+      description: Returns the list of favorite MLB teams for the authenticated user.
+      operationId: getFavoriteTeams
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved favorite teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamSummary"
+  /api/v1/teams:
+    get:
+      tags:
+      - Teams
+      summary: Get all teams
+      description: "Returns a list of all MLB teams with calculated stats, including\
+        \ wins, losses, total games, and win percentage."
+      operationId: getAllTeams
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved list of teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamDTO"
+  /api/v1/teams/standings:
     get:
       tags:
       - Teams
@@ -827,28 +995,8 @@ paths:
         \ win percentage, games back, and current streak."
       operationId: getStandings
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
           content:
             '*/*':
               schema:
@@ -863,64 +1011,33 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved standings
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamDTO"
-  /api/stadiums:
-    get:
-      tags:
-      - Stadiums
-      summary: Get all stadiums
-      description: "Returns a list of all MLB stadiums with basic information such\
-        \ as name, location, and capacity."
-      operationId: getAllStadiums
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of stadiums
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StadiumInitDTO"
-  /api/stadiums/{name}:
+  /api/v1/stadiums/{name}:
     get:
       tags:
       - Stadiums
@@ -935,20 +1052,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -959,6 +1072,53 @@ paths:
           description: Stadium not found
           content:
             application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved stadium info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StadiumInitDTO"
+  /api/v1/stadiums/available:
+    get:
+      tags:
+      - Stadiums
+      operationId: getAllAvailableStadiums
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "401":
           description: Unauthorized
           content:
@@ -967,13 +1127,37 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
-          description: Successfully retrieved stadium info
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StadiumInitDTO"
-  /api/searchs/{type}:
+                $ref: "#/components/schemas/PagedModel"
+  /api/v1/searchs/{type}:
     get:
       tags:
       - Search
@@ -1014,25 +1198,9 @@ paths:
           format: int32
           default: 0
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: "Missing or invalid parameters (e.g., playerType not provided\
             \ or incorrect)"
-          content:
-            application/json: {}
-        "404":
-          description: "Invalid search type (not stadium, team, or player)"
           content:
             application/json: {}
         "401":
@@ -1043,23 +1211,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "200":
-          description: Successfully retrieved search results
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PagedModel"
-  /api/players:
-    get:
-      tags:
-      - Players
-      summary: Get all players
-      description: "Returns a list of all MLB players, including both position players\
-        \ and pitchers."
-      operationId: getAllPlayers
-      responses:
-        "500":
-          description: Internal server error
+        "404":
+          description: "Invalid search type (not stadium, team, or player)"
           content:
             application/json: {}
         "409":
@@ -1070,8 +1223,35 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PagedModel"
+  /api/v1/players:
+    get:
+      tags:
+      - Players
+      summary: Get all players
+      description: "Returns a list of all MLB players, including both position players\
+        \ and pitchers."
+      operationId: getAllPlayers
+      responses:
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1086,21 +1266,25 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of players
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PlayerDTO"
-  /api/players/{name}:
+  /api/v1/players/{name}:
     get:
       tags:
       - Players
@@ -1115,20 +1299,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1139,32 +1319,6 @@ paths:
           description: Player not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved player info
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlayerDTO"
-  /api/players/position-players:
-    get:
-      tags:
-      - Players
-      summary: Get all position players
-      description: Returns a list of all MLB position players with detailed stats.
-      operationId: getAllPositionPlayers
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "409":
           description: Conflict
           content:
@@ -1173,8 +1327,34 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved player info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerDTO"
+  /api/v1/players/position-players:
+    get:
+      tags:
+      - Players
+      summary: Get all position players
+      description: Returns a list of all MLB position players with detailed stats.
+      operationId: getAllPositionPlayers
+      responses:
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1189,21 +1369,25 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of position players
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PositionPlayerDTO"
-  /api/players/position-players/{teamName}:
+  /api/v1/players/position-players/{teamName}:
     get:
       tags:
       - Players
@@ -1232,20 +1416,16 @@ paths:
           format: int32
           default: 10
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1256,32 +1436,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved position players of the team
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PositionPlayerSummaryDTO"
-  /api/players/pitchers:
-    get:
-      tags:
-      - Players
-      summary: Get all pitchers
-      description: Returns a list of all MLB pitchers with detailed stats.
-      operationId: getAllPitchers
-      responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "409":
           description: Conflict
           content:
@@ -1290,8 +1444,34 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved position players of the team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionPlayerSummaryDTO"
+  /api/v1/players/pitchers:
+    get:
+      tags:
+      - Players
+      summary: Get all pitchers
+      description: Returns a list of all MLB pitchers with detailed stats.
+      operationId: getAllPitchers
+      responses:
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1306,21 +1486,25 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of pitchers
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PitcherDTO"
-  /api/players/pitchers/{teamName}:
+  /api/v1/players/pitchers/{teamName}:
     get:
       tags:
       - Players
@@ -1349,20 +1533,16 @@ paths:
           format: int32
           default: 10
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1373,21 +1553,25 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved pitchers of the team
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PitcherSummaryDTO"
-  /api/mlb/schedule:
+  /api/v1/mlb/schedule:
     get:
       tags:
       - MLB Official Import
@@ -1409,24 +1593,16 @@ paths:
           type: string
           format: date
       responses:
-        "500":
-          description: Internal server error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1441,8 +1617,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
           content:
             '*/*':
               schema:
@@ -1463,7 +1647,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MatchDTO"
-  /api/matches/today:
+  /api/v1/matches/today:
     get:
       tags:
       - Matches
@@ -1487,28 +1671,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "400":
           description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
           content:
             '*/*':
               schema:
@@ -1523,13 +1687,33 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the matches
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchDTO"
-  /api/matches/home/{teamName}:
+  /api/v1/matches/home/{teamName}:
     get:
       tags:
       - Matches
@@ -1544,20 +1728,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1568,21 +1748,25 @@ paths:
           description: Team not found or no home matches available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved home matches
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchDTO"
-  /api/matches/away/{teamName}:
+  /api/v1/matches/away/{teamName}:
     get:
       tags:
       - Matches
@@ -1596,20 +1780,16 @@ paths:
         schema:
           type: string
       responses:
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "409":
-          description: Conflict
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1620,21 +1800,25 @@ paths:
           description: Team not found or no away matches available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved away matches
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchDTO"
-  /api/auth/me:
+  /api/v1/auth/me:
     get:
       tags:
       - Authentication
@@ -1642,8 +1826,18 @@ paths:
       description: Obtain details of the currently authenticated user.
       operationId: getActiveUser
       responses:
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: User not authenticated
+        "404":
+          description: Not Found
           content:
             '*/*':
               schema:
@@ -1658,24 +1852,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: User not authenticated
         "200":
           description: User successfully authenticated
           content:
@@ -1700,6 +1884,17 @@ components:
           type: string
         error:
           type: string
+    CreateStadiumRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        openingDate:
+          type: integer
+          format: int32
+      required:
+      - name
+      - openingDate
     PictureInfo:
       type: object
       properties:
@@ -1707,6 +1902,18 @@ components:
           type: string
         publicId:
           type: string
+    StadiumDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        openingDate:
+          type: integer
+          format: int32
+        pictures:
+          type: array
+          items:
+            $ref: "#/components/schemas/PictureInfo"
     ResetPasswordRequest:
       type: object
       properties:
@@ -1748,6 +1955,18 @@ components:
           type: string
       required:
       - email
+    UpdateTeamRequest:
+      type: object
+      properties:
+        city:
+          type: string
+        newChampionship:
+          type: integer
+          format: int32
+        newInfo:
+          type: string
+        newStadiumName:
+          type: string
     ShowUser:
       type: object
       properties:
@@ -1920,18 +2139,6 @@ components:
         slugging:
           type: number
           format: double
-    StadiumDTO:
-      type: object
-      properties:
-        name:
-          type: string
-        openingDate:
-          type: integer
-          format: int32
-        pictures:
-          type: array
-          items:
-            $ref: "#/components/schemas/PictureInfo"
     TeamInfoDTO:
       type: object
       properties:

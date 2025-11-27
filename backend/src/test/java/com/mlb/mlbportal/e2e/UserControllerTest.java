@@ -67,9 +67,9 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/users returns all users with correct fields")
+    @DisplayName("GET /api/v1/users returns all users with correct fields")
     void getAllUsersRESTMethodTest() {
-        given().contentType(ContentType.JSON).when().get("/api/users").then()
+        given().contentType(ContentType.JSON).when().get("/api/v1/users").then()
             .statusCode(200)
             .body("size()", is(2))
             .body("username", hasItems(USER1_USERNAME, USER2_USERNAME))
@@ -77,7 +77,7 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/users/favorites/teams should return all favorite teams of te active user")
+    @DisplayName("GET /api/v1/users/favorites/teams should return all favorite teams of te active user")
     void testGetFavTeams() {
         given()
                 .header("X-Mock-User", USER1_USERNAME)
@@ -91,7 +91,7 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/users/favorites/teams/{teamName} should add a team to favorites")
+    @DisplayName("POST /api/v1/users/favorites/teams/{teamName} should add a team to favorites")
     void testAddFavTeam() {
         String url = FAV_TEAMS_PATH + "/" + TEST_TEAM3_NAME;
         given()
@@ -106,7 +106,7 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/users/favorites/teams/{teamName} should fail if team is already favorite")
+    @DisplayName("POST /api/v1/users/favorites/teams/{teamName} should fail if team is already favorite")
     void testAddExistantFavTeam() {
         String url = FAV_TEAMS_PATH + "/" + TEST_TEAM1_NAME;
         given()
@@ -120,7 +120,7 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("DELETE /api/users/favorites/teams/{teamName} should remove a team from favorites")
+    @DisplayName("DELETE /api/v1/users/favorites/teams/{teamName} should remove a team from favorites")
     void testRemoveFavTeam() {
         String url = FAV_TEAMS_PATH + "/" + TEST_TEAM2_NAME;
         given()
@@ -135,7 +135,7 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("DELETE /api/users/favorites/teams/{teamName} should fail if team is not in favorites")
+    @DisplayName("DELETE /api/v1/users/favorites/teams/{teamName} should fail if team is not in favorites")
     void testRemoveNonFavTeam() {
         String url = FAV_TEAMS_PATH + "/" + TEST_TEAM3_NAME;
         given()

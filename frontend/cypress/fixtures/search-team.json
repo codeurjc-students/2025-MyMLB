@@ -1,0 +1,32 @@
+{
+  "content": [
+    {
+      "teamStats": {
+        "name": "New York Yankees",
+        "abbreviation": "NYY",
+        "league": "American",
+        "division": "East",
+        "totalGames": 162,
+        "wins": 100,
+        "losses": 62,
+        "pct": 0.617,
+        "gamesBehind": 0,
+        "lastTen": "7-3"
+      },
+      "city": "New York",
+      "generalInfo": "Founded in 1901",
+      "championships": [1903, 1923, 1996, 2009],
+      "stadium": {
+        "name": "Yankee Stadium",
+        "openingDate": 2009,
+        "pictures": []
+      },
+      "positionPlayers": [],
+      "pitchers": []
+    }
+  ],
+  "page": {
+    "number": 0,
+    "totalPages": 1
+  }
+}

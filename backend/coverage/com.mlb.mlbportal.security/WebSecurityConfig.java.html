@@ -64,58 +64,60 @@ public class WebSecurityConfig {
 <span class="nc" id="L64">        http</span>
 <span class="nc" id="L65">                .authorizeHttpRequests(authorize -&gt; authorize</span>
                     // Authentication Endpoints
-<span class="nc" id="L67">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/login&quot;).permitAll()</span>
-<span class="nc" id="L68">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/register&quot;).permitAll()</span>
-<span class="nc" id="L69">                    .requestMatchers(HttpMethod.POST, &quot;/api/auth/refresh&quot;).authenticated()</span>
+<span class="nc" id="L67">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/auth/login&quot;).permitAll()</span>
+<span class="nc" id="L68">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/auth/register&quot;).permitAll()</span>
+<span class="nc" id="L69">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/auth/refresh&quot;).authenticated()</span>
                     
                     // User Endpoints
-<span class="nc" id="L72">                    .requestMatchers(HttpMethod.GET, &quot;/api/users&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L73">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
-<span class="nc" id="L74">                    .requestMatchers(HttpMethod.POST, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
-<span class="nc" id="L75">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L72">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/users&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L73">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/users/favorites/teams&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L74">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L75">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/users/favorites/teams/**&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
 
                     // Team Endpoints
-<span class="nc" id="L78">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams&quot;).permitAll()</span>
-<span class="nc" id="L79">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/standings&quot;).permitAll()</span>
-<span class="nc" id="L80">                    .requestMatchers(HttpMethod.GET, &quot;/api/teams/{teamName}&quot;).permitAll()</span>
+<span class="nc" id="L78">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/teams&quot;).permitAll()</span>
+<span class="nc" id="L79">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/teams/standings&quot;).permitAll()</span>
+<span class="nc" id="L80">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/teams/{teamName}&quot;).permitAll()</span>
+<span class="nc" id="L81">                    .requestMatchers(HttpMethod.PATCH, &quot;/api/v1/teams/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
 
                     // Stadium Endpoints
-<span class="nc" id="L83">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums&quot;).permitAll()</span>
-<span class="nc" id="L84">                    .requestMatchers(HttpMethod.GET, &quot;/api/stadiums/*&quot;).permitAll()</span>
-<span class="nc" id="L85">                    .requestMatchers(HttpMethod.POST, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
-<span class="nc" id="L86">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/stadiums/*/pictures&quot;).permitAll()</span>
+<span class="nc" id="L84">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/stadiums&quot;).permitAll()</span>
+<span class="nc" id="L85">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/stadiums/*&quot;).permitAll()</span>
+<span class="nc" id="L86">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stadiums/*/pictures&quot;).permitAll()</span>
+<span class="nc" id="L87">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stadiums&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L88">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/stadiums/*/pictures&quot;).permitAll()</span>
 
                     // Matches Endpoints
-<span class="nc" id="L89">                    .requestMatchers(HttpMethod.GET, &quot;/api/matches/today&quot;).permitAll()</span>
+<span class="nc" id="L91">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/matches/today&quot;).permitAll()</span>
 
                     // Search Endpoints
-<span class="nc" id="L92">                    .requestMatchers(HttpMethod.GET, &quot;/api/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L94">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
                     
                     // API Docs Endpoints
-<span class="nc" id="L95">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
-<span class="nc" id="L96">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="nc" id="L97">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="nc" id="L97">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
+<span class="nc" id="L98">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+<span class="nc" id="L99">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
                 
                 
                     // PUBLIC ENDPOINTS:
-<span class="nc" id="L101">                    .anyRequest().permitAll());</span>
+<span class="nc" id="L103">                    .anyRequest().permitAll());</span>
 
         // Disable Form login Authentication
-<span class="nc" id="L104">        http.formLogin(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L106">        http.formLogin(AbstractHttpConfigurer::disable);</span>
 
         // Disable CSRF protection.
-<span class="nc" id="L107">        http.csrf(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L109">        http.csrf(AbstractHttpConfigurer::disable);</span>
 
         // Disable Basic Authentication.
-<span class="nc" id="L110">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L112">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
 
         // Stateless session.
-<span class="nc" id="L113">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="nc" id="L115">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
 
         // Add JWT Token filter
-<span class="nc" id="L116">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="nc" id="L118">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
 
-<span class="nc" id="L118">        return http.build();</span>
+<span class="nc" id="L120">        return http.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

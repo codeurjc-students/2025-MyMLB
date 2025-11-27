@@ -20,7 +20,7 @@ import java.util.List;
 
 @Tag(name = "MLB Official Import", description = "Endpoints to fetch MLB official data from statsapi.mlb.com")
 @RestController
-@RequestMapping("/api/mlb")
+@RequestMapping("/api/v1/mlb")
 @RequiredArgsConstructor
 public class MlbImportController {
 

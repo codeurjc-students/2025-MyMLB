@@ -61,7 +61,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/auth/me should return the active user")
+    @DisplayName("GET /api/v1/auth/me should return the active user")
     void testGetActiveUser() {
         given()
                 .header("X-Mock-User", TEST_USER_USERNAME)
@@ -75,7 +75,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/auth/me with a non authenticated user should return 401")
+    @DisplayName("GET /api/v1/auth/me with a non authenticated user should return 401")
     void testGetActiveUserWithoutAuthentication() {
         given()
                 .contentType(ContentType.JSON)
@@ -88,7 +88,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/login should authenticate user and return tokens in cookies")
+    @DisplayName("POST /api/v1/auth/login should authenticate user and return tokens in cookies")
     void testLoginUserRequest() {
         LoginRequest requestBody = new LoginRequest(TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
@@ -106,7 +106,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/login with wrong password should return 401")
+    @DisplayName("POST /api/v1/auth/login with wrong password should return 401")
     void testLoginFailureRequest() {
         LoginRequest requestBody = new LoginRequest(TEST_USER_USERNAME, "wrongPassword");
 
@@ -123,7 +123,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/login with invalid fields should return 400 and validation messages")
+    @DisplayName("POST /api/v1/auth/login with invalid fields should return 400 and validation messages")
     void testLoginUserWithInvalidFields() {
         LoginRequest requestBody = new LoginRequest("", "");
 
@@ -142,7 +142,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/register should create a new user successfully")
+    @DisplayName("POST /api/v1/auth/register should create a new user successfully")
     void testRegisterUserRequest() {
         RegisterRequest bodyRequest = new RegisterRequest("newuser@gmail.com", "newUser", "newPassword");
 
@@ -160,7 +160,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/register should return 409 if user already exists")
+    @DisplayName("POST /api/v1/auth/register should return 409 if user already exists")
     void testExistingUserRegistration() {
         RegisterRequest bodyRequest = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
@@ -179,7 +179,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/register with invalid fields should return 400 and validation messages")
+    @DisplayName("POST /api/v1/auth/register with invalid fields should return 400 and validation messages")
     void testRegisterUserWithInvalidFields() {
         RegisterRequest bodyRequest = new RegisterRequest("", "", "");
 
@@ -199,7 +199,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/logout should logout the active user successfully")
+    @DisplayName("POST /api/v1/auth/logout should logout the active user successfully")
     void testLogout() {
         given()
                 .header("X-Mock-User", TEST_USER_USERNAME)
@@ -213,7 +213,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/logout should return 400 if the user is not authenticated")
+    @DisplayName("POST /api/v1/auth/logout should return 400 if the user is not authenticated")
     void testNonAuthenticatedUserLogout() {
         given()
                 .contentType(ContentType.JSON)
@@ -226,7 +226,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/forgot-password should send the recovery email")
+    @DisplayName("POST /api/v1/auth/forgot-password should send the recovery email")
     void testForgotPassword() {
         ForgotPasswordRequest request = new ForgotPasswordRequest(TEST_USER_EMAIL);
 
@@ -245,7 +245,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/forgot-password with an invalid email format should return a 400 status code")
+    @DisplayName("POST /api/v1/auth/forgot-password with an invalid email format should return a 400 status code")
     void testForgotPasswordWithInvalidInvalidRequest() {
         ForgotPasswordRequest request = new ForgotPasswordRequest(INVALID_EMAIL);
 
@@ -263,7 +263,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/forgot-password with an empty email should return a 400 status code")
+    @DisplayName("POST /api/v1/auth/forgot-password with an empty email should return a 400 status code")
     void testForgotPasswordWithEmptyEmail() {
         ForgotPasswordRequest request = new ForgotPasswordRequest("");
 
@@ -281,7 +281,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/forgot-password should return 404 if the email is not registered")
+    @DisplayName("POST /api/v1/auth/forgot-password should return 404 if the email is not registered")
     void testForgotPasswordEmailNotFound() {
         ForgotPasswordRequest request = new ForgotPasswordRequest(UNKNOWN_EMAIL);
 
@@ -313,7 +313,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/reset-password should reset the password successfully with valid code")
+    @DisplayName("POST /api/v1/auth/reset-password should reset the password successfully with valid code")
     void testResetPasswordSuccess() {
         this.setUpResetPasswordMethod(true);
 
@@ -333,7 +333,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/reset-password should return 400 if code is invalid")
+    @DisplayName("POST /api/v1/auth/reset-password should return 400 if code is invalid")
     void testResetPasswordInvalidCode() {
         ResetPasswordRequest resetRequest = new ResetPasswordRequest(INVALID_CODE, NEW_PASSWORD);
 
@@ -351,7 +351,7 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/reset-password should return 400 if code is expired")
+    @DisplayName("POST /api/v1/auth/reset-password should return 400 if code is expired")
     void testResetPasswordExpiredCode() {
         this.setUpResetPasswordMethod(false);
 

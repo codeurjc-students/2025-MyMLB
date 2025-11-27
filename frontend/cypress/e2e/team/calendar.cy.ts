@@ -16,8 +16,8 @@ describe('Team Calendar E2E Tests', () => {
 
 	beforeEach(() => {
 		cy.fixture('matches.json').then((matches) => {
-			cy.intercept('GET', '**/api/matches/home/**', matches).as('getHomeMatches');
-			cy.intercept('GET', '**/api/matches/away/**', matches).as('getAwayMatches');
+			cy.intercept('GET', '**/api/v1/matches/home/**', matches).as('getHomeMatches');
+			cy.intercept('GET', '**/api/v1/matches/away/**', matches).as('getAwayMatches');
 		});
 
 		cy.fixture('team-info').then((mockTeam) => {

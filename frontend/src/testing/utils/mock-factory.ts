@@ -216,7 +216,7 @@ export class MockFactory {
 		} as ShowMatch;
 	};
 
-	static buildPaginatedSearchsForTeam = (team: Team) => {
+	static buildPaginatedSearchsForTeam = (team: TeamInfo) => {
 		return {
 			content: [
 				team

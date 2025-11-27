@@ -4,7 +4,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 	const baseUrl = '/';
 
 	const interceptMatches = (body: any, statusCode = 200, alias = 'getMatches') => {
-		cy.intercept('GET', '/api/matches/today*', { statusCode, body }).as(alias);
+		cy.intercept('GET', '/api/v1/matches/today*', { statusCode, body }).as(alias);
 	};
 
 	const generateMatch = (
@@ -95,7 +95,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 			page: { size: 10, number: 1, totalElements: 15, totalPages: 2 },
 		};
 
-		cy.intercept('GET', /\/api\/matches\/today\?page=\d+.*/, (req) => {
+		cy.intercept('GET', /\/api\/v1\/matches\/today\?page=\d+.*/, (req) => {
 			const pageParam = new URLSearchParams(req.url.split('?')[1]).get('page');
 			if (pageParam === '0') {
 				req.reply({ statusCode: 200, body: page0 });

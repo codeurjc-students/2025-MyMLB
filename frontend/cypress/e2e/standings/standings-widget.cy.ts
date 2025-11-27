@@ -5,7 +5,7 @@ describe('Standings Widget E2E Tests', () => {
 
 	beforeEach(() => {
 		cy.fixture('standings').then((mockStandings) => {
-			cy.intercept('GET', '/api/teams/standings', {
+			cy.intercept('GET', '/api/v1/teams/standings', {
 				statusCode: 200,
 				body: mockStandings,
 			}).as('getStandings');

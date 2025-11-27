@@ -19,7 +19,7 @@ describe('Stats Panel E2E Tests', () => {
 			teamData = mockTeam;
 
 			cy.fixture('standings').then((mockStandings) => {
-				cy.intercept('GET', '**/api/teams/standings', {
+				cy.intercept('GET', '**/api/v1/teams/standings', {
 					statusCode: 200,
 					body: mockStandings,
 				}).as('mockStandings');

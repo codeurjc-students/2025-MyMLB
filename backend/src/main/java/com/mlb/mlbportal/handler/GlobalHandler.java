@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.naming.ServiceUnavailableException;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
@@ -48,6 +51,18 @@ public class GlobalHandler {
         return body;
     }
 
+    @ExceptionHandler(MaxiumPicturesExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleMaximumPicturesExceeded(MaxiumPicturesExceededException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "A maximum of 5 images is required");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleIllegalArgument(IllegalArgumentException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "");
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleResourceNotFound(ResourceNotFoundException ex) {
@@ -69,6 +84,9 @@ public class GlobalHandler {
         }
         else if (ex instanceof UserAlreadyExistsException) {
             errorMsg = "User Already Exists";
+        }
+        else if (ex instanceof StadiumAlreadyExistsException) {
+            errorMsg = "Stadium Already Exists";
         }
         String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();
         return buildResponse(HttpStatus.CONFLICT, message, errorMsg);
@@ -110,9 +128,9 @@ public class GlobalHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleAllOtherExceptions(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), "Internal Server Error");
+    public ResponseEntity<String> handleException(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)

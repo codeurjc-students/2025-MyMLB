@@ -1,21 +1,25 @@
 package com.mlb.mlbportal.integration;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -24,6 +28,8 @@ import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
@@ -66,8 +72,30 @@ class StadiumServiceIntegrationTest {
     @Test
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should return all available stadiums")
+    void testGetAvailableStadiums() {
+        Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
+        this.stadiumRepository.save(stadium);
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(1).containsExactly(dto);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
     }
 
     @Test
@@ -75,8 +103,11 @@ class StadiumServiceIntegrationTest {
     void testGetEmptyStadiums() {
         this.stadiumRepository.deleteAll();
         this.teamRepository.deleteAll();
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).isEmpty();
+
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
     }
 
     @Test
@@ -88,7 +119,7 @@ class StadiumServiceIntegrationTest {
         assertThat(result).isNotNull();
         assertThat(result.name()).isEqualTo(STADIUM1_NAME);
         assertThat(result.openingDate()).isEqualTo(STADIUM1_YEAR);
-        assertThat(result.teamName()).isEqualTo(stadiumDtos.get(0).teamName());
+        assertThat(result.teamName()).isEqualTo(stadiumDtos.getFirst().teamName());
     }
 
     @Test
@@ -126,7 +157,7 @@ class StadiumServiceIntegrationTest {
 
     @Test
     @DisplayName("Should upload picture and persist URL + publicId")
-    void testAddPictureIntegration() throws Exception {
+    void testAddPicture() throws Exception {
         Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
@@ -202,5 +233,26 @@ class StadiumServiceIntegrationTest {
         assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "test123"))
                 .isInstanceOf(LastPictureDeletionException.class)
                 .hasMessageContaining("Cannot delete the last picture of a stadium");
+    }
+
+    @Test
+    @DisplayName("Should create a new stadium")
+    void testCreateStadium() {
+        CreateStadiumRequest request = new CreateStadiumRequest(NEW_STADIUM, NEW_STADIUM_YEAR);
+        StadiumDTO result = this.stadiumService.createStadium(request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo(NEW_STADIUM);
+        assertThat(result.openingDate()).isEqualTo(NEW_STADIUM_YEAR);
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumAlreadyExists when trying to create a stadium already created")
+    void testInvalidStadiumCreation() {
+        CreateStadiumRequest request = new CreateStadiumRequest(STADIUM1_NAME, STADIUM1_YEAR);
+
+        assertThatThrownBy(() -> this.stadiumService.createStadium(request))
+                .isInstanceOf(StadiumAlreadyExistsException.class)
+                .hasMessageContaining("Stadium Already Exists");
     }
 }

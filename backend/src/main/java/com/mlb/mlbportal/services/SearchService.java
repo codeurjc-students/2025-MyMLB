@@ -3,6 +3,7 @@ package com.mlb.mlbportal.services;
 import java.util.List;
 import java.util.function.Function;
 
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.dto.player.PitcherDTO;
 import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Stadium;
@@ -51,9 +51,9 @@ public class SearchService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TeamDTO> searchTeams(String input, int page, int size) {
+    public Page<TeamInfoDTO> searchTeams(String input, int page, int size) {
         List<Team> teams = this.teamRepository.findByNameContainingIgnoreCase(input);
-        return this.paginateAndMap(teams, this.teamMapper::toTeamDTO, page, size);
+        return this.paginateAndMap(teams, this.teamMapper::toTeamInfoDTO, page, size);
     }
 
     @Transactional(readOnly = true)

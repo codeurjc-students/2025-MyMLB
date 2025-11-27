@@ -6,14 +6,18 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.team.TeamService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +30,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Teams", description = "Operations related to MLB teams and standings")
 @RestController
-@RequestMapping("/api/teams")
+@RequestMapping("/api/v1/teams")
 @AllArgsConstructor
 public class TeamController {
     private final TeamService teamService;
@@ -61,7 +65,21 @@ public class TeamController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/{teamName}", produces = "application/json")
-    public ResponseEntity<TeamInfoDTO> getMethodName(@PathVariable("teamName") String teamName) {
+    public ResponseEntity<TeamInfoDTO> getTeamInfo(@PathVariable("teamName") String teamName) {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
+    }
+
+    @Operation(summary = "Update team information", description = "Updates specific fields of an MLB team identified by its name. Supports partial updates such as wins, losses, or team details.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Team successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PatchMapping(value = "/{teamName}", produces = "application/json")
+    public ResponseEntity<AuthResponse> updateTeam(@PathVariable("teamName") String teamName,
+            @RequestBody UpdateTeamRequest request) {
+        this.teamService.updateTeam(teamName, request);
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team successfully updated"));
     }
 }

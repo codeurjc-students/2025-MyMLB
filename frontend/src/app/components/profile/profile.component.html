@@ -19,7 +19,7 @@
 			[title]="'Are you sure you want to log out?'"
 			[contentMessage]="'You will be signed out of your account and will need to log in again to continue.'"
 			[buttonContent]="'Yes, Logout'"
-			[svg]="icon"
+			[isDelete]="false"
 			(confirm)="confirmLogout()"
 			(cancel)="cancelLogout()"
 		></app-remove-confirmation-modal>

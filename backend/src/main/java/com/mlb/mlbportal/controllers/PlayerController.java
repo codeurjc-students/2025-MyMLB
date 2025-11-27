@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 
 @Tag(name = "Players", description = "Operations related to MLB players, including position players and pitchers")
 @RestController
-@RequestMapping("/api/players")
+@RequestMapping("/api/v1/players")
 @AllArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;

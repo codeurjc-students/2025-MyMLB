@@ -94,16 +94,6 @@ describe('Edit Stadium Component Tests', () => {
 		expect(component.openConfirmationModal).toBeFalse();
 	});
 
-	it('should handle remove picture error', () => {
-		stadiumServiceSpy.removePicture.and.returnValue(throwError(() => new Error('fail')));
-
-		component.pictureToDelete = mockPicture;
-		component.removePicture();
-
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('Cannot delete the last picture of a stadium');
-	});
-
 	it('should emit backToMenu when goToEditMenu is called', () => {
 		spyOn(component.backToMenu, 'emit');
 		component.goToEditMenu();

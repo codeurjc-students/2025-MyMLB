@@ -15,7 +15,7 @@ describe('Navigation Bar Integration Tests', () => {
 	let component: NavbarComponent;
 	let httpMock: HttpTestingController;
 
-	const authUrl = 'https://localhost:8443/api/auth/me';
+	const authUrl = 'https://localhost:8443/api/v1/auth/me';
 	const mockBackgroundService = {
 		navBarBackground: (abbr: string | undefined) =>
 			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default',

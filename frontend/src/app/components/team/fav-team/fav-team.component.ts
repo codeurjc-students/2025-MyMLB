@@ -8,11 +8,12 @@ import { SuccessModalComponent } from "../../success-modal/success-modal.compone
 import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { TeamSummary } from '../../../models/team.model';
+import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
 
 @Component({
 	selector: 'app-fav-team',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './fav-team.component.html',
 })
@@ -30,11 +31,7 @@ export class FavTeamComponent implements OnInit {
 	private pageSize = 10;
 	public currentPage = 0;
 	public isClose = false;
-	public removeModalIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-12 h-12 mx-auto">
-		<path fill-rule="evenodd" clip-rule="evenodd"
-			d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-		></path>
-	</svg>`;
+	public hasMore!: boolean;
 
 	constructor(
 		private userService: UserService,
@@ -63,6 +60,7 @@ export class FavTeamComponent implements OnInit {
 			this.availableTeams = teams.filter(team => !favs.some(f => f.name === team.name));
 			this.currentPage = 0;
 			this.visibleTeams = this.availableTeams.slice(0, this.pageSize);
+			this.hasMore = this.visibleTeams.length < this.availableTeams.length;
 		});
 	}
 
@@ -75,7 +73,8 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 
-	public addFavoriteTeam(team: TeamSummary) {
+	public addFavoriteTeam(item: unknown) {
+		const team = item as TeamSummary;
 		this.errorMessage = '';
 		this.successMessage = '';
 		this.userService.addFavTeam(team).subscribe({
@@ -153,5 +152,11 @@ export class FavTeamComponent implements OnInit {
 		const start = this.currentPage * this.pageSize;
 		const end = start + this.pageSize;
 		this.visibleTeams = [...this.visibleTeams, ...this.availableTeams.slice(start, end)];
+		this.hasMore = this.visibleTeams.length < this.availableTeams.length;
+	}
+
+	public loadMoreTeamsCondition() {
+		this.hasMore = this.visibleTeams.length < this.availableTeams.length;
+		return this.hasMore;
 	}
 }

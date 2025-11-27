@@ -17,15 +17,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
+import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
+import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
+import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
@@ -33,7 +38,10 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,18 +72,47 @@ class StadiumServiceTest {
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
         when(this.stadiumRepository.findAll()).thenReturn(this.stadiums);
-        when(this.stadiumMapper.toListStadiumInitDTO(this.stadiums)).thenReturn(this.stadiumDtos);
+        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(this.stadiumDtos.getFirst(), this.stadiumDtos.get(1), this.stadiumDtos.get(2));
 
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+        List<StadiumInitDTO> content = result.getContent();
+
+        assertThat(content).hasSize(3).containsExactlyElementsOf(this.stadiumDtos);
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should return all available stadiums")
+    void testGetAvailableStadiums() {
+        Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
+
+        when(this.stadiumRepository.findByTeamIsNull()).thenReturn(List.of(stadium));
+
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(dto);
+
+        Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
+
+        assertThat(result.getContent()).hasSize(1).containsExactly(dto);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
     }
 
     @Test
     @DisplayName("Should return an empty list if there are no registered stadiums")
     void testGetEmptyStadiums() {
         when(this.stadiumRepository.findAll()).thenReturn(Collections.emptyList());
-        List<StadiumInitDTO> result = this.stadiumService.getAllStadiums();
-        assertThat(result).isEmpty();
+        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
+
+        assertThat(result.getContent()).isEmpty();
+        assertThat(result.getTotalElements()).isZero();
     }
 
     @Test
@@ -121,7 +158,7 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should upload picture and return PictureDTO")
     void testAddPicture() throws Exception {
-        Stadium stadium = this.stadiums.get(0);
+        Stadium stadium = this.stadiums.getFirst();
         stadium.getPictures().clear();
 
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -209,5 +246,33 @@ class StadiumServiceTest {
                 .hasMessageContaining("Cannot delete the last picture of a stadium");
 
         verify(this.stadiumRepository, never()).save(stadium);
+    }
+
+    @Test
+    @DisplayName("Should create a new stadium")
+    void testCreateStadium() {
+        CreateStadiumRequest request = new CreateStadiumRequest(NEW_STADIUM, NEW_STADIUM_YEAR);
+        StadiumDTO newStadium = new StadiumDTO(NEW_STADIUM, NEW_STADIUM_YEAR, Collections.emptyList());
+
+        when(this.stadiumRepository.findByName(NEW_STADIUM)).thenReturn(Optional.empty());
+        when(this.stadiumMapper.toDomainFromStadiumDTO(newStadium)).thenReturn(this.stadiums.getLast());
+
+        StadiumDTO result = this.stadiumService.createStadium(request);
+        assertThat(result).isNotNull();
+        assertThat(result.name()).isEqualTo(newStadium.name());
+        verify(this.stadiumRepository, times(1)).save(this.stadiums.getLast());
+    }
+
+    @Test
+    @DisplayName("Should throw StadiumAlreadyExists when trying to create a stadium already created")
+    void testInvalidStadiumCreation() {
+        CreateStadiumRequest request = new CreateStadiumRequest(STADIUM1_NAME, STADIUM1_YEAR);
+
+        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(this.stadiums.getFirst()));
+        assertThatThrownBy(() -> this.stadiumService.createStadium(request))
+                .isInstanceOf(StadiumAlreadyExistsException.class)
+                .hasMessageContaining("Stadium Already Exists");
+
+        verify(this.stadiumRepository, never()).save(any());
     }
 }

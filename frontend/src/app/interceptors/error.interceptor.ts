@@ -16,6 +16,10 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			let code = error.status;
 			const url = req.url;
 
+			if (code === 400) {
+				return throwError(() => error);
+			}
+
 			if (code === 401) {
                 return throwError(() => error);
             }
@@ -24,9 +28,11 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 			}
 			else if (code === 404) {
 				message = 'Resource Not Found';
+				return throwError(() => error);
 			}
 			else if (code === 409) {
 				message = 'User already exists.';
+				return throwError(() => error);
 			}
 			else if (code === 500) {
 				message = 'Something went wrong in the server, try again later';

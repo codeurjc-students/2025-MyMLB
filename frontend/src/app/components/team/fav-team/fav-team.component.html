@@ -61,57 +61,16 @@
         </section>
     }
 
-	@if (addButtonClicked) {
-		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-			[ngClass]="isClose ? 'animate-fade-out-down' : 'animate-fade-in-up'">
-			<div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-11/12 max-w-2xl p-6 overflow-y-auto max-h-[80vh]">
-				<h2 class="text-2xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
-					Select a Team to Add
-				</h2>
-
-				<ul class="space-y-2">
-					@for (team of visibleTeams; track team.abbreviation) {
-						<li>
-							<button
-								(click)="addFavoriteTeam(team)"
-								class="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-lg transition cursor-pointer hover:brightness-110 hover:shadow-md"
-								[ngClass]="logoBackground(team)"
-							>
-								<img
-									src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{
-									team.abbreviation}}.png"
-									alt="{{ team.name }} Logo"
-									class="w-8 h-8"
-								/>
-								<span class="text-white font-medium text-base truncate">{{ team.name }}</span>
-							</button>
-						</li>
-					}
-				</ul>
-
-				@if (visibleTeams.length < availableTeams.length) {
-					<div class="mt-6 text-center">
-						<button
-							(click)="loadMoreTeams()"
-							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-						>
-							Load more teams
-						</button>
-					</div>
-				}
-				@else {
-					<div class="mt-6 text-center">
-						<button
-							(click)="addButtonClicked = false"
-							class="px-4 py-2 text-sm font-medium text-white bg-gray-200 rounded-lg bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800"
-						>
-							Close
-						</button>
-					</div>
-				}
-			</div>
-		</div>
-	}
+	<app-select-element-modal
+		[teamElements]="true"
+		[openModal]="addButtonClicked"
+		[isClose]="isClose"
+		[hasMore]="hasMore"
+		[elements]="visibleTeams"
+		(select)="addFavoriteTeam($event)"
+		(loadNextPageFunction)="loadMoreTeams()"
+		(closeModal)="closeTeamModal()">
+	</app-select-element-modal>
 
 	<!-- Addition Confirmation Modal -->
 	@if (showSuccessModal) {
@@ -127,7 +86,7 @@
 			[title]="'Are you sure you want to remove this team as favorite?'"
 			[contentMessage]="'This action cannot be undone. The team will be removed from your favorites.'"
 			[buttonContent]="'Yes, Remove'"
-			[svg]="removeModalIcon"
+			[isDelete]="true"
 			(confirm)="confirmDeleteTeam()"
         	(cancel)="cancelDeleteModal()"
 		/>

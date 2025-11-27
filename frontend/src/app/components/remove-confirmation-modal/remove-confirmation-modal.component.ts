@@ -12,6 +12,7 @@ export class RemoveConfirmationModalComponent {
     @Input() title = '';
     @Input() contentMessage = '';
     @Input() buttonContent = 'Confirm';
+	@Input() isDelete!: boolean;
 
     safeSvg: SafeHtml = '';
     @Input() set svg(value: string) {

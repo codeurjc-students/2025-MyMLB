@@ -9,7 +9,7 @@ import { TeamSummary } from '../models/team.model';
 	providedIn: "root"
 })
 export class UserService {
-	private apiUrl = "https://localhost:8443/api/users"
+	private apiUrl = "https://localhost:8443/api/v1/users"
 	private favTeamsSubject = new BehaviorSubject<TeamSummary[]>([]);
 	public favTeams$ = this.favTeamsSubject.asObservable();
 

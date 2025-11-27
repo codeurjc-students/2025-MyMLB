@@ -40,7 +40,7 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/matches/home/{teamName} should return all home matches of the given team")
+    @DisplayName("GET /api/v1/matches/home/{teamName} should return all home matches of the given team")
     void testGetHomeMatchesOfATeam() {
         String url = MATCHES_PATH + "home/" + TEST_TEAM1_NAME;
         given()
@@ -54,7 +54,7 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/matches/away/{teamName} should return all home matches of the given team")
+    @DisplayName("GET /api/v1/matches/away/{teamName} should return all home matches of the given team")
     void testGetAwayMatchesOfATeam() {
         String url = MATCHES_PATH + "away/" + TEST_TEAM1_NAME;
         given()

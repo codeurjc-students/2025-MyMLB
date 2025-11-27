@@ -1,47 +1,47 @@
 ### Get All Players
-GET https://localhost:8443/api/players
+GET https://localhost:8443/api/v1/players
 Accept: application/json
 
 ### Get All Position Players
-GET https://localhost:8443/api/players/position-players
+GET https://localhost:8443/api/v1/players/position-players
 Accept: application/json
 
 ### Get All Pitchers
-GET https://localhost:8443/api/players/pitchers
+GET https://localhost:8443/api/v1/players/pitchers
 Accept: application/json
 
 ### Get Player by name (Position Player)
-GET https://localhost:8443/api/players/Aaron Judge
+GET https://localhost:8443/api/v1/players/Aaron Judge
 Accept: application/json
 
 ### Get Player by name (Pitcher)
-GET https://localhost:8443/api/players/Max Fried
+GET https://localhost:8443/api/v1/players/Max Fried
 Accept: application/json
 
 ### Get Non Existent Player
-GET https://localhost:8443/api/players/Mike Trout
+GET https://localhost:8443/api/v1/players/Mike Trout
 Accept: application/json
 
 ### Get All Position Players of a Team
-GET https://localhost:8443/api/players/position-players/New York Yankees
+GET https://localhost:8443/api/v1/players/position-players/New York Yankees
 Accept: application/json
 
 ### Get All Pitchers of a Team
-GET https://localhost:8443/api/players/pitchers/New York Yankees
+GET https://localhost:8443/api/v1/players/pitchers/New York Yankees
 Accept: application/json
 
 ### Get All Position Players of a Team
-GET https://localhost:8443/api/players/position-players/Boston Red Sox
+GET https://localhost:8443/api/v1/players/position-players/Boston Red Sox
 Accept: application/json
 
 ### Get All Pitchers of a Team
-GET https://localhost:8443/api/players/pitchers/Boston Red Sox
+GET https://localhost:8443/api/v1/players/pitchers/Boston Red Sox
 Accept: application/json
 
 ### Get All Position Players of a Non Existent Team
-GET https://localhost:8443/api/players/position-players/Team1
+GET https://localhost:8443/api/v1/players/position-players/Team1
 Accept: application/json
 
 ### Get All Pitchers of a Non Existent Team
-GET https://localhost:8443/api/players/pitchers/Team1
+GET https://localhost:8443/api/v1/players/pitchers/Team1
 Accept: application/json

@@ -79,6 +79,9 @@ export class NavbarComponent implements OnInit {
 			case 'edit-menu':
 				this.router.navigate(['edit-menu']);
 				break;
+			case 'create-stadium':
+				this.router.navigate(['create-stadium']);
+				break;
 		}
 	}
 }
