@@ -124,7 +124,7 @@ public class InitController {
 <span class="fc" id="L124">            this.teamRepository.saveAll(teams);</span>
 <span class="nc" id="L125">        } catch (IOException e) {</span>
 <span class="nc" id="L126">            throw new UncheckedIOException(&quot;Error loading team data from JSON&quot;, e);</span>
-<span class="fc" id="L127">        }</span>
+        }
 <span class="fc" id="L128">    }</span>
 
     private List&lt;Match&gt; generateBalancedMatches(List&lt;Team&gt; teams) {
@@ -156,7 +156,7 @@ public class InitController {
 
 <span class="fc" id="L157">            Match match = createMatch(teamA, opponent, baseDate, day);</span>
 <span class="fc" id="L158">            matches.add(match);</span>
-<span class="fc" id="L159">        }</span>
+        }
 <span class="fc" id="L160">    }</span>
 
     private Team findOpponent(Team teamA, List&lt;Team&gt; available, Set&lt;String&gt; usedPairs) {
@@ -168,7 +168,7 @@ public class InitController {
 <span class="fc" id="L168">                usedPairs.add(key1);</span>
 <span class="fc" id="L169">                return candidate;</span>
             }
-<span class="fc" id="L171">        }</span>
+        }
 <span class="fc" id="L172">        return null;</span>
     }
 
@@ -181,12 +181,12 @@ public class InitController {
 <span class="fc" id="L181">        MatchStatus status = determineMatchStatus(matchDate);</span>
 
 <span class="fc" id="L183">        return new Match(</span>
-            home,
-            away,
+<span class="fc" id="L184">            home,</span>
+<span class="fc" id="L185">            away,</span>
 <span class="fc" id="L186">            RANDOM.nextInt(10),</span>
 <span class="fc" id="L187">            RANDOM.nextInt(10),</span>
-            matchDate,
-            status
+<span class="fc" id="L188">            matchDate,</span>
+<span class="fc" id="L189">            status</span>
         );
     }
 
@@ -199,8 +199,8 @@ public class InitController {
     private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
 <span class="fc" id="L200">        LocalDateTime now = LocalDateTime.now();</span>
 <span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
-<span class="fc bfc" id="L202" title="All 2 branches covered.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
-<span class="fc" id="L203">        return MatchStatus.IN_PROGRESS;</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
+<span class="nc" id="L203">        return MatchStatus.IN_PROGRESS;</span>
     }
 
     private void setUpMatches() {
@@ -247,7 +247,7 @@ public class InitController {
 
 <span class="nc" id="L248">        } catch (IOException e) {</span>
 <span class="nc" id="L249">            throw new UncheckedIOException(&quot;Error loading stadium data from JSON&quot;, e);</span>
-<span class="fc" id="L250">        }</span>
+        }
 <span class="fc" id="L251">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
@@ -274,8 +274,8 @@ public class InitController {
 
 <span class="nc bnc" id="L275" title="All 2 branches missed.">                if (&quot;Pitcher&quot;.equalsIgnoreCase(type)) {</span>
 <span class="nc" id="L276">                    Pitcher pitcher = new Pitcher(</span>
-                        name,
-                        team,
+<span class="nc" id="L277">                        name,</span>
+<span class="nc" id="L278">                        team,</span>
 <span class="nc" id="L279">                        PitcherPositions.valueOf(((String) raw.get(&quot;position&quot;)).toUpperCase()),</span>
 <span class="nc" id="L280">                        ((Number) raw.get(&quot;games&quot;)).intValue(),</span>
 <span class="nc" id="L281">                        ((Number) raw.get(&quot;wins&quot;)).intValue(),</span>
@@ -291,8 +291,8 @@ public class InitController {
 <span class="nc" id="L291">                    pitchersByTeam.computeIfAbsent(team, t -&gt; new ArrayList&lt;&gt;()).add(pitcher);</span>
 <span class="nc" id="L292">                } else {</span>
 <span class="nc" id="L293">                    PositionPlayer player = new PositionPlayer(</span>
-                        name,
-                        team,
+<span class="nc" id="L294">                        name,</span>
+<span class="nc" id="L295">                        team,</span>
 <span class="nc" id="L296">                        PlayerPositions.fromLabel((String) raw.get(&quot;position&quot;)),</span>
 <span class="nc" id="L297">                        ((Number) raw.get(&quot;atBats&quot;)).intValue(),</span>
 <span class="nc" id="L298">                        ((Number) raw.get(&quot;walks&quot;)).intValue(),</span>
@@ -304,7 +304,7 @@ public class InitController {
 <span class="nc" id="L304">                    player.setRbis(((Number) raw.get(&quot;rbis&quot;)).intValue());</span>
 <span class="nc" id="L305">                    positionPlayersByTeam.computeIfAbsent(team, t -&gt; new ArrayList&lt;&gt;()).add(player);</span>
                 }
-<span class="nc" id="L307">            }</span>
+            }
 
 <span class="fc bfc" id="L309" title="All 2 branches covered.">            for (Team team : allTeams) {</span>
 <span class="fc" id="L310">                List&lt;PositionPlayer&gt; positionPlayers = positionPlayersByTeam.getOrDefault(team, List.of());</span>
@@ -312,12 +312,12 @@ public class InitController {
 
 <span class="fc" id="L313">                team.setPositionPlayers(positionPlayers);</span>
 <span class="fc" id="L314">                team.setPitchers(pitchers);</span>
-<span class="fc" id="L315">            }</span>
+            }
 <span class="fc" id="L316">            teamRepository.saveAll(allTeams);</span>
 
 <span class="nc" id="L318">        } catch (IOException e) {</span>
 <span class="nc" id="L319">            throw new UncheckedIOException(&quot;Error loading players data&quot;, e);</span>
-<span class="fc" id="L320">        }</span>
+        }
 <span class="fc" id="L321">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-11-27T22:38:27+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2025-11-27T22:43:13+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L31">public class TeamMapperImpl implements TeamMapper {</span>
@@ -75,7 +75,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L75">        List&lt;TeamDTO&gt; list = new ArrayList&lt;TeamDTO&gt;( teams.size() );</span>
 <span class="nc bnc" id="L76" title="All 2 branches missed.">        for ( Team team : teams ) {</span>
 <span class="nc" id="L77">            list.add( toTeamDTO( team ) );</span>
-<span class="nc" id="L78">        }</span>
+        }
 
 <span class="nc" id="L80">        return list;</span>
     }
@@ -88,14 +88,14 @@ import org.springframework.stereotype.Component;
 
 <span class="nc" id="L89">        Team team = new Team();</span>
 
-<span class="nc" id="L91">        team.setName( teamStandings.name() );</span>
-<span class="nc" id="L92">        team.setAbbreviation( teamStandings.abbreviation() );</span>
-<span class="nc" id="L93">        team.setWins( teamStandings.wins() );</span>
-<span class="nc" id="L94">        team.setLosses( teamStandings.losses() );</span>
-<span class="nc" id="L95">        team.setPct( teamStandings.pct() );</span>
-<span class="nc" id="L96">        team.setLastTen( teamStandings.lastTen() );</span>
-<span class="nc" id="L97">        team.setLeague( teamStandings.league() );</span>
-<span class="nc" id="L98">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L91">        team.setAbbreviation( teamStandings.abbreviation() );</span>
+<span class="nc" id="L92">        team.setDivision( teamStandings.division() );</span>
+<span class="nc" id="L93">        team.setLastTen( teamStandings.lastTen() );</span>
+<span class="nc" id="L94">        team.setLeague( teamStandings.league() );</span>
+<span class="nc" id="L95">        team.setLosses( teamStandings.losses() );</span>
+<span class="nc" id="L96">        team.setName( teamStandings.name() );</span>
+<span class="nc" id="L97">        team.setPct( teamStandings.pct() );</span>
+<span class="nc" id="L98">        team.setWins( teamStandings.wins() );</span>
 
 <span class="nc" id="L100">        return team;</span>
     }
@@ -130,7 +130,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L130">        Set&lt;TeamSummary&gt; set = LinkedHashSet.newLinkedHashSet( teams.size() );</span>
 <span class="fc bfc" id="L131" title="All 2 branches covered.">        for ( Team team : teams ) {</span>
 <span class="fc" id="L132">            set.add( toTeamSummaryDTO( team ) );</span>
-<span class="fc" id="L133">        }</span>
+        }
 
 <span class="fc" id="L135">        return set;</span>
     }
@@ -143,10 +143,10 @@ import org.springframework.stereotype.Component;
 
 <span class="nc" id="L144">        Team team = new Team();</span>
 
-<span class="nc" id="L146">        team.setName( teamSummary.name() );</span>
-<span class="nc" id="L147">        team.setAbbreviation( teamSummary.abbreviation() );</span>
+<span class="nc" id="L146">        team.setAbbreviation( teamSummary.abbreviation() );</span>
+<span class="nc" id="L147">        team.setDivision( teamSummary.division() );</span>
 <span class="nc" id="L148">        team.setLeague( teamSummary.league() );</span>
-<span class="nc" id="L149">        team.setDivision( teamSummary.division() );</span>
+<span class="nc" id="L149">        team.setName( teamSummary.name() );</span>
 
 <span class="nc" id="L151">        return team;</span>
     }
@@ -190,7 +190,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L190">        List&lt;TeamInfoDTO&gt; list = new ArrayList&lt;TeamInfoDTO&gt;( teamList.size() );</span>
 <span class="fc bfc" id="L191" title="All 2 branches covered.">        for ( Team team : teamList ) {</span>
 <span class="fc" id="L192">            list.add( toTeamInfoDTO( team ) );</span>
-<span class="fc" id="L193">        }</span>
+        }
 
 <span class="fc" id="L195">        return list;</span>
     }
@@ -241,7 +241,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L241">        List&lt;PositionPlayerSummaryDTO&gt; list1 = new ArrayList&lt;PositionPlayerSummaryDTO&gt;( list.size() );</span>
 <span class="fc bfc" id="L242" title="All 2 branches covered.">        for ( PositionPlayer positionPlayer : list ) {</span>
 <span class="fc" id="L243">            list1.add( positionPlayerToPositionPlayerSummaryDTO( positionPlayer ) );</span>
-<span class="fc" id="L244">        }</span>
+        }
 
 <span class="fc" id="L246">        return list1;</span>
     }
@@ -294,7 +294,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L294">        List&lt;PitcherSummaryDTO&gt; list1 = new ArrayList&lt;PitcherSummaryDTO&gt;( list.size() );</span>
 <span class="fc bfc" id="L295" title="All 2 branches covered.">        for ( Pitcher pitcher : list ) {</span>
 <span class="fc" id="L296">            list1.add( pitcherToPitcherSummaryDTO( pitcher ) );</span>
-<span class="fc" id="L297">        }</span>
+        }
 
 <span class="fc" id="L299">        return list1;</span>
     }
