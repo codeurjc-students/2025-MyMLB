@@ -96,7 +96,7 @@ describe('Navbar Component E2E Tests', () => {
 		it('shows admin-specific links', () => {
 			cy.contains('Edit Info').should('exist');
 			cy.contains('Matches').should('exist');
-			cy.contains('Create Match').should('exist');
+			cy.contains('Create Stadium').should('exist');
 			cy.contains('Statistics').should('exist');
 			cy.contains('Teams').should('not.exist');
 			cy.contains('Standings').should('not.exist');

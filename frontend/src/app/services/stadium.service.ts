@@ -14,10 +14,6 @@ export class StadiumService {
 
 	constructor(private http: HttpClient) {}
 
-	public getAllStadiums(page: number, size: number):Observable<PaginatedStadiums> {
-		return this.http.get<PaginatedStadiums>(`${this.apiUrl}?page=${page}&size=${size}`);
-	}
-
 	public getAvailableStadiums(page: number, size: number):Observable<PaginatedStadiums> {
 		return this.http.get<PaginatedStadiums>(`${this.apiUrl}/available?page=${page}&size=${size}`);
 	}

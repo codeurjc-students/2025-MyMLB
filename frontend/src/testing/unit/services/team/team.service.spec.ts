@@ -1,3 +1,4 @@
+import { UpdateTeamRequest } from './../../../../app/models/team.model';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TeamService } from '../../../../app/services/team.service';
 import { TestBed } from '@angular/core/testing';
@@ -7,6 +8,7 @@ import { MockFactory } from '../../../utils/mock-factory';
 import { TeamInfo } from '../../../../app/models/team.model';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Router } from '@angular/router';
+import { AuthResponse } from '../../../../app/models/auth/auth-response.model';
 
 describe('Team Service Tests', () => {
 	let service: TeamService;
@@ -189,5 +191,25 @@ describe('Team Service Tests', () => {
 		const req = httpMock.expectOne(`${apiURL}/standings`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
+	});
+
+	it('should update the team successfully', () => {
+		const request: UpdateTeamRequest = {
+			city: 'New City',
+			newInfo: 'New Info'
+		};
+
+		const response: AuthResponse = {
+			status: 'SUCCESS',
+			message: 'Team successfully updated'
+		};
+
+		service.updateTeam(teamStats.name, request).subscribe((response) => {
+			expect(response.status).toBe('SUCCESS');
+		});
+
+		const req = httpMock.expectOne(`${apiURL}/${teamStats.name}`);
+		expect(req.request.method).toBe('PATCH');
+		req.flush(response);
 	});
 });

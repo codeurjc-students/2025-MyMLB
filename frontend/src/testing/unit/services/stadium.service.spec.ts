@@ -4,6 +4,8 @@ import { StadiumService } from '../../../app/services/stadium.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { PaginatedStadiums } from '../../../app/models/pagination.model';
+import { MockFactory } from '../../utils/mock-factory';
 
 describe('Stadium Service Tests', () => {
 	let service: StadiumService;
@@ -33,6 +35,35 @@ describe('Stadium Service Tests', () => {
 	afterEach(() => {
 		httpMock.verify();
 	});
+
+	it('should return all available stadiums', () => {
+		const mockResponse: PaginatedStadiums = {
+		content: [
+			{
+			name: 'Yankee Stadium',
+			openingDate: 2009,
+			teamName: 'New York Yankees',
+			pictures: [],
+			},
+		],
+		page: {
+			size: 10,
+			number: 0,
+			totalElements: 1,
+			totalPages: 1,
+		},
+		};
+
+		service.getAvailableStadiums(0, 10).subscribe((stadiums) => {
+		expect(stadiums.content.length).toBe(1);
+		expect(stadiums.content[0].name).toBe('Yankee Stadium');
+		expect(stadiums.page.totalPages).toBe(1);
+	});
+
+    const req = httpMock.expectOne(`${apiUrl}/available?page=0&size=10`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
 
 	it('should fetch stadium pictures', () => {
 		const stadiumName = 'Yankee Stadium';
@@ -79,5 +110,21 @@ describe('Stadium Service Tests', () => {
 		);
 		expect(req.request.method).toBe('DELETE');
 		req.flush(mockAuthResponse);
+	});
+
+	it('should create a stadium', () => {
+		const request = { name: 'Fenway Park', openingDate: 1912 };
+		const mockSummary = MockFactory.buildStadiumMock('Fenway Park', 1912, []);
+
+		service.createStadium(request).subscribe((summary) => {
+		expect(summary.name).toBe('Fenway Park');
+		expect(summary.openingDate).toBe(1912);
+		expect(summary.pictures.length).toBe(0);
+		});
+
+		const req = httpMock.expectOne(apiUrl);
+		expect(req.request.method).toBe('POST');
+		expect(req.request.body).toEqual(request);
+		req.flush(mockSummary);
 	});
 });

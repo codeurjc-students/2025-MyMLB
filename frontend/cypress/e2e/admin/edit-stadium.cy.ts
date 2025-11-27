@@ -27,20 +27,11 @@ describe('Edit Stadium E2E Tests', () => {
 	it('should render stadium info', () => {
 		cy.contains('Edit Yankee Stadium').should('be.visible');
 
-		cy.contains('label', 'Name')
-			.parent()
-			.find('input')
-			.should('have.value', 'Yankee Stadium');
-
-		cy.contains('label', 'Opening Date')
-			.parent()
-			.find('input')
-			.should('have.value', '2009');
-
-		cy.contains('label', 'Team')
-			.parent()
-			.find('input')
-			.should('have.value', 'New York Yankees');
+		cy.get('.team-section-container').within(() => {
+			cy.contains('Name').prev('p').should('contain.text', 'Yankee Stadium');
+			cy.contains('Opening Date').prev('p').should('contain.text', '2009');
+			cy.contains('Team').prev('p').should('contain.text', 'New York Yankees');
+		});
 	});
 
 	it('should render pictures', () => {

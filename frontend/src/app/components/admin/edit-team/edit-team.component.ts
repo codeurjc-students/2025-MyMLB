@@ -1,3 +1,4 @@
+import { Stadium } from './../../../models/stadium.model';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { TeamInfo, UpdateTeamRequest } from '../../../models/team.model';
@@ -7,14 +8,14 @@ import { ErrorModalComponent } from "../../modal/error-modal/error-modal.compone
 import { FormsModule } from '@angular/forms';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { ActionButtonsComponent } from "../action-buttons/action-buttons.component";
-import { Stadium } from '../../../models/stadium.model';
 import { StadiumService } from '../../../services/stadium.service';
+import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
 
 @Component({
 	selector: 'app-edit-team',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
-	imports: [CommonModule, FormsModule, SuccessModalComponent, ErrorModalComponent, ActionButtonsComponent],
+	imports: [CommonModule, FormsModule, SuccessModalComponent, ErrorModalComponent, ActionButtonsComponent, SelectElementModalComponent],
 	templateUrl: './edit-team.component.html'
 })
 export class EditTeamComponent implements OnInit {
@@ -45,7 +46,7 @@ export class EditTeamComponent implements OnInit {
 
 	constructor(private teamService: TeamService, private stadiumService: StadiumService, private backgroundService: BackgroundColorService) {}
 
-	ngOnInit(): void { // No se si hace falta
+	ngOnInit(): void {
 		this.stadiumInput = this.team.stadium.name;
 	}
 
@@ -73,10 +74,12 @@ export class EditTeamComponent implements OnInit {
 		}
 	}
 
-	public selectStadium(stadium: Stadium) {
+	public selectStadium(item: unknown) {
+		const stadium = item as Stadium;
 		this.stadiumInput = stadium.name;
 		this.success = true;
 		this.successMessage = 'Stadium Selected';
+		this.availableStadiums = this.availableStadiums.filter(stad => stad.name !== stadium.name);
 	}
 
 	public closeStadiumModal() {
@@ -135,7 +138,7 @@ export class EditTeamComponent implements OnInit {
 				this.finish = true;
 				this.updateDasboard();
 			},
-			error: (_) => { // Revisar
+			error: (_) => {
 				this.error = true;
 				this.errorMessage = 'Invalid Stadium. The stadium must exists and not have any team assigned';
 			}

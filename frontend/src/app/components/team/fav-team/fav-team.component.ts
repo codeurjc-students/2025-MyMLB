@@ -8,11 +8,12 @@ import { SuccessModalComponent } from "../../success-modal/success-modal.compone
 import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { TeamSummary } from '../../../models/team.model';
+import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
 
 @Component({
 	selector: 'app-fav-team',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './fav-team.component.html',
 })
@@ -30,6 +31,7 @@ export class FavTeamComponent implements OnInit {
 	private pageSize = 10;
 	public currentPage = 0;
 	public isClose = false;
+	public hasMore!: boolean;
 
 	constructor(
 		private userService: UserService,
@@ -58,6 +60,7 @@ export class FavTeamComponent implements OnInit {
 			this.availableTeams = teams.filter(team => !favs.some(f => f.name === team.name));
 			this.currentPage = 0;
 			this.visibleTeams = this.availableTeams.slice(0, this.pageSize);
+			this.hasMore = this.visibleTeams.length < this.availableTeams.length;
 		});
 	}
 
@@ -70,7 +73,8 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 
-	public addFavoriteTeam(team: TeamSummary) {
+	public addFavoriteTeam(item: unknown) {
+		const team = item as TeamSummary;
 		this.errorMessage = '';
 		this.successMessage = '';
 		this.userService.addFavTeam(team).subscribe({
@@ -148,5 +152,11 @@ export class FavTeamComponent implements OnInit {
 		const start = this.currentPage * this.pageSize;
 		const end = start + this.pageSize;
 		this.visibleTeams = [...this.visibleTeams, ...this.availableTeams.slice(start, end)];
+		this.hasMore = this.visibleTeams.length < this.availableTeams.length;
+	}
+
+	public loadMoreTeamsCondition() {
+		this.hasMore = this.visibleTeams.length < this.availableTeams.length;
+		return this.hasMore;
 	}
 }
