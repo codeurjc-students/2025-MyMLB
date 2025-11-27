@@ -82,6 +82,7 @@ public class WebSecurityConfig {
 
                     // Stadium Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/available").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/*").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/stadiums").hasRole("ADMIN")
