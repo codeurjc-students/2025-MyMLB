@@ -1,6 +1,7 @@
 package com.mlb.mlbportal.utils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -232,7 +233,7 @@ public class BuildMocksFactory {
         p2.setRbis(PLAYER2_RBIS);
 
         Team team1 = teamList.getFirst();
-        team1.setPositionPlayers(Arrays.asList(p1, p2));
+        team1.setPositionPlayers(new ArrayList<>(List.of(p1, p2)));
         return Arrays.asList(p1, p2);
     }
 
@@ -259,7 +260,7 @@ public class BuildMocksFactory {
         p3.setSaves(PLAYER3_SAVES);
         p3.setSaveOpportunities(PLAYER3_SAVES_OPPORTUNITIES);
         Team team1 = teamList.get(1);
-        team1.setPitchers(Arrays.asList(p3));
+        team1.setPitchers(new ArrayList<>(List.of(p3)));
         return Arrays.asList(p3);
     }
 

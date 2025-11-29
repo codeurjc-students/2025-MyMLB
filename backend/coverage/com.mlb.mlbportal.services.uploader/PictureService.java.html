@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PictureService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.uploader</a> &gt; <span class="el_source">PictureService.java</span></div><h1>PictureService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.uploader;
+
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.cloudinary.Cloudinary;
+import com.mlb.mlbportal.models.others.PictureInfo;
+
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
+public class PictureService {
+    private final Cloudinary cloudinary;
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public PictureInfo uploadPicture(MultipartFile file) throws IOException {
+<span class="fc" id="L21">        Map&lt;String, Object&gt; uploadResult = this.cloudinary.uploader().upload(file.getBytes(), Map.of());</span>
+<span class="fc" id="L22">        String publicUrl = (String) uploadResult.get(&quot;secure_url&quot;);</span>
+<span class="fc" id="L23">        String publicId = (String) uploadResult.get(&quot;public_id&quot;);</span>
+
+<span class="fc" id="L25">        return new PictureInfo(publicUrl, publicId);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

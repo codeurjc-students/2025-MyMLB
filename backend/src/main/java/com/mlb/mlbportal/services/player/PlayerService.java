@@ -6,31 +6,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
-import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
-import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
-import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
-import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
-import com.mlb.mlbportal.handler.conflict.RosterFullException;
-import com.mlb.mlbportal.models.others.PictureInfo;
-import com.mlb.mlbportal.services.uploader.PictureService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
+import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
+import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
+import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.RosterFullException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
@@ -38,9 +38,9 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
+import com.mlb.mlbportal.services.uploader.PictureService;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @AllArgsConstructor
@@ -221,6 +221,7 @@ public class PlayerService {
     public PositionPlayerDTO createPositionPlayer(CreatePositionPlayerRequest request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());
+        team.addPositionPlayer(newPlayer);
         this.playerRepository.save(newPlayer);
         return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);
     }
@@ -234,6 +235,7 @@ public class PlayerService {
     public PitcherDTO createPitcher(CreatePitcherRequest request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());
+        team.addPitcher(newPlayer);
         this.playerRepository.save(newPlayer);
         return this.pitcherMapper.toPitcherDTO(newPlayer);
     }
@@ -254,9 +256,23 @@ public class PlayerService {
      */
     private void updateTeamIfNeeded(Player player, Optional<String> teamNameOpt) {
         teamNameOpt.ifPresent(newTeamName -> {
-            Team team = teamRepository.findByName(newTeamName).orElseThrow(TeamNotFoundException::new);
-            this.checkTeamAvailability(team);
-            player.setTeam(team);
+            Team newTeam = teamRepository.findByName(newTeamName).orElseThrow(TeamNotFoundException::new);
+            this.checkTeamAvailability(newTeam);
+            Team oldTeam = player.getTeam();
+            if (oldTeam != null) {
+                switch (player) {
+                    case PositionPlayer pos -> oldTeam.removePositionPlayer(pos);
+                    case Pitcher pit -> oldTeam.removePitcher(pit);
+                    default -> throw new IllegalArgumentException("Unsupported player subtype: " + player.getClass().getName());
+                }
+            }
+
+            player.setTeam(newTeam);
+            switch (player) {
+                case PositionPlayer pos -> newTeam.addPositionPlayer(pos);
+                case Pitcher pit -> newTeam.addPitcher(pit);
+                default -> throw new IllegalArgumentException("Unsupported player subtype: " + player.getClass().getName());
+            }
         });
     }
 
@@ -305,9 +321,19 @@ public class PlayerService {
     @Transactional
     public PlayerDTO deletePlayer(String playerName) {
         Player player = this.getPlayer(playerName);
+        Team team = this.teamRepository.findByName(player.getTeam().getName()).orElseThrow(TeamNotFoundException::new);
+
         PlayerDTO result = switch (player) {
-            case PositionPlayer p -> this.positionPlayerMapper.toPositionPlayerDTO(p);
-            case Pitcher p -> this.pitcherMapper.toPitcherDTO(p);
+            case PositionPlayer p -> {
+                PositionPlayerDTO dto = this.positionPlayerMapper.toPositionPlayerDTO(p);
+                team.removePositionPlayer(p);
+                yield dto;
+            }
+            case Pitcher p -> {
+                PitcherDTO dto = this.pitcherMapper.toPitcherDTO(p);
+                team.removePitcher(p);
+                yield dto;
+            }
             default -> throw new IllegalArgumentException("Unexpected subtype: " + player.getClass().getName());
         };
         this.playerRepository.delete(player);

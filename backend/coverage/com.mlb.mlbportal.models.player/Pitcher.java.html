@@ -3,6 +3,7 @@
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,21 +34,36 @@ public class Pitcher extends Player {
     private int saveOpportunities;
     private double whip;
 
-    public Pitcher(String name, Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched) {
-<span class="fc" id="L37">        super(name, team);</span>
-<span class="fc" id="L38">        this.position = position;</span>
-<span class="fc" id="L39">        this.games = games;</span>
-<span class="fc" id="L40">        this.wins = wins;</span>
-<span class="fc" id="L41">        this.losses = losses;</span>
-<span class="fc" id="L42">        this.inningsPitched = inningsPitched;</span>
-<span class="fc" id="L43">    }</span>
+    public Pitcher(String name, int number,Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched) {
+<span class="fc" id="L38">        super(name, number, team);</span>
+<span class="fc" id="L39">        this.position = position;</span>
+<span class="fc" id="L40">        this.games = games;</span>
+<span class="fc" id="L41">        this.wins = wins;</span>
+<span class="fc" id="L42">        this.losses = losses;</span>
+<span class="fc" id="L43">        this.inningsPitched = inningsPitched;</span>
+<span class="fc" id="L44">    }</span>
 
-    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, int wins, int losses) {
-<span class="nc" id="L46">        super(name, team, picture);</span>
-<span class="nc" id="L47">        this.position = position;</span>
-<span class="nc" id="L48">        this.games = games;</span>
-<span class="nc" id="L49">        this.wins = wins;</span>
-<span class="nc" id="L50">        this.losses = losses;</span>
-<span class="nc" id="L51">    }</span>
+    public Pitcher(String name, int number, Team team, PictureInfo picture, PitcherPositions position, int games, int wins, int losses) {
+<span class="nc" id="L47">        super(name, number,  team, picture);</span>
+<span class="nc" id="L48">        this.position = position;</span>
+<span class="nc" id="L49">        this.games = games;</span>
+<span class="nc" id="L50">        this.wins = wins;</span>
+<span class="nc" id="L51">        this.losses = losses;</span>
+<span class="nc" id="L52">    }</span>
+
+    public Pitcher(String name, int number, Team team, PitcherPositions position) {
+<span class="fc" id="L55">        super(name, number, team);</span>
+<span class="fc" id="L56">        this.position = position;</span>
+<span class="fc" id="L57">        this.games = 0;</span>
+<span class="fc" id="L58">        this.wins = 0;</span>
+<span class="fc" id="L59">        this.losses = 0;</span>
+<span class="fc" id="L60">        this.inningsPitched = 0.0;</span>
+<span class="fc" id="L61">        this.totalStrikeouts = 0;</span>
+<span class="fc" id="L62">        this.walks = 0;</span>
+<span class="fc" id="L63">        this.hitsAllowed = 0;</span>
+<span class="fc" id="L64">        this.runsAllowed = 0;</span>
+<span class="fc" id="L65">        this.saves = 0;</span>
+<span class="fc" id="L66">        this.saveOpportunities = 0;</span>
+<span class="fc" id="L67">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

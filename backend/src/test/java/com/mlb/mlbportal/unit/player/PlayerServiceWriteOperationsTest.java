@@ -282,7 +282,12 @@ class PlayerServiceWriteOperationsTest {
                     .hasMessageContaining("Player Not Found");
         }
         else {
+            Team mockTeam = new Team();
+            mockTeam.setName(TEST_TEAM1_NAME);
+            player.setTeam(mockTeam);
+
             when(this.playerRepository.findByName(player.getName())).thenReturn(Optional.of(player));
+            when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(mockTeam));
 
             if (player instanceof PositionPlayer pp && dto instanceof PositionPlayerDTO posDto) {
                 when(this.positionPlayerMapper.toPositionPlayerDTO(pp)).thenReturn(posDto);

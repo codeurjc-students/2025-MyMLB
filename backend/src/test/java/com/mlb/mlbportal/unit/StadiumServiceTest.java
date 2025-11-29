@@ -2,7 +2,6 @@ package com.mlb.mlbportal.unit;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.Uploader;
 import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
@@ -37,6 +34,7 @@ import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.StadiumService;
+import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
@@ -53,7 +51,7 @@ class StadiumServiceTest {
     private StadiumMapper stadiumMapper;
 
     @Mock
-    private Cloudinary cloudinary;
+    private PictureService pictureService;
 
     @InjectMocks
     private StadiumService stadiumService;
@@ -159,23 +157,18 @@ class StadiumServiceTest {
     @DisplayName("Should upload picture and return PictureDTO")
     void testAddPicture() throws Exception {
         Stadium stadium = this.stadiums.getFirst();
-        stadium.getPictures().clear();
-
         MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getBytes()).thenReturn("fake-image".getBytes());
+        PictureInfo pictureInfo = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
 
-        Uploader uploader = mock(Uploader.class);
-        when(this.cloudinary.uploader()).thenReturn(uploader);
-        when(uploader.upload(any(byte[].class), any(Map.class)))
-            .thenReturn(Map.of("secure_url", "http://cloudinary.com/test123.jpg", "public_id", "test123"));
+        when(this.stadiumRepository.findByName(stadium.getName())).thenReturn(Optional.of(stadium));
+        when(this.pictureService.uploadPicture(mockFile)).thenReturn(pictureInfo);
 
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        PictureInfo result = this.stadiumService.addPicture(stadium.getName(), mockFile);
+        assertThat(result).isNotNull();
+        assertThat(result.getUrl()).isEqualTo(pictureInfo.getUrl());
+        assertThat(result.getPublicId()).isEqualTo(pictureInfo.getPublicId());
 
-        PictureInfo result = this.stadiumService.addPicture(STADIUM1_NAME, mockFile);
-
-        assertThat(result.getUrl()).isEqualTo("http://cloudinary.com/test123.jpg");
-        assertThat(result.getPublicId()).isEqualTo("test123");
-        verify(this.stadiumRepository).save(stadium);
+        verify(this.stadiumRepository, times(1)).save(any(Stadium.class));
     }
 
     @Test
