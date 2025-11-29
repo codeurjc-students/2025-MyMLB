@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.conflict.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -14,16 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
-import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
-import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
-import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
-import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
-import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
-import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
-import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 
 @RestControllerAdvice
 public class GlobalHandler {
@@ -65,30 +57,15 @@ public class GlobalHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleResourceNotFound(ResourceNotFoundException ex) {
-        String errorMsg = "Resource Not Found";
-        if (ex instanceof UserNotFoundException) errorMsg = "User Not Found";
-        else if (ex instanceof TeamNotFoundException) errorMsg = "Team Not Found";
-        else if (ex instanceof StadiumNotFoundException) errorMsg = "Stadium Not Found";
-        else if (ex instanceof PlayerNotFoundException) errorMsg = "Player Not Found";
-
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), errorMsg);
+        String message = (ex.getMessage() == null) ? "Resource Not Found" : ex.getMessage();
+        return buildResponse(HttpStatus.NOT_FOUND, message, "Resource Not Found");
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
-        String errorMsg = "Resource Already Exists";
-        if (ex instanceof TeamAlreadyExistsException) {
-            errorMsg = "Team Already Exists";
-        }
-        else if (ex instanceof UserAlreadyExistsException) {
-            errorMsg = "User Already Exists";
-        }
-        else if (ex instanceof StadiumAlreadyExistsException) {
-            errorMsg = "Stadium Already Exists";
-        }
-        String message = (ex.getMessage() == null) ? errorMsg : ex.getMessage();
-        return buildResponse(HttpStatus.CONFLICT, message, errorMsg);
+        String message = (ex.getMessage() == null) ? "Resource Already Exists" : ex.getMessage();
+        return buildResponse(HttpStatus.CONFLICT, message, "Resource Already Exists");
     }
 
     @ExceptionHandler(LastPictureDeletionException.class)

@@ -167,13 +167,13 @@ class StadiumServiceTest {
         Uploader uploader = mock(Uploader.class);
         when(this.cloudinary.uploader()).thenReturn(uploader);
         when(uploader.upload(any(byte[].class), any(Map.class)))
-            .thenReturn(Map.of("secure_url", "http://cloudinary.com/test.jpg", "public_id", "test123"));
+            .thenReturn(Map.of("secure_url", "http://cloudinary.com/test123.jpg", "public_id", "test123"));
 
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
 
         PictureInfo result = this.stadiumService.addPicture(STADIUM1_NAME, mockFile);
 
-        assertThat(result.getUrl()).isEqualTo("http://cloudinary.com/test.jpg");
+        assertThat(result.getUrl()).isEqualTo("http://cloudinary.com/test123.jpg");
         assertThat(result.getPublicId()).isEqualTo("test123");
         verify(this.stadiumRepository).save(stadium);
     }

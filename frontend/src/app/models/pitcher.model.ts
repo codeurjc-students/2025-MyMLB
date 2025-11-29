@@ -1,5 +1,8 @@
+import { Pictures } from "./pictures.model";
+
 export type Pitcher = {
 	name: string;
+	playerNumber: number;
 	position: string;
 	games: number;
 	wins: number;
@@ -13,10 +16,12 @@ export type Pitcher = {
 	whip: number;
 	saves: number;
 	saveOpportunities: number;
+	picture: Pictures;
 };
 
 export type PitcherGlobal = {
 	name: string;
+	playerNumber: number;
 	teamName: string;
 	position: string;
 	games: number;
@@ -31,4 +36,5 @@ export type PitcherGlobal = {
 	whip: number;
 	saves: number;
 	saveOpportunities: number;
+	picture: Pictures;
 };

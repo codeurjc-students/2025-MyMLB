@@ -1,6 +1,7 @@
 [
   {
     "name": "Aaron Judge",
+    "playerNumber": 99,
     "teamName": "New York Yankees",
     "position": "RF",
     "atBats": 26,
@@ -10,10 +11,16 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 7,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
+
   {
     "name": "Giancarlo Stanton",
+    "playerNumber": 27,
     "teamName": "New York Yankees",
     "position": "DH",
     "atBats": 26,
@@ -23,10 +30,15 @@
     "triples": 0,
     "homeRuns": 0,
     "rbis": 4,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Anthony Volpe",
+    "playerNumber": 11,
     "teamName": "New York Yankees",
     "position": "SS",
     "atBats": 26,
@@ -36,10 +48,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 2,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Jazz Chisholm Jr.",
+    "playerNumber": 13,
     "teamName": "New York Yankees",
     "position": "2B",
     "atBats": 22,
@@ -49,10 +66,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 1,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Austin Wells",
+    "playerNumber": 29,
     "teamName": "New York Yankees",
     "position": "C",
     "atBats": 22,
@@ -62,10 +84,15 @@
     "triples": 0,
     "homeRuns": 0,
     "rbis": 3,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Cody Bellinger",
+    "playerNumber": 35,
     "teamName": "New York Yankees",
     "position": "LF",
     "atBats": 28,
@@ -75,10 +102,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 4,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Trent Grisham",
+    "playerNumber": 12,
     "teamName": "New York Yankees",
     "position": "CF",
     "atBats": 29,
@@ -88,10 +120,15 @@
     "triples": 0,
     "homeRuns": 0,
     "rbis": 0,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Ben Rice",
+    "playerNumber": 22,
     "teamName": "New York Yankees",
     "position": "1B",
     "atBats": 18,
@@ -101,10 +138,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 4,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Ryan McMahon",
+    "playerNumber": 19,
     "teamName": "New York Yankees",
     "position": "3B",
     "atBats": 14,
@@ -114,10 +156,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 2,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Jose Caballero",
+    "playerNumber": 72,
     "teamName": "New York Yankees",
     "position": "SS",
     "atBats": 12,
@@ -127,10 +174,15 @@
     "triples": 0,
     "homeRuns": 0,
     "rbis": 1,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Paul Goldschmidt",
+    "playerNumber": 46,
     "teamName": "New York Yankees",
     "position": "1B",
     "atBats": 20,
@@ -140,10 +192,15 @@
     "triples": 0,
     "homeRuns": 1,
     "rbis": 5,
-    "type": "PositionPlayer"
+    "type": "PositionPlayer",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Cam Schlittler",
+    "playerNumber": 31,
     "teamName": "New York Yankees",
     "position": "SP",
     "games": 2,
@@ -156,10 +213,15 @@
     "runsAllowed": 2,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Max Fried",
+    "playerNumber": 54,
     "teamName": "New York Yankees",
     "position": "SP",
     "games": 2,
@@ -172,10 +234,15 @@
     "runsAllowed": 7,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Carlos Rodón",
+    "playerNumber": 55,
     "teamName": "New York Yankees",
     "position": "SP",
     "games": 2,
@@ -188,10 +255,15 @@
     "runsAllowed": 9,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "David Bednar",
+    "playerNumber": 53,
     "teamName": "New York Yankees",
     "position": "CL",
     "games": 5,
@@ -204,10 +276,15 @@
     "runsAllowed": 1,
     "saves": 2,
     "saveOpportunities": 2,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Devin Williams",
+    "playerNumber": 41,
     "teamName": "New York Yankees",
     "position": "RP",
     "games": 1,
@@ -220,10 +297,15 @@
     "runsAllowed": 6,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Fernando Cruz",
+    "playerNumber": 63,
     "teamName": "New York Yankees",
     "position": "RP",
     "games": 4,
@@ -236,10 +318,15 @@
     "runsAllowed": 0,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Camilo Doval",
+    "playerNumber": 75,
     "teamName": "New York Yankees",
     "position": "RP",
     "games": 4,
@@ -252,10 +339,15 @@
     "runsAllowed": 1,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   },
   {
     "name": "Tim Hill",
+    "playerNumber": 41,
     "teamName": "New York Yankees",
     "position": "RP",
     "games": 3,
@@ -268,6 +360,10 @@
     "runsAllowed": 0,
     "saves": 0,
     "saveOpportunities": 0,
-    "type": "Pitcher"
+    "type": "Pitcher",
+    "picture": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1764331879/judge_hdzd5c.webp",
+      "publicId": "judge_hdzd5c"
+    }
   }
 ]

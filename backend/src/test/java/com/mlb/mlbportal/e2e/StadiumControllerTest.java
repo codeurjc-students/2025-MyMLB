@@ -111,7 +111,7 @@ class StadiumControllerTest extends BaseE2ETest {
                 .statusCode(404)
                 .body("status", is(FAILURE))
                 .body("message", is("Stadium Not Found"))
-                .body("error", is("Stadium Not Found"));
+                .body("error", is("Resource Not Found"));
     }
 
     private String picturesUrl(String stadiumName) {

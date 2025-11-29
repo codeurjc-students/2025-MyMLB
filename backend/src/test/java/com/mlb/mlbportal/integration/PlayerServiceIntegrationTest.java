@@ -13,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.mlb.mlbportal.dto.player.PitcherDTO;
-import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
 import com.mlb.mlbportal.dto.player.PlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PitcherPositions;

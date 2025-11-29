@@ -76,7 +76,7 @@ public class TeamController {
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
-    @PatchMapping(value = "/{teamName}", produces = "application/json")
+    @PatchMapping(value = "/{teamName}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<AuthResponse> updateTeam(@PathVariable("teamName") String teamName,
             @RequestBody UpdateTeamRequest request) {
         this.teamService.updateTeam(teamName, request);

@@ -98,7 +98,7 @@ class TeamControllerTest extends BaseE2ETest {
                 .statusCode(404)
                 .body("status", is(FAILURE))
                 .body("message", is("Team Not Found"))
-                .body("error", is("Team Not Found"));
+                .body("error", is("Resource Not Found"));
     }
 
     @Test

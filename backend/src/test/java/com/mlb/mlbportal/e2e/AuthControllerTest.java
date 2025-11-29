@@ -174,7 +174,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(409)
                 .body("status", equalTo(FAILURE))
-                .body("error", equalTo("User Already Exists"))
+                .body("error", equalTo("Resource Already Exists"))
                 .body("message", equalTo("The User Already Exists in the Database"));
     }
 
@@ -296,7 +296,7 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(404)
                 .body("status", equalTo(FAILURE))
                 .body("message", equalTo("There is no user registered with this email"))
-                .body("error", equalTo("User Not Found"));
+                .body("error", equalTo("Resource Not Found"));
     }
 
     private void setUpResetPasswordMethod(boolean isValid) {

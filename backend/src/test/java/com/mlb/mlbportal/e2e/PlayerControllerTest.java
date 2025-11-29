@@ -40,7 +40,7 @@ import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPORTUNITIES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPPORTUNITIES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SO;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WINS;
@@ -80,9 +80,9 @@ class PlayerControllerTest extends BaseE2ETest {
                 TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL,
                 Division.EAST);
 
-        saveTestPositionPlayers(PLAYER1_NAME, team1, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS);
-        saveTestPositionPlayers(PLAYER2_NAME, team1, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS);
-        saveTestPitchers(PLAYER3_NAME, team2, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        saveTestPositionPlayers(PLAYER1_NAME, 24, team1, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS);
+        saveTestPositionPlayers(PLAYER2_NAME, 32, team1, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS);
+        saveTestPitchers(PLAYER3_NAME, 1, team2, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES);
     }
 
     @Test
@@ -169,7 +169,7 @@ class PlayerControllerTest extends BaseE2ETest {
                 .statusCode(404)
                 .body("status", is(FAILURE))
                 .body("message", is("Player Not Found"))
-                .body("error", is("Player Not Found"));
+                .body("error", is("Resource Not Found"));
     }
 
     @Test
@@ -220,6 +220,6 @@ class PlayerControllerTest extends BaseE2ETest {
                 .statusCode(404)
                 .body("status", is(FAILURE))
                 .body("message", is("Team Not Found"))
-                .body("error", is("Team Not Found"));
+                .body("error", is("Resource Not Found"));
     }
 }
