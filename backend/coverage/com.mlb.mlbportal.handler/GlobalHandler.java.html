@@ -33,13 +33,13 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L36">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L37">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L38">            body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="nc" id="L36">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L37">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="nc" id="L38">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L40">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L41">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L42">        return body;</span>
+<span class="nc" id="L40">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="nc" id="L41">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="nc" id="L42">        return body;</span>
     }
 
     @ExceptionHandler(MaxiumPicturesExceededException.class)
@@ -57,21 +57,21 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map&lt;String, Object&gt; handleResourceNotFound(ResourceNotFoundException ex) {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Not Found&quot; : ex.getMessage();</span>
-<span class="fc" id="L61">        return buildResponse(HttpStatus.NOT_FOUND, message, &quot;Resource Not Found&quot;);</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Not Found&quot; : ex.getMessage();</span>
+<span class="nc" id="L61">        return buildResponse(HttpStatus.NOT_FOUND, message, &quot;Resource Not Found&quot;);</span>
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Already Exists&quot; : ex.getMessage();</span>
-<span class="fc" id="L68">        return buildResponse(HttpStatus.CONFLICT, message, &quot;Resource Already Exists&quot;);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Already Exists&quot; : ex.getMessage();</span>
+<span class="nc" id="L68">        return buildResponse(HttpStatus.CONFLICT, message, &quot;Resource Already Exists&quot;);</span>
     }
 
     @ExceptionHandler(LastPictureDeletionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleLastPictureDeletion(LastPictureDeletionException ex) {
-<span class="fc" id="L74">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
+<span class="nc" id="L74">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
@@ -81,20 +81,20 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 <span class="nc" id="L81">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
 <span class="nc" id="L83">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-<span class="nc" id="L84">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map&lt;String, Object&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
 <span class="nc" id="L90">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-<span class="nc" id="L91">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map&lt;String, Object&gt; handleAuthentication(AuthenticationException ex) {
-<span class="fc" id="L97">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
+<span class="nc" id="L97">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
     }
 
     @ExceptionHandler(InvalidSearchTypeException.class)

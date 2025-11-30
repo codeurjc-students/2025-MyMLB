@@ -39,8 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				
 <span class="nc" id="L40">			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));</span>
 <span class="nc" id="L41">			SecurityContextHolder.getContext().setAuthentication(authentication);</span>
-<span class="pc" id="L42">		} catch (Exception ex) {</span>
-		}
+<span class="fc" id="L42">		} catch (Exception ex) {</span>
+<span class="nc" id="L43">		}</span>
 <span class="fc" id="L44">		filterChain.doFilter(request, response);</span>
 <span class="fc" id="L45">	}</span>
 }
