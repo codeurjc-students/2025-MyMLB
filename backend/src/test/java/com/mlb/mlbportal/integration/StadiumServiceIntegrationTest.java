@@ -104,10 +104,10 @@ class StadiumServiceIntegrationTest {
     @Test
     @DisplayName("Should upload picture and persist URL + publicId")
     void testAddPicture() throws Exception {
-        Stadium stadium = stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
-        PictureInfo dto = stadiumService.addPicture(STADIUM1_NAME, file);
+        PictureInfo dto = this.stadiumService.addPicture(STADIUM1_NAME, file);
 
         assertThat(dto.getUrl()).contains("http://fake.cloudinary.com");
         assertThat(dto.getPublicId()).isEqualTo("fake123");

@@ -119,13 +119,13 @@ public class PlayerController {
     })
     @PostMapping(value = &quot;/position-players&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PositionPlayerDTO&gt; createPositionPlayer(@Valid @RequestBody CreatePositionPlayerRequest request) {
-<span class="nc" id="L122">        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);</span>
-<span class="nc" id="L123">        URI location = ServletUriComponentsBuilder</span>
-<span class="nc" id="L124">                .fromCurrentContextPath()</span>
-<span class="nc" id="L125">                .path(&quot;/api/v1/players/{name}&quot;)</span>
-<span class="nc" id="L126">                .buildAndExpand(player.name())</span>
-<span class="nc" id="L127">                .toUri();</span>
-<span class="nc" id="L128">        return ResponseEntity.created(location).body(player);</span>
+<span class="fc" id="L122">        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);</span>
+<span class="fc" id="L123">        URI location = ServletUriComponentsBuilder</span>
+<span class="fc" id="L124">                .fromCurrentContextPath()</span>
+<span class="fc" id="L125">                .path(&quot;/api/v1/players/{name}&quot;)</span>
+<span class="fc" id="L126">                .buildAndExpand(player.name())</span>
+<span class="fc" id="L127">                .toUri();</span>
+<span class="fc" id="L128">        return ResponseEntity.created(location).body(player);</span>
     }
 
     @Operation(summary = &quot;Create a pitcher&quot;, description = &quot;Creates a new MLB pitcher and assigns them to a team.&quot;)
@@ -154,7 +154,7 @@ public class PlayerController {
     })
     @PostMapping(value = &quot;/{playerName}/pictures&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; uploadPicture(@PathVariable(&quot;playerName&quot;) String playerName, @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
-<span class="nc" id="L157">        return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));</span>
+<span class="fc" id="L157">        return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));</span>
     }
 
     @Operation(summary = &quot;Update position player&quot;, description = &quot;Partially updates the stats or team assignment of a position player.&quot;)
@@ -166,8 +166,8 @@ public class PlayerController {
     @PatchMapping(value = &quot;/position-players/{playerName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updatePositionPlayer(@PathVariable(&quot;playerName&quot;) String playerName,
                                                              @RequestBody EditPositionPlayerRequest request) {
-<span class="nc" id="L169">        this.playerService.updatePositionPlayer(playerName, request);</span>
-<span class="nc" id="L170">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
+<span class="fc" id="L169">        this.playerService.updatePositionPlayer(playerName, request);</span>
+<span class="fc" id="L170">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Update pitcher&quot;, description = &quot;Partially updates the stats or team assignment of a pitcher.&quot;)
@@ -190,7 +190,7 @@ public class PlayerController {
     })
     @DeleteMapping(value = &quot;/{playerName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PlayerDTO&gt; deletePlayer(@PathVariable(&quot;playerName&quot;) String playerName) {
-<span class="nc" id="L193">        return ResponseEntity.ok(this.playerService.deletePlayer(playerName));</span>
+<span class="fc" id="L193">        return ResponseEntity.ok(this.playerService.deletePlayer(playerName));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

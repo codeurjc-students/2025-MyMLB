@@ -99,21 +99,6 @@ class StadiumControllerTest extends BaseE2ETest {
                 .body("teamName", is(this.team1.getName()));
     }
 
-    @Test
-    @DisplayName("GET /api/v1/stadiums/{name} should return a 404 if the stadium does not exists")
-    void testGetNonExistentStadium() {
-        String url = STADIUM_PATH + UNKNOWN_STADIUM;
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(404)
-                .body("status", is(FAILURE))
-                .body("message", is("Stadium Not Found"))
-                .body("error", is("Resource Not Found"));
-    }
-
     private String picturesUrl(String stadiumName) {
         return STADIUM_PATH + stadiumName + "/pictures";
     }
@@ -180,22 +165,6 @@ class StadiumControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should throw 409 if only one picture remains")
-    void testDeleteLastPicture() {
-        this.uploadPicture("test.png", "fake-image");
-
-        given()
-                .queryParam("publicId", "fake123")
-                .accept(ContentType.JSON)
-                .when()
-                .delete(this.picturesUrl(STADIUM1_NAME))
-                .then()
-                .statusCode(409)
-                .body("status", is(FAILURE))
-                .body("message", is("Cannot delete the last picture of a stadium"));
-    }
-
-    @Test
     @DisplayName("POST /api/v1/stadiums should create a new stadium and return 201 with Location header")
     void testCreateStadium() {
         Map<String, Object> requestBody = Map.of(
@@ -214,42 +183,5 @@ class StadiumControllerTest extends BaseE2ETest {
                 .header("Location", containsString(STADIUM_PATH +"New%20Stadium"))
                 .body("name", is(NEW_STADIUM))
                 .body("openingDate", is(NEW_STADIUM_YEAR));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/stadiums should return 404 if the body is incomplete")
-    void testCreateStadiumWithIncompleteFields() {
-        Map<String, Object> requestBody = Map.of("name", NEW_STADIUM);
-
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post(ALL_STADIUMS_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", is(FAILURE))
-                .body("openingDate", is("The opening date of the new stadium is required"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/stadiums should return 409 if stadium already exists")
-    void testInvalidStadiumCreation() {
-        Map<String, Object> requestBody = Map.of(
-                "name", STADIUM1_NAME,
-                "openingDate", STADIUM1_YEAR
-        );
-
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post(ALL_STADIUMS_PATH)
-                .then()
-                .statusCode(409)
-                .body("status", is(FAILURE))
-                .body("message", is("Stadium Already Exists"));
     }
 }

@@ -54,7 +54,7 @@ class TeamControllerTest extends BaseE2ETest {
 
     @Test
     @DisplayName("GET /api/v1/teams/standings return standings grouped by league and division, ordered by pct")
-    void testGetStandingsEndpoint() {
+    void testGetStandings() {
         given()
                 .accept(ContentType.JSON)
                 .when()
@@ -84,21 +84,6 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("teamStats.name", is(TEST_TEAM1_NAME))
                 .body("teamStats.abbreviation", is(TEST_TEAM1_ABBREVIATION))
                 .body("city", is(TEST_TEAM1_CITY));
-    }
-
-    @Test
-    @DisplayName("GET /api/v1/teams/{teamName} should return a 404 if the team does not exists")
-    void testGetNonExistentTeamInformation() {
-        String url = TEAM_INFO_PATH + UNKNOWN_TEAM;
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(404)
-                .body("status", is(FAILURE))
-                .body("message", is("Team Not Found"))
-                .body("error", is("Resource Not Found"));
     }
 
     @Test

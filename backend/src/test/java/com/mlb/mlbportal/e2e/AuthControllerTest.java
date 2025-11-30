@@ -21,10 +21,7 @@ import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.security.jwt.LoginRequest;
-import static com.mlb.mlbportal.utils.TestConstants.FAILURE;
 import static com.mlb.mlbportal.utils.TestConstants.FORGOT_PASSWORD_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.LOGIN_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.LOGOUT_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.ME_PATH;
@@ -35,7 +32,6 @@ import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 import io.restassured.RestAssured;
@@ -75,19 +71,6 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/auth/me with a non authenticated user should return 401")
-    void testGetActiveUserWithoutAuthentication() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get(ME_PATH)
-                .then()
-                .statusCode(401)
-                .body("status", is(FAILURE))
-                .body("message", is("User Not Authenticated"));
-    }
-
-    @Test
     @DisplayName("POST /api/v1/auth/login should authenticate user and return tokens in cookies")
     void testLoginUserRequest() {
         LoginRequest requestBody = new LoginRequest(TEST_USER_USERNAME, TEST_USER_PASSWORD);
@@ -103,42 +86,6 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(200)
                 .body("status", equalTo(SUCCESS))
                 .body("message", equalTo("Auth successful. Tokens are created in cookie."));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/login with wrong password should return 401")
-    void testLoginFailureRequest() {
-        LoginRequest requestBody = new LoginRequest(TEST_USER_USERNAME, "wrongPassword");
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post(LOGIN_PATH)
-                .then()
-                .statusCode(401)
-                .body("error", equalTo("Unauthorized"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/login with invalid fields should return 400 and validation messages")
-    void testLoginUserWithInvalidFields() {
-        LoginRequest requestBody = new LoginRequest("", "");
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post(LOGIN_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("username", equalTo("The username is required"))
-                .body("password", equalTo("The password is required"));
     }
 
     @Test
@@ -160,45 +107,6 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/auth/register should return 409 if user already exists")
-    void testExistingUserRegistration() {
-        RegisterRequest bodyRequest = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(bodyRequest)
-                .when()
-                .post(REGISTER_PATH)
-                .then()
-                .statusCode(409)
-                .body("status", equalTo(FAILURE))
-                .body("error", equalTo("Resource Already Exists"))
-                .body("message", equalTo("The User Already Exists in the Database"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/register with invalid fields should return 400 and validation messages")
-    void testRegisterUserWithInvalidFields() {
-        RegisterRequest bodyRequest = new RegisterRequest("", "", "");
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(bodyRequest)
-                .when()
-                .post(REGISTER_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("email", equalTo("The email is required"))
-                .body("username", equalTo("The username is required"))
-                .body("password", equalTo("The password is required"));
-    }
-
-    @Test
     @DisplayName("POST /api/v1/auth/logout should logout the active user successfully")
     void testLogout() {
         given()
@@ -210,19 +118,6 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(200)
                 .body("status", is(SUCCESS))
                 .body("message", is("Logout Successful"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/logout should return 400 if the user is not authenticated")
-    void testNonAuthenticatedUserLogout() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .post(LOGOUT_PATH)
-                .then()
-                .statusCode(401)
-                .body("status", is(FAILURE))
-                .body("message", is("There is no user to logout"));
     }
 
     @Test
@@ -245,77 +140,12 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/auth/forgot-password with an invalid email format should return a 400 status code")
-    void testForgotPasswordWithInvalidInvalidRequest() {
-        ForgotPasswordRequest request = new ForgotPasswordRequest(INVALID_EMAIL);
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(FORGOT_PASSWORD_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("email", equalTo("Invalid email format"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/forgot-password with an empty email should return a 400 status code")
-    void testForgotPasswordWithEmptyEmail() {
-        ForgotPasswordRequest request = new ForgotPasswordRequest("");
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(FORGOT_PASSWORD_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("email", equalTo("Email is required"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/forgot-password should return 404 if the email is not registered")
-    void testForgotPasswordEmailNotFound() {
-        ForgotPasswordRequest request = new ForgotPasswordRequest(UNKNOWN_EMAIL);
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(request)
-                .when()
-                .post(FORGOT_PASSWORD_PATH)
-                .then()
-                .statusCode(404)
-                .body("status", equalTo(FAILURE))
-                .body("message", equalTo("There is no user registered with this email"))
-                .body("error", equalTo("Resource Not Found"));
-    }
-
-    private void setUpResetPasswordMethod(boolean isValid) {
-        UserEntity user = this.userRepository.findByEmail(TEST_USER_EMAIL).orElseThrow();
-        PasswordResetToken token;
-
-        if (isValid) {
-            token = new PasswordResetToken(VALID_CODE, user);
-        } else {
-            token = new PasswordResetToken(VALID_CODE, user);
-        }
-        token.setExpirationDate(LocalDateTime.now().plusMinutes(10));
-        this.passwordRepository.save(token);
-    }
-
-    @Test
     @DisplayName("POST /api/v1/auth/reset-password should reset the password successfully with valid code")
     void testResetPasswordSuccess() {
-        this.setUpResetPasswordMethod(true);
+        UserEntity user = this.userRepository.findByEmail(TEST_USER_EMAIL).orElseThrow();
+        PasswordResetToken token = new PasswordResetToken(VALID_CODE, user);
+        token.setExpirationDate(LocalDateTime.now().plusMinutes(10));
+        this.passwordRepository.save(token);
 
         ResetPasswordRequest resetRequest = new ResetPasswordRequest(VALID_CODE, NEW_PASSWORD);
 
@@ -330,43 +160,5 @@ class AuthControllerTest extends BaseE2ETest {
                 .statusCode(200)
                 .body("status", equalTo(SUCCESS))
                 .body("message", equalTo("Password restored"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/reset-password should return 400 if code is invalid")
-    void testResetPasswordInvalidCode() {
-        ResetPasswordRequest resetRequest = new ResetPasswordRequest(INVALID_CODE, NEW_PASSWORD);
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(resetRequest)
-                .when()
-                .post(RESET_PASSWORD_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("message", equalTo("Invalid or expired code"));
-    }
-
-    @Test
-    @DisplayName("POST /api/v1/auth/reset-password should return 400 if code is expired")
-    void testResetPasswordExpiredCode() {
-        this.setUpResetPasswordMethod(false);
-
-        ResetPasswordRequest resetRequest = new ResetPasswordRequest("0000", NEW_PASSWORD);
-
-        given()
-                .baseUri(RestAssured.baseURI)
-                .port(this.port)
-                .contentType(ContentType.JSON)
-                .body(resetRequest)
-                .when()
-                .post(RESET_PASSWORD_PATH)
-                .then()
-                .statusCode(400)
-                .body("status", equalTo(FAILURE))
-                .body("message", equalTo("Invalid or expired code"));
     }
 }

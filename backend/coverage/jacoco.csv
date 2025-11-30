@@ -5,8 +5,8 @@ MLBPortal,com.mlb.mlbportal.dto.team,TeamSummary,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.team,TeamInfoDTO,0,24,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.team,TeamInitDTO,0,33,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.player,PositionPlayer,138,580,12,72,6,17,14,72,3,41
-MLBPortal,com.mlb.mlbportal.models.player,Player,229,169,25,19,6,5,37,14,20,9
-MLBPortal,com.mlb.mlbportal.models.player,Pitcher,177,593,24,66,6,20,26,65,3,43
+MLBPortal,com.mlb.mlbportal.models.player,Player,194,204,22,22,6,5,34,17,20,9
+MLBPortal,com.mlb.mlbportal.models.player,Pitcher,177,593,17,73,6,20,19,72,3,43
 MLBPortal,com.mlb.mlbportal.models.others,PictureInfo,66,59,9,7,0,0,10,6,2,6
 MLBPortal,com.mlb.mlbportal.configuration,TimeConfig,0,7,0,0,0,2,0,2,0,2
 MLBPortal,com.mlb.mlbportal.configuration,ErrorHandler,5,0,0,0,2,0,2,0,2,0
@@ -18,7 +18,7 @@ MLBPortal,com.mlb.mlbportal.handler.badRequest,MaxiumPicturesExceededException,4
 MLBPortal,com.mlb.mlbportal.dto.player.position,EditPositionPlayerRequest,0,33,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.player.position,CreatePositionPlayerRequest,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.player.position,PositionPlayerSummaryDTO,0,48,0,0,0,1,0,1,0,1
-MLBPortal,com.mlb.mlbportal.dto.player.position,PositionPlayerDTO,2,51,0,0,1,1,1,1,1,1
+MLBPortal,com.mlb.mlbportal.dto.player.position,PositionPlayerDTO,0,53,0,0,0,2,0,2,0,2
 MLBPortal,com.mlb.mlbportal.mappers,StadiumMapperImpl,62,115,13,9,14,38,11,7,2,5
 MLBPortal,com.mlb.mlbportal.mappers,TeamMapperImpl,115,477,18,18,35,142,17,14,3,10
 MLBPortal,com.mlb.mlbportal.mappers,TeamMapper,28,0,0,0,7,0,3,0,3,0
@@ -41,7 +41,7 @@ MLBPortal,com.mlb.mlbportal.handler.conflict,UserAlreadyExistsException,0,4,0,0,
 MLBPortal,com.mlb.mlbportal.handler.conflict,PlayerAlreadyExistsException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.handler.conflict,StadiumAlreadyExistsException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models,Match,149,380,26,46,0,8,25,43,3,29
-MLBPortal,com.mlb.mlbportal.models,Stadium,135,459,32,64,7,8,31,51,5,29
+MLBPortal,com.mlb.mlbportal.models,Stadium,135,459,31,65,7,8,30,52,5,29
 MLBPortal,com.mlb.mlbportal.models,Team,529,1843,166,278,11,51,139,156,6,67
 MLBPortal,com.mlb.mlbportal.models,UserEntity,219,768,59,109,7,17,53,73,6,36
 MLBPortal,com.mlb.mlbportal.models,PasswordResetToken,115,238,14,26,0,5,15,31,5,21
@@ -76,7 +76,7 @@ MLBPortal,com.mlb.mlbportal.services,TeamLookupService,2,291,5,12,1,55,5,7,0,3
 MLBPortal,com.mlb.mlbportal.services,UserService,35,229,2,14,3,45,7,15,5,9
 MLBPortal,com.mlb.mlbportal.services,MlbImportService,9,238,7,7,4,52,7,9,0,8
 MLBPortal,com.mlb.mlbportal.models.enums,Division,0,34,0,0,0,4,0,1,0,1
-MLBPortal,com.mlb.mlbportal.models.enums,PlayerPositions,34,114,6,0,4,14,4,3,1,3
+MLBPortal,com.mlb.mlbportal.models.enums,PlayerPositions,6,142,2,4,1,17,2,5,0,4
 MLBPortal,com.mlb.mlbportal.models.enums,MatchStatus,0,34,0,0,0,4,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,PitcherPositions,0,34,0,0,0,4,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,League,0,24,0,0,0,3,0,1,0,1
@@ -87,9 +87,9 @@ MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumInitDTO,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumPicturesDTO,9,0,0,0,1,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MlbImportController,9,0,0,0,2,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,MatchController,17,12,2,0,3,2,2,2,1,2
-MLBPortal,com.mlb.mlbportal.controllers,InitController,204,596,9,29,47,130,11,27,3,16
+MLBPortal,com.mlb.mlbportal.controllers,InitController,202,598,8,30,46,131,10,28,3,16
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,5,52,1,7,1,8,1,5,0,1
-MLBPortal,com.mlb.mlbportal.controllers,PlayerController,83,37,0,0,20,6,6,6,6,6
+MLBPortal,com.mlb.mlbportal.controllers,PlayerController,35,85,0,0,9,17,2,10,2,10
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,37,1,1,0,8,1,4,0,4
 MLBPortal,com.mlb.mlbportal.controllers,AuthController,6,74,0,4,1,13,1,8,1,6
 MLBPortal,com.mlb.mlbportal.controllers,UserController,0,43,0,0,0,9,0,5,0,5
