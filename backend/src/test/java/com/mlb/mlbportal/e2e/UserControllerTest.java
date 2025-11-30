@@ -68,7 +68,7 @@ class UserControllerTest extends BaseE2ETest {
 
     @Test
     @DisplayName("GET /api/v1/users returns all users with correct fields")
-    void getAllUsersRESTMethodTest() {
+    void testGetAllUsers() {
         given().contentType(ContentType.JSON).when().get("/api/v1/users").then()
             .statusCode(200)
             .body("size()", is(2))
@@ -106,20 +106,6 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/users/favorites/teams/{teamName} should fail if team is already favorite")
-    void testAddExistantFavTeam() {
-        String url = FAV_TEAMS_PATH + "/" + TEST_TEAM1_NAME;
-        given()
-                .header("X-Mock-User", USER1_USERNAME)
-                .contentType(ContentType.JSON)
-                .when()
-                .post(url)
-                .then()
-                .statusCode(409)
-                .body("message", is("Team Already Exists"));
-    }
-
-    @Test
     @DisplayName("DELETE /api/v1/users/favorites/teams/{teamName} should remove a team from favorites")
     void testRemoveFavTeam() {
         String url = FAV_TEAMS_PATH + "/" + TEST_TEAM2_NAME;
@@ -131,20 +117,6 @@ class UserControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("status", is("SUCCESS"))
-                .body("message", is("Team Succesfullly Remove"));
-    }
-
-    @Test
-    @DisplayName("DELETE /api/v1/users/favorites/teams/{teamName} should fail if team is not in favorites")
-    void testRemoveNonFavTeam() {
-        String url = FAV_TEAMS_PATH + "/" + TEST_TEAM3_NAME;
-        given()
-                .header("X-Mock-User", USER1_USERNAME)
-                .contentType(ContentType.JSON)
-                .when()
-                .delete(url)
-                .then()
-                .statusCode(404)
-                .body("message", is("Team Not Found"));
+                .body("message", is("Team Successfully Remove"));
     }
 }

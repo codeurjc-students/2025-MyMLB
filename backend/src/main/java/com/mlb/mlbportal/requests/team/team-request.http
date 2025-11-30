@@ -7,7 +7,7 @@ GET https://localhost:8443/api/v1/teams/standings
 Content-Type: application/json
 
 ### Get Team Information
-GET https://localhost:8443/api/v1/teams/Cincinnati Reds
+GET https://localhost:8443/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 ### Get Non Existent Team Information

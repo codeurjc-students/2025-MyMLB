@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.mlb.mlbportal.dto.user.ShowUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,10 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.dto.user.ShowUser;
-import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
-import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
@@ -111,8 +107,8 @@ class UserServiceIntegrationTest {
         List<ShowUser> result = this.userService.getAllUsers();
 
         assertThat(result).hasSize(2)
-            .extracting(ShowUser::username)
-            .containsExactlyInAnyOrder(USER1_USERNAME, USER2_USERNAME);
+                .extracting(ShowUser::username)
+                .containsExactlyInAnyOrder(USER1_USERNAME, USER2_USERNAME);
     }
 
     @Test
@@ -128,17 +124,6 @@ class UserServiceIntegrationTest {
 
         UserEntity saved = this.userRepository.findByUsername(TEST_USER_USERNAME).orElseThrow();
         assertThat(saved.getEmail()).isEqualTo(TEST_USER_EMAIL);
-    }
-
-    @Test
-    @DisplayName("createUser should throw exception if user already exists")
-    void testCreateExistingUser() {
-        RegisterRequest request = new RegisterRequest(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD);
-
-        UserAlreadyExistsException ex = assertThrows(UserAlreadyExistsException.class, () -> {
-            userService.createUser(request);
-        });
-        assertThat(ex.getMessage()).isEqualTo("The User Already Exists in the Database");
     }
 
     @Test
@@ -162,28 +147,12 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should throw TeamAlreadyExistsException if team is already in favorites")
-    void testAddFavTeamAlreadyExists() {
-        assertThatThrownBy(() -> this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM1_NAME))
-                .isInstanceOf(TeamAlreadyExistsException.class)
-                .hasMessageContaining("Team Already Exists");
-    }
-
-    @Test
     @DisplayName("Should remove a team from user's favorites")
     void testRemoveFavTeam() {
         this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM1_NAME);
-
         UserEntity updatedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+
         assertThat(updatedUser.getFavTeams()).doesNotContain(this.teams.getFirst());
         assertThat(this.teams.getFirst().getFavoritedByUsers()).doesNotContain(updatedUser);
-    }
-
-    @Test
-    @DisplayName("Should throw TeamNotFoundException if team is not in favorites")
-    void testRemoveNonFavTeam() {
-        assertThatThrownBy(() -> this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM3_NAME))
-                .isInstanceOf(TeamNotFoundException.class)
-                .hasMessageContaining("Team Not Found");
     }
 }

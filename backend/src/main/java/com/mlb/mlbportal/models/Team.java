@@ -140,6 +140,26 @@ public class Team {
         this.lastTen = "0-0";
     }
 
+    public void addPositionPlayer(PositionPlayer player) {
+        this.positionPlayers.add(player);
+        player.setTeam(this);
+    }
+
+    public void removePositionPlayer(PositionPlayer player) {
+        this.positionPlayers.remove(player);
+        player.setTeam(null);
+    }
+
+    public void addPitcher(Pitcher player) {
+        this.pitchers.add(player);
+        player.setTeam(this);
+    }
+
+    public void removePitcher(Pitcher player) {
+        this.pitchers.remove(player);
+        player.setTeam(null);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

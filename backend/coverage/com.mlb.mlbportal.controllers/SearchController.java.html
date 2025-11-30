@@ -44,18 +44,18 @@ public class SearchController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;0&quot;) int size) {
 
-<span class="fc bfc" id="L47" title="All 4 branches covered.">        switch (type.toLowerCase()) {</span>
+<span class="pc bpc" id="L47" title="2 of 4 branches missed.">        switch (type.toLowerCase()) {</span>
             case &quot;stadium&quot; -&gt; {
 <span class="fc" id="L49">                return ResponseEntity.ok(searchService.searchStadiums(query, page, size));</span>
             }
             case &quot;team&quot; -&gt; {
-<span class="fc" id="L52">                return ResponseEntity.ok(searchService.searchTeams(query, page, size));</span>
+<span class="nc" id="L52">                return ResponseEntity.ok(searchService.searchTeams(query, page, size));</span>
             }
             case &quot;player&quot; -&gt; {
-<span class="fc bfc" id="L55" title="All 2 branches covered.">                if (&quot;position&quot;.equalsIgnoreCase(playerType)) {</span>
-<span class="fc" id="L56">                    return ResponseEntity.ok(searchService.searchPositionPlayers(query, page, size));</span>
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">                } else if (&quot;pitcher&quot;.equalsIgnoreCase(playerType)) {</span>
-<span class="fc" id="L58">                    return ResponseEntity.ok(searchService.searchPitchers(query, page, size));</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                if (&quot;position&quot;.equalsIgnoreCase(playerType)) {</span>
+<span class="nc" id="L56">                    return ResponseEntity.ok(searchService.searchPositionPlayers(query, page, size));</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                } else if (&quot;pitcher&quot;.equalsIgnoreCase(playerType)) {</span>
+<span class="nc" id="L58">                    return ResponseEntity.ok(searchService.searchPitchers(query, page, size));</span>
                 } else {
 <span class="nc" id="L60">                    throw new InvalidSearchTypeException(&quot;Missing or invalid playerType parameter&quot;);</span>
                 }

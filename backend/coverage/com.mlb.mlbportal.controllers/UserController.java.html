@@ -81,7 +81,7 @@ public class UserController {
     public ResponseEntity&lt;AuthResponse&gt; removeFavoriteTeam(Principal principal,
             @PathVariable(&quot;teamName&quot;) String teamName) {
 <span class="fc" id="L83">        this.userService.removeFavTeam(principal.getName(), teamName);</span>
-<span class="fc" id="L84">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Succesfullly Remove&quot;));</span>
+<span class="fc" id="L84">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Successfully Remove&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

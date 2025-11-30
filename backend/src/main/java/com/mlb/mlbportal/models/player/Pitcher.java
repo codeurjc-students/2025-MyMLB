@@ -3,6 +3,7 @@ package com.mlb.mlbportal.models.player;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,8 +34,8 @@ public class Pitcher extends Player {
     private int saveOpportunities;
     private double whip;
 
-    public Pitcher(String name, Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched) {
-        super(name, team);
+    public Pitcher(String name, int number,Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched) {
+        super(name, number, team);
         this.position = position;
         this.games = games;
         this.wins = wins;
@@ -42,11 +43,26 @@ public class Pitcher extends Player {
         this.inningsPitched = inningsPitched;
     }
 
-    public Pitcher(String name, Team team, String picture, PitcherPositions position, int games, int wins, int losses) {
-        super(name, team, picture);
+    public Pitcher(String name, int number, Team team, PictureInfo picture, PitcherPositions position, int games, int wins, int losses) {
+        super(name, number,  team, picture);
         this.position = position;
         this.games = games;
         this.wins = wins;
         this.losses = losses;
+    }
+
+    public Pitcher(String name, int number, Team team, PitcherPositions position) {
+        super(name, number, team);
+        this.position = position;
+        this.games = 0;
+        this.wins = 0;
+        this.losses = 0;
+        this.inningsPitched = 0.0;
+        this.totalStrikeouts = 0;
+        this.walks = 0;
+        this.hitsAllowed = 0;
+        this.runsAllowed = 0;
+        this.saves = 0;
+        this.saveOpportunities = 0;
     }
 }

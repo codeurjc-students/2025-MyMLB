@@ -7,5 +7,4 @@ public record UpdateTeamRequest(
         Optional<Integer> newChampionship,
         Optional<String> newInfo,
         Optional<String> newStadiumName
-) {
-}
+) {}

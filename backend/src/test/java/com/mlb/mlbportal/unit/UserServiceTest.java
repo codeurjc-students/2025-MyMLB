@@ -140,7 +140,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("createUser should successfully create a new user if username does not exist")
-    void testCreateNonExistantUser() {
+    void testCreateNonExistentUser() {
         RegisterRequest registerRequest = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
         when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.empty());
@@ -160,7 +160,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("createUser should throw UserAlreadyExistsException if username already exists")
-    void testCreateExistantUser() {
+    void testCreateExistentUser() {
         RegisterRequest registerRequest = new RegisterRequest(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
         when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));

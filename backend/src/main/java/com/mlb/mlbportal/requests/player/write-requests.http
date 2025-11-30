@@ -1,0 +1,81 @@
+### Create a Position Player
+POST https://localhost:8443/api/v1/players/position-players
+Content-Type: application/json
+
+{
+    "name": "Gleyber Torres",
+    "playerNumber": 25,
+    "position": "2B",
+    "teamName": "Detroit Tigers"
+}
+
+### Try to create a player with a name that already exists
+POST https://localhost:8443/api/v1/players/position-players
+Content-Type: application/json
+
+{
+    "name": "Anthony Volpe",
+    "playerNumber": 34,
+    "position": "2B",
+    "teamName": "Detroit Tigers"
+}
+
+### Try to create a player with a team that doesn't exists
+POST https://localhost:8443/api/v1/players/position-players
+Content-Type: application/json
+
+{
+    "name": "Vladimir Guerrero Jr",
+    "playerNumber": 28,
+    "position": "2B",
+    "teamName": "Leones del Caracas"
+}
+
+### Create a pitcher
+POST https://localhost:8443/api/v1/players/pitchers
+Content-Type: application/json
+
+{
+    "name": "Gerrit Cole",
+    "playerNumber": 45,
+    "position": "SP",
+    "teamName": "New York Yankees"
+}
+
+### Edit Position Player
+PATCH https://localhost:8443/api/v1/players/position-players/Aaron Judge
+Content-Type: application/json
+
+{
+  "positions": "CF",
+  "atBats": 220,
+  "hits": 93,
+  "doubles": 10,
+  "triples": 1,
+  "homeRuns": 31,
+  "rbis": 72,
+  "walks": 60
+}
+
+### Edit Team of a Position Player
+PATCH https://localhost:8443/api/v1/players/position-players/Aaron Judge
+Content-Type: application/json
+
+{
+  "teamName": "San Diego Padres"
+}
+
+### Change Player Picture
+POST https://localhost:8443/api/v1/players/Aaron Judge/pictures
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="Chief1.png"
+Content-Type: image/png
+
+< ../stadium/Chief1.png
+--WebAppBoundary--
+
+### Delete a player
+DELETE https://localhost:8443/api/v1/players/Aaron Judge
+Accept: application/json

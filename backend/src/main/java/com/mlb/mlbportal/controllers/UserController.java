@@ -81,6 +81,6 @@ public class UserController {
     public ResponseEntity<AuthResponse> removeFavoriteTeam(Principal principal,
             @PathVariable("teamName") String teamName) {
         this.userService.removeFavTeam(principal.getName(), teamName);
-        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Succesfullly Remove"));
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Successfully Remove"));
     }
 }

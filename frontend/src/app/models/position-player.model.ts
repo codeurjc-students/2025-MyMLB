@@ -1,5 +1,8 @@
+import { Pictures } from "./pictures.model"
+
 export type PositionPlayer = {
 	name: string,
+	playerNumber: number,
 	position: string,
 	atBats: number,
 	walks: number,
@@ -11,11 +14,13 @@ export type PositionPlayer = {
 	average: number,
 	obp: number,
 	ops: number,
-	slugging: number
+	slugging: number,
+	picture: Pictures
 }
 
 export type PositionPlayerGlobal = {
 	name: string,
+	playerNumber: number,
 	teamName: string,
 	position: string,
 	atBats: number,
@@ -28,5 +33,6 @@ export type PositionPlayerGlobal = {
 	average: number,
 	obp: number,
 	ops: number,
-	slugging: number
+	slugging: number,
+	picture: Pictures
 }
