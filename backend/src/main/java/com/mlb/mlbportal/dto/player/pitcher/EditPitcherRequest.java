@@ -11,7 +11,7 @@ public record EditPitcherRequest(
         Optional<Integer> games,
         Optional<Integer> wins,
         Optional<Integer> losses,
-        Optional<Integer> inningsPitched,
+        Optional<Double> inningsPitched,
         Optional<Integer> totalStrikeouts,
         Optional<Integer> walks,
         Optional<Integer> hitsAllowed,

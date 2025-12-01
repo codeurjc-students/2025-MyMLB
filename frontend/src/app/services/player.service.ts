@@ -1,0 +1,42 @@
+import { Injectable } from '@angular/core';
+import { CreatePositionPlayerRequest, EditPositionPlayerRequest, PositionPlayerGlobal } from '../models/position-player.model';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { CreatePitcherRequest, EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
+import { Pictures } from '../models/pictures.model';
+import { AuthResponse } from '../models/auth/auth-response.model';
+
+@Injectable({
+	providedIn: 'root',
+})
+export class PlayerService {
+	private apiUrl = 'https://localhost:8443/api/v1/players';
+
+	constructor(private httpMock: HttpClient) {}
+
+	public createPositionPlayer(request: CreatePositionPlayerRequest): Observable<PositionPlayerGlobal> {
+		return this.httpMock.post<PositionPlayerGlobal>(this.apiUrl, request);
+	}
+
+	public createPitcher(request: CreatePitcherRequest): Observable<PitcherGlobal> {
+		return this.httpMock.post<PitcherGlobal>(this.apiUrl, request);
+	}
+
+	public updatePicture(playerName: string, file: File): Observable<Pictures> {
+		const formData = new FormData();
+		formData.append('file', file);
+		return this.httpMock.post<Pictures>(`${this.apiUrl}/${playerName}/pictures`, formData);
+	}
+
+	public updatePositionPlayer(playerName: string, request: EditPositionPlayerRequest): Observable<AuthResponse> {
+		return this.httpMock.patch<AuthResponse>(`${this.apiUrl}/position-players/${playerName}`, request);
+	}
+
+	public updatePitcher(playerName: string, request: EditPitcherRequest):Observable<AuthResponse> {
+		return this.httpMock.patch<AuthResponse>(`${this.apiUrl}/pitchers/${playerName}`, request);
+	}
+
+	public deletePlayer(playerName: string): Observable<any> {
+		return this.httpMock.delete<any>(`${this.apiUrl}/${playerName}`);
+	}
+}

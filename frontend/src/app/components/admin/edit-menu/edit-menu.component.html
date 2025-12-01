@@ -105,6 +105,14 @@
 									</g>
 								</svg>
 							}
+							@else if (isPositionPlayer(result) || isPitcher(result)) {
+								<div class="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden shadow-sm">
+									<img
+										[src]="result.picture.url" alt="{{ result.name }} picture"
+										class="w-12 h-12 object-contain"
+									/>
+								</div>
+							}
 							<span class="text-xl font-bold">
 								@if (isTeam(result)) {
 									{{ result.teamStats.name }}
@@ -144,5 +152,8 @@
 	}
 	@else if (currentView === 'team' && isTeam(selectedResult)) {
 		<app-edit-team [team]="selectedResult" (backToMenu)="currentView = null"></app-edit-team>
+	}
+	@else if (currentView === 'player' && (isPositionPlayer(selectedResult) || isPitcher(selectedResult))) {
+		<app-edit-player [player]="selectedResult" (backToMenu)="currentView = null"></app-edit-player>
 	}
 </div>

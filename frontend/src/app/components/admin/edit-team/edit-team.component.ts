@@ -56,7 +56,7 @@ export class EditTeamComponent implements OnInit {
 		this.loadMoreStadiums(0);
 	}
 
-	public loadMoreStadiums(page: number) {
+	private loadMoreStadiums(page: number) {
 		this.stadiumService.getAvailableStadiums(page, this.pageSize).subscribe({
 			next: (response) => {
 				this.availableStadiums = [...this.availableStadiums, ...response.content];

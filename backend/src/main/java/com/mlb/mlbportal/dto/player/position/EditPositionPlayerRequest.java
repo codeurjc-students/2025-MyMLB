@@ -7,7 +7,7 @@ import java.util.Optional;
 public record EditPositionPlayerRequest(
         Optional<String> teamName,
         Optional<Integer> playerNumber,
-        Optional<PlayerPositions> positions,
+        Optional<PlayerPositions> position,
         Optional<Integer> atBats,
         Optional<Integer> walks,
         Optional<Integer> hits,

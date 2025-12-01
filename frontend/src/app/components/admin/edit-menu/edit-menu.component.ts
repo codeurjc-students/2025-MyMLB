@@ -10,11 +10,12 @@ import { PitcherGlobal } from '../../../models/pitcher.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
 import { EditTeamComponent } from "../edit-team/edit-team.component";
+import { EditPlayerComponent } from "../edit-player/edit-player.component";
 
 @Component({
 	selector: 'app-edit-menu',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent, EditPlayerComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-menu.component.html',
 })

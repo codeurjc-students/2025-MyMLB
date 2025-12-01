@@ -5,6 +5,7 @@ import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.m
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth/auth-response.model';
+import { PaginatedTeamSummary } from '../models/pagination.model';
 
 export type StandingsResponse = {
 	[league: string]: {
@@ -19,6 +20,10 @@ export class TeamService {
 	private url = 'https://localhost:8443/api/v1/teams';
 
 	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
+
+	public getAvailableTeams(page: number, size: number): Observable<PaginatedTeamSummary> {
+		return this.http.get<PaginatedTeamSummary>(`${this.url}/available?page=${page}&size=${size}`);
+	}
 
 	public getStandings(): Observable<StandingsResponse> {
 		return this.http.get<StandingsResponse>(`${this.url}/standings`);

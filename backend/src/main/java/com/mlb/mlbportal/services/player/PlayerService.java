@@ -281,7 +281,7 @@ public class PlayerService {
         PositionPlayer player = this.positionPlayerRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);
 
         request.playerNumber().ifPresent(player::setPlayerNumber);
-        request.positions().ifPresent(player::setPosition);
+        request.position().ifPresent(player::setPosition);
         request.atBats().ifPresent(player::setAtBats);
         request.walks().ifPresent(player::setWalks);
         request.hits().ifPresent(player::setHits);

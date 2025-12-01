@@ -2,6 +2,10 @@
 GET https://localhost:8443/api/v1/teams
 Content-Type: application/json
 
+### Get Available Teams
+GET https://localhost:8443/api/v1/teams/available?page=0&size=10
+Content-Type: application/json
+
 ### Get Standings
 GET https://localhost:8443/api/v1/teams/standings
 Content-Type: application/json
