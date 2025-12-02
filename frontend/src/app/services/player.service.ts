@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CreatePositionPlayerRequest, EditPositionPlayerRequest, PositionPlayerGlobal } from '../models/position-player.model';
+import { CreatePlayerRequest, EditPositionPlayerRequest, PositionPlayerGlobal } from '../models/position-player.model';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CreatePitcherRequest, EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
@@ -14,12 +14,12 @@ export class PlayerService {
 
 	constructor(private httpMock: HttpClient) {}
 
-	public createPositionPlayer(request: CreatePositionPlayerRequest): Observable<PositionPlayerGlobal> {
-		return this.httpMock.post<PositionPlayerGlobal>(this.apiUrl, request);
+	public createPositionPlayer(request: CreatePlayerRequest): Observable<PositionPlayerGlobal> {
+		return this.httpMock.post<PositionPlayerGlobal>(`${this.apiUrl}/position-players`, request);
 	}
 
-	public createPitcher(request: CreatePitcherRequest): Observable<PitcherGlobal> {
-		return this.httpMock.post<PitcherGlobal>(this.apiUrl, request);
+	public createPitcher(request: CreatePlayerRequest): Observable<PitcherGlobal> {
+		return this.httpMock.post<PitcherGlobal>(`${this.apiUrl}/pitchers`, request);
 	}
 
 	public updatePicture(playerName: string, file: File): Observable<Pictures> {

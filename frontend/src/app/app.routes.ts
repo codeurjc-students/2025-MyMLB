@@ -41,5 +41,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/admin/create-stadium/create-stadium.component').then((m) => m.CreateStadiumComponent)
 	},
+	{
+		path: 'create-player',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/admin/create-player/create-player.component').then((m) => m.CreatePlayerComponent)
+	},
 	{ path: '**', redirectTo: 'error' },
 ];

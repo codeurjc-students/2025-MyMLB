@@ -208,7 +208,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		const team = item as Team;
 		this.success = true;
 		this.successMessage = 'Team Selected';
-		this.formInputs.teamName = team.name; // centralizado en formInputs
+		this.formInputs.teamName = team.name;
 		this.availableTeams = this.availableTeams.filter((t) => t.name !== team.name);
 	}
 

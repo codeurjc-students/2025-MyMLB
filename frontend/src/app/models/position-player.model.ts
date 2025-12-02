@@ -37,7 +37,7 @@ export type PositionPlayerGlobal = {
 	picture: Pictures
 }
 
-export type CreatePositionPlayerRequest = {
+export type CreatePlayerRequest = {
 	name: string,
 	playerNumber: number,
 	teamName: string,
