@@ -4,13 +4,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
@@ -42,8 +39,18 @@ public class TeamController {
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;TeamInfoDTO&gt;&gt; getAllTeams() {
-<span class="fc" id="L45">        List&lt;TeamInfoDTO&gt; teams = this.teamService.getTeams();</span>
-<span class="fc" id="L46">        return ResponseEntity.ok(teams);</span>
+<span class="fc" id="L42">        List&lt;TeamInfoDTO&gt; teams = this.teamService.getTeams();</span>
+<span class="fc" id="L43">        return ResponseEntity.ok(teams);</span>
+    }
+
+    @Operation(summary = &quot;Get all available teams&quot;, description = &quot;Returns a list of all available teams. An available team is one whose roster is less than 24&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of teams&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TeamSummary.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/available&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;TeamSummary&gt;&gt; getAvailableTeams(@RequestParam(defaultValue = &quot;0&quot;) int page, @RequestParam(defaultValue = &quot;10&quot;) int size) {
+<span class="fc" id="L53">        return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));</span>
     }
 
     @Operation(summary = &quot;Get team standings&quot;, description = &quot;Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.&quot;)
@@ -53,9 +60,9 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/standings&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt;&gt; getStandings(Principal principal) {
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
-<span class="fc" id="L57">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings(username);</span>
-<span class="fc" id="L58">        return ResponseEntity.ok(standings);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
+<span class="fc" id="L64">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings(username);</span>
+<span class="fc" id="L65">        return ResponseEntity.ok(standings);</span>
     }
 
     @Operation(summary = &quot;Get team info by name&quot;, description = &quot;Returns detailed information about a specific MLB team, including abbreviation, logo, league, division, total games, wins, losses, win percentage, etc.&quot;)
@@ -66,7 +73,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;TeamInfoDTO&gt; getTeamInfo(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L69">        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));</span>
+<span class="fc" id="L76">        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));</span>
     }
 
     @Operation(summary = &quot;Update team information&quot;, description = &quot;Updates specific fields of an MLB team identified by its name. Supports partial updates such as wins, losses, or team details.&quot;)
@@ -79,8 +86,8 @@ public class TeamController {
     @PatchMapping(value = &quot;/{teamName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateTeam(@PathVariable(&quot;teamName&quot;) String teamName,
             @RequestBody UpdateTeamRequest request) {
-<span class="fc" id="L82">        this.teamService.updateTeam(teamName, request);</span>
-<span class="fc" id="L83">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
+<span class="fc" id="L89">        this.teamService.updateTeam(teamName, request);</span>
+<span class="fc" id="L90">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

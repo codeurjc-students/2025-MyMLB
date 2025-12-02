@@ -1,53 +1,92 @@
-import { Stadium } from './../../../models/stadium.model';
+import { Stadium } from '../../../models/stadium.model';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	EventEmitter,
+	HostListener,
+	Input,
+	OnInit,
+	Output,
+} from '@angular/core';
 import { TeamInfo, UpdateTeamRequest } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
-import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
+import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { FormsModule } from '@angular/forms';
 import { BackgroundColorService } from '../../../services/background-color.service';
-import { ActionButtonsComponent } from "../action-buttons/action-buttons.component";
+import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { StadiumService } from '../../../services/stadium.service';
-import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
+import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
+import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
+import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 
 @Component({
 	selector: 'app-edit-team',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
-	imports: [CommonModule, FormsModule, SuccessModalComponent, ErrorModalComponent, ActionButtonsComponent, SelectElementModalComponent],
-	templateUrl: './edit-team.component.html'
+	imports: [
+		CommonModule,
+		FormsModule,
+		SuccessModalComponent,
+		ErrorModalComponent,
+		ActionButtonsComponent,
+		SelectElementModalComponent,
+	],
+	templateUrl: './edit-team.component.html',
 })
-export class EditTeamComponent implements OnInit {
+export class EditTeamComponent
+	extends EditEntityComponent<TeamInfo, UpdateTeamRequest>
+	implements OnInit
+{
 	@Input() team!: TeamInfo;
 	@Output() backToMenu = new EventEmitter<void>();
 
-	public request: UpdateTeamRequest = {};
 	public availableStadiums: Stadium[] = [];
-
-	public cityInput = '';
-	public infoInput = '';
-	public stadiumInput = '';
-	public newChampionshipInput: number | undefined = undefined;
-
-	public error = false;
-	public success = false;
-	public finish = false;
-
-	public errorMessage = '';
-	public successMessage = '';
-
 	public currentPage = 0;
 	public readonly pageSize = 10;
 	public hasMore = true;
-
 	public selectStadiumButtonClicked = false;
 	public isClose = false;
 
-	constructor(private teamService: TeamService, private stadiumService: StadiumService, private backgroundService: BackgroundColorService) {}
+	public override formInputs: any = {
+		city: undefined as string | undefined,
+		info: undefined as string | undefined,
+		newChampionship: undefined as number | undefined,
+		stadiumName: undefined as string | undefined
+	};
+
+	constructor(
+		mapper: EntityFormMapperService,
+		private teamService: TeamService,
+		private stadiumService: StadiumService,
+		private backgroundService: BackgroundColorService,
+	) {
+		super(mapper);
+	}
 
 	ngOnInit(): void {
-		this.stadiumInput = this.team.stadium.name;
+		this.hydrateForm();
+	}
+
+	protected getFieldMap(): Record<string, string> {
+		return {
+			city: 'city',
+			info: 'generalInfo',
+			stadiumName: 'stadium.name'
+		};
+	}
+
+	protected getEntity() {
+		return this.team;
+	}
+
+	protected updateEntityService(request: UpdateTeamRequest) {
+		const req: UpdateTeamRequest = { ...request };
+		if (this.formInputs.newChampionship !== undefined) {
+			req.newChampionship = this.formInputs.newChampionship;
+		}
+		return this.teamService.updateTeam(this.team.teamStats.name, req);
 	}
 
 	public showStadiumsModal() {
@@ -62,9 +101,8 @@ export class EditTeamComponent implements OnInit {
 				this.availableStadiums = [...this.availableStadiums, ...response.content];
 				this.currentPage = response.page.number;
 				this.hasMore = response.page.totalPages > this.currentPage + 1;
-
 			},
-			error: (_) => this.errorMessage = 'Error trying to show the stadiums'
+			error: () => (this.errorMessage = 'Error trying to show the stadiums'),
 		});
 	}
 
@@ -76,10 +114,12 @@ export class EditTeamComponent implements OnInit {
 
 	public selectStadium(item: unknown) {
 		const stadium = item as Stadium;
-		this.stadiumInput = stadium.name;
+		this.formInputs.stadiumName = stadium.name;
 		this.success = true;
 		this.successMessage = 'Stadium Selected';
-		this.availableStadiums = this.availableStadiums.filter(stad => stad.name !== stadium.name);
+		this.availableStadiums = this.availableStadiums.filter(
+			(stad) => stad.name !== stadium.name
+		);
 	}
 
 	public closeStadiumModal() {
@@ -97,54 +137,6 @@ export class EditTeamComponent implements OnInit {
 		}
 	}
 
-	private prepareRequest() {
-		this.request = {};
-
-		if (this.cityInput && this.cityInput !== this.team.city) {
-			this.request.city = this.cityInput;
-		}
-		if (this.infoInput && this.infoInput !== this.team.generalInfo) {
-			this.request.newInfo = this.infoInput;
-		}
-		if (this.newChampionshipInput) {
-			this.request.newChampionship = this.newChampionshipInput;
-		}
-		if (this.stadiumInput && this.stadiumInput !== this.team.stadium.name) {
-			this.request.newStadiumName = this.stadiumInput;
-		}
-	}
-
-	private updateDasboard() {
-		if (this.cityInput && this.cityInput !== this.team.city) {
-			const aux = this.team.city;
-			this.team.city = this.cityInput;
-			this.team.teamStats.name = this.team.teamStats.name.replace(aux, this.cityInput);
-		}
-		if (this.infoInput && this.infoInput !== this.team.generalInfo) {
-			this.team.generalInfo = this.infoInput;
-		}
-		if (this.newChampionshipInput) {
-			this.team.championships.push(this.newChampionshipInput!);
-		}
-		if (this.stadiumInput && this.stadiumInput !== this.team.stadium.name) {
-			this.team.stadium.name = this.stadiumInput;
-		}
-	}
-
-	public confirm() {
-		this.prepareRequest();
-		this.teamService.updateTeam(this.team.teamStats.name, this.request).subscribe({
-			next: (_) => {
-				this.finish = true;
-				this.updateDasboard();
-			},
-			error: (_) => {
-				this.error = true;
-				this.errorMessage = 'Invalid Stadium. The stadium must exists and not have any team assigned';
-			}
-		});
-	}
-
 	public goToEditMenu() {
 		this.finish = false;
 		this.backToMenu.emit();
@@ -152,5 +144,20 @@ export class EditTeamComponent implements OnInit {
 
 	public getBackgroundColor(abbreviation: string) {
 		return this.backgroundService.getBackgroundColor(abbreviation);
+	}
+
+	public override updateDashboard() {
+		if (this.formInputs.city && this.formInputs.city !== this.team.city) {
+			const prevCity = this.team.city;
+			this.team.city = this.formInputs.city;
+			this.team.teamStats.name = this.team.teamStats.name.replace(prevCity, this.team.city);
+		}
+
+		super.updateDashboard();
+
+		if (this.formInputs.newChampionship !== undefined) {
+			this.team.championships.push(this.formInputs.newChampionship);
+			this.formInputs.newChampionship = undefined;
+		}
 	}
 }

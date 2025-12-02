@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.models.player.Player;
+import com.mlb.mlbportal.services.player.PlayerServiceOperations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -56,15 +58,37 @@ public class SearchService {
         return this.paginateAndMap(teams, this.teamMapper::toTeamInfoDTO, page, size);
     }
 
+    /**
+     * Updates and persists a player if their stats have changed.
+     *
+     * @param player the player to check and save
+     * @throws IllegalArgumentException if the player subtype is not supported
+     */
+    private void saveIfStatsChanged(Player player) {
+        if (PlayerServiceOperations.updatePlayerStats(player)) {
+            switch (player) {
+                case PositionPlayer pp -> this.positionPlayerRepository.save(pp);
+                case Pitcher p -> this.pitcherRepository.save(p);
+                default -> throw new IllegalArgumentException("Unexpected subtype: " + player.getClass().getName());
+            }
+        }
+    }
+
+    private <T extends Player> void updateAndSaveStats(List<T> players) {
+        players.forEach(this::saveIfStatsChanged);
+    }
+
     @Transactional(readOnly = true)
     public Page<PositionPlayerDTO> searchPositionPlayers(String input, int page, int size) {
         List<PositionPlayer> players = this.positionPlayerRepository.findByNameContainingIgnoreCase(input);
+        this.updateAndSaveStats(players);
         return this.paginateAndMap(players, this.positionPlayerMapper::toPositionPlayerDTO, page, size);
     }
 
     @Transactional(readOnly = true)
     public Page<PitcherDTO> searchPitchers(String input, int page, int size) {
         List<Pitcher> players = this.pitcherRepository.findByNameContainingIgnoreCase(input);
+        this.updateAndSaveStats(players);
         return this.paginateAndMap(players, this.pitcherMapper::toPitcherDTO, page, size);
     }
 

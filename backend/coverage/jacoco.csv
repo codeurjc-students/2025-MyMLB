@@ -51,7 +51,7 @@ MLBPortal,com.mlb.mlbportal.dto.player.pitcher,EditPitcherRequest,0,42,0,0,0,1,0
 MLBPortal,com.mlb.mlbportal.dto.player.pitcher,PitcherSummaryDTO,0,51,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.player.pitcher,CreatePitcherRequest,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.services.team,TeamServiceOperations,0,151,0,14,0,34,0,12,0,5
-MLBPortal,com.mlb.mlbportal.services.team,TeamService,0,354,1,15,0,70,1,25,0,18
+MLBPortal,com.mlb.mlbportal.services.team,TeamService,0,409,1,15,0,77,1,27,0,20
 MLBPortal,com.mlb.mlbportal.handler.notFound,UserNotFoundException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.handler.notFound,PlayerNotFoundException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.handler.notFound,TeamNotFoundException,0,4,0,0,0,2,0,1,0,1
@@ -63,13 +63,13 @@ MLBPortal,com.mlb.mlbportal.security,CSRFHandlerInterceptor,13,6,3,1,3,3,2,2,0,2
 MLBPortal,com.mlb.mlbportal.security,MockAuthenticationFilter,0,24,0,2,0,7,0,3,0,2
 MLBPortal,com.mlb.mlbportal.security,TestSecurityConfig,0,66,0,0,0,14,0,5,0,5
 MLBPortal,com.mlb.mlbportal.security,SecurityUserDetails,5,44,0,2,0,9,1,3,1,2
-MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,318,19,0,0,37,5,4,3,4,3
+MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,392,19,0,0,44,5,4,3,4,3
 MLBPortal,com.mlb.mlbportal.handler,GlobalHandler,124,38,8,0,19,8,15,3,11,3
 MLBPortal,com.mlb.mlbportal.handler,InvalidSearchTypeException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.handler,CustomAuthenticationEntryPoint,40,3,0,0,9,1,1,1,1,1
 MLBPortal,com.mlb.mlbportal.handler,CustomAccessDeniedHandler,40,3,0,0,9,1,1,1,1,1
 MLBPortal,com.mlb.mlbportal.services,MatchService,0,200,3,23,0,35,3,16,0,6
-MLBPortal,com.mlb.mlbportal.services,SearchService,0,105,0,0,0,13,0,5,0,5
+MLBPortal,com.mlb.mlbportal.services,SearchService,8,149,2,3,1,22,2,8,0,7
 MLBPortal,com.mlb.mlbportal.services,StadiumService,0,192,0,8,0,34,0,13,0,9
 MLBPortal,com.mlb.mlbportal.services,EmailService,3,105,1,1,0,21,1,6,0,6
 MLBPortal,com.mlb.mlbportal.services,TeamLookupService,2,294,5,12,1,52,5,7,0,3
@@ -90,7 +90,7 @@ MLBPortal,com.mlb.mlbportal.controllers,MatchController,17,12,2,0,3,2,2,2,1,2
 MLBPortal,com.mlb.mlbportal.controllers,InitController,203,588,8,30,42,132,10,28,3,16
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,37,23,6,2,6,3,4,2,0,1
 MLBPortal,com.mlb.mlbportal.controllers,PlayerController,48,72,0,0,10,14,4,8,4,8
-MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,37,1,1,0,8,1,4,0,4
+MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,44,1,1,0,9,1,5,0,5
 MLBPortal,com.mlb.mlbportal.controllers,AuthController,19,61,2,2,3,11,3,6,1,6
 MLBPortal,com.mlb.mlbportal.controllers,UserController,0,43,0,0,0,9,0,5,0,5
 MLBPortal,com.mlb.mlbportal.controllers,StadiumController,0,72,0,0,0,15,0,7,0,7

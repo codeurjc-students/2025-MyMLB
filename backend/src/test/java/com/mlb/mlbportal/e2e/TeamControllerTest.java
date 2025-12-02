@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,6 +51,22 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("teamStats.wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
                 .body("teamStats.pct", hasItems(0.469f, 0.563f, 0.077f))
                 .body("teamStats.gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
+    }
+
+    @Test
+    @DisplayName("GET /ap/v1/teams/available should return all available teams")
+    void testGetAvailableTeams() {
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(ALL_TEAMS_PATH + "/available")
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(3))
+                .body("content.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(3))
+                .body("page.totalPages", is(1));
     }
 
     @Test

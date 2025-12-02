@@ -88,37 +88,46 @@ public class WebSecurityConfig {
 <span class="nc" id="L88">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stadiums&quot;).hasRole(&quot;ADMIN&quot;)</span>
 <span class="nc" id="L89">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/stadiums/*/pictures&quot;).permitAll()</span>
 
+                     // Player Endpoints
+<span class="nc" id="L92">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players&quot;).permitAll()</span>
+<span class="nc" id="L93">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/**&quot;).permitAll()</span>
+<span class="nc" id="L94">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/*/**&quot;).permitAll()</span>
+<span class="nc" id="L95">                        .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L96">                        .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/*/pictures&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L97">                        .requestMatchers(HttpMethod.PATCH, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L98">                        .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+
                     // Matches Endpoints
-<span class="nc" id="L92">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/matches/today&quot;).permitAll()</span>
+<span class="nc" id="L101">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/matches/today&quot;).permitAll()</span>
 
                     // Search Endpoints
-<span class="nc" id="L95">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L104">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/searchs/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
                     
                     // API Docs Endpoints
-<span class="nc" id="L98">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
-<span class="nc" id="L99">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="nc" id="L100">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="nc" id="L107">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
+<span class="nc" id="L108">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+<span class="nc" id="L109">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
                 
                 
                     // PUBLIC ENDPOINTS:
-<span class="nc" id="L104">                    .anyRequest().permitAll());</span>
+<span class="nc" id="L113">                    .anyRequest().permitAll());</span>
 
         // Disable Form login Authentication
-<span class="nc" id="L107">        http.formLogin(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L116">        http.formLogin(AbstractHttpConfigurer::disable);</span>
 
         // Disable CSRF protection.
-<span class="nc" id="L110">        http.csrf(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L119">        http.csrf(AbstractHttpConfigurer::disable);</span>
 
         // Disable Basic Authentication.
-<span class="nc" id="L113">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L122">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
 
         // Stateless session.
-<span class="nc" id="L116">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="nc" id="L125">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
 
         // Add JWT Token filter
-<span class="nc" id="L119">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="nc" id="L128">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
 
-<span class="nc" id="L121">        return http.build();</span>
+<span class="nc" id="L130">        return http.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

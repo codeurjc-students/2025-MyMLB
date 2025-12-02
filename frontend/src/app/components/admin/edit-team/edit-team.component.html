@@ -1,5 +1,5 @@
 <div class="w-full max-w-4xl team-section-container space-y-10 animate-fade-in">
-    <h2 class="text-xl text-center app-page-titles">Edit {{ team.teamStats.name }}</h2>
+    <h2 class="text-xl text-center app-page-titles"> Edit {{ team.teamStats.name }}</h2>
 
     <!-- Logo + Basic Info -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
@@ -81,7 +81,7 @@
             <input
                 type="text"
                 [placeholder]="team.city"
-                [(ngModel)]="cityInput"
+                [(ngModel)]="formInputs.city"
                 class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
             />
         </div>
@@ -90,7 +90,7 @@
 		<div class="flex flex-col">
 			<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Stadium</label>
 			<button (click)="showStadiumsModal()" class="px-5 py-2.5 app-button hover:scale-[1.02]">
-				{{ stadiumInput }}
+				{{ formInputs.stadiumName }}
 			</button>
 		</div>
 
@@ -98,7 +98,7 @@
         <div class="md:col-span-2 flex flex-col">
             <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">General Info</label>
             <textarea
-                [(ngModel)]="infoInput"
+                [(ngModel)]="formInputs.info"
                 [placeholder]="team.generalInfo"
                 rows="4"
                 class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
@@ -120,7 +120,7 @@
                     <input
                         type="number"
                         placeholder="Add year..."
-                        [(ngModel)]="newChampionshipInput"
+                        [(ngModel)]="formInputs.newChampionship"
                         class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
                     />
                 </div>

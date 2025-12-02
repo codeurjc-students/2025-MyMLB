@@ -43,6 +43,11 @@ public class TeamController {
         return ResponseEntity.ok(teams);
     }
 
+    @Operation(summary = "Get all available teams", description = "Returns a list of all available teams. An available team is one whose roster is less than 24")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of teams", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamSummary.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/available", produces = "application/json")
     public ResponseEntity<Page<TeamSummary>> getAvailableTeams(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));

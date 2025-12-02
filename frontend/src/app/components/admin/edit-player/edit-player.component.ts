@@ -23,62 +23,40 @@ import { ErrorModalComponent } from '../../modal/error-modal/error-modal.compone
 import { PlayerService } from '../../../services/player.service';
 import { RemoveConfirmationModalComponent } from '../../remove-confirmation-modal/remove-confirmation-modal.component';
 import { finalize } from 'rxjs';
-import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
+import { LoadingModalComponent } from '../../modal/loading-modal/loading-modal.component';
 import { TeamService } from '../../../services/team.service';
+import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
+import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 
 @Component({
 	selector: 'app-edit-player',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
-    CommonModule,
-    FormsModule,
-    SelectElementModalComponent,
-    ActionButtonsComponent,
-    SuccessModalComponent,
-    ErrorModalComponent,
-    RemoveConfirmationModalComponent,
-    LoadingModalComponent
-],
+		CommonModule,
+		FormsModule,
+		SelectElementModalComponent,
+		ActionButtonsComponent,
+		SuccessModalComponent,
+		ErrorModalComponent,
+		RemoveConfirmationModalComponent,
+		LoadingModalComponent,
+	],
 	templateUrl: './edit-player.component.html',
 })
-export class EditPlayerComponent implements OnInit {
+export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGlobal | PitcherGlobal,EditPositionPlayerRequest | EditPitcherRequest> implements OnInit {
 	@Input() player!: PositionPlayerGlobal | PitcherGlobal;
 	@Output() backToMenu = new EventEmitter<void>();
 
-	public editPositionPlayerRequest: EditPositionPlayerRequest = {};
-	public editPitcherRequest: EditPitcherRequest = {};
-
 	public availableTeams: TeamSummary[] = [];
+	public selectTeamButtonClicked = false;
+	public isClose = false;
 
-	public formInputs = {
-		number: undefined as number | undefined,
-		position: undefined as string | undefined,
-		teamName: undefined as string | undefined,
+	public currentPage = 0;
+	public readonly pageSize = 10;
+	public hasMore = true;
 
-		// Position player
-		atBats: undefined as number | undefined,
-		walks: undefined as number | undefined,
-		hits: undefined as number | undefined,
-		doubles: undefined as number | undefined,
-		triples: undefined as number | undefined,
-		homeRuns: undefined as number | undefined,
-		rbis: undefined as number | undefined,
-
-		// Pitcher
-		games: undefined as number | undefined,
-		wins: undefined as number | undefined,
-		losses: undefined as number | undefined,
-		inningsPitched: undefined as number | undefined,
-		totalStrikeouts: undefined as number | undefined,
-		walksP: undefined as number | undefined,
-		hitsAllowed: undefined as number | undefined,
-		runsAllowed: undefined as number | undefined,
-		saves: undefined as number | undefined,
-		saveOpportunities: undefined as number | undefined,
-	};
-
-	public positionPlayerFieldMap: Record<string, keyof PositionPlayerGlobal> = {
+	public positionPlayerFieldMap: Record<string, string> = {
 		number: 'playerNumber',
 		position: 'position',
 		teamName: 'teamName',
@@ -95,22 +73,22 @@ export class EditPlayerComponent implements OnInit {
 		slugging: 'slugging',
 	};
 
-	public pitcherFieldMap: Record<string, keyof PitcherGlobal> = {
+	public pitcherFieldMap: Record<string, string> = {
 		number: 'playerNumber',
 		position: 'position',
 		teamName: 'teamName',
 		games: 'games',
 		wins: 'wins',
 		losses: 'losses',
+		era: 'era',
 		inningsPitched: 'inningsPitched',
 		totalStrikeouts: 'totalStrikeouts',
-		walksP: 'walks',
+		walks: 'walks',
 		hitsAllowed: 'hitsAllowed',
 		runsAllowed: 'runsAllowed',
-		saves: 'saves',
-		saveOpportunities: 'saveOpportunities',
-		era: 'era',
 		whip: 'whip',
+		saves: 'saves',
+		saveOpportunities: 'saveOpportunities'
 	};
 
 	public positionPlayerEditableFields = [
@@ -149,34 +127,54 @@ export class EditPlayerComponent implements OnInit {
 	] as const;
 
 	public availablePositions = [
-		'C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH', 'SP', 'CP', 'RP'
+		'C',
+		'1B',
+		'2B',
+		'3B',
+		'SS',
+		'LF',
+		'CF',
+		'RF',
+		'DH',
+		'SP',
+		'CP',
+		'RP',
 	];
 
-	public selectTeamButtonClicked = false;
-	public success = false;
-	public loading = false;
-	public error = false;
-	public finish = false;
-	public isClose = false;
 	public showDeleteConfirmationModal = false;
 
-	public successMessage = '';
-	public errorMessage = '';
-
-	public currentPage = 0;
-	public readonly pageSize = 10;
-	public hasMore = true;
-
-	constructor(private playerService: PlayerService, private teamService: TeamService) {}
+	constructor(
+		mapper: EntityFormMapperService,
+		private playerService: PlayerService,
+		private teamService: TeamService
+	) {
+		super(mapper);
+	}
 
 	ngOnInit() {
-		this.updateDashboard();
+		this.hydrateForm();
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (changes['player'] && changes['player'].currentValue) {
-			this.updateDashboard();
+			this.hydrateForm();
 		}
+	}
+
+	protected getFieldMap(): Record<string, string> {
+		return this.isPositionPlayer(this.player)
+			? this.positionPlayerFieldMap
+			: this.pitcherFieldMap;
+	}
+
+	protected getEntity() {
+		return this.player;
+	}
+
+	protected updateEntityService(request: any) {
+		return this.isPositionPlayer(this.player)
+			? this.playerService.updatePositionPlayer(this.player.name, request)
+			: this.playerService.updatePitcher(this.player.name, request);
 	}
 
 	public showTeamsModal() {
@@ -185,112 +183,58 @@ export class EditPlayerComponent implements OnInit {
 		this.loadTeams(0);
 	}
 
-	public isPositionPlayer(player: any): player is PositionPlayerGlobal {
-		return 'ops' in player;
-	}
-
-	public isPitcher(player: any): player is PitcherGlobal {
-		return 'era' in player;
-	}
-
-	private buildEditRequest<T extends object>(
-		inputObj: any,
-		playerObj: any,
-		fieldMap: Record<string, string>
-	): T {
-		const req: any = {};
-
-		Object.entries(fieldMap).forEach(([inputKey, requestKey]) => {
-			const newValue = inputObj[inputKey];
-			const oldValue = playerObj[requestKey];
-
-			if (newValue !== undefined && newValue !== oldValue) {
-				req[requestKey] = newValue;
-			}
-		});
-
-		return req as T;
-	}
-
-	private preparePositionPlayerRequest() {
-		this.editPositionPlayerRequest = this.buildEditRequest<EditPositionPlayerRequest>(
-			this.formInputs,
-			this.player,
-			this.positionPlayerFieldMap
-		);
-	}
-
-	private preparePitcherRequest() {
-		this.editPitcherRequest = this.buildEditRequest<EditPitcherRequest>(
-			this.formInputs,
-			this.player,
-			this.pitcherFieldMap
-		);
-	}
-
-	private updateDashboard() {
-		const fieldMap = this.isPositionPlayer(this.player)
-			? this.positionPlayerFieldMap
-			: this.pitcherFieldMap;
-
-		Object.entries(fieldMap).forEach(([inputKey, playerKey]) => {
-			const newValue = (this.formInputs as any)[inputKey];
-			const oldValue = (this.player as any)[playerKey];
-
-			if (newValue !== undefined && newValue !== oldValue) {
-				(this.player as any)[playerKey] = newValue;
-			}
-			(this.formInputs as any)[inputKey] = (this.player as any)[playerKey];
-		});
-	}
-
-	private updatePositionPlayer() {
-		this.resetState();
-		this.preparePositionPlayerRequest();
-		this.playerService
-			.updatePositionPlayer(this.player.name, this.editPositionPlayerRequest)
-			.subscribe({
-				next: (_) => {
-					this.finish = true;
-					this.updateDashboard();
-				},
-				error: (_) => {
-					this.error = true;
-					this.errorMessage = 'Error';
-				},
-			});
-	}
-
-	private updatePitcher() {
-		this.resetState();
-		this.preparePitcherRequest();
-		this.playerService.updatePitcher(this.player.name, this.editPitcherRequest).subscribe({
-			next: (_) => {
-				this.finish = true;
-				this.updateDashboard();
+	public loadTeams(page: number) {
+		this.teamService.getAvailableTeams(page, this.pageSize).subscribe({
+			next: (response) => {
+				this.availableTeams = [...this.availableTeams, ...response.content];
+				this.currentPage = response.page.number;
+				this.hasMore = response.page.totalPages > this.currentPage + 1;
 			},
-			error: (_) => {
+			error: () => {
 				this.error = true;
-				this.errorMessage = 'Error';
+				this.errorMessage = 'Error trying to load the teams';
 			},
 		});
 	}
 
-	private resetState() {
-		this.error = false;
-		this.errorMessage = '';
-		this.success = false;
-		this.successMessage = '';
-		this.loading = false;
+	public loadNextPage() {
+		if (this.hasMore) {
+			this.loadTeams(this.currentPage + 1);
+		}
 	}
 
-	private uploadPicture(stadiumName: string, file: File) {
+	public selectTeam(item: unknown) {
+		this.resetState();
+		const team = item as Team;
+		this.success = true;
+		this.successMessage = 'Team Selected';
+		this.formInputs.teamName = team.name; // centralizado en formInputs
+		this.availableTeams = this.availableTeams.filter((t) => t.name !== team.name);
+	}
+
+	public closeTeamModal() {
+		this.isClose = true;
+		setTimeout(() => {
+			this.selectTeamButtonClicked = false;
+			this.isClose = false;
+		}, 300);
+	}
+
+	@HostListener('document:keydown', ['$event'])
+	public handleEscape(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			this.closeTeamModal();
+		}
+	}
+
+	public uploadPicture(stadiumName: string, file: File) {
 		this.resetState();
 		this.loading = true;
 
 		if (file.type !== 'image/webp') {
 			this.error = true;
 			this.errorMessage = 'Only .webp images are allowed';
+			this.loading = false;
 			return;
 		}
 
@@ -303,7 +247,7 @@ export class EditPlayerComponent implements OnInit {
 					this.successMessage = 'Picture uploaded successfully';
 					this.player.picture = savedPic;
 				},
-				error: (_) => {
+				error: () => {
 					this.error = true;
 					this.errorMessage = 'An error occurred trying to store the picture';
 				},
@@ -325,74 +269,30 @@ export class EditPlayerComponent implements OnInit {
 		}
 	}
 
-	public confirm() {
-		if (this.isPositionPlayer(this.player)) {
-			this.updatePositionPlayer();
-		} else {
-			this.updatePitcher();
-		}
-	}
-
 	public deletePlayer() {
 		this.resetState();
 		this.playerService.deletePlayer(this.player.name).subscribe({
-			next: (_) => {
+			next: () => {
 				this.success = true;
 				this.successMessage = this.player.name + ' successfully deleted';
 			},
-			error: (_) => {
+			error: () => {
 				this.error = true;
-				this.errorMessage = 'An error occurr during the deletion process';
-			},
-		});
-	}
-
-	public loadTeams(page: number) {
-		this.teamService.getAvailableTeams(page, this.pageSize).subscribe({
-			next: (response) => {
-				this.availableTeams = [...this.availableTeams, ...response.content];
-				this.currentPage = response.page.number;
-				this.hasMore = response.page.totalPages > this.currentPage + 1;
-			},
-			error: (_) => {
-				this.error = true;
-				this.errorMessage = 'Error trying to load the teams';
+				this.errorMessage = 'An error occurred during the deletion process';
 			}
 		});
-	}
-
-	public loadNextPage() {
-		if (this.hasMore) {
-			this.loadTeams(this.currentPage + 1);
-		}
-	}
-
-	public selectTeam(item: unknown) {
-		this.resetState();
-		const team = item as Team;
-		this.success = true;
-		this.successMessage = 'Team Selected';
-		this.formInputs.teamName = team.name;
-		this.availableTeams = this.availableTeams.filter((t) => t.name !== team.name);
-	}
-
-	public closeTeamModal() {
-		this.isClose = true;
-		setTimeout(() => {
-			this.selectTeamButtonClicked = false;
-			this.isClose = false;
-		}, 300);
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	public handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeTeamModal();
-		}
 	}
 
 	public goToEditMenu() {
 		this.finish = false;
 		this.backToMenu.emit();
+	}
+
+	public isPositionPlayer(player: any): player is PositionPlayerGlobal {
+		return 'ops' in player;
+	}
+
+	public isPitcher(player: any): player is PitcherGlobal {
+		return 'era' in player;
 	}
 }

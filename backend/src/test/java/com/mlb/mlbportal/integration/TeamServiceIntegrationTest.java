@@ -9,11 +9,13 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,6 +117,15 @@ class TeamServiceIntegrationTest {
                 .findFirst().orElseThrow();
         assertThat(teamDTO1.teamStats().totalGames()).isEqualTo(149);
         assertThat(teamDTO1.teamStats().pct()).isEqualTo(0.469);
+    }
+
+    @Test
+    @DisplayName("Should return all available teams")
+    void testGetAvailableTeams() {
+        Page<TeamSummary> result = this.teamService.getAvailableTeams(0, 10);
+
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getContent().size()).isEqualTo(3);
     }
 
     @Test

@@ -281,7 +281,7 @@ public class PlayerService {
 <span class="fc" id="L281">        PositionPlayer player = this.positionPlayerRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);</span>
 
 <span class="fc" id="L283">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
-<span class="fc" id="L284">        request.positions().ifPresent(player::setPosition);</span>
+<span class="fc" id="L284">        request.position().ifPresent(player::setPosition);</span>
 <span class="fc" id="L285">        request.atBats().ifPresent(player::setAtBats);</span>
 <span class="fc" id="L286">        request.walks().ifPresent(player::setWalks);</span>
 <span class="fc" id="L287">        request.hits().ifPresent(player::setHits);</span>
