@@ -10,6 +10,7 @@ import { CreatePlayerRequest } from '../../../models/position-player.model';
 import { Team, TeamSummary } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
 import { Router } from '@angular/router';
+import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 
 @Component({
 	selector: 'app-create-player',
@@ -34,7 +35,6 @@ export class CreatePlayerComponent implements OnInit {
 	public success = false;
 	public error = false;
 	public selectTeamButtonClicked = false;
-	public hasMore = true;
 	public isClose = false;
 
 	public availableTeams: TeamSummary[] = [];
@@ -42,7 +42,6 @@ export class CreatePlayerComponent implements OnInit {
 	public errorMessage = '';
 	public successMessage = '';
 
-	public currentPage = 0;
 	public readonly pageSize = 10;
 
 	public availablePositions = [
@@ -63,7 +62,7 @@ export class CreatePlayerComponent implements OnInit {
 	private readonly pitcherPositions = ['SP', 'RP', 'CP'] as const;
   	private readonly positionPlayerPositions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'] as const;
 
-	constructor(private playerService: PlayerService, private teamService: TeamService, private router: Router) {}
+	constructor(private playerService: PlayerService, private teamService: TeamService, public selector: PaginatedSelectorService<TeamSummary>, private router: Router) {}
 
 	private buildRequest(): CreatePlayerRequest {
 		return {
@@ -115,22 +114,8 @@ export class CreatePlayerComponent implements OnInit {
 
 	public showTeamsModal() {
 		this.selectTeamButtonClicked = true;
-		this.availableTeams = [];
-		this.loadTeams(0);
-	}
-
-	public loadTeams(page: number) {
-		this.teamService.getAvailableTeams(page, this.pageSize).subscribe({
-			next: (response) => {
-				this.availableTeams = [...this.availableTeams, ...response.content];
-				this.currentPage = response.page.number;
-				this.hasMore = response.page.totalPages > this.currentPage + 1;
-			},
-			error: (err) => {
-				this.error = true;
-				this.errorMessage = err?.error?.message ?? 'Error trying to load the teams';
-			},
-		});
+		this.selector.reset();
+		this.selector.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public closeTeamModal() {
@@ -148,18 +133,15 @@ export class CreatePlayerComponent implements OnInit {
 		}
 	}
 
-	public selectTeam(item: unknown) {
-		const team = item as Team;
+	public selectTeam(item: unknown): void {
+		const team = item as TeamSummary;
 		this.success = true;
 		this.successMessage = 'Team Selected';
-		this.teamNameInput = team.name;
-		this.availableTeams = this.availableTeams.filter((t) => t.name !== team.name);
+		this.teamNameInput = this.selector.select(team, (t) => t.name);
 	}
 
 	public loadNextPage() {
-		if (this.hasMore) {
-			this.loadTeams(this.currentPage + 1);
-		}
+		this.selector.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public returnToHome() {

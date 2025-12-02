@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Pictures } from '../models/pictures.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
-import { CreateStadiumRequest, StadiumSummary } from '../models/stadium.model';
-import { PaginatedStadiums } from '../models/pagination.model';
+import { CreateStadiumRequest, Stadium, StadiumSummary } from '../models/stadium.model';
+import { PaginatedResponse } from '../models/pagination.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -14,8 +14,8 @@ export class StadiumService {
 
 	constructor(private http: HttpClient) {}
 
-	public getAvailableStadiums(page: number, size: number):Observable<PaginatedStadiums> {
-		return this.http.get<PaginatedStadiums>(`${this.apiUrl}/available?page=${page}&size=${size}`);
+	public getAvailableStadiums(page: number, size: number):Observable<PaginatedResponse<Stadium>> {
+		return this.http.get<PaginatedResponse<Stadium>>(`${this.apiUrl}/available?page=${page}&size=${size}`);
 	}
 
 	public getStadiumPictures(stadiumName: string): Observable<Pictures[]> {

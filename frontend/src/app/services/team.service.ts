@@ -1,3 +1,4 @@
+import { PaginatedResponse } from './../models/pagination.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
@@ -5,7 +6,6 @@ import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.m
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth/auth-response.model';
-import { PaginatedTeamSummary } from '../models/pagination.model';
 
 export type StandingsResponse = {
 	[league: string]: {
@@ -21,8 +21,8 @@ export class TeamService {
 
 	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
 
-	public getAvailableTeams(page: number, size: number): Observable<PaginatedTeamSummary> {
-		return this.http.get<PaginatedTeamSummary>(`${this.url}/available?page=${page}&size=${size}`);
+	public getAvailableTeams(page: number, size: number): Observable<PaginatedResponse<TeamSummary>> {
+		return this.http.get<PaginatedResponse<TeamSummary>>(`${this.url}/available?page=${page}&size=${size}`);
 	}
 
 	public getStandings(): Observable<StandingsResponse> {

@@ -20,6 +20,7 @@ import { StadiumService } from '../../../services/stadium.service';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
+import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 
 @Component({
 	selector: 'app-edit-team',
@@ -42,10 +43,7 @@ export class EditTeamComponent
 	@Input() team!: TeamInfo;
 	@Output() backToMenu = new EventEmitter<void>();
 
-	public availableStadiums: Stadium[] = [];
-	public currentPage = 0;
 	public readonly pageSize = 10;
-	public hasMore = true;
 	public selectStadiumButtonClicked = false;
 	public isClose = false;
 
@@ -60,6 +58,7 @@ export class EditTeamComponent
 		mapper: EntityFormMapperService,
 		private teamService: TeamService,
 		private stadiumService: StadiumService,
+		public selector: PaginatedSelectorService<Stadium>,
 		private backgroundService: BackgroundColorService,
 	) {
 		super(mapper);
@@ -83,43 +82,33 @@ export class EditTeamComponent
 
 	protected updateEntityService(request: UpdateTeamRequest) {
 		const req: UpdateTeamRequest = { ...request };
+
+		if (this.formInputs.stadiumName) {
+			req.newStadiumName = this.formInputs.stadiumName;
+		}
+
 		if (this.formInputs.newChampionship !== undefined) {
 			req.newChampionship = this.formInputs.newChampionship;
 		}
+
 		return this.teamService.updateTeam(this.team.teamStats.name, req);
 	}
 
 	public showStadiumsModal() {
 		this.selectStadiumButtonClicked = true;
-		this.availableStadiums = [];
-		this.loadMoreStadiums(0);
-	}
-
-	private loadMoreStadiums(page: number) {
-		this.stadiumService.getAvailableStadiums(page, this.pageSize).subscribe({
-			next: (response) => {
-				this.availableStadiums = [...this.availableStadiums, ...response.content];
-				this.currentPage = response.page.number;
-				this.hasMore = response.page.totalPages > this.currentPage + 1;
-			},
-			error: () => (this.errorMessage = 'Error trying to show the stadiums'),
-		});
+		this.selector.reset();
+    	this.selector.loadPage(0, this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
 	}
 
 	public loadNextPage() {
-		if (this.hasMore) {
-			this.loadMoreStadiums(this.currentPage + 1);
-		}
+		this.selector.loadNextPage(this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
 	}
 
 	public selectStadium(item: unknown) {
 		const stadium = item as Stadium;
-		this.formInputs.stadiumName = stadium.name;
+		this.formInputs.stadiumName = this.selector.select(stadium, (s) => s.name);
 		this.success = true;
 		this.successMessage = 'Stadium Selected';
-		this.availableStadiums = this.availableStadiums.filter(
-			(stad) => stad.name !== stadium.name
-		);
 	}
 
 	public closeStadiumModal() {

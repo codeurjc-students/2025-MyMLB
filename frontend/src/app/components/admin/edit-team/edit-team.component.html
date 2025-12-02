@@ -135,8 +135,8 @@
 		[teamElements]="false"
 		[openModal]="selectStadiumButtonClicked"
 		[isClose]="isClose"
-		[hasMore]="hasMore"
-		[elements]="availableStadiums"
+		[hasMore]="selector.hasMore"
+		[elements]="(selector.items$ | async) ?? []"
 		(select)="selectStadium($event)"
 		(loadNextPageFunction)="loadNextPage()"
 		(closeModal)="closeStadiumModal()">

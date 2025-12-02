@@ -27,6 +27,7 @@ import { LoadingModalComponent } from '../../modal/loading-modal/loading-modal.c
 import { TeamService } from '../../../services/team.service';
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
+import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 
 @Component({
 	selector: 'app-edit-player',
@@ -48,13 +49,10 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	@Input() player!: PositionPlayerGlobal | PitcherGlobal;
 	@Output() backToMenu = new EventEmitter<void>();
 
-	public availableTeams: TeamSummary[] = [];
 	public selectTeamButtonClicked = false;
 	public isClose = false;
 
-	public currentPage = 0;
 	public readonly pageSize = 10;
-	public hasMore = true;
 
 	public positionPlayerFieldMap: Record<string, string> = {
 		number: 'playerNumber',
@@ -146,13 +144,15 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	constructor(
 		mapper: EntityFormMapperService,
 		private playerService: PlayerService,
-		private teamService: TeamService
+		private teamService: TeamService,
+		public selector: PaginatedSelectorService<TeamSummary>
 	) {
 		super(mapper);
 	}
 
 	ngOnInit() {
 		this.hydrateForm();
+		this.selector.setLabelFn((team) => team.name);
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
@@ -179,37 +179,20 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 
 	public showTeamsModal() {
 		this.selectTeamButtonClicked = true;
-		this.availableTeams = [];
-		this.loadTeams(0);
-	}
-
-	public loadTeams(page: number) {
-		this.teamService.getAvailableTeams(page, this.pageSize).subscribe({
-			next: (response) => {
-				this.availableTeams = [...this.availableTeams, ...response.content];
-				this.currentPage = response.page.number;
-				this.hasMore = response.page.totalPages > this.currentPage + 1;
-			},
-			error: () => {
-				this.error = true;
-				this.errorMessage = 'Error trying to load the teams';
-			},
-		});
+		this.selector.reset();
+    	this.selector.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public loadNextPage() {
-		if (this.hasMore) {
-			this.loadTeams(this.currentPage + 1);
-		}
+		this.selector.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public selectTeam(item: unknown) {
+		const team = item as TeamSummary;
 		this.resetState();
-		const team = item as Team;
 		this.success = true;
 		this.successMessage = 'Team Selected';
-		this.formInputs.teamName = team.name;
-		this.availableTeams = this.availableTeams.filter((t) => t.name !== team.name);
+		this.formInputs.teamName = this.selector.select(team, (t) => t.name);
 	}
 
 	public closeTeamModal() {
