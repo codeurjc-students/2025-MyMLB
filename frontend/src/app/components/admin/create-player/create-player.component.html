@@ -1,88 +1,90 @@
-<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center">
-  <div class="w-full max-w-3xl team-section-container space-y-10 animate-fade-in">
-    <!-- Title -->
-    <h2 class="text-xl text-center app-page-titles">Create Player</h2>
+<div
+    class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center"
+>
+    <div class="w-full max-w-3xl mx-auto team-section-container space-y-10 animate-fade-in">
+        <!-- Title -->
+        <h2 class="text-xl text-center app-page-titles">Create Player</h2>
 
-    <!-- Form fields -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Name -->
-      <div class="flex flex-col">
-        <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Name</label>
-        <input
-          type="text"
-          [(ngModel)]="nameInput"
-          placeholder="e.g., Aaron Judge"
-          class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
-        />
-      </div>
+        <!-- Form fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Name -->
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Name</label>
+                <input
+                    type="text"
+                    [(ngModel)]="nameInput"
+                    placeholder="e.g., Aaron Judge"
+                    class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+            </div>
 
-      <!-- Player number -->
-      <div class="flex flex-col max-w-[120px]">
-        <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Player #</label>
-        <input
-          type="number"
-          [(ngModel)]="playerNumberInput"
-          placeholder="99"
-          min="0"
-          class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700 text-center"
-        />
-      </div>
+            <!-- Player number -->
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Player #</label>
+                <input
+                    type="number"
+                    [(ngModel)]="playerNumberInput"
+                    placeholder="99"
+                    min="0"
+                    class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-center"
+                />
+            </div>
 
-      <!-- Team name -->
-      <div class="flex flex-col md:col-span-2">
-        <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Team</label>
-        <div class="flex items-center gap-3">
-          <input
-            type="text"
-            [(ngModel)]="teamNameInput"
-            placeholder="e.g., New York Yankees"
-            class="w-[260px] px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
-          />
-          <button
-            type="button"
-            (click)="showTeamsModal()"
-            class="px-4 py-2 app-button hover:scale-[1.02]"
-          >
-            Select Team
-          </button>
+            <!-- Team name -->
+            <div class="flex flex-col md:col-span-2">
+                <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Team</label>
+                <div class="flex items-center gap-3">
+                    <input
+                        type="text"
+                        [(ngModel)]="teamNameInput"
+                        placeholder="e.g., New York Yankees"
+                        class="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    <button
+                        type="button"
+                        (click)="showTeamsModal()"
+                        class="px-4 py-2 app-button hover:scale-[1.02]"
+                    >
+                        Select Team
+                    </button>
+                </div>
+            </div>
+
+            <!-- Position -->
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Position</label>
+                <select
+                    [(ngModel)]="positionInput"
+                    class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                    @for (pos of availablePositions; track pos) {
+                        <option [value]="pos">{{ pos }}</option>
+                    }
+                </select>
+            </div>
         </div>
-      </div>
 
-      <!-- Position -->
-      <div class="flex flex-col max-w-[140px]">
-        <label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Position</label>
-        <select
-          [(ngModel)]="positionInput"
-          class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          @for (pos of availablePositions; track pos) {
-            <option [value]="pos">{{ pos }}</option>
-          }
-        </select>
-      </div>
+        <!-- Actions -->
+       	<app-action-buttons (goBack)="returnToHome()" (confirm)="createPlayer()"></app-action-buttons>
+
+        <!-- Modals -->
+        <app-select-element-modal
+            [teamElements]="true"
+            [openModal]="selectTeamButtonClicked"
+            [isClose]="isClose"
+            [hasMore]="selector.hasMore"
+            [elements]="(selector.items$ | async) ?? []"
+            (select)="selectTeam($event)"
+            (loadNextPageFunction)="loadNextPage()"
+            (closeModal)="closeTeamModal()"
+        ></app-select-element-modal>
+
+        @if (success) {
+            <app-success-modal [message]="successMessage" (continue)="returnToHome()"></app-success-modal>
+        }
+
+        @if (error) {
+            <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+        }
     </div>
-
-    <!-- Actions -->
-    <app-action-buttons (goBack)="returnToHome()" (confirm)="createPlayer()"></app-action-buttons>
-
-    <app-select-element-modal
-      [teamElements]="true"
-      [openModal]="selectTeamButtonClicked"
-      [isClose]="isClose"
-      [hasMore]="selector.hasMore"
-      [elements]="(selector.items$ | async) ?? []"
-      (select)="selectTeam($event)"
-      (loadNextPageFunction)="loadNextPage()"
-      (closeModal)="closeTeamModal()"
-    ></app-select-element-modal>
-
-    <!-- Modals -->
-    @if (success) {
-      <app-success-modal [message]="successMessage" (continue)="returnToHome()"></app-success-modal>
-    }
-
-    @if (error) {
-      <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
-    }
-  </div>
 </div>

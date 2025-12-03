@@ -1,72 +1,72 @@
 <div class="w-full max-w-5xl team-section-container space-y-12 animate-fade-in">
-    <h2 class="text-2xl font-bold text-center app-page-titles border-b pb-4">Edit {{ player.name }}</h2>
+    <h2 class="text-xl text-center app-page-titles">Edit {{ player.name }}</h2>
 
-    <!-- Layout horizontal -->
-	<div class="grid grid-cols-1 lg:grid-cols-3 items-start gap-4">
-		<!-- Foto -->
-		<div class="flex justify-center lg:justify-start">
-			<div class="p-4 rounded-xl shadow-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex flex-col items-center space-y-4">
-				<img
-					[src]="player.picture.url"
-					alt="{{ player.name }} picture"
-					class="w-36 h-36 object-contain rounded-full"
-				/>
+	<div class="flex justify-start mr-24 mt-24">
+		<div class="grid grid-cols-1 lg:grid-cols-3 items-start gap-4">
+			<!-- Picture -->
+			<div class="flex justify-center lg:justify-start">
+				<div class="p-4 rounded-xl shadow-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex flex-col items-center space-y-4">
+					<img
+						[src]="player.picture.url"
+						alt="{{ player.name }} picture"
+						class="w-36 h-36 object-contain rounded-full"
+					/>
 
-				<!-- Botón para cambiar imagen -->
-				<div class="flex flex-col items-center space-y-2 w-full">
-					<label class="w-full">
-						<input
-							type="file"
-							accept=".webp"
-							(change)="handleFileUpload($event)"
-							class="hidden"
-						/>
-						<span class="px-3 py-2 app-button hover:scale-[1.02]">
-							Change Picture
-						</span>
-					</label>
-					<p class="text-xs text-gray-600 dark:text-gray-300 text-center">Only .webp images are allowed</p>
+					<div class="flex flex-col items-center space-y-2 w-full">
+						<label class="w-full">
+							<input
+								type="file"
+								accept=".webp"
+								(change)="handleFileUpload($event)"
+								class="hidden"
+							/>
+							<span class="px-3 py-2 ml-2.5 app-button hover:scale-[1.02]">
+								Change Picture
+							</span>
+						</label>
+						<p class="text-xs text-gray-600 dark:text-gray-300 text-center">Only .webp images are allowed</p>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Info básica -->
-		<div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
-			<div class="flex flex-col">
-				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Number</label>
-				<input
-					type="number"
-					[(ngModel)]="formInputs.number"
-					[placeholder]="player.playerNumber"
-					class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-center text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-				/>
-			</div>
+			<!-- Basic Info -->
+			<div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+				<div class="flex flex-col">
+					<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Number</label>
+					<input
+						type="number"
+						[(ngModel)]="formInputs.number"
+						[placeholder]="player.playerNumber"
+						class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-center text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+					/>
+				</div>
 
-			<div class="flex flex-col">
-				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Position</label>
-				<select
-					[(ngModel)]="formInputs.position"
-					class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-				>
-					@for (pos of availablePositions; track pos) {
-						<option [value]="pos">{{ pos }}</option>
-					}
-				</select>
-			</div>
+				<div class="flex flex-col">
+					<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Position</label>
+					<select
+						[(ngModel)]="formInputs.position"
+						class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+					>
+						@for (pos of availablePositions; track pos) {
+							<option [value]="pos">{{ pos }}</option>
+						}
+					</select>
+				</div>
 
-			<div class="flex flex-col">
-				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Team</label>
-				<button
-					type="button"
-					(click)="showTeamsModal()"
-					class="px-3 py-2 app-button hover:scale-[1.02]">
-					{{ formInputs.teamName }}
-				</button>
+				<div class="flex flex-col">
+					<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Team</label>
+					<button
+						type="button"
+						(click)="showTeamsModal()"
+						class="px-3 py-2 app-button hover:scale-[1.02]">
+						{{ formInputs.teamName }}
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
 
-    <!-- Stats editables -->
+    <!-- Editables Stats -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         @if (isPitcher(player)) {
             @for (field of pitcherEditableFields; track field.key) {
@@ -96,15 +96,15 @@
         }
     </div>
 
-    <!-- Stats calculados -->
+    <!-- Non Editables Stats -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center mt-10">
         @if (isPitcher(player)) {
-            @for (field of pitcherReadonlyFields; track field.key) {
-                <div class="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow text-center">
-                    <p class="text-lg font-bold text-gray-800 dark:text-white">{{ player[field.key] }}</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ field.label }}</p>
-                </div>
-            }
+			@for (field of pitcherReadonlyFields; track field.key) {
+				<div class="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-xl shadow text-center">
+					<p class="text-lg font-bold text-gray-800 dark:text-white">{{ player[field.key] }}</p>
+					<p class="text-sm text-gray-600 dark:text-gray-300">{{ field.label }}</p>
+				</div>
+			}
         }
         @else {
             @for (field of positionPlayerReadonlyFields; track field.key) {
