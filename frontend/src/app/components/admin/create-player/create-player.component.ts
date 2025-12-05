@@ -36,6 +36,7 @@ export class CreatePlayerComponent implements OnInit {
 	public error = false;
 	public selectTeamButtonClicked = false;
 	public isClose = false;
+	public selectedTeam = false;
 
 	public availableTeams: TeamSummary[] = [];
 
@@ -133,9 +134,14 @@ export class CreatePlayerComponent implements OnInit {
 		}
 	}
 
+	public closeSuccessModal() {
+		this.selectedTeam = false;
+		this.selectTeamButtonClicked = false;
+	}
+
 	public selectTeam(item: unknown): void {
 		const team = item as TeamSummary;
-		this.success = true;
+		this.selectedTeam = true;
 		this.successMessage = 'Team Selected';
 		this.teamNameInput = this.selector.select(team, (t) => t.name);
 	}

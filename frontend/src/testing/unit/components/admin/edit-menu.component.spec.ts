@@ -186,7 +186,8 @@ describe('Edit Menu Component Tests', () => {
 			60,
 			1.05,
 			0,
-			0
+			0,
+			{url: '', publicId: ''}
 		);
 		component.edit(mockPitcher);
 		expect(component.currentView).toBe('player');

@@ -1,5 +1,5 @@
 import { Pitcher, PitcherGlobal } from '../../app/models/pitcher.model';
-import { PositionPlayer } from '../../app/models/position-player.model';
+import { PositionPlayer, PositionPlayerGlobal } from '../../app/models/position-player.model';
 import { Stadium, StadiumSummary } from '../../app/models/stadium.model';
 import { Team, TeamInfo, TeamSummary } from '../../app/models/team.model';
 import { User } from '../../app/models/user.model';
@@ -7,7 +7,7 @@ import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
 import { ShowMatch } from '../../app/services/match.service';
 import { Pictures } from '../../app/models/pictures.model';
-import { PaginatedSearchs } from '../../app/models/pagination.model';
+import { PaginatedResponse, PaginatedSearchs } from '../../app/models/pagination.model';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {
@@ -96,7 +96,8 @@ export class MockFactory {
 		average: number,
 		obp: number,
 		ops: number,
-		slugg: number
+		slugg: number,
+		picture: Pictures
 	) => {
 		return {
 			name: name,
@@ -112,7 +113,44 @@ export class MockFactory {
 			obp: obp,
 			ops: ops,
 			slugging: slugg,
+			picture: picture
 		} as PositionPlayer;
+	};
+
+	static buildPositionPlayerGlobalMock = (
+		name: string,
+		teamName: string,
+		position: string,
+		atBats: number,
+		walks: number,
+		hits: number,
+		doubles: number,
+		triples: number,
+		homeRuns: number,
+		rbis: number,
+		average: number,
+		obp: number,
+		ops: number,
+		slugg: number,
+		picture: Pictures
+	) => {
+		return {
+			name: name,
+			teamName: teamName,
+			position: position,
+			atBats: atBats,
+			walks: walks,
+			hits: hits,
+			doubles: doubles,
+			triples: triples,
+			homeRuns: homeRuns,
+			rbis: rbis,
+			average: average,
+			obp: obp,
+			ops: ops,
+			slugging: slugg,
+			picture: picture
+		} as PositionPlayerGlobal;
 	};
 
 	static buildPitcherMock = (
@@ -129,7 +167,8 @@ export class MockFactory {
 		ra: number,
 		whip: number,
 		saves: number,
-		savesOp: number
+		savesOp: number,
+		picture: Pictures
 	) => {
 		return {
 			name: name,
@@ -146,6 +185,7 @@ export class MockFactory {
 			whip: whip,
 			saves: saves,
 			saveOpportunities: savesOp,
+			picture: picture
 		} as Pitcher;
 	};
 
@@ -164,7 +204,8 @@ export class MockFactory {
 		ra: number,
 		whip: number,
 		saves: number,
-		savesOp: number
+		savesOp: number,
+		picture: Pictures
 	) => {
 		return {
 			name: name,
@@ -182,6 +223,8 @@ export class MockFactory {
 			whip: whip,
 			saves: saves,
 			saveOpportunities: savesOp,
+			picture: picture
+
 		} as PitcherGlobal;
 	};
 
@@ -242,5 +285,17 @@ export class MockFactory {
 				totalPages: 1
 			}
 		} as PaginatedSearchs
+	};
+
+	static buildPaginatedResponse = <T>(elements: T): PaginatedResponse<T> => {
+		return {
+			content: [elements],
+			page: {
+				size: 5,
+				number: 2,
+				totalElements: 1,
+				totalPages: 1
+			}
+		}
 	};
 }

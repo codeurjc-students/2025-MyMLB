@@ -45,7 +45,7 @@ export abstract class EditEntityComponent<T, R extends object> {
 			},
 			error: () => {
 				this.error = true;
-				this.errorMessage = 'Error';
+				this.errorMessage = 'An unexpected error occurr. Please, try again later';
 			},
 		});
 	}

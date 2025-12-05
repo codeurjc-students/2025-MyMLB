@@ -10,7 +10,7 @@
 			<div class="flex items-center gap-2">
 				<div
 					class="team-logo-container"
-					[ngClass]="getBackgroundColor(match.awayTeam.abbreviation)"
+					[ngClass]="backgroundService.getBackgroundColor(match.awayTeam.abbreviation)"
 				>
 					<img
 						class="w-full h-full object-contain"
@@ -44,7 +44,7 @@
 				<span class="font-semibold">{{ match.homeTeam.abbreviation }}</span>
 				<div
 					class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
-					[ngClass]="getBackgroundColor(match.homeTeam.abbreviation)"
+					[ngClass]="backgroundService.getBackgroundColor(match.homeTeam.abbreviation)"
 				>
 					<img
 						class="w-full h-full object-contain"

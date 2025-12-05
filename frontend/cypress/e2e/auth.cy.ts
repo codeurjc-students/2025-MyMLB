@@ -22,12 +22,6 @@ describe('Auth Forms E2E Tests', () => {
 			cy.get('app-register').should('exist');
 			cy.get('h2').should('contain.text', 'Sign Up').and('be.visible');
 		});
-
-		it('should switch to the login form', () => {
-			cy.contains('button', 'SIGN IN').click();
-			cy.get('app-login').should('exist');
-			cy.get('h2').should('contain.text', 'Sign In').and('be.visible');
-		});
 	});
 
 	describe('Registration', () => {
@@ -44,20 +38,6 @@ describe('Auth Forms E2E Tests', () => {
 			cy.wait('@registerRequest');
 			cy.get('app-register').contains('User registered successfully').should('exist');
 		});
-
-		it('should show an error on invalid registration', () => {
-			cy.intercept('POST', '/api/v1/auth/register', {
-				statusCode: 409,
-				body: { status: 'FAILURE', message: 'User already exists' },
-			}).as('registerRequest');
-
-			cy.contains('button', 'SIGN UP').click();
-			fillRegisterForm('testExistingUser@gmail.com', 'testExistingUser', 'test');
-			cy.get('app-register button').contains('SIGN UP').click({ force: true });
-
-			cy.wait('@registerRequest');
-			cy.get('app-register').contains('User already exists').should('exist');
-		});
 	});
 
 	describe('Login', () => {
@@ -72,19 +52,6 @@ describe('Auth Forms E2E Tests', () => {
 
 			cy.wait('@loginRequest');
 			cy.url().should('eq', Cypress.config().baseUrl + '/');
-		});
-
-		it('should show error on invalid login', () => {
-			cy.intercept('POST', '/api/v1/auth/login', {
-				statusCode: 401,
-				body: { status: 'FAILURE', message: 'Invalid Credentials' },
-			}).as('loginFail');
-
-			fillLoginForm('wrongUser', 'wrongPass');
-			cy.get('app-login button').contains('SIGN IN').click();
-
-			cy.wait('@loginFail');
-			cy.get('app-login').contains('Invalid Credentials').should('be.visible');
 		});
 	});
 

@@ -32,7 +32,8 @@ describe('Team Component Integration Tests', () => {
 				0.3,
 				0.4,
 				1.0,
-				0.6
+				0.6,
+				{url: '', publicId: ''}
 			),
 		],
 		[
@@ -50,7 +51,8 @@ describe('Team Component Integration Tests', () => {
 				60,
 				1.05,
 				0,
-				0
+				0,
+				{url: '', publicId: ''}
 			),
 		]
 	);

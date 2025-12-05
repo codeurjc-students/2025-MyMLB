@@ -65,7 +65,8 @@ describe('Search Service Tests', () => {
 		60,
 		1.05,
 		0,
-		0
+		0,
+		{url: '', publicId: ''}
 	);
 
 	const mockPlayerResponse: PaginatedSearchs = {

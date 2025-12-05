@@ -12,11 +12,8 @@ describe('Standings Component E2E Tests', () => {
 		cy.visit('/standings');
 	});
 
-	it('should display the title of the page', () => {
+	it('should display the title of the page and the leagues and divisions', () => {
 		cy.contains('MLB Standings 2025').should('be.visible');
-	});
-
-	it('should display the league and division', () => {
 		cy.contains('AL - East').should('be.visible');
 		cy.contains('NL - Central').should('be.visible');
 	});

@@ -16,7 +16,7 @@ export class DropdownMenuComponent implements OnInit {
 	public teams: TeamSummary[] = [];
 	public teamInfoResponse: TeamInfo | null = null;
 
-	constructor(private teamService: TeamService,private backgroundService: BackgroundColorService,) {}
+	constructor(private teamService: TeamService, public backgroundService: BackgroundColorService,) {}
 
 	ngOnInit() {
 		this.teamService.getTeamsNamesAndAbbr().subscribe({
@@ -29,9 +29,5 @@ export class DropdownMenuComponent implements OnInit {
 		this.teamService.selectTeam(teamName).subscribe({
 			error: (err) => this.errorMessage = err.message
 		});
-	}
-
-	public loadBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 }

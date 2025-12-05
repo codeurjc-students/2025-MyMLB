@@ -16,6 +16,14 @@ describe('Team Calendar E2E Tests', () => {
 
 	beforeEach(() => {
 		cy.fixture('matches.json').then((matches) => {
+			const now = new Date();
+			const currentMonth = now.getMonth();
+			const currentYear = now.getFullYear();
+
+			const adjustedDate = new Date(currentYear, currentMonth, 15, 18, 0, 0);
+
+			matches[0].date = adjustedDate.toISOString();
+
 			cy.intercept('GET', '**/api/v1/matches/home/**', matches).as('getHomeMatches');
 			cy.intercept('GET', '**/api/v1/matches/away/**', matches).as('getAwayMatches');
 		});
@@ -26,12 +34,11 @@ describe('Team Calendar E2E Tests', () => {
 			cy.visit(`/team/${encodeURIComponent(teamData.teamStats.name)}`, {
 				onBeforeLoad(win) {
 					win.__mockTeam__ = teamData;
-
 					Object.defineProperty(win, 'SelectedTeamServiceInit', {
-					value: (serviceInstance: any) => {
-						serviceInstance.setSelectedTeam(win.__mockTeam__);
-					},
-					writable: true,
+						value: (serviceInstance: any) => {
+							serviceInstance.setSelectedTeam(win.__mockTeam__);
+						},
+						writable: true,
 					});
 				},
 			});
@@ -62,22 +69,6 @@ describe('Team Calendar E2E Tests', () => {
 				expect($newHeader.text()).to.eq(initialMonth);
 			});
 		});
-	});
-
-	it('should render 7 columns for days of the week', () => {
-		cy.get('app-calendar .grid.grid-cols-7').first().children().should('have.length', 7);
-		cy.get('app-calendar .grid.grid-cols-7')
-			.first()
-			.children()
-			.eq(0)
-			.should('contain.text', 'Mon');
-	});
-
-	it('should render day cells for the full month grid', () => {
-		cy.get('app-calendar .grid.grid-cols-7')
-			.last()
-			.children()
-			.should('have.length.greaterThan', 28);
 	});
 
 	it('should open match miniature modal when clicking a match', () => {

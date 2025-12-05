@@ -83,6 +83,10 @@
             <app-success-modal [message]="successMessage" (continue)="returnToHome()"></app-success-modal>
         }
 
+		@if (selectedTeam) {
+			<app-success-modal [message]="successMessage" (continue)="closeSuccessModal()"></app-success-modal>
+		}
+
         @if (error) {
             <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
         }

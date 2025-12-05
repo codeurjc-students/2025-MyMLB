@@ -47,15 +47,8 @@ describe('Favorite Team Component E2E Tests', () => {
 	});
 
 	describe('General Elements', () => {
-		it('should display the title of the page', () => {
+		it('should display the general elements of the page', () => {
 			cy.get('h1').should('contain.text', "testUser's Favorite Teams");
-		});
-
-		it('should display the "Add Favorite Team" button', () => {
-			cy.get('button').contains('Add Favorite Team').should('exist').and('be.visible');
-		});
-
-		it('should display the modal with all teams after clicking on the "Add Favorite Team" button', () => {
 			cy.get('button').contains('Add Favorite Team').click();
 
 			cy.wait('@getTeams');

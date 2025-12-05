@@ -41,7 +41,8 @@ describe('Dropdown Menu Component Tests', () => {
 				0.3,
 				0.4,
 				1.0,
-				0.6
+				0.6,
+				{url: '', publicId: ''}
 			),
 		],
 		[
@@ -59,7 +60,8 @@ describe('Dropdown Menu Component Tests', () => {
 				60,
 				1.05,
 				0,
-				0
+				0,
+				{url: '', publicId: ''}
 			),
 		]
 	);

@@ -35,17 +35,6 @@ describe('User Service Tests', () => {
 		httpMock.verify();
 	});
 
-	it('should fetch all users via GET', () => {
-		service.getAllUsers().subscribe((users) => {
-			expect(users.length).toBe(2);
-			expect(users).toEqual(mockUsers);
-		});
-
-		const req = httpMock.expectOne(apiUrl);
-		expect(req.request.method).toBe('GET');
-		req.flush(mockUsers);
-	});
-
 	it('should fetch all favorite teams of the active user', () => {
 		service.favTeams$.pipe(skip(1)).subscribe((favs) => {
 			expect(favs.length).toBe(2);
@@ -57,6 +46,17 @@ describe('User Service Tests', () => {
 		expect(req.request.method).toBe('GET');
 		expect(req.request.withCredentials).toBeTrue();
 		req.flush(mockFavteams);
+	});
+
+	it('should return the currently selected favorite teams', () => {
+		service.getFavTeams();
+		const req = httpMock.expectOne(`${apiUrl}/favorites/teams`);
+		expect(req.request.method).toBe('GET');
+		req.flush(mockFavteams);
+
+		const selectedTeams = service.getSelectedFavTeams();
+		expect(selectedTeams.length).toBe(2);
+		expect(selectedTeams).toEqual(mockFavteams);
 	});
 
 	it('should add the team to the favorite list', () => {

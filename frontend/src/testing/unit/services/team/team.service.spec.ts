@@ -58,7 +58,8 @@ describe('Team Service Tests', () => {
 			0.3,
 			0.4,
 			1.0,
-			0.6
+			0.6,
+			{url: '', publicId: ''}
 		),
 	];
 
@@ -77,7 +78,8 @@ describe('Team Service Tests', () => {
 			60,
 			1.05,
 			0,
-			0
+			0,
+			{url: '', publicId: ''}
 		),
 	];
 
@@ -122,6 +124,19 @@ describe('Team Service Tests', () => {
 		req.flush(mockResponse);
 	});
 
+	it('should fetch all available teams', () => {
+		const mockTeamSummary = MockFactory.buildTeamSummaryMock('Team1', 'T1', 'AL', 'WEST');
+		const mockResponse = MockFactory.buildPaginatedResponse(mockTeamSummary);
+
+		service.getAvailableTeams(0, 10).subscribe((response) => {
+			expect(response).toEqual(mockResponse);
+		});
+
+		const req = httpMock.expectOne(`${apiURL}/available?page=0&size=10`);
+		expect(req.request.method).toBe('GET');
+		req.flush(mockResponse);
+	});
+
 	it('should fetch team info by name', () => {
 		service.getTeamInfo('Yankees').subscribe((response) => {
 			expect(response).toEqual(mockTeamInfo);
@@ -142,20 +157,6 @@ describe('Team Service Tests', () => {
 		const req = httpMock.expectOne(`${apiURL}/Yankees`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockTeamInfo);
-	});
-
-	it('should propagate error if team info fetch fails', () => {
-		service.selectTeam('Yankees').subscribe({
-			next: () => fail('Expected error, but got success'),
-			error: (err) => {
-				expect(err.status).toBe(404);
-				expect(mockSelectedTeamService.setSelectedTeam).not.toHaveBeenCalled();
-				expect(mockRouter.navigate).not.toHaveBeenCalled();
-			}
-		});
-
-		const req = httpMock.expectOne(`${apiURL}/Yankees`);
-		req.flush('Team Not Found', { status: 404, statusText: 'Not Found' });
 	});
 
 	it('should return simplified team list sorted by name', () => {

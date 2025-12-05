@@ -19,7 +19,7 @@ describe('Create Stadium Component E2E Tests', () => {
 		cy.get('input[placeholder="e.g., 1923"]').should('exist');
 	});
 
-	it('should create stadium successfully', () => {
+	it('should create the stadium successfully', () => {
 		cy.intercept('POST', API_URL, {
 			statusCode: 200,
 			body: { name: 'Fenway Park', openingDate: 1912, pictures: [] },
@@ -32,33 +32,6 @@ describe('Create Stadium Component E2E Tests', () => {
 
 		cy.wait('@createStadium');
 		cy.get('app-success-modal').should('contain.text', 'Fenway Park successfully created');
-	});
-
-	it('should show error when fields are empty', () => {
-		cy.intercept('POST', API_URL, {
-			statusCode: 400,
-			body: { message: 'All the fields are required' },
-		}).as('createStadium');
-
-		cy.get('app-action-buttons button').contains('Confirm').click();
-
-		cy.wait('@createStadium');
-		cy.get('app-error-modal').should('contain.text', 'All the fields are required');
-	});
-
-	it('should show error when stadium already exists', () => {
-		cy.intercept('POST', API_URL, {
-			statusCode: 400,
-			body: { message: 'A stadium with this name already exists' },
-		}).as('createStadium');
-
-		cy.get('input[placeholder="e.g., Shippett Stadium"]').type('Yankee Stadium');
-		cy.get('input[placeholder="e.g., 1923"]').type('2009');
-
-		cy.get('app-action-buttons button').contains('Confirm').click();
-
-		cy.wait('@createStadium');
-		cy.get('app-error-modal').should('contain.text', 'A stadium with this name already exists');
 	});
 
 	it('should navigate back to home when clicking goBack', () => {

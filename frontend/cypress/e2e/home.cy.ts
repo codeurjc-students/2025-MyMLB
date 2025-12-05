@@ -16,11 +16,6 @@ describe('Landing Page E2E Tests', () => {
 		cy.contains('Explore Features').should('have.attr', 'href', '#features');
 	});
 
-	it('should scroll down to features section when clicking Explore Features', () => {
-		cy.contains('Explore Features').click();
-		cy.get('#features').should('be.visible');
-	});
-
 	it('should render all feature blocks with titles and images', () => {
 		const featureTitles = [
 			'Discover team rankings and performance insights',

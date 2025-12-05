@@ -19,11 +19,7 @@ export class MatchMiniatureComponent {
 
 	public isClose = false;
 
-	constructor(private bakcgroundColor: BackgroundColorService) {}
-
-	public getBackgroundColor(abbreviation: string | undefined) {
-		return this.bakcgroundColor.getBackgroundColor(abbreviation);
-	}
+	constructor(public backgroundService: BackgroundColorService) {}
 
 	public closeMatchMiniature(trigger: boolean) {
 		if (trigger) {
