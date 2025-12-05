@@ -205,11 +205,4 @@ describe('Edit Menu Component Tests', () => {
 		component.togglePlayerType(false);
 		expect(component.isPlayerTypeOpen).toBeFalse();
 	});
-
-	it('should call backgroundService.getBackgroundColor', () => {
-		backgroundServiceSpy.getBackgroundColor.and.returnValue('bg-blue-900');
-		const result = component.getBackgroundColor('NYY');
-		expect(result).toBe('bg-blue-900');
-		expect(backgroundServiceSpy.getBackgroundColor).toHaveBeenCalledWith('NYY');
-	});
 });

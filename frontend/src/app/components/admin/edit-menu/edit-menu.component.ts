@@ -36,7 +36,7 @@ export class EditMenuComponent implements OnInit {
 	public currentView: 'team' | 'stadium' | 'player' | null = null;
 	public selectedResult!: Team | Stadium | PositionPlayerGlobal | PitcherGlobal;
 
-	constructor(private searchService: SearchService, private backgroundService: BackgroundColorService) {}
+	constructor(private searchService: SearchService, public backgroundService: BackgroundColorService) {}
 
 	ngOnInit(): void {}
 
@@ -129,10 +129,6 @@ export class EditMenuComponent implements OnInit {
 
 	public isStadium(obj: any): obj is Stadium {
 		return 'openingDate' in obj && 'pictures' in obj;
-	}
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 
 	public toggleSearchType(state: boolean) {

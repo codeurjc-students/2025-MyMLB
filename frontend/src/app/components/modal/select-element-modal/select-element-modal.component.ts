@@ -28,7 +28,7 @@ export class SelectElementModalComponent {
 	@Output() loadNextPageFunction = new EventEmitter<void>();
 	@Output() closeModal = new EventEmitter<void>();
 
-	constructor(private backgroundService: BackgroundColorService) {}
+	constructor(public backgroundService: BackgroundColorService) {}
 
 	public isTeam(obj: any): obj is TeamSummary {
 		return 'abbreviation' in obj;
@@ -48,12 +48,5 @@ export class SelectElementModalComponent {
 
 	public trackByFn(elem: Stadium | TeamSummary) {
 		return this.isTeam(elem) ? elem.abbreviation: elem.name;
-	}
-
-	public logoBackground(elem: unknown) {
-		if (this.isTeam(elem)) {
-			return this.backgroundService.getBackgroundColor(elem.abbreviation);
-		}
-		return '';
 	}
 }

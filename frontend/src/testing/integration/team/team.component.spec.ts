@@ -88,11 +88,6 @@ describe('Team Component Integration Tests', () => {
 		fixture.detectChanges();
 	});
 
-	it('should return background class from service', () => {
-		const result = component.backgroundLogo('NYY');
-		expect(result).toBe('bg-nyy');
-	});
-
 	it('should select a player', () => {
 		const player = component.positionPlayers[0];
 		component.selectPlayer(player);

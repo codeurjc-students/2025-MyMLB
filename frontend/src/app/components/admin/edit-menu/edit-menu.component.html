@@ -81,7 +81,7 @@
 					<div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 flex justify-between items-center">
 						<div class="flex items-center gap-5">
 							@if (isTeam(result)) {
-								<div class="team-logo-container" [ngClass]="getBackgroundColor(result.teamStats.abbreviation)">
+								<div class="team-logo-container" [ngClass]="backgroundService.getBackgroundColor(result.teamStats.abbreviation)">
 									<img
 										src="assets/team-logos-new/{{ result.teamStats.league }}/{{ result.teamStats.division }}/{{ result.teamStats.abbreviation }}.png"
 										alt="{{ result.teamStats.abbreviation }}"

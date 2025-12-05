@@ -16,7 +16,7 @@ export class StandingsWidgetComponent implements OnInit {
     currentIndex = 0;
     errorMessage = '';
 
-    constructor(private teamService: TeamService, private backgroundService: BackgroundColorService) {}
+    constructor(private teamService: TeamService, public backgroundService: BackgroundColorService) {}
 
     ngOnInit() {
         this.teamService.getStandings().subscribe({
@@ -45,10 +45,6 @@ export class StandingsWidgetComponent implements OnInit {
     public next() {
         this.currentIndex = (this.currentIndex + 1) % this.standings.length;
     }
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
-	}
 
 	public selectTeam(teamName: string) {
 		this.teamService.selectTeam(teamName).subscribe({

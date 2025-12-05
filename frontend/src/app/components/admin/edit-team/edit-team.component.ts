@@ -59,7 +59,7 @@ export class EditTeamComponent
 		private teamService: TeamService,
 		private stadiumService: StadiumService,
 		public selector: PaginatedSelectorService<Stadium>,
-		private backgroundService: BackgroundColorService,
+		public backgroundService: BackgroundColorService,
 	) {
 		super(mapper);
 	}
@@ -129,10 +129,6 @@ export class EditTeamComponent
 	public goToEditMenu() {
 		this.finish = false;
 		this.backToMenu.emit();
-	}
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 
 	public override updateDashboard() {

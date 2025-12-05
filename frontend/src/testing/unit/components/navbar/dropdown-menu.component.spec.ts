@@ -4,9 +4,8 @@ import { TeamService } from '../../../../app/services/team.service';
 import { BackgroundColorService } from '../../../../app/services/background-color.service';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Router } from '@angular/router';
-import { MockFactory } from '../../../utils/mock-factory';
 import { of, throwError } from 'rxjs';
-import { TeamInfo, TeamSummary } from '../../../../app/models/team.model';
+import { TeamSummary } from '../../../../app/models/team.model';
 
 describe('Dropdown Menu Component Tests', () => {
 	let component: DropdownMenuComponent;
@@ -20,51 +19,6 @@ describe('Dropdown Menu Component Tests', () => {
 		{ name: 'Yankees', abbreviation: 'NYY', league: 'AL', division: 'East' },
 		{ name: 'Red Sox', abbreviation: 'BOS', league: 'AL', division: 'East' },
 	];
-
-	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
-		MockFactory.buildTeamMocks('Yankees', 'NYY', 'AL', 'East', 162, 100, 62, 0.617, 0, '7-3'),
-		'New York',
-		'Founded in 1901',
-		[1903, 1923, 1996, 2009],
-		MockFactory.buildStadiumMock('Yankee Stadium', 2009,  [{ url: '', publicId: '' }]),
-		[
-			MockFactory.buildPositionPlayerMock(
-				'Aaron Judge',
-				'RF',
-				500,
-				80,
-				150,
-				30,
-				2,
-				45,
-				110,
-				0.3,
-				0.4,
-				1.0,
-				0.6,
-				{url: '', publicId: ''}
-			),
-		],
-		[
-			MockFactory.buildPitcherMock(
-				'Gerrit Cole',
-				'SP',
-				30,
-				15,
-				5,
-				2.5,
-				200,
-				220,
-				40,
-				150,
-				60,
-				1.05,
-				0,
-				0,
-				{url: '', publicId: ''}
-			),
-		]
-	);
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -114,11 +68,5 @@ describe('Dropdown Menu Component Tests', () => {
 		teamServiceSpy.getTeamsNamesAndAbbr.and.returnValue(throwError(() => new Error('fail')));
 		component.ngOnInit();
 		expect(component.errorMessage).toBe('Error loading the team info');
-	});
-
-	it('should return background color from service', () => {
-		backgroundServiceSpy.getBackgroundColor.and.returnValue('bg-blue-900');
-		const result = component.loadBackgroundColor('NYY');
-		expect(result).toBe('bg-blue-900');
 	});
 });

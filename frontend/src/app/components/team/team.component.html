@@ -7,7 +7,7 @@
 		<section class="flex flex-col md:flex-row items-center justify-center gap-6 w-full text-center overflow-visible">
 			<div
 				class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center"
-				[ngClass]="backgroundLogo(team.teamStats.abbreviation)"
+				[ngClass]="backgroundService.getBackgroundColor(team.teamStats.abbreviation)"
 			>
 				<img
 				src="assets/team-logos-new/{{ team.teamStats.league }}/{{

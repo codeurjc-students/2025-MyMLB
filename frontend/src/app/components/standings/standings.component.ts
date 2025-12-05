@@ -14,7 +14,7 @@ export class StandingsComponent implements OnInit {
 	public standings: StandingsData[] = [];
 	public errorMessage = '';
 
-	constructor(private teamService: TeamService, private backgroundService: BackgroundColorService) {}
+	constructor(private teamService: TeamService, public backgroundService: BackgroundColorService) {}
 
 	ngOnInit() {
 		this.teamService.getStandings().subscribe({
@@ -32,10 +32,6 @@ export class StandingsComponent implements OnInit {
 			},
 			error: (_) => this.errorMessage = 'Error trying to load the standings'
 		});
-	}
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 
 	public selectTeam(teamName: string) {

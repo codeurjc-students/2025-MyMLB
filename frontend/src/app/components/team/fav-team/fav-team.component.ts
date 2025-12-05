@@ -35,7 +35,7 @@ export class FavTeamComponent implements OnInit {
 
 	constructor(
 		private userService: UserService,
-		private backgroundService: BackgroundColorService,
+		public backgroundService: BackgroundColorService,
 		private teamService: TeamService,
 		private authService: AuthService
 	) {}
@@ -131,12 +131,6 @@ export class FavTeamComponent implements OnInit {
 			},
 			error: (err) => (this.errorMessage = err.message),
 		});
-	}
-
-	// Background Logo
-
-	public logoBackground(team: TeamSummary) {
-		return this.backgroundService.getBackgroundColor(team.abbreviation);
 	}
 
 	// Select Team

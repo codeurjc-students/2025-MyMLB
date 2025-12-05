@@ -17,7 +17,7 @@ export class MatchesOfTheDayComponent implements OnInit {
     public readonly pageSize = 10;
     public hasMore = true;
 
-	constructor(private matchService: MatchService, private backgroundService: BackgroundColorService) {}
+	constructor(private matchService: MatchService, public backgroundService: BackgroundColorService) {}
 
 	ngOnInit(): void {
 		this.loadMoreGames(0);
@@ -38,9 +38,5 @@ export class MatchesOfTheDayComponent implements OnInit {
 		if (this.hasMore) {
 			this.loadMoreGames(this.currentPage + 1);
 		}
-	}
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 }

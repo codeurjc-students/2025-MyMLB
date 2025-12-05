@@ -38,7 +38,7 @@ export class TeamComponent implements OnInit {
 	constructor(
 		private selectedTeamService: SelectedTeamService,
 		private teamService: TeamService,
-		private backgroundColorService: BackgroundColorService
+		public backgroundService: BackgroundColorService
 	) {}
 
 	ngOnInit() {
@@ -64,10 +64,6 @@ export class TeamComponent implements OnInit {
 
 	ngOnDestroy() {
 		clearInterval(this.autoplayInterval);
-	}
-
-	public backgroundLogo(abbreviation: string | undefined) {
-		return this.backgroundColorService.getBackgroundColor(abbreviation);
 	}
 
 	public scrollCarousel(direction: 'left' | 'right') {

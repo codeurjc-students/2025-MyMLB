@@ -116,11 +116,6 @@ describe('Team Component Tests', () => {
 		expect(component.teamRank).toBe(1);
 	});
 
-	it('should return background class from BackgroundColorService', () => {
-		const result = component.backgroundLogo('NYY');
-		expect(result).toBe('bg-nyy');
-	});
-
 	it('should update selectedPlayer when selectPlayer is called', () => {
 		component.selectPlayer(mockPlayers[0]);
 		expect(component.selectedPlayer).toEqual(mockPlayers[0]);

@@ -28,7 +28,7 @@ export class CalendarComponent implements OnInit {
 
 	constructor(
 		private matchService: MatchService,
-		public backgroundColorService: BackgroundColorService
+		public backgroundService: BackgroundColorService
 	) {}
 
 	ngOnInit() {
@@ -79,7 +79,7 @@ export class CalendarComponent implements OnInit {
 		const matches = this.getMatchesOfDay(day);
 		const homeMatch = matches.find((m) => m.homeTeam.name === this.team.teamStats.name);
 		if (homeMatch) {
-			return this.backgroundColorService.getBackgroundColor(this.team.teamStats.abbreviation);
+			return this.backgroundService.getBackgroundColor(this.team.teamStats.abbreviation);
 		}
 		return 'bg-white dark:bg-gray-400';
 	}
@@ -94,10 +94,6 @@ export class CalendarComponent implements OnInit {
 
 	public isOutsideCurrentMonth(day: Date): boolean {
 		return day.getMonth() !== this.viewDate.getMonth();
-	}
-
-	public backgroundLogo(abbreviation: string | undefined) {
-		return this.backgroundColorService.getBackgroundColor(abbreviation);
 	}
 
 	public isDarkBackground(day: Date): boolean {
