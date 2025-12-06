@@ -3,7 +3,6 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
-	HostListener,
 	Input,
 	OnInit,
 	Output,
@@ -17,7 +16,7 @@ import {
 	PositionPlayerGlobal,
 } from '../../../models/position-player.model';
 import { EditPitcherRequest, PitcherGlobal } from '../../../models/pitcher.model';
-import { Team, TeamSummary } from '../../../models/team.model';
+import { TeamSummary } from '../../../models/team.model';
 import { SuccessModalComponent } from '../../success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { PlayerService } from '../../../services/player.service';
@@ -29,21 +28,23 @@ import { EntityFormMapperService } from '../../../services/utilities/entity-form
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 import { ValidationService } from '../../../services/utilities/validation.service';
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-edit-player',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
-		CommonModule,
-		FormsModule,
-		SelectElementModalComponent,
-		ActionButtonsComponent,
-		SuccessModalComponent,
-		ErrorModalComponent,
-		RemoveConfirmationModalComponent,
-		LoadingModalComponent,
-	],
+    CommonModule,
+    FormsModule,
+    SelectElementModalComponent,
+    ActionButtonsComponent,
+    SuccessModalComponent,
+    ErrorModalComponent,
+    RemoveConfirmationModalComponent,
+    LoadingModalComponent,
+    EscapeCloseDirective
+],
 	templateUrl: './edit-player.component.html',
 })
 export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGlobal | PitcherGlobal,EditPositionPlayerRequest | EditPitcherRequest> implements OnInit {
@@ -197,19 +198,12 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		this.formInputs.teamName = this.selector.select(team, (t) => t.name);
 	}
 
-	public closeTeamModal() {
+	public closeTeamModal = () => {
 		this.isClose = true;
 		setTimeout(() => {
 			this.selectTeamButtonClicked = false;
 			this.isClose = false;
 		}, 300);
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	public handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeTeamModal();
-		}
 	}
 
 	public uploadPicture(stadiumName: string, file: File) {

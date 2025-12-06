@@ -69,7 +69,8 @@
 		[elements]="visibleTeams"
 		(select)="addFavoriteTeam($event)"
 		(loadNextPageFunction)="loadMoreTeams()"
-		(closeModal)="closeTeamModal()">
+		(closeModal)="closeTeamModal()"
+		[appEscapeClose]="closeTeamModal">
 	</app-select-element-modal>
 
 	<!-- Addition Confirmation Modal -->

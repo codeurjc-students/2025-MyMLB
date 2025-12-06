@@ -1,6 +1,6 @@
 import { TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { RemoveConfirmationModalComponent } from '../../remove-confirmation-modal/remove-confirmation-modal.component';
@@ -9,11 +9,12 @@ import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { TeamSummary } from '../../../models/team.model';
 import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-fav-team',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent, EscapeCloseDirective],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './fav-team.component.html',
 })
@@ -90,19 +91,12 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 
-	public closeTeamModal() {
+	public closeTeamModal = () => {
 		this.isClose = true;
 		setTimeout(() => {
 			this.addButtonClicked = false;
 			this.isClose = false;
 		}, 300);
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeTeamModal();
-		}
 	}
 
 	// Remove Favorite Team

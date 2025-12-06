@@ -125,15 +125,4 @@ describe('Edit Team Component Tests', () => {
 		expect(component.finish).toBeFalse();
 		expect(component.backToMenu.emit).toHaveBeenCalled();
 	});
-
-	it('should close stadium modal on Escape key', fakeAsync(() => {
-		component.selectStadiumButtonClicked = true;
-		const event = new KeyboardEvent('keydown', { key: 'Escape' });
-
-		component.handleEscape(event);
-		tick(300);
-
-		expect(component.selectStadiumButtonClicked).toBeFalse();
-		expect(component.isClose).toBeFalse();
-	}));
 });

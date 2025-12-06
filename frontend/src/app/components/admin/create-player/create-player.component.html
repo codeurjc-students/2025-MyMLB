@@ -77,7 +77,8 @@
             (select)="selectTeam($event)"
             (loadNextPageFunction)="loadNextPage()"
             (closeModal)="closeTeamModal()"
-        ></app-select-element-modal>
+			[appEscapeClose]="closeTeamModal">
+		</app-select-element-modal>
 
         @if (success) {
             <app-success-modal [message]="successMessage" (continue)="returnToHome()"></app-success-modal>

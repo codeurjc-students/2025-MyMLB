@@ -1,16 +1,17 @@
 import { PlayerService } from './../../../services/player.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { SuccessModalComponent } from '../../success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { CreatePlayerRequest } from '../../../models/position-player.model';
-import { Team, TeamSummary } from '../../../models/team.model';
+import { TeamSummary } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
 import { Router } from '@angular/router';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-create-player',
@@ -18,13 +19,14 @@ import { PaginatedSelectorService } from '../../../services/utilities/paginated-
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
-		CommonModule,
-		FormsModule,
-		SuccessModalComponent,
-		ErrorModalComponent,
-		SelectElementModalComponent,
-		ActionButtonsComponent,
-	],
+    CommonModule,
+    FormsModule,
+    SuccessModalComponent,
+    ErrorModalComponent,
+    SelectElementModalComponent,
+    ActionButtonsComponent,
+    EscapeCloseDirective
+],
 })
 export class CreatePlayerComponent implements OnInit {
 	public nameInput = '';
@@ -119,19 +121,12 @@ export class CreatePlayerComponent implements OnInit {
 		this.selector.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
-	public closeTeamModal() {
+	public closeTeamModal = () => {
 		this.isClose = true;
 		setTimeout(() => {
 			this.selectTeamButtonClicked = false;
 			this.isClose = false;
 		}, 300);
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	public handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeTeamModal();
-		}
 	}
 
 	public closeSuccessModal() {

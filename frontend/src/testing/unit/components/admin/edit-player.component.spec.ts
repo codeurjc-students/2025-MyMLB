@@ -86,12 +86,6 @@ describe('Edit Player Component Tests', () => {
 		expect(component.formInputs.teamName).toBe('Los Angeles Dodgers');
 	});
 
-	it('should close team modal on Escape key', () => {
-		component.selectTeamButtonClicked = true;
-		component.handleEscape(new KeyboardEvent('keydown', { key: 'Escape' }));
-		expect(component.isClose).toBeTrue();
-	});
-
 	it('should upload picture successfully', () => {
 		const mockFile = new File([''], 'pic.webp', { type: 'image/webp' });
 		const mockResponse: Pictures = { url: 'http://some-url', publicId: 'some-id' };
@@ -125,14 +119,5 @@ describe('Edit Player Component Tests', () => {
 		spyOn(component.backToMenu, 'emit');
 		component.goToEditMenu();
 		expect(component.backToMenu.emit).toHaveBeenCalled();
-	});
-
-	it('should identify position player correctly', () => {
-		expect(component.isPositionPlayer(mockPositionPlayer)).toBeTrue();
-	});
-
-	it('should identify pitcher correctly', () => {
-		const mockPitcher: PitcherGlobal = { name: 'Pitcher', era: 3.5 } as any;
-		expect(component.isPitcher(mockPitcher)).toBeTrue();
 	});
 });

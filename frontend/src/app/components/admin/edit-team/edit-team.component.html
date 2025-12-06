@@ -139,7 +139,8 @@
 		[elements]="(selector.items$ | async) ?? []"
 		(select)="selectStadium($event)"
 		(loadNextPageFunction)="loadNextPage()"
-		(closeModal)="closeStadiumModal()">
+		(closeModal)="closeStadiumModal()"
+		[appEscapeClose]="closeStadiumModal">
 	</app-select-element-modal>
 
     <!-- Modals -->

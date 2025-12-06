@@ -136,7 +136,8 @@
 		[elements]="(selector.items$ | async) ?? []"
 		(select)="selectTeam($event)"
 		(loadNextPageFunction)="loadNextPage()"
-		(closeModal)="closeTeamModal()">
+		(closeModal)="closeTeamModal()"
+		[appEscapeClose]="closeTeamModal">
 	</app-select-element-modal>
 
     <!-- Modals -->
@@ -154,12 +155,13 @@
 
 	@if (showDeleteConfirmationModal) {
 		<app-remove-confirmation-modal
-		[title]="'Are you sure you want to remove' + player.name + ' from the league?'"
-		[contentMessage]="'Deleting a player implies that he retires from the MLB. Are you sure you want to proceed?'"
-		[buttonContent]="'Yes, Remove'"
-		[isDelete]="true"
-		(confirm)="deletePlayer()"
-		(cancel)="showDeleteConfirmationModal = false"></app-remove-confirmation-modal>
+			[title]="'Are you sure you want to remove' + player.name + ' from the league?'"
+			[contentMessage]="'Deleting a player implies that he retires from the MLB. Are you sure you want to proceed?'"
+			[buttonContent]="'Yes, Remove'"
+			[isDelete]="true"
+			(confirm)="deletePlayer()"
+			(cancel)="showDeleteConfirmationModal = false">
+		</app-remove-confirmation-modal>
 	}
 
     @if (error) {

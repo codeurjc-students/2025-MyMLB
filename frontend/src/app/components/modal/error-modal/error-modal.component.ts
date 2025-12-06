@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { EventService } from '../../../services/utilities/event.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { EscapeCloseDirective } from '../../../directives/escape-close.directive';
 
 @Component({
 	selector: 'app-error-modal',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, EscapeCloseDirective],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './error-modal.component.html',
 })
@@ -15,7 +15,9 @@ export class ErrorModalComponent {
 
 	public isClosing = false;
 
-	constructor(public eventService: EventService) {}
+	constructor() {
+		this.handleCancel = this.handleCancel.bind(this);
+	}
 
 	handleCancel() {
         this.isClosing = true;
@@ -24,11 +26,4 @@ export class ErrorModalComponent {
 			this.isClosing = false;
 		}, 300);
     }
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.handleCancel();
-		}
-	}
 }

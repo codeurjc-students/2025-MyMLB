@@ -128,12 +128,6 @@ describe('Create Player Component Tests', () => {
 		expect(selectorService.loadPage).toHaveBeenCalled();
 	});
 
-	it('should close team modal on Escape key', () => {
-		component.selectTeamButtonClicked = true;
-		component.handleEscape(new KeyboardEvent('keydown', { key: 'Escape' }));
-		expect(component.isClose).toBeTrue();
-	});
-
 	it('should select team and update teamNameInput', () => {
 		const team: TeamSummary = MockFactory.buildTeamSummaryMock(
 			'Los Angeles Dodgers',

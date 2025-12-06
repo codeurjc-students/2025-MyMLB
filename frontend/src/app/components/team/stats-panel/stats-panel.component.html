@@ -1,6 +1,7 @@
-<section class="team-section-container" [ngClass]="{
-	'relative transform transition-all animate-scaleIn': !teamStats
-}">
+<section
+	class="team-section-container"
+	[ngClass]="{'relative transform transition-all animate-scaleIn': !teamStats}"
+	[appEscapeClose]="closePanel">
 
 	@if (teamStats) {
 		<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
@@ -98,7 +99,7 @@
 				</div>
 			}
 			@else {
-				@if (isPositionPlayer(player)) {
+				@if (validationService.isPositionPlayer(player)) {
 					<div>
 						<p class="text-sm text-gray-500 dark:text-gray-400">Position</p>
 						<p class="text-xl font-bold">{{ player.position }}</p>
@@ -153,7 +154,7 @@
 					</div>
 				}
 				@else {
-					@if(isPitcher(player)) {
+					@if(validationService.isPitcher(player)) {
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">Position</p>
 							<p class="text-xl font-bold">{{ player.position }}</p>

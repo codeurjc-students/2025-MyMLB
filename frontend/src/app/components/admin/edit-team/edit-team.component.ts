@@ -4,7 +4,6 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
-	HostListener,
 	Input,
 	OnInit,
 	Output,
@@ -21,19 +20,21 @@ import { SelectElementModalComponent } from '../../modal/select-element-modal/se
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-edit-team',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
-		CommonModule,
-		FormsModule,
-		SuccessModalComponent,
-		ErrorModalComponent,
-		ActionButtonsComponent,
-		SelectElementModalComponent,
-	],
+    CommonModule,
+    FormsModule,
+    SuccessModalComponent,
+    ErrorModalComponent,
+    ActionButtonsComponent,
+    SelectElementModalComponent,
+    EscapeCloseDirective
+],
 	templateUrl: './edit-team.component.html',
 })
 export class EditTeamComponent
@@ -111,19 +112,12 @@ export class EditTeamComponent
 		this.successMessage = 'Stadium Selected';
 	}
 
-	public closeStadiumModal() {
+	public closeStadiumModal = () => {
 		this.isClose = true;
 		setTimeout(() => {
 			this.selectStadiumButtonClicked = false;
 			this.isClose = false;
 		}, 300);
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	public handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closeStadiumModal();
-		}
 	}
 
 	public goToEditMenu() {
