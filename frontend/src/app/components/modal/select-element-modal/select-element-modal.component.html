@@ -22,9 +22,9 @@
 							<button
 								(click)="selectElement(elem)"
 								class="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-lg transition-all duration-300 ease-out cursor-pointer hover:scale-[1.02] hover:shadow-lg"
-								[ngClass]="isTeam(elem) ? backgroundService.getBackgroundColor(elem.abbreviation) : 'bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-sky-900'"
+								[ngClass]="validationService.isTeamSummary(elem) ? backgroundService.getBackgroundColor(elem.abbreviation) : 'bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-sky-900'"
 								>
-								@if (!isTeam(elem)) {
+								@if (!validationService.isTeamSummary(elem)) {
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										viewBox="0 0 512 512"
@@ -65,7 +65,7 @@
 									/>
 								}
 								<span class="font-medium text-base truncate"
-									[ngClass]="isTeam(elem) ? 'text-white': 'text-gray-900'">
+									[ngClass]="validationService.isTeamSummary(elem) ? 'text-white': 'text-gray-900'">
 									{{ elem.name }}
 								</span>
 							</button>

@@ -28,6 +28,7 @@ import { TeamService } from '../../../services/team.service';
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { ValidationService } from '../../../services/utilities/validation.service';
 
 @Component({
 	selector: 'app-edit-player',
@@ -145,7 +146,8 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		mapper: EntityFormMapperService,
 		private playerService: PlayerService,
 		private teamService: TeamService,
-		public selector: PaginatedSelectorService<TeamSummary>
+		public selector: PaginatedSelectorService<TeamSummary>,
+		public validationService: ValidationService
 	) {
 		super(mapper);
 	}
@@ -162,7 +164,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	}
 
 	protected getFieldMap(): Record<string, string> {
-		return this.isPositionPlayer(this.player)
+		return this.validationService.isPositionPlayer(this.player)
 			? this.positionPlayerFieldMap
 			: this.pitcherFieldMap;
 	}
@@ -172,7 +174,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	}
 
 	protected updateEntityService(request: any) {
-		return this.isPositionPlayer(this.player)
+		return this.validationService.isPositionPlayer(this.player)
 			? this.playerService.updatePositionPlayer(this.player.name, request)
 			: this.playerService.updatePitcher(this.player.name, request);
 	}
@@ -269,13 +271,5 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	public goToEditMenu() {
 		this.finish = false;
 		this.backToMenu.emit();
-	}
-
-	public isPositionPlayer(player: any): player is PositionPlayerGlobal {
-		return 'ops' in player;
-	}
-
-	public isPitcher(player: any): player is PitcherGlobal {
-		return 'era' in player;
 	}
 }

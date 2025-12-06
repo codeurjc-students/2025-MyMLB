@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { EventService } from '../../../services/utilities/event.service';
 
 @Component({
 	selector: 'app-error-modal',
@@ -13,6 +14,8 @@ export class ErrorModalComponent {
 	@Output() cancel = new EventEmitter<void>();
 
 	public isClosing = false;
+
+	constructor(public eventService: EventService) {}
 
 	handleCancel() {
         this.isClosing = true;

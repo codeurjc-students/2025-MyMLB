@@ -9,6 +9,7 @@ import {
 import { Stadium } from '../../../models/stadium.model';
 import { TeamSummary } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
+import { ValidationService } from '../../../services/utilities/validation.service';
 
 @Component({
 	selector: 'app-select-element-modal',
@@ -28,11 +29,7 @@ export class SelectElementModalComponent {
 	@Output() loadNextPageFunction = new EventEmitter<void>();
 	@Output() closeModal = new EventEmitter<void>();
 
-	constructor(public backgroundService: BackgroundColorService) {}
-
-	public isTeam(obj: any): obj is TeamSummary {
-		return 'abbreviation' in obj;
-	}
+	constructor(public backgroundService: BackgroundColorService, public validationService: ValidationService) {}
 
 	public selectElement(elem: Stadium | TeamSummary) {
 		this.select.emit(elem);
@@ -47,6 +44,6 @@ export class SelectElementModalComponent {
 	}
 
 	public trackByFn(elem: Stadium | TeamSummary) {
-		return this.isTeam(elem) ? elem.abbreviation: elem.name;
+		return this.validationService.isTeamSummary(elem) ? elem.abbreviation: elem.name;
 	}
 }
