@@ -37,7 +37,7 @@ public class StadiumService {
         List&lt;Stadium&gt; stadiums;
 <span class="fc bfc" id="L38" title="All 2 branches covered.">        if (!allAvailable) {</span>
 <span class="fc" id="L39">            stadiums = this.stadiumRepository.findAll();</span>
-        }
+<span class="fc" id="L40">        }</span>
         else {
 <span class="fc" id="L42">            stadiums = this.stadiumRepository.findByTeamIsNull();</span>
         }
