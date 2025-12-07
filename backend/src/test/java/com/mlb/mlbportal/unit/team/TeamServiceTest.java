@@ -1,13 +1,12 @@
 package com.mlb.mlbportal.unit.team;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +38,8 @@ import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.Page;
+
 import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
@@ -96,6 +97,22 @@ class TeamServiceTest {
         List<TeamInfoDTO> result = this.teamService.getTeams();
 
         assertThat(result).hasSize(3).containsExactlyElementsOf(this.mockTeamInfoDTOs);
+    }
+
+    @Test
+    @DisplayName("Should return all available teams paginated and sorted")
+    void testGetAvailableTeams() {
+        List<Team> mockTeams = Arrays.asList(team1, team2, team3);
+        List<TeamSummary> teamSummaries = BuildMocksFactory.buildTeamSummaryMocks(mockTeams);
+        when(teamRepository.findAvailableTeams()).thenReturn(mockTeams);
+        when(teamMapper.toTeamSummaryDTO(team1)).thenReturn(teamSummaries.getFirst());
+        when(teamMapper.toTeamSummaryDTO(team2)).thenReturn(teamSummaries.get(1));
+        when(teamMapper.toTeamSummaryDTO(team3)).thenReturn(teamSummaries.getLast());
+
+        Page<TeamSummary> result = this.teamService.getAvailableTeams(0, 10);
+
+        assertThat(result.getTotalElements()).isEqualTo(3);
+        assertThat(result.getContent()).hasSize(3);
     }
 
     @Test

@@ -101,16 +101,18 @@ public abstract class BaseE2ETest {
         }
     }
 
-    protected void saveTestPositionPlayers(String name, Team team, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
-        PositionPlayer player = new PositionPlayer(name, team, PlayerPositions.CF, atBats, walks, hits, doubles);
+    protected void saveTestPositionPlayers(String name, int number, Team team, int atBats, int walks, int hits, int doubles, int triples, int homeRuns, int rbis) {
+        PositionPlayer player = new PositionPlayer(name, number, team, PlayerPositions.CF, atBats, walks, hits);
+        player.setDoubles(doubles);
         player.setTriples(triples);
         player.setHomeRuns(homeRuns);
         player.setRbis(rbis);
         this.positionPlayerRepository.save(player);
     }
 
-    protected void saveTestPitchers(String name, Team team, int games, int wins, int losses, int innings, int so, int walks, int hitsAllowed, int runsAllowed, int saves, int savesOp) {
-        Pitcher pitcher = new Pitcher(name, team, PitcherPositions.SP, games, wins, losses, innings);
+    protected void saveTestPitchers(String name, int number, Team team, int games, int wins, int losses, double innings, int so, int walks, int hitsAllowed, int runsAllowed, int saves, int savesOp) {
+        Pitcher pitcher = new Pitcher(name, number, team, PitcherPositions.SP, games, wins, losses);
+        pitcher.setInningsPitched(innings);
         pitcher.setTotalStrikeouts(so);
         pitcher.setWalks(walks);
         pitcher.setHitsAllowed(hitsAllowed);

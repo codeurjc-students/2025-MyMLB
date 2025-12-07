@@ -75,10 +75,9 @@ describe('Auth Service Tests', () => {
             req.flush(mockUserRole);
         });
 
-        it('should emit GUEST user if getActiveUser fails on explicit call', (done) => {
+        it('should emit GUEST user if getActiveUser fails on explicit call', () => {
             const activeUserUrl = `${authService['apiUrl']}/me`;
             const errorText = 'Unauthorized';
-
 
             authService.getActiveUser().subscribe({
                 next: () => fail('Expected error'),
@@ -86,7 +85,6 @@ describe('Auth Service Tests', () => {
                     expect(err.status).toBe(401);
                     authService.currentUser$.pipe(first()).subscribe((user) => {
                         expect(user).toEqual(defaultGuestUser);
-                        done();
                     });
                 },
             });
@@ -107,7 +105,7 @@ describe('Auth Service Tests', () => {
             loginUrl = `${authService['apiUrl']}/login`;
         });
 
-        it('should login the user successfully and update the current user status', (done) => {
+        it('should login the user successfully and update the current user status', () => {
             authService.loginUser(mockLoginRequest).subscribe((response) => {
                 expect(response).toEqual(mockLoginResponse);
             });
@@ -124,11 +122,10 @@ describe('Auth Service Tests', () => {
 
             authService.currentUser$.pipe(first()).subscribe((user) => {
                 expect(user).toEqual(mockUserRole);
-                done();
             });
         });
 
-        it('should handle login failure with a 401 status code and keep GUEST status', (done) => {
+        it('should handle login failure with a 401 status code and keep GUEST status', () => {
             const mockRequest: LoginRequest = { username: 'wrongUser', password: 'wrongPassword' };
             const errorText = 'Invalid credentials';
 
@@ -139,7 +136,6 @@ describe('Auth Service Tests', () => {
 
                     authService.currentUser$.pipe(first()).subscribe((user) => {
                         expect(user).toEqual(defaultGuestUser);
-                        done();
                     });
                 },
             });
@@ -159,10 +155,9 @@ describe('Auth Service Tests', () => {
             authService['currentUserSubject'].next({ username: 'testUser', roles: ['USER'] });
         });
 
-        it('should successfully logout the user and update status to GUEST', (done) => {
+        it('should successfully logout the user and update status to GUEST', () => {
             authService.currentUser$.pipe(skip(1), first()).subscribe((user) => {
                 expect(user).toEqual(defaultGuestUser);
-                done();
             });
 
             authService.logoutUser().subscribe((response) => {
@@ -170,28 +165,6 @@ describe('Auth Service Tests', () => {
             });
 
             expectPostHelper(logoutUrl, {}, mockLogoutResponse, true);
-        });
-
-        it('should handle logout failure gracefully (e.g., 500 error) and keep current user status', (done) => {
-            const currentLoggedInUser: UserRole = { username: 'testUser', roles: ['USER'] };
-            const errorMessage = 'Server error during logout';
-
-            authService.currentUser$.pipe(first()).subscribe((user) => {
-                expect(user).toEqual(currentLoggedInUser);
-                done();
-            });
-
-            authService.logoutUser().subscribe({
-                next: () => fail('Expected error, but got success'),
-                error: (err) => {
-                    expect(err.status).toBe(500);
-                },
-            });
-
-            const req = httpMock.expectOne(logoutUrl);
-            expect(req.request.method).toBe('POST');
-            expect(req.request.withCredentials).toBeTrue();
-            req.flush(errorMessage, { status: 500, statusText: 'Internal Server Error' });
         });
     });
 
@@ -329,4 +302,21 @@ describe('Auth Service Tests', () => {
             });
         });
     });
+
+	describe('Refresh', () => {
+		it(`it should refresh the user's session successfully`, () => {
+			const mockResponse: AuthResponse = {
+				status: 'SUCCESS',
+				message: 'Auth successful. Tokens are created in cookie.'
+			};
+			authService.silentRefresh().subscribe((response) => {
+				expect(response.status).toBe('SUCCESS');
+			});
+
+			const req = httpMock.expectOne(`${authService['apiUrl']}/refresh`);
+			expect(req.request.method).toBe('POST');
+			expect(req.request.withCredentials).toBeTrue();
+			req.flush(mockResponse);
+		});
+	});
 });

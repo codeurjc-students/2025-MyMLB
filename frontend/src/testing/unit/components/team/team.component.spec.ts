@@ -25,7 +25,7 @@ describe('Team Component Tests', () => {
 		'7-3'
 	);
 
-	const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009, [{ url: '', publicId: '' }]);
+	const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009, [{ url: 'http://fake-url/image.png', publicId: 'image' }]);
 
 	const mockPlayers = [
 		MockFactory.buildPositionPlayerMock(
@@ -41,7 +41,8 @@ describe('Team Component Tests', () => {
 			0.3,
 			0.4,
 			1.0,
-			0.6
+			0.6,
+			{url: '', publicId: ''}
 		),
 	];
 
@@ -60,7 +61,8 @@ describe('Team Component Tests', () => {
 			60,
 			1.05,
 			0,
-			0
+			0,
+			{url: '', publicId: ''}
 		),
 	];
 
@@ -102,6 +104,7 @@ describe('Team Component Tests', () => {
 
 		fixture = TestBed.createComponent(TeamComponent);
 		component = fixture.componentInstance;
+		component.ngOnInit();
 		fixture.detectChanges();
 	});
 
@@ -111,11 +114,6 @@ describe('Team Component Tests', () => {
 		expect(component.pitchers).toEqual(mockPitchers);
 		expect(component.championships).toEqual([1903, 1923, 1996, 2009]);
 		expect(component.teamRank).toBe(1);
-	});
-
-	it('should return background class from BackgroundColorService', () => {
-		const result = component.backgroundLogo('NYY');
-		expect(result).toBe('bg-nyy');
 	});
 
 	it('should update selectedPlayer when selectPlayer is called', () => {
@@ -138,6 +136,8 @@ describe('Team Component Tests', () => {
 	}));
 
 	it('should go to specific slide index', fakeAsync(() => {
+		component.stadiumImages = [{ url: 'http://fake-url/image.png', publicId: 'img1' }];
+  		fixture.detectChanges();
 		component.goToSlide(3);
 		tick(300);
 		expect(component.currentIndex).toBe(3);

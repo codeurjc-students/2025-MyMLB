@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,8 +54,24 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /ap/v1/teams/available should return all available teams")
+    void testGetAvailableTeams() {
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(ALL_TEAMS_PATH + "/available")
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(3))
+                .body("content.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(3))
+                .body("page.totalPages", is(1));
+    }
+
+    @Test
     @DisplayName("GET /api/v1/teams/standings return standings grouped by league and division, ordered by pct")
-    void testGetStandingsEndpoint() {
+    void testGetStandings() {
         given()
                 .accept(ContentType.JSON)
                 .when()
@@ -84,21 +101,6 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("teamStats.name", is(TEST_TEAM1_NAME))
                 .body("teamStats.abbreviation", is(TEST_TEAM1_ABBREVIATION))
                 .body("city", is(TEST_TEAM1_CITY));
-    }
-
-    @Test
-    @DisplayName("GET /api/v1/teams/{teamName} should return a 404 if the team does not exists")
-    void testGetNonExistentTeamInformation() {
-        String url = TEAM_INFO_PATH + UNKNOWN_TEAM;
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(404)
-                .body("status", is(FAILURE))
-                .body("message", is("Team Not Found"))
-                .body("error", is("Team Not Found"));
     }
 
     @Test

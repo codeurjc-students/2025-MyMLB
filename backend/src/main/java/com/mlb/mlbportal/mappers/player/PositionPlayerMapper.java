@@ -5,8 +5,8 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 
 @Mapper(componentModel = "spring")

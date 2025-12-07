@@ -6,7 +6,7 @@
 			}
 			<li>
 				<a (click)="selectTeam(team.name)" class="dropdown-cell">
-					<div class="dropdown-team-logo-container cursor-pointer" [ngClass]="loadBackgroundColor(team.abbreviation)">
+					<div class="dropdown-team-logo-container cursor-pointer" [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
 						<img [src]="'assets/team-logos-new/' + team.league + '/' + team.division + '/' + team.abbreviation + '.png'"
 							[alt]="team.name + ' logo'"
 							class="w-5 h-5 object-contain"

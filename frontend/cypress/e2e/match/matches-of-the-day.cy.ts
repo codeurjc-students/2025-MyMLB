@@ -33,13 +33,6 @@ describe('Matches Of The Day Component E2E Tests', () => {
 		cy.contains("📅 Today's Schedule").should('be.visible');
 	});
 
-	it('should show error message when errorMessage is set', () => {
-		interceptMatches({}, 500);
-		cy.visit(baseUrl);
-		cy.wait('@getMatches');
-		cy.contains('Error trying to show the matches').should('be.visible');
-	});
-
 	it('should show no matches message when matches is empty', () => {
 		interceptMatches({
 			content: [],

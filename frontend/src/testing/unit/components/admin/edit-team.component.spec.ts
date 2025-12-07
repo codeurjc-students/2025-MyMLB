@@ -8,6 +8,8 @@ import { TeamInfo } from '../../../../app/models/team.model';
 import { Stadium } from '../../../../app/models/stadium.model';
 import { AuthResponse } from '../../../../app/models/auth/auth-response.model';
 import { MockFactory } from '../../../utils/mock-factory';
+import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
+import { EntityFormMapperService } from '../../../../app/services/utilities/entity-form-mapper.service';
 
 describe('Edit Team Component Tests', () => {
 	let component: EditTeamComponent;
@@ -53,6 +55,8 @@ describe('Edit Team Component Tests', () => {
 		TestBed.configureTestingModule({
 			imports: [EditTeamComponent],
 			providers: [
+				EntityFormMapperService,
+				PaginatedSelectorService,
 				{ provide: TeamService, useValue: teamServiceSpy },
 				{ provide: StadiumService, useValue: stadiumServiceSpy },
 				{ provide: BackgroundColorService, useValue: backgroundServiceSpy },
@@ -65,45 +69,39 @@ describe('Edit Team Component Tests', () => {
 		fixture.detectChanges();
 	});
 
-	it('should initialize stadium input with team stadium', () => {
-		expect(component.stadiumInput).toBe('Yankee Stadium');
+	it('should initialize formInputs with team data', () => {
+		expect(component.formInputs.city).toBe('New York');
+		expect(component.formInputs.stadiumName).toBe('Yankee Stadium');
 	});
 
 	it('should select a stadium and show success message', () => {
 		const stadium: Stadium = { name: 'Yankee Stadium' } as Stadium;
-		component.availableStadiums = [stadium];
+		spyOn(component.selector, 'select').and.returnValue(stadium.name);
 
 		component.selectStadium(stadium);
 
-		expect(component.stadiumInput).toBe('Yankee Stadium');
+		expect(component.formInputs.stadiumName).toBe('Yankee Stadium');
 		expect(component.success).toBeTrue();
 		expect(component.successMessage).toBe('Stadium Selected');
-		expect(component.availableStadiums.length).toBe(0);
 	});
 
 	it('should build request correctly with modified inputs', () => {
-		component.cityInput = 'Boston';
-		component.infoInput = 'Updated info';
-		component.newChampionshipInput = 2025;
-		component.stadiumInput = 'Fenway Park';
+		component.formInputs.city = 'Boston';
 
 		(component as any).prepareRequest();
 
 		expect(component.request.city).toBe('Boston');
-		expect(component.request.newInfo).toBe('Updated info');
-		expect(component.request.newChampionship).toBe(2025);
-		expect(component.request.newStadiumName).toBe('Fenway Park');
 	});
 
 	it('should confirm and update dashboard on success', () => {
 		const response: AuthResponse = {
 			status: 'SUCCESS',
-			message: 'Team successfully updated'
+			message: 'Team successfully updated',
 		};
 
 		teamServiceSpy.updateTeam.and.returnValue(of(response));
 
-		component.cityInput = 'Boston';
+		component.formInputs.city = 'Boston';
 		component.confirm();
 
 		expect(component.finish).toBeTrue();
@@ -116,7 +114,7 @@ describe('Edit Team Component Tests', () => {
 		component.confirm();
 
 		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toContain('Invalid Stadium');
+		expect(component.errorMessage).toContain('An unexpected error occurr. Please, try again later');
 	});
 
 	it('should emit backToMenu when returning to menu', () => {

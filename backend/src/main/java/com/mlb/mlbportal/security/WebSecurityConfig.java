@@ -88,6 +88,15 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/v1/stadiums").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/stadiums/*/pictures").permitAll()
 
+                     // Player Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/v1/players").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/players/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/players/*/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/players/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/players/*/pictures").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH, "/api/v1/players/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/players/**").hasRole("ADMIN")
+
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
 

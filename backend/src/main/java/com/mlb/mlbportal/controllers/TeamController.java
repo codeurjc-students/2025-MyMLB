@@ -4,13 +4,10 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
@@ -46,6 +43,16 @@ public class TeamController {
         return ResponseEntity.ok(teams);
     }
 
+    @Operation(summary = "Get all available teams", description = "Returns a list of all available teams. An available team is one whose roster is less than 24")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of teams", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamSummary.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/available", produces = "application/json")
+    public ResponseEntity<Page<TeamSummary>> getAvailableTeams(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));
+    }
+
     @Operation(summary = "Get team standings", description = "Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved standings", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDTO.class))),
@@ -76,7 +83,7 @@ public class TeamController {
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
-    @PatchMapping(value = "/{teamName}", produces = "application/json")
+    @PatchMapping(value = "/{teamName}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<AuthResponse> updateTeam(@PathVariable("teamName") String teamName,
             @RequestBody UpdateTeamRequest request) {
         this.teamService.updateTeam(teamName, request);

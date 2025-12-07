@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { ShowMatch } from '../../../services/match.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { CommonModule } from '@angular/common';
-import { CloseButtonComponent } from "../../close-button/close-button.component";
+import { EscapeCloseDirective } from '../../../directives/escape-close.directive';
 
 @Component({
 	selector: 'app-match-miniature',
 	standalone: true,
-	imports: [CommonModule, CloseButtonComponent],
+	imports: [CommonModule, EscapeCloseDirective],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './match-miniature.component.html',
 })
@@ -19,19 +19,13 @@ export class MatchMiniatureComponent {
 
 	public isClose = false;
 
-	constructor(private bakcgroundColor: BackgroundColorService) {}
+	constructor(public backgroundService: BackgroundColorService) {}
 
-	public getBackgroundColor(abbreviation: string | undefined) {
-		return this.bakcgroundColor.getBackgroundColor(abbreviation);
-	}
-
-	public closeMatchMiniature(trigger: boolean) {
-		if (trigger) {
-			this.isClose = true;
-			setTimeout(() => {
-				this.close.emit(false);
-				this.isClose = false;
-			}, 300);
-		}
-	}
+	public closeMatchMiniature = () => {
+		this.isClose = true;
+		setTimeout(() => {
+			this.close.emit(false);
+			this.isClose = false;
+		}, 300);
+	};
 }

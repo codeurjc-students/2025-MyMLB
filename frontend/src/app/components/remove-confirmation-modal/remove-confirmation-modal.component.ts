@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { EscapeCloseDirective } from "../../directives/escape-close.directive";
 
 @Component({
     selector: 'app-remove-confirmation-modal',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, EscapeCloseDirective],
     templateUrl: './remove-confirmation-modal.component.html',
 })
 export class RemoveConfirmationModalComponent {
@@ -14,32 +15,18 @@ export class RemoveConfirmationModalComponent {
     @Input() buttonContent = 'Confirm';
 	@Input() isDelete!: boolean;
 
-    safeSvg: SafeHtml = '';
-    @Input() set svg(value: string) {
-        this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(value);
-    }
-
     @Output() confirm = new EventEmitter<void>();
     @Output() cancel = new EventEmitter<void>();
 
 	public isClosing = false;
 
-    constructor(private sanitizer: DomSanitizer) {}
-
-    handleCancel() {
+    public handleCancel = () => {
         this.isClosing = true;
 		setTimeout(() => {
 			this.cancel.emit();
 			this.isClosing = false;
 		}, 300);
     }
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.handleCancel();
-		}
-	}
 
     handleConfirm() {
         this.confirm.emit();

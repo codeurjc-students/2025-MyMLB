@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.19% </span>
+                <span class="strong">84.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/73</span>
+                <span class='fraction'>60/71</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>21/30</span>
+                <span class='fraction'>20/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.69% </span>
+                <span class="strong">84.05% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>58/71</span>
+                <span class='fraction'>58/69</span>
             </div>
         
             
@@ -212,19 +212,8 @@
 <a name='L147'></a><a href='#L147'>147</a>
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a>
-<a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a>
-<a name='L158'></a><a href='#L158'>158</a>
-<a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L150'></a><a href='#L150'>150</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,16 +305,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -357,12 +339,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -387,7 +363,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { RemoveConfirmationModalComponent } from '../../remove-confirmation-modal/remove-confirmation-modal.component';
@@ -396,11 +372,12 @@ import { Observable, take } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { TeamSummary } from '../../../models/team.model';
 import { SelectElementModalComponent } from "../../modal/select-element-modal/select-element-modal.component";
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 &nbsp;
 @Component({
 	selector: 'app-fav-team',
 	standalone: true,
-	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent],
+	imports: [CommonModule, RemoveConfirmationModalComponent, SuccessModalComponent, SelectElementModalComponent, EscapeCloseDirective],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './fav-team.component.html',
 })
@@ -422,7 +399,7 @@ export class FavTeamComponent implements OnInit {
 &nbsp;
 	constructor(
 		private userService: UserService,
-		private backgroundService: BackgroundColorService,
+		public backgroundService: BackgroundColorService,
 		private teamService: TeamService,
 		private authService: AuthService
 	) {}
@@ -477,19 +454,12 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 &nbsp;
-	public <span class="fstat-no" title="function not covered" >closeTeamModal(</span>) {
+	public closeTeamModal = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >		this.isClose = true;</span>
 <span class="cstat-no" title="statement not covered" >		setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >			this.addButtonClicked = false;</span>
 <span class="cstat-no" title="statement not covered" >			this.isClose = false;</span>
 		}, 300);
-	}
-&nbsp;
-	@HostListener('document:keydown', ['$event'])
-<span class="fstat-no" title="function not covered" >	handleEscape(</span>event: KeyboardEvent) {
-<span class="cstat-no" title="statement not covered" >		<span class="missing-if-branch" title="if path not taken" >I</span>if (event.key === 'Escape') {</span>
-<span class="cstat-no" title="statement not covered" >			this.closeTeamModal();</span>
-		}
 	}
 &nbsp;
 	// Remove Favorite Team
@@ -520,12 +490,6 @@ export class FavTeamComponent implements OnInit {
 		});
 	}
 &nbsp;
-	// Background Logo
-&nbsp;
-	public logoBackground(team: TeamSummary) {
-		return this.backgroundService.getBackgroundColor(team.abbreviation);
-	}
-&nbsp;
 	// Select Team
 	public <span class="fstat-no" title="function not covered" >selectTeam(</span>teamName: string) {
 <span class="cstat-no" title="statement not covered" >		this.teamService.selectTeam(teamName).subscribe({</span>
@@ -553,7 +517,7 @@ export class FavTeamComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-27T21:50:41.205Z
+                at 2025-12-07T16:15:54.494Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

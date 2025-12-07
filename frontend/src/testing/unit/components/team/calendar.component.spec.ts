@@ -5,6 +5,7 @@ import { BackgroundColorService } from '../../../../app/services/background-colo
 import { of, throwError } from 'rxjs';
 import { MockFactory } from '../../../utils/mock-factory';
 import { TeamInfo, TeamSummary } from '../../../../app/models/team.model';
+import { addMonths, subMonths } from 'date-fns';
 
 describe('Calendar Component Tests', () => {
 	let component: CalendarComponent;
@@ -113,16 +114,46 @@ describe('Calendar Component Tests', () => {
 		expect(cssClass).toBe('bg-white dark:bg-gray-400');
 	});
 
+	/**
+	 * Helper function to validate that an action applied to the component
+	 * correctly updates the `viewDate` to the expected month and year.
+	 *
+	 * This is used to avoid duplicating test code for `previousMonth()` and
+	 * `nextMonth()`, or any other method that modifies the calendar's active date.
+	 *
+	 * @param action - A callback that performs the date-changing operation on the component.
+	 * @param initial - The initial Date value to assign to `component.viewDate`
+	 *                  before executing the action.
+	 * @param expected - The expected Date value after the action has been executed.
+	 *                   Only the month and full year are compared.
+	 */
+	function expectMonthChange(action: () => void, initial: Date, expected: Date) {
+		component.viewDate = initial;
+		action();
+		expect(component.viewDate.getMonth()).toBe(expected.getMonth());
+		expect(component.viewDate.getFullYear()).toBe(expected.getFullYear());
+	}
+
 	it('previousMonth should decrement viewDate', () => {
-		const currentMonth = component.viewDate.getMonth();
-		component.previousMonth();
-		expect(component.viewDate.getMonth()).toBe(currentMonth - 1);
+		expectMonthChange(
+			() => component.previousMonth(),
+			new Date(2024, 11, 1),
+			subMonths(new Date(2024, 11, 1), 1)
+		);
 	});
 
 	it('nextMonth should increment viewDate', () => {
-		const currentMonth = component.viewDate.getMonth();
+		expectMonthChange(
+			() => component.nextMonth(),
+			new Date(2024, 11, 1),
+			addMonths(new Date(2024, 11, 1), 1)
+		);
+	});
+
+	it('nextMonth should wrap from December to January', () => {
+		component.viewDate = new Date(2024, 11, 1);
 		component.nextMonth();
-		expect(component.viewDate.getMonth()).toBe(currentMonth + 1);
+		expect(component.viewDate.getMonth()).toBe(0);
 	});
 
 	it('isOutsideCurrentMonth should detect days outside', () => {

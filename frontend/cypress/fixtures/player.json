@@ -1,0 +1,31 @@
+{
+	"content": [
+		{
+			"name": "Aaron Judge",
+			"playerNumber": 99,
+			"teamName": "New York Yankees",
+			"position": "RF",
+			"atBats": 120,
+			"walks": 20,
+			"hits": 40,
+			"doubles": 10,
+			"triples": 0,
+			"homeRuns": 10,
+			"rbis": 21,
+			"average": 0.322,
+			"obp": 0.566,
+			"ops": 1.013,
+			"slugging": 1.0,
+			"picture": {
+				"url": "",
+				"publicId": ""
+			}
+		}
+	],
+	"page": {
+		"size": 10,
+		"number": 0,
+		"totalElements": 1,
+		"totalPages": 1
+	}
+}

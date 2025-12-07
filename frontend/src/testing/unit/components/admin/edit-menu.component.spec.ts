@@ -186,7 +186,8 @@ describe('Edit Menu Component Tests', () => {
 			60,
 			1.05,
 			0,
-			0
+			0,
+			{url: '', publicId: ''}
 		);
 		component.edit(mockPitcher);
 		expect(component.currentView).toBe('player');
@@ -203,12 +204,5 @@ describe('Edit Menu Component Tests', () => {
 		expect(component.isPlayerTypeOpen).toBeTrue();
 		component.togglePlayerType(false);
 		expect(component.isPlayerTypeOpen).toBeFalse();
-	});
-
-	it('should call backgroundService.getBackgroundColor', () => {
-		backgroundServiceSpy.getBackgroundColor.and.returnValue('bg-blue-900');
-		const result = component.getBackgroundColor('NYY');
-		expect(result).toBe('bg-blue-900');
-		expect(backgroundServiceSpy.getBackgroundColor).toHaveBeenCalledWith('NYY');
 	});
 });

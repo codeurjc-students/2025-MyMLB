@@ -32,7 +32,8 @@ describe('Team Component Integration Tests', () => {
 				0.3,
 				0.4,
 				1.0,
-				0.6
+				0.6,
+				{url: '', publicId: ''}
 			),
 		],
 		[
@@ -50,7 +51,8 @@ describe('Team Component Integration Tests', () => {
 				60,
 				1.05,
 				0,
-				0
+				0,
+				{url: '', publicId: ''}
 			),
 		]
 	);
@@ -84,11 +86,6 @@ describe('Team Component Integration Tests', () => {
 		fixture = TestBed.createComponent(TeamComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-	});
-
-	it('should return background class from service', () => {
-		const result = component.backgroundLogo('NYY');
-		expect(result).toBe('bg-nyy');
 	});
 
 	it('should select a player', () => {

@@ -126,7 +126,8 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should assign 0.0 to AVG, OBP, SLG, OPS when atBats and walks are zero")
     void testZeroStatsForEmptyPositionPlayer() {
-        PositionPlayer player = new PositionPlayer("EmptyPlayer", this.teams.get(0), PlayerPositions.CF, 0, 0, 0, 0);
+        PositionPlayer player = new PositionPlayer("EmptyPlayer", 43, this.teams.get(0), PlayerPositions.CF, 0, 0, 0);
+        player.setDoubles(0);
         player.setTriples(0);
         player.setHomeRuns(0);
         player.setRbis(0);
@@ -142,7 +143,8 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should assign 0.0 to ERA and WHIP when innings pitched is zero")
     void testZeroStatsForEmptyPitcher() {
-        Pitcher pitcher = new Pitcher("EmptyPitcher", this.teams.get(1), PitcherPositions.SP, 0, 0, 0, 0);
+        Pitcher pitcher = new Pitcher("EmptyPitcher", 32, this.teams.get(1), PitcherPositions.SP, 0, 0, 0);
+        pitcher.setInningsPitched(0.0);
         pitcher.setTotalStrikeouts(0);
         pitcher.setWalks(0);
         pitcher.setHitsAllowed(0);

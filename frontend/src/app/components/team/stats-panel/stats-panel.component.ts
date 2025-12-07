@@ -3,11 +3,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, 
 import { TeamInfo } from '../../../models/team.model';
 import { Pitcher } from '../../../models/pitcher.model';
 import { CommonModule } from '@angular/common';
+import { ValidationService } from '../../../services/utilities/validation.service';
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-stats-panel',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, EscapeCloseDirective],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './stats-panel.component.html',
 })
@@ -18,22 +20,9 @@ export class StatsPanelComponent {
 	@Input() player!: Pitcher | PositionPlayer;
 	@Output() close = new EventEmitter<void>();
 
-	closePanel() {
+	constructor(public validationService: ValidationService) {}
+
+	public closePanel = () => {
 		this.close.emit();
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	handleEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.closePanel();
-		}
-	}
-
-	isPitcher(player: Pitcher | PositionPlayer): player is Pitcher {
-		return 'era' in player;
-	}
-
-	isPositionPlayer(player: Pitcher | PositionPlayer): player is PositionPlayer {
-		return 'atBats' in player;
 	}
 }

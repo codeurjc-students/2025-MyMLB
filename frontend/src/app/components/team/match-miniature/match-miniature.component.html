@@ -1,16 +1,27 @@
 <div
 	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-	[ngClass]="isClose ? 'animate-fade-out-down' : 'animate-fade-in-up'">
+	[ngClass]="isClose ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+	[appEscapeClose]="closeMatchMiniature">
+
 	<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 text-center relative transform transition-all animate-scaleIn">
 
-		<app-close-button (close)="closeMatchMiniature($event)"></app-close-button>
+		<button
+			type="button"
+			(click)="closeMatchMiniature()"
+			class="absolute top-3 right-3 text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200 transition"
+			>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+				stroke-width="2" stroke="currentColor" class="w-6 h-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+    	</button>
 
 		<div class="flex items-center justify-between w-full mb-2 mt-10">
 			<!-- Away team -->
 			<div class="flex items-center gap-2">
 				<div
 					class="team-logo-container"
-					[ngClass]="getBackgroundColor(match.awayTeam.abbreviation)"
+					[ngClass]="backgroundService.getBackgroundColor(match.awayTeam.abbreviation)"
 				>
 					<img
 						class="w-full h-full object-contain"
@@ -44,7 +55,7 @@
 				<span class="font-semibold">{{ match.homeTeam.abbreviation }}</span>
 				<div
 					class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm"
-					[ngClass]="getBackgroundColor(match.homeTeam.abbreviation)"
+					[ngClass]="backgroundService.getBackgroundColor(match.homeTeam.abbreviation)"
 				>
 					<img
 						class="w-full h-full object-contain"

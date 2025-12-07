@@ -20,7 +20,7 @@
                     <div class="flex flex-col items-center space-y-3 relative text-center">
                         <div id="team-container"
                             class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center cursor-pointer"
-                            [ngClass]="logoBackground(team)"
+                            [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)"
 							(click)="selectTeam(team.name)"
                         >
                             <img
@@ -69,7 +69,8 @@
 		[elements]="visibleTeams"
 		(select)="addFavoriteTeam($event)"
 		(loadNextPageFunction)="loadMoreTeams()"
-		(closeModal)="closeTeamModal()">
+		(closeModal)="closeTeamModal()"
+		[appEscapeClose]="closeTeamModal">
 	</app-select-element-modal>
 
 	<!-- Addition Confirmation Modal -->

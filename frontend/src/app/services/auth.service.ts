@@ -67,8 +67,8 @@ export class AuthService {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/reset-password`, resetPasswordRequest);
 	}
 
-	public silentRefresh(): Observable<any> {
-		return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
+	public silentRefresh(): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
 	}
 
 	public handleSessionExpired(): void {

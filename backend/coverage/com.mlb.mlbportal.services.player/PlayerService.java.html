@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.player</a> &gt; <span class="el_source">PlayerService.java</span></div><h1>PlayerService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.player;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -9,17 +12,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.mlb.mlbportal.dto.player.PitcherDTO;
-import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
 import com.mlb.mlbportal.dto.player.PlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
+import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
+import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
+import com.mlb.mlbportal.handler.conflict.RosterFullException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
@@ -27,6 +38,7 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
+import com.mlb.mlbportal.services.uploader.PictureService;
 
 import lombok.AllArgsConstructor;
 
@@ -42,126 +54,290 @@ public class PlayerService {
 
     private final TeamRepository teamRepository;
 
+    private final PictureService pictureService;
+
+    private Player getPlayer(String name) {
+<span class="fc" id="L60">        return this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+    }
+
     @Transactional
     public List&lt;PlayerDTO&gt; getAllPlayers() {
-<span class="fc" id="L47">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
-<span class="fc" id="L48">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
+<span class="fc" id="L65">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
+<span class="fc" id="L66">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
 
-<span class="fc" id="L50">        this.updateAndSaveStats(positionPlayers);</span>
-<span class="fc" id="L51">        this.updateAndSaveStats(pitcherList);</span>
+<span class="fc" id="L68">        this.updateAndSaveStats(positionPlayers);</span>
+<span class="fc" id="L69">        this.updateAndSaveStats(pitcherList);</span>
 
-<span class="fc" id="L53">        List&lt;PositionPlayerDTO&gt; mappedPostionPlayers = this.positionPlayerMapper</span>
-<span class="fc" id="L54">                .toListPositionPlayerDTO(positionPlayers);</span>
-<span class="fc" id="L55">        List&lt;PitcherDTO&gt; mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);</span>
+<span class="fc" id="L71">        List&lt;PositionPlayerDTO&gt; mappedPositionPlayers = this.positionPlayerMapper</span>
+<span class="fc" id="L72">                .toListPositionPlayerDTO(positionPlayers);</span>
+<span class="fc" id="L73">        List&lt;PitcherDTO&gt; mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);</span>
 
-<span class="fc" id="L57">        List&lt;PlayerDTO&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L58">        result.addAll(mappedPostionPlayers);</span>
-<span class="fc" id="L59">        result.addAll(mappedPitchers);</span>
+<span class="fc" id="L75">        List&lt;PlayerDTO&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">        result.addAll(mappedPositionPlayers);</span>
+<span class="fc" id="L77">        result.addAll(mappedPitchers);</span>
 
-<span class="fc" id="L61">        result.sort((p1, p2) -&gt; p1.name().compareToIgnoreCase(p2.name()));</span>
-<span class="fc" id="L62">        return result;</span>
+<span class="fc" id="L79">        result.sort((p1, p2) -&gt; p1.name().compareToIgnoreCase(p2.name()));</span>
+<span class="fc" id="L80">        return result;</span>
     }
 
     @Transactional
     public List&lt;PositionPlayerDTO&gt; getAllPositionPlayers() {
-<span class="fc" id="L67">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
-<span class="fc" id="L68">        this.updateAndSaveStats(positionPlayers);</span>
-<span class="fc" id="L69">        positionPlayers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
-<span class="fc" id="L70">        return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
+<span class="fc" id="L85">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
+<span class="fc" id="L86">        this.updateAndSaveStats(positionPlayers);</span>
+<span class="fc" id="L87">        positionPlayers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
+<span class="fc" id="L88">        return this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
     }
 
     @Transactional
     public List&lt;PitcherDTO&gt; getAllPitchers() {
-<span class="fc" id="L75">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findAll();</span>
-<span class="fc" id="L76">        this.updateAndSaveStats(pitchers);</span>
-<span class="pc" id="L77">        pitchers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
-<span class="fc" id="L78">        return this.pitcherMapper.toListPitcherDTO(pitchers);</span>
+<span class="fc" id="L93">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findAll();</span>
+<span class="fc" id="L94">        this.updateAndSaveStats(pitchers);</span>
+<span class="pc" id="L95">        pitchers.sort((p1, p2) -&gt; p1.getName().compareToIgnoreCase(p2.getName()));</span>
+<span class="fc" id="L96">        return this.pitcherMapper.toListPitcherDTO(pitchers);</span>
     }
 
-    private &lt;T extends Player&gt; void updateAndSaveStats(List&lt;T&gt; players) {
-<span class="fc" id="L82">        players.forEach(p -&gt; {</span>
-<span class="fc" id="L83">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">            if (hasChanged) {</span>
-<span class="pc bpc" id="L85" title="1 of 3 branches missed.">                switch (p) {</span>
-<span class="fc" id="L86">                    case PositionPlayer positionPlayer -&gt; this.positionPlayerRepository.save(positionPlayer);</span>
-<span class="fc" id="L87">                    case Pitcher pitcher -&gt; this.pitcherRepository.save(pitcher);</span>
-<span class="nc" id="L88">                    default -&gt; throw new IllegalArgumentException(&quot;Unexpected Player subtype: &quot; + p.getClass().getName());</span>
-                }
+    /**
+     * Updates and persists a player if their stats have changed.
+     *
+     * @param player the player to check and save
+     * @throws IllegalArgumentException if the player subtype is not supported
+     */
+    private void saveIfStatsChanged(Player player) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (PlayerServiceOperations.updatePlayerStats(player)) {</span>
+<span class="pc bpc" id="L107" title="1 of 3 branches missed.">            switch (player) {</span>
+<span class="fc" id="L108">                case PositionPlayer pp -&gt; this.positionPlayerRepository.save(pp);</span>
+<span class="fc" id="L109">                case Pitcher p -&gt; this.pitcherRepository.save(p);</span>
+<span class="nc" id="L110">                default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
             }
-<span class="fc" id="L91">        });</span>
-<span class="fc" id="L92">    }</span>
+        }
+<span class="fc" id="L113">    }</span>
+
+    private &lt;T extends Player&gt; void updateAndSaveStats(List&lt;T&gt; players) {
+<span class="fc" id="L116">        players.forEach(this::saveIfStatsChanged);</span>
+<span class="fc" id="L117">    }</span>
 
     @Transactional
     public PlayerDTO findPlayerByName(String name) {
-<span class="fc" id="L96">        Player player = this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
-
-<span class="fc" id="L98">        boolean hasChanged = PlayerServiceOperations.updatePlayerStats(player);</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (hasChanged) {</span>
-<span class="pc bpc" id="L100" title="1 of 3 branches missed.">            switch (player) {</span>
-<span class="fc" id="L101">                case PositionPlayer positionPlayer -&gt; this.positionPlayerRepository.save(positionPlayer);</span>
-<span class="fc" id="L102">                case Pitcher pitcher -&gt; this.pitcherRepository.save(pitcher);</span>
-<span class="nc" id="L103">                default -&gt; throw new IllegalArgumentException(&quot;Unexpected Player subtype: &quot; + player.getClass().getName());</span>
-            }
-        }
-
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (player instanceof PositionPlayer positionPlayer) {</span>
-<span class="fc" id="L108">            return this.positionPlayerMapper.toPositionPlayerDTO(positionPlayer);</span>
-        }
-<span class="fc" id="L110">        return this.pitcherMapper.toPitcherDTO((Pitcher) player);</span>
+<span class="fc" id="L121">        Player player = this.getPlayer(name);</span>
+<span class="fc" id="L122">        this.saveIfStatsChanged(player);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        return (player instanceof PositionPlayer pp)</span>
+<span class="fc" id="L124">                ? positionPlayerMapper.toPositionPlayerDTO(pp)</span>
+<span class="fc" id="L125">                : pitcherMapper.toPitcherDTO((Pitcher) player);</span>
     }
 
     public List&lt;PositionPlayer&gt; getUpdatedPositionPlayersOfTeam(Team team) {
-<span class="fc" id="L114">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
+<span class="fc" id="L129">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
 
-<span class="fc" id="L116">        players.forEach(p -&gt; {</span>
-<span class="fc" id="L117">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">            if (hasChanged) {</span>
-<span class="fc" id="L119">                this.positionPlayerRepository.save(p);</span>
+<span class="fc" id="L131">        players.forEach(p -&gt; {</span>
+<span class="fc" id="L132">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            if (hasChanged) {</span>
+<span class="fc" id="L134">                this.positionPlayerRepository.save(p);</span>
             }
-<span class="fc" id="L121">        });</span>
-<span class="fc" id="L122">        return players;</span>
+<span class="fc" id="L136">        });</span>
+<span class="fc" id="L137">        return players;</span>
     }
     
     public List&lt;Pitcher&gt; getUpdatedPitchersOfTeam(Team team) {
-<span class="fc" id="L126">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
+<span class="fc" id="L141">        List&lt;Pitcher&gt; pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
 
-<span class="fc" id="L128">        pitchers.forEach(p -&gt; {</span>
-<span class="fc" id="L129">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">            if (hasChanged) {</span>
-<span class="fc" id="L131">                this.pitcherRepository.save(p);</span>
+<span class="fc" id="L143">        pitchers.forEach(p -&gt; {</span>
+<span class="fc" id="L144">            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">            if (hasChanged) {</span>
+<span class="fc" id="L146">                this.pitcherRepository.save(p);</span>
             }
-<span class="fc" id="L133">        });</span>
-<span class="fc" id="L134">        return pitchers;</span>
+<span class="fc" id="L148">        });</span>
+<span class="fc" id="L149">        return pitchers;</span>
+    }
+
+    /**
+     * Helper method that paginates a list of items and applies a mapping function.
+     *
+     * @param items the list of elements to paginate
+     * @param page the page number (zero-based)
+     * @param size the size of the page
+     * @param mapper the function used to map each element
+     * @return a {@link Page} containing the mapped items for the requested page
+     */
+    private &lt;T, R&gt; Page&lt;R&gt; paginateAndMap(List&lt;T&gt; items, int page, int size, Function&lt;T, R&gt; mapper) {
+<span class="fc" id="L162">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L163">        int start = Math.min((int) pageable.getOffset(), items.size());</span>
+<span class="fc" id="L164">        int end = Math.min(start + pageable.getPageSize(), items.size());</span>
+<span class="fc" id="L165">        List&lt;R&gt; result = items.subList(start, end).stream().map(mapper).toList();</span>
+<span class="fc" id="L166">        return new PageImpl&lt;&gt;(result, pageable, items.size());</span>
     }
 
     @Transactional
     public Page&lt;PositionPlayerSummaryDTO&gt; getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L139">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L140">        List&lt;PositionPlayer&gt; players = this.getUpdatedPositionPlayersOfTeam(team);</span>
-
-<span class="fc" id="L142">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L143">        int start = Math.min((int) pageable.getOffset(), players.size());</span>
-<span class="fc" id="L144">        int end = Math.min(start + pageable.getPageSize(), players.size());</span>
-
-<span class="fc" id="L146">        List&lt;PositionPlayerSummaryDTO&gt; result = players.subList(start, end).stream()</span>
-<span class="fc" id="L147">                .map(this.positionPlayerMapper::toPositionPlayerSummaryDTO).toList();</span>
-
-<span class="fc" id="L149">        return new PageImpl&lt;&gt;(result, pageable, players.size());</span>
+<span class="fc" id="L171">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L172">        List&lt;PositionPlayer&gt; players = this.getUpdatedPositionPlayersOfTeam(team);</span>
+<span class="fc" id="L173">        return this.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);</span>
     }
 
     @Transactional
     public Page&lt;PitcherSummaryDTO&gt; getAllPitchersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L154">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L155">        List&lt;Pitcher&gt; pitchers = this.getUpdatedPitchersOfTeam(team);</span>
+<span class="fc" id="L178">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L179">        List&lt;Pitcher&gt; players = this.getUpdatedPitchersOfTeam(team);</span>
+<span class="fc" id="L180">        return this.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);</span>
+    }
 
-<span class="fc" id="L157">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L158">        int start = Math.min((int) pageable.getOffset(), pitchers.size());</span>
-<span class="fc" id="L159">        int end = Math.min(start + pageable.getPageSize(), pitchers.size());</span>
+    /**
+     * Helper method that checks whether the given team roster has available slots for new players.
+     *
+     * @param team the team whose roster size will be validated
+     * @throws RosterFullException if the roster already contains 24 or more players
+     */
+    private void checkTeamAvailability(Team team) {
+<span class="fc" id="L190">        int rosterSize = team.getPositionPlayers().size() + team.getPitchers().size();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (rosterSize &gt;= 24) {</span>
+<span class="fc" id="L192">            throw new RosterFullException(team.getName() + &quot; roster is full&quot;);</span>
+        }
+<span class="fc" id="L194">    }</span>
 
-<span class="fc" id="L161">        List&lt;PitcherSummaryDTO&gt; result = pitchers.subList(start, end).stream()</span>
-<span class="fc" id="L162">                .map(this.pitcherMapper::toPitcherSummaryDTO).toList();</span>
+    /**
+     * Validates player creation by checking duplicates and team availability.
+     *
+     * @param playerName the name of the new player
+     * @param teamName the team to assign
+     * @return the validated team
+     * @throws PlayerAlreadyExistsException if a player with the same name exists
+     * @throws TeamNotFoundException if the team does not exist
+     * @throws RosterFullException if the team roster is full
+     */
+    private Team playerCreationValidations(String playerName, String teamName) {
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        if (this.playerRepository.findByName(playerName).isPresent()) {</span>
+<span class="fc" id="L208">            throw new PlayerAlreadyExistsException();</span>
+        }
+<span class="fc" id="L210">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L211">        this.checkTeamAvailability(team);</span>
+<span class="fc" id="L212">        return team;</span>
+    }
 
-<span class="fc" id="L164">        return new PageImpl&lt;&gt;(result, pageable, pitchers.size());</span>
+    /**
+     * @implNote Creating a player means that the player has been promoted to the MLB team.
+     * At creation time, the team must not be null; however, once the player has played in the MLB,
+     * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
+     */
+    @Transactional
+    public PositionPlayerDTO createPositionPlayer(CreatePositionPlayerRequest request) {
+<span class="fc" id="L222">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
+<span class="fc" id="L223">        PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());</span>
+<span class="fc" id="L224">        team.addPositionPlayer(newPlayer);</span>
+<span class="fc" id="L225">        this.playerRepository.save(newPlayer);</span>
+<span class="fc" id="L226">        return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);</span>
+    }
+
+    /**
+     * @implNote Creating a player means that the player has been promoted to the MLB team.
+     * At creation time, the team must not be null; however, once the player has played in the MLB,
+     * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
+     */
+    @Transactional
+    public PitcherDTO createPitcher(CreatePitcherRequest request) {
+<span class="fc" id="L236">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
+<span class="fc" id="L237">        Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());</span>
+<span class="fc" id="L238">        team.addPitcher(newPlayer);</span>
+<span class="fc" id="L239">        this.playerRepository.save(newPlayer);</span>
+<span class="fc" id="L240">        return this.pitcherMapper.toPitcherDTO(newPlayer);</span>
+    }
+
+    @Transactional
+    public PictureInfo updatePicture(String playerName, MultipartFile file) throws IOException {
+<span class="fc" id="L245">        Player player = this.getPlayer(playerName);</span>
+<span class="fc" id="L246">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L247">        player.setPicture(pictureInfo);</span>
+<span class="fc" id="L248">        this.playerRepository.save(player);</span>
+<span class="fc" id="L249">        return pictureInfo;</span>
+    }
+
+    /**
+     * Helper method to update the team of a player.
+     * @param player the player to update.
+     * @param teamNameOpt the request field corresponding to the new possible team.
+     */
+    private void updateTeamIfNeeded(Player player, Optional&lt;String&gt; teamNameOpt) {
+<span class="fc" id="L258">        teamNameOpt.ifPresent(newTeamName -&gt; {</span>
+<span class="fc" id="L259">            Team newTeam = teamRepository.findByName(newTeamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L260">            this.checkTeamAvailability(newTeam);</span>
+<span class="fc" id="L261">            Team oldTeam = player.getTeam();</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">            if (oldTeam != null) {</span>
+<span class="pc bpc" id="L263" title="2 of 3 branches missed.">                switch (player) {</span>
+<span class="fc" id="L264">                    case PositionPlayer pos -&gt; oldTeam.removePositionPlayer(pos);</span>
+<span class="nc" id="L265">                    case Pitcher pit -&gt; oldTeam.removePitcher(pit);</span>
+<span class="nc" id="L266">                    default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
+                }
+            }
+
+<span class="fc" id="L270">            player.setTeam(newTeam);</span>
+<span class="pc bpc" id="L271" title="2 of 3 branches missed.">            switch (player) {</span>
+<span class="fc" id="L272">                case PositionPlayer pos -&gt; newTeam.addPositionPlayer(pos);</span>
+<span class="nc" id="L273">                case Pitcher pit -&gt; newTeam.addPitcher(pit);</span>
+<span class="nc" id="L274">                default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
+            }
+<span class="fc" id="L276">        });</span>
+<span class="fc" id="L277">    }</span>
+
+    @Transactional
+    public void updatePositionPlayer(String playerName, EditPositionPlayerRequest request) {
+<span class="fc" id="L281">        PositionPlayer player = this.positionPlayerRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);</span>
+
+<span class="fc" id="L283">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
+<span class="fc" id="L284">        request.position().ifPresent(player::setPosition);</span>
+<span class="fc" id="L285">        request.atBats().ifPresent(player::setAtBats);</span>
+<span class="fc" id="L286">        request.walks().ifPresent(player::setWalks);</span>
+<span class="fc" id="L287">        request.hits().ifPresent(player::setHits);</span>
+<span class="fc" id="L288">        request.doubles().ifPresent(player::setDoubles);</span>
+<span class="fc" id="L289">        request.triples().ifPresent(player::setTriples);</span>
+<span class="fc" id="L290">        request.rbis().ifPresent(player::setRbis);</span>
+<span class="fc" id="L291">        request.homeRuns().ifPresent(player::setHomeRuns);</span>
+<span class="fc" id="L292">        this.updateTeamIfNeeded(player, request.teamName());</span>
+
+<span class="fc" id="L294">        this.playerRepository.save(player);</span>
+<span class="fc" id="L295">    }</span>
+
+    @Transactional
+    public void updatePitcher(String playerName, EditPitcherRequest request) {
+<span class="fc" id="L299">        Pitcher player = this.pitcherRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);</span>
+
+<span class="fc" id="L301">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
+<span class="fc" id="L302">        request.position().ifPresent(player::setPosition);</span>
+<span class="fc" id="L303">        request.games().ifPresent(player::setGames);</span>
+<span class="fc" id="L304">        request.wins().ifPresent(player::setWins);</span>
+<span class="fc" id="L305">        request.losses().ifPresent(player::setLosses);</span>
+<span class="fc" id="L306">        request.inningsPitched().ifPresent(player::setInningsPitched);</span>
+<span class="fc" id="L307">        request.totalStrikeouts().ifPresent(player::setTotalStrikeouts);</span>
+<span class="fc" id="L308">        request.walks().ifPresent(player::setWalks);</span>
+<span class="fc" id="L309">        request.hitsAllowed().ifPresent(player::setHitsAllowed);</span>
+<span class="fc" id="L310">        request.runsAllowed().ifPresent(player::setRunsAllowed);</span>
+<span class="fc" id="L311">        request.saves().ifPresent(player::setSaves);</span>
+<span class="fc" id="L312">        request.saveOpportunities().ifPresent(player::setSaveOpportunities);</span>
+<span class="fc" id="L313">        this.updateTeamIfNeeded(player, request.teamName());</span>
+
+<span class="fc" id="L315">        this.playerRepository.save(player);</span>
+<span class="fc" id="L316">    }</span>
+
+    /**
+     * @implNote Deleting a player means that the player has retired from the MLB
+     */
+    @Transactional
+    public PlayerDTO deletePlayer(String playerName) {
+<span class="fc" id="L323">        Player player = this.getPlayer(playerName);</span>
+<span class="fc" id="L324">        Team team = this.teamRepository.findByName(player.getTeam().getName()).orElseThrow(TeamNotFoundException::new);</span>
+
+<span class="pc bpc" id="L326" title="1 of 3 branches missed.">        PlayerDTO result = switch (player) {</span>
+<span class="fc" id="L327">            case PositionPlayer p -&gt; {</span>
+<span class="fc" id="L328">                PositionPlayerDTO dto = this.positionPlayerMapper.toPositionPlayerDTO(p);</span>
+<span class="fc" id="L329">                team.removePositionPlayer(p);</span>
+<span class="fc" id="L330">                yield dto;</span>
+            }
+<span class="fc" id="L332">            case Pitcher p -&gt; {</span>
+<span class="fc" id="L333">                PitcherDTO dto = this.pitcherMapper.toPitcherDTO(p);</span>
+<span class="fc" id="L334">                team.removePitcher(p);</span>
+<span class="fc" id="L335">                yield dto;</span>
+            }
+<span class="nc" id="L337">            default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
+        };
+<span class="fc" id="L339">        this.playerRepository.delete(player);</span>
+<span class="fc" id="L340">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

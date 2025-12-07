@@ -64,8 +64,9 @@ describe('Edit Team Component Integration Tests', () => {
 		httpMock.verify();
 	});
 
-	it('initializes stadiumInput from team', () => {
-		expect(component.stadiumInput).toBe('Yankee Stadium');
+	it('initializes formInputs from team', () => {
+		expect(component.formInputs.city).toBe('New York');
+		expect(component.formInputs.stadiumName).toBe('Yankee Stadium');
 	});
 
 	it('loads stadiums via StadiumService', () => {
@@ -87,14 +88,15 @@ describe('Edit Team Component Integration Tests', () => {
 			],
 			page: { size: component.pageSize, number: 0, totalElements: 1, totalPages: 1 },
 		});
-
-		expect(component.availableStadiums.length).toBe(1);
-		expect(component.availableStadiums[0].name).toBe('Fenway Park');
-		expect(component.availableStadiums[0].teamName).toBe('Boston Red Sox');
+		component.selector.items$.subscribe((items) => {
+			expect(items.length).toBe(1);
+			expect(items[0].name).toBe('Fenway Park');
+			expect(items[0].teamName).toBe('Boston Red Sox');
+		});
 	});
 
 	it('updates team on confirm success', () => {
-		component.cityInput = 'Boston';
+		component.formInputs.city = 'Boston';
 		component.confirm();
 
 		const req = httpMock.expectOne(`${teamApiUrl}/${mockTeamInfo.teamStats.name}`);
@@ -114,7 +116,7 @@ describe('Edit Team Component Integration Tests', () => {
 		req.flush({}, { status: 400, statusText: 'Bad Request' });
 
 		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toContain('Invalid Stadium');
+		expect(component.errorMessage).toContain('An unexpected error occurr. Please, try again later');
 	});
 
 	it('emits backToMenu when goToEditMenu is called', () => {

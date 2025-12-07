@@ -2,8 +2,8 @@ package com.mlb.mlbportal.dto.team;
 
 import java.util.List;
 
-import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 
 /**

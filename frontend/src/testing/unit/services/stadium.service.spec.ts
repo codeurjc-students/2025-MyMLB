@@ -4,7 +4,7 @@ import { StadiumService } from '../../../app/services/stadium.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { PaginatedStadiums } from '../../../app/models/pagination.model';
+import { PaginatedResponse } from '../../../app/models/pagination.model';
 import { MockFactory } from '../../utils/mock-factory';
 
 describe('Stadium Service Tests', () => {
@@ -20,7 +20,7 @@ describe('Stadium Service Tests', () => {
 
 	const mockAuthResponse: AuthResponse = {
 		status: 'SUCCESS',
-		message: 'Picture removed successfully'
+		message: 'Picture removed successfully',
 	};
 
 	beforeEach(() => {
@@ -37,33 +37,24 @@ describe('Stadium Service Tests', () => {
 	});
 
 	it('should return all available stadiums', () => {
-		const mockResponse: PaginatedStadiums = {
-		content: [
-			{
-			name: 'Yankee Stadium',
-			openingDate: 2009,
-			teamName: 'New York Yankees',
-			pictures: [],
-			},
-		],
-		page: {
-			size: 10,
-			number: 0,
-			totalElements: 1,
-			totalPages: 1,
-		},
-		};
+		const mockStadium = MockFactory.buildStadiumCompleteMock(
+			'Yankee Stadium',
+			2009,
+			'New York Yankees',
+			[]
+		);
+		const mockResponse = MockFactory.buildPaginatedResponse(mockStadium);
 
 		service.getAvailableStadiums(0, 10).subscribe((stadiums) => {
-		expect(stadiums.content.length).toBe(1);
-		expect(stadiums.content[0].name).toBe('Yankee Stadium');
-		expect(stadiums.page.totalPages).toBe(1);
-	});
+			expect(stadiums.content.length).toBe(1);
+			expect(stadiums.content[0].name).toBe('Yankee Stadium');
+			expect(stadiums.page.totalPages).toBe(1);
+		});
 
-    const req = httpMock.expectOne(`${apiUrl}/available?page=0&size=10`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
-  });
+		const req = httpMock.expectOne(`${apiUrl}/available?page=0&size=10`);
+		expect(req.request.method).toBe('GET');
+		req.flush(mockResponse);
+	});
 
 	it('should fetch stadium pictures', () => {
 		const stadiumName = 'Yankee Stadium';
@@ -73,9 +64,7 @@ describe('Stadium Service Tests', () => {
 			expect(pictures[0]).toEqual(mockPicture);
 		});
 
-		const req = httpMock.expectOne(
-			`${apiUrl}/${stadiumName}/pictures`
-		);
+		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures`);
 		expect(req.request.method).toBe('GET');
 		req.flush([mockPicture]);
 	});
@@ -88,9 +77,7 @@ describe('Stadium Service Tests', () => {
 			expect(picture).toEqual(mockPicture);
 		});
 
-		const req = httpMock.expectOne(
-			`${apiUrl}/${stadiumName}/pictures`
-		);
+		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body instanceof FormData).toBeTrue();
 		req.flush(mockPicture);
@@ -105,9 +92,7 @@ describe('Stadium Service Tests', () => {
 			expect(response.message).toBe('Picture removed successfully');
 		});
 
-		const req = httpMock.expectOne(
-			`${apiUrl}/${stadiumName}/pictures?publicId=${publicId}`
-		);
+		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures?publicId=${publicId}`);
 		expect(req.request.method).toBe('DELETE');
 		req.flush(mockAuthResponse);
 	});
@@ -117,9 +102,9 @@ describe('Stadium Service Tests', () => {
 		const mockSummary = MockFactory.buildStadiumMock('Fenway Park', 1912, []);
 
 		service.createStadium(request).subscribe((summary) => {
-		expect(summary.name).toBe('Fenway Park');
-		expect(summary.openingDate).toBe(1912);
-		expect(summary.pictures.length).toBe(0);
+			expect(summary.name).toBe('Fenway Park');
+			expect(summary.openingDate).toBe(1912);
+			expect(summary.pictures.length).toBe(0);
 		});
 
 		const req = httpMock.expectOne(apiUrl);

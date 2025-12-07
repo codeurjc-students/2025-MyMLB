@@ -42,6 +42,7 @@
 			@if (searchType === 'player') {
 				<div class="relative w-full md:w-auto">
 					<select
+						id="player-type"
 						[(ngModel)]="playerType"
 						(focus)="togglePlayerType(true)"
 						(blur)="togglePlayerType(false)"
@@ -79,8 +80,8 @@
 				@for (result of searchResults; track result) {
 					<div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 flex justify-between items-center">
 						<div class="flex items-center gap-5">
-							@if (isTeam(result)) {
-								<div class="team-logo-container" [ngClass]="getBackgroundColor(result.teamStats.abbreviation)">
+							@if (validationService.isTeamInfo(result)) {
+								<div class="team-logo-container" [ngClass]="backgroundService.getBackgroundColor(result.teamStats.abbreviation)">
 									<img
 										src="assets/team-logos-new/{{ result.teamStats.league }}/{{ result.teamStats.division }}/{{ result.teamStats.abbreviation }}.png"
 										alt="{{ result.teamStats.abbreviation }}"
@@ -88,7 +89,7 @@
 									/>
 								</div>
 							}
-							@else if (isStadium(result)) {
+							@else if (validationService.isStadium(result)) {
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 512 512"
@@ -105,14 +106,22 @@
 									</g>
 								</svg>
 							}
+							@else if (validationService.isPositionPlayer(result) || validationService.isPitcher(result)) {
+								<div class="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden shadow-sm">
+									<img
+										[src]="result.picture.url" alt="{{ result.name }} picture"
+										class="w-12 h-12 object-contain"
+									/>
+								</div>
+							}
 							<span class="text-xl font-bold">
-								@if (isTeam(result)) {
+								@if (validationService.isTeamInfo(result)) {
 									{{ result.teamStats.name }}
 								}
 								@else {
 									{{ result.name }}
 								}
-								@if (isPitcher(result) || isPositionPlayer(result)) {
+								@if (validationService.isPitcher(result) || validationService.isPositionPlayer(result)) {
 									<span class="text-base font-medium">({{ result.position }})</span>
 								}
 							</span>
@@ -139,10 +148,16 @@
 			<app-error-modal [title]="errorMessage" (cancel)="error= false"></app-error-modal>
 		}
 	}
-	@else if (currentView === 'stadium' && isStadium(selectedResult)) {
+
+	@else if (currentView === 'stadium' && validationService.isStadium(selectedResult)) {
 		<app-edit-stadium [stadium]="selectedResult" (backToMenu)="currentView = null"></app-edit-stadium>
 	}
-	@else if (currentView === 'team' && isTeam(selectedResult)) {
+
+	@else if (currentView === 'team' && validationService.isTeamInfo(selectedResult)) {
 		<app-edit-team [team]="selectedResult" (backToMenu)="currentView = null"></app-edit-team>
+	}
+
+	@else if (currentView === 'player' && (validationService.isPositionPlayer(selectedResult) || validationService.isPitcher(selectedResult))) {
+		<app-edit-player [player]="selectedResult" (backToMenu)="currentView = null"></app-edit-player>
 	}
 </div>

@@ -82,6 +82,9 @@ export class NavbarComponent implements OnInit {
 			case 'create-stadium':
 				this.router.navigate(['create-stadium']);
 				break;
+			case 'create-player':
+				this.router.navigate(['create-player']);
+				break;
 		}
 	}
 }

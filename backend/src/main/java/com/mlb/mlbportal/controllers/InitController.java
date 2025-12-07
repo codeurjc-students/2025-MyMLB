@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -267,7 +268,10 @@ public class InitController {
             for (Map<String, Object> raw : rawPlayers) {
                 String type = (String) raw.get("type");
                 String name = (String) raw.get("name");
+                int playerNumber = (int) raw.get("playerNumber");
                 String teamName = ((String) raw.get("teamName")).toLowerCase();
+                Map<String, Object> pictureMap = (Map<String, Object>) raw.get("picture");
+                PictureInfo picture = mapper.convertValue(pictureMap, PictureInfo.class);
 
                 Team team = teamMap.get(teamName);
                 if (team == null) continue;
@@ -275,13 +279,14 @@ public class InitController {
                 if ("Pitcher".equalsIgnoreCase(type)) {
                     Pitcher pitcher = new Pitcher(
                         name,
+                        playerNumber,
                         team,
                         PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
                         ((Number) raw.get("games")).intValue(),
                         ((Number) raw.get("wins")).intValue(),
-                        ((Number) raw.get("losses")).intValue(),
-                        ((Number) raw.get("inningsPitched")).intValue()
+                        ((Number) raw.get("losses")).intValue()
                     );
+                    pitcher.setInningsPitched(((Number) raw.get("inningsPitched")).intValue());
                     pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
                     pitcher.setWalks(((Number) raw.get("walks")).intValue());
                     pitcher.setHitsAllowed(((Number) raw.get("hitsAllowed")).intValue());
@@ -289,20 +294,23 @@ public class InitController {
                     pitcher.setSaves(((Number) raw.get("saves")).intValue());
                     pitcher.setSaveOpportunities(((Number) raw.get("saveOpportunities")).intValue());
                     pitchersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(pitcher);
+                    pitcher.setPicture(picture);
                 } else {
                     PositionPlayer player = new PositionPlayer(
                         name,
+                        playerNumber,
                         team,
                         PlayerPositions.fromLabel((String) raw.get("position")),
                         ((Number) raw.get("atBats")).intValue(),
                         ((Number) raw.get("walks")).intValue(),
-                        ((Number) raw.get("hits")).intValue(),
-                        ((Number) raw.get("doubles")).intValue()
+                        ((Number) raw.get("hits")).intValue()
                     );
+                    player.setDoubles(((Number) raw.get("doubles")).intValue());
                     player.setTriples(((Number) raw.get("triples")).intValue());
                     player.setHomeRuns(((Number) raw.get("homeRuns")).intValue());
                     player.setRbis(((Number) raw.get("rbis")).intValue());
                     positionPlayersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(player);
+                    player.setPicture(picture);
                 }
             }
 

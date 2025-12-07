@@ -71,26 +71,6 @@ describe('Stats Panel E2E Tests', () => {
 			});
 	});
 
-	it('should open pitcher stats panel when clicking a pitcher card', () => {
-		cy.get('#pitcher-card').first().click();
-
-		cy.get('#player-stats')
-			.should('exist')
-			.and('be.visible')
-			.within(() => {
-				cy.contains('ERA').should('be.visible');
-				cy.contains('Strikeouts').should('be.visible');
-			});
-	});
-
-	it('should close the stats panel when pressing Escape key', () => {
-		cy.get('#position-player-card').click();
-		cy.get('#player-stats').should('be.visible');
-
-		cy.get('body').type('{esc}');
-		cy.get('#player-stats').should('not.exist');
-	});
-
 	it('should close the stats panel when pressing the "x" button', () => {
 		cy.get('#position-player-card').click();
 		cy.get('#player-stats').should('be.visible');

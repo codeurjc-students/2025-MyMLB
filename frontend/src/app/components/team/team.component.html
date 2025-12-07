@@ -7,7 +7,7 @@
 		<section class="flex flex-col md:flex-row items-center justify-center gap-6 w-full text-center overflow-visible">
 			<div
 				class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center"
-				[ngClass]="backgroundLogo(team.teamStats.abbreviation)"
+				[ngClass]="backgroundService.getBackgroundColor(team.teamStats.abbreviation)"
 			>
 				<img
 				src="assets/team-logos-new/{{ team.teamStats.league }}/{{
@@ -134,7 +134,7 @@
 					(click)="selectPlayer(player)"
 					>
 					<img
-						src="assets/judge.png"
+						src="{{ player.picture.url }}"
 						alt="{{ player.name }}"
 						class="w-24 h-24 rounded-full object-cover mb-2"
 					/>
@@ -155,7 +155,7 @@
 						(click)="selectPlayer(pitcher)"
 					>
 						<img
-							src="assets/account-avatar.png"
+							src="{{ pitcher.picture.url }}"
 							alt="{{ pitcher.name }}"
 							class="w-24 h-24 rounded-full object-cover mb-2"
 						/>

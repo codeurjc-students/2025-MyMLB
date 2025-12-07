@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.mlb.mlbportal.models.Team;
@@ -16,4 +17,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     public Optional<Team> findByName(String name);
     public Optional<Team> findByAbbreviation(String abbreviation);
     public List<Team> findByNameContainingIgnoreCase(String input);
+
+    @Query("SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) < 24")
+    public List<Team> findAvailableTeams();
 }

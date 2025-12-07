@@ -10,11 +10,13 @@ import { PitcherGlobal } from '../../../models/pitcher.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
 import { EditTeamComponent } from "../edit-team/edit-team.component";
+import { EditPlayerComponent } from "../edit-player/edit-player.component";
+import { ValidationService } from '../../../services/utilities/validation.service';
 
 @Component({
 	selector: 'app-edit-menu',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent, EditPlayerComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-menu.component.html',
 })
@@ -35,7 +37,7 @@ export class EditMenuComponent implements OnInit {
 	public currentView: 'team' | 'stadium' | 'player' | null = null;
 	public selectedResult!: Team | Stadium | PositionPlayerGlobal | PitcherGlobal;
 
-	constructor(private searchService: SearchService, private backgroundService: BackgroundColorService) {}
+	constructor(private searchService: SearchService, public backgroundService: BackgroundColorService, public validationService: ValidationService) {}
 
 	ngOnInit(): void {}
 
@@ -102,36 +104,16 @@ export class EditMenuComponent implements OnInit {
 	}
 
 	public edit(result: any): void {
-		if (this.isTeam(result)) {
+		if (this.validationService.isTeamInfo(result)) {
 			this.currentView = 'team';
 		}
-		else if (this.isStadium(result)) {
+		else if (this.validationService.isStadium(result)) {
 			this.currentView = 'stadium';
 		}
-		else if (this.isPositionPlayer(result) || this.isPitcher(result)) {
+		else if (this.validationService.isPositionPlayer(result) || this.validationService.isPitcher(result)) {
 			this.currentView = 'player';
 		}
 		this.selectedResult = result;
-	}
-
-	public isPitcher(obj: any): obj is PitcherGlobal {
-		return 'era' in obj && 'inningsPitched' in obj;
-	}
-
-	public isPositionPlayer(obj: any): obj is PositionPlayerGlobal {
-		return 'atBats' in obj && 'homeRuns' in obj;
-	}
-
-	public isTeam(obj: any): obj is TeamInfo {
-		return 'teamStats' in obj;
-	}
-
-	public isStadium(obj: any): obj is Stadium {
-		return 'openingDate' in obj && 'pictures' in obj;
-	}
-
-	public getBackgroundColor(abbreviation: string) {
-		return this.backgroundService.getBackgroundColor(abbreviation);
 	}
 
 	public toggleSearchType(state: boolean) {

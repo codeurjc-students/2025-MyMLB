@@ -8,10 +8,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.repositories.StadiumRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -50,6 +55,20 @@ public class TeamService {
         List<Team> teams = this.teamRepository.findAll();
         teams.forEach(team -> TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));
         return this.teamMapper.toTeamInfoDTOList(teams);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TeamSummary> getAvailableTeams(int page, int size) {
+        List<Team> teams = this.teamRepository.findAvailableTeams();
+        teams.sort((t1, t2) -> t1.getName().compareToIgnoreCase(t2.getName()));
+
+        Pageable pageable = PageRequest.of(page, size);
+        int start = Math.min((int) pageable.getOffset(), teams.size());
+        int end = Math.min(start + pageable.getPageSize(), teams.size());
+
+        List<TeamSummary> result = teams.subList(start, end).stream().map(this.teamMapper::toTeamSummaryDTO).toList();
+
+        return new PageImpl<>(result, pageable, teams.size());
     }
 
     @Transactional(readOnly = true)

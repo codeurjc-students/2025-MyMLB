@@ -2,6 +2,7 @@ package com.mlb.mlbportal.models.player;
 
 import com.mlb.mlbportal.models.Team;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,19 +25,23 @@ public abstract class Player {
     private long id;
 
     private String name;
+
+    private int playerNumber;
     
     @ManyToOne
     private Team team;
 
-    private String picture;
+    private PictureInfo picture;
 
-    protected Player(String name, Team team) {
+    protected Player(String name, int number, Team team) {
         this.name = name;
+        this.playerNumber = number;
         this.team = team;
     }
 
-    protected Player(String name, Team team, String picture) {
+    protected Player(String name, int number, Team team, PictureInfo picture) {
         this.name = name;
+        this.playerNumber = number;
         this.team = team;
         this.picture = picture;
     }

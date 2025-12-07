@@ -7,7 +7,6 @@ import { Pitcher } from '../../models/pitcher.model';
 import { TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
-import { UserService } from '../../services/user.service';
 import { CalendarComponent } from "./calendar/calendar.component";
 import { Pictures } from '../../models/pictures.model';
 
@@ -39,7 +38,7 @@ export class TeamComponent implements OnInit {
 	constructor(
 		private selectedTeamService: SelectedTeamService,
 		private teamService: TeamService,
-		private backgroundColorService: BackgroundColorService
+		public backgroundService: BackgroundColorService
 	) {}
 
 	ngOnInit() {
@@ -65,10 +64,6 @@ export class TeamComponent implements OnInit {
 
 	ngOnDestroy() {
 		clearInterval(this.autoplayInterval);
-	}
-
-	public backgroundLogo(abbreviation: string | undefined) {
-		return this.backgroundColorService.getBackgroundColor(abbreviation);
 	}
 
 	public scrollCarousel(direction: 'left' | 'right') {

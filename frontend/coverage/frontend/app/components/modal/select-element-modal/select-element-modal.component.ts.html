@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.46% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/13</span>
+                <span class='fraction'>6/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/7</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.46% </span>
+                <span class="strong">55.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/13</span>
+                <span class='fraction'>5/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -111,17 +111,8 @@
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,15 +138,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -169,13 +156,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,6 +170,7 @@ import {
 import { Stadium } from '../../../models/stadium.model';
 import { TeamSummary } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
+import { ValidationService } from '../../../services/utilities/validation.service';
 &nbsp;
 @Component({
 	selector: 'app-select-element-modal',
@@ -209,11 +190,7 @@ export class SelectElementModalComponent {
 	@Output() loadNextPageFunction = new EventEmitter&lt;void&gt;();
 	@Output() closeModal = new EventEmitter&lt;void&gt;();
 &nbsp;
-	constructor(private backgroundService: BackgroundColorService) {}
-&nbsp;
-	public <span class="fstat-no" title="function not covered" >isTeam(</span>obj: any): obj is TeamSummary {
-<span class="cstat-no" title="statement not covered" >		return 'abbreviation' in obj;</span>
-	}
+	constructor(public backgroundService: BackgroundColorService, public validationService: ValidationService) {}
 &nbsp;
 	public <span class="fstat-no" title="function not covered" >selectElement(</span>elem: Stadium | TeamSummary) {
 <span class="cstat-no" title="statement not covered" >		this.select.emit(elem);</span>
@@ -228,14 +205,7 @@ export class SelectElementModalComponent {
 	}
 &nbsp;
 	public <span class="fstat-no" title="function not covered" >trackByFn(</span>elem: Stadium | TeamSummary) {
-<span class="cstat-no" title="statement not covered" >		return this.isTeam(elem) ? elem.abbreviation: elem.name;</span>
-	}
-&nbsp;
-	public <span class="fstat-no" title="function not covered" >logoBackground(</span>elem: unknown) {
-<span class="cstat-no" title="statement not covered" >		<span class="missing-if-branch" title="if path not taken" >I</span>if (this.isTeam(elem)) {</span>
-<span class="cstat-no" title="statement not covered" >			return this.backgroundService.getBackgroundColor(elem.abbreviation);</span>
-		}
-<span class="cstat-no" title="statement not covered" >		return '';</span>
+<span class="cstat-no" title="statement not covered" >		return this.validationService.isTeamSummary(elem) ? elem.abbreviation: elem.name;</span>
 	}
 }</pre></td></tr></table></pre>
 
@@ -244,7 +214,7 @@ export class SelectElementModalComponent {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-27T21:50:41.205Z
+                at 2025-12-07T16:15:54.494Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

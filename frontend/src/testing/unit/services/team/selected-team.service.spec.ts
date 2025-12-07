@@ -39,7 +39,8 @@ describe('Selected Team Service Tests', () => {
 			0.3,
 			0.4,
 			1.0,
-			0.6
+			0.6,
+			{url: '', publicId: ''}
 		),
 	];
 
@@ -58,7 +59,8 @@ describe('Selected Team Service Tests', () => {
 			60,
 			1.05,
 			0,
-			0
+			0,
+			{url: '', publicId: ''}
 		),
 	];
 

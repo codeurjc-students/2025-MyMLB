@@ -15,10 +15,6 @@ export class UserService {
 
 	constructor(private http: HttpClient) {}
 
-	public getAllUsers(): Observable<User[]> {
-		return this.http.get<User[]>(this.apiUrl);
-	}
-
 	public getFavTeams() {
 		this.http.get<TeamSummary[]>(`${this.apiUrl}/favorites/teams`, { withCredentials: true })
 			.subscribe({

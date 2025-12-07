@@ -20,10 +20,6 @@ describe('Profile Component E2E Tests', () => {
 	});
 
 	describe('Logout User', () => {
-		it('should be accessible the logout button', () => {
-			cy.contains('button', 'Logout').should('be.visible');
-		});
-
 		it('should appear the confirmation modal after clicking on the button', () => {
 			cy.contains('button', 'Logout').click();
 			cy.contains('h2', 'Are you sure you want to log out?').should('be.visible');

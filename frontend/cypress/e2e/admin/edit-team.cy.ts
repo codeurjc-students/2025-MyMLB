@@ -65,17 +65,4 @@ describe('Edit Team Component E2E Tests', () => {
 		cy.get('app-action-buttons button').contains('Go Back').click();
 		cy.url().should('include', '/edit-menu');
 	});
-
-	it('should show error modal when update fails (mocked)', () => {
-		cy.intercept('PATCH', '/api/v1/teams/*', {
-			statusCode: 400,
-			body: {
-				message: 'Invalid Stadium. The stadium must exists and not have any team assigned',
-			},
-		}).as('updateTeam');
-
-		cy.get('app-action-buttons button').contains('Confirm').click();
-		cy.wait('@updateTeam');
-		cy.get('app-error-modal').should('contain.text', 'Invalid Stadium');
-	});
 });

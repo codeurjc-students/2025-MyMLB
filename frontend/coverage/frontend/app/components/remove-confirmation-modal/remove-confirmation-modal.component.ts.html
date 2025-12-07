@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.88% </span>
+                <span class="strong">7.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/17</span>
+                <span class='fraction'>1/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.88% </span>
+                <span class="strong">7.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/17</span>
+                <span class='fraction'>1/13</span>
             </div>
         
             
@@ -96,20 +96,8 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -126,27 +114,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,13 +130,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { EscapeCloseDirective } from "../../directives/escape-close.directive";
 &nbsp;
 @Component({
     selector: 'app-remove-confirmation-modal',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, EscapeCloseDirective],
     templateUrl: './remove-confirmation-modal.component.html',
 })
 export class RemoveConfirmationModalComponent {
@@ -171,32 +146,18 @@ export class RemoveConfirmationModalComponent {
     @Input() buttonContent = <span class="cstat-no" title="statement not covered" >'Confirm';</span>
 	@Input() isDelete!: boolean;
 &nbsp;
-    safeSvg: SafeHtml = <span class="cstat-no" title="statement not covered" >'';</span>
-    @Input() set <span class="fstat-no" title="function not covered" >svg(</span>value: string) {
-<span class="cstat-no" title="statement not covered" >        this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(value);</span>
-    }
-&nbsp;
     @Output() confirm = <span class="cstat-no" title="statement not covered" >new EventEmitter&lt;void&gt;();</span>
     @Output() cancel = <span class="cstat-no" title="statement not covered" >new EventEmitter&lt;void&gt;();</span>
 &nbsp;
 	public isClosing = <span class="cstat-no" title="statement not covered" >false;</span>
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(private <span class="cstat-no" title="statement not covered" >s</span>anitizer: DomSanitizer)</span> {}
-&nbsp;
-<span class="fstat-no" title="function not covered" >    handleCancel(</span>) {
+    public handleCancel = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        this.isClosing = true;</span>
 <span class="cstat-no" title="statement not covered" >		setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >			this.cancel.emit();</span>
 <span class="cstat-no" title="statement not covered" >			this.isClosing = false;</span>
 		}, 300);
     }
-&nbsp;
-	@HostListener('document:keydown', ['$event'])
-<span class="fstat-no" title="function not covered" >	handleEscape(</span>event: KeyboardEvent) {
-<span class="cstat-no" title="statement not covered" >		<span class="missing-if-branch" title="if path not taken" >I</span>if (event.key === 'Escape') {</span>
-<span class="cstat-no" title="statement not covered" >			this.handleCancel();</span>
-		}
-	}
 &nbsp;
 <span class="fstat-no" title="function not covered" >    handleConfirm(</span>) {
 <span class="cstat-no" title="statement not covered" >        this.confirm.emit();</span>
@@ -208,7 +169,7 @@ export class RemoveConfirmationModalComponent {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-27T21:50:41.205Z
+                at 2025-12-07T16:15:54.494Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

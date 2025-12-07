@@ -1,15 +1,16 @@
 package com.mlb.mlbportal.utils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.player.PitcherDTO;
-import com.mlb.mlbportal.dto.player.PitcherSummaryDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.PositionPlayerSummaryDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
+import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -32,6 +33,7 @@ import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_DOUBLES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HITS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HOME_RUNS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NUMBER;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_RBIS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_TRIPLES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_WALKS;
@@ -40,6 +42,7 @@ import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_DOUBLES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HITS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HOME_RUNS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NUMBER;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_RBIS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_TRIPLES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_WALKS;
@@ -48,9 +51,10 @@ import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_HITS_ALLOWED;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_INNINGS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NUMBER;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPORTUNITIES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPPORTUNITIES;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SO;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WINS;
@@ -218,56 +222,59 @@ public class BuildMocksFactory {
 
     // Players
     public static List<PositionPlayer> buildPositionPlayers(List<Team> teamList) {
-        PositionPlayer p1 = new PositionPlayer(PLAYER1_NAME, teamList.get(0), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES);
+        PositionPlayer p1 = new PositionPlayer(PLAYER1_NAME, 33, teamList.getFirst(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS);
+        p1.setDoubles(PLAYER1_DOUBLES);
         p1.setTriples(PLAYER1_TRIPLES);
         p1.setHomeRuns(PLAYER1_HOME_RUNS);
         p1.setRbis(PLAYER1_RBIS);
 
-        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES);
+        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, 32, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS);
+        p2.setDoubles(PLAYER2_DOUBLES);
         p2.setTriples(PLAYER2_TRIPLES);
         p2.setHomeRuns(PLAYER2_HOME_RUNS);
         p2.setRbis(PLAYER2_RBIS);
 
-        Team team1 = teamList.get(0);
-        team1.setPositionPlayers(Arrays.asList(p1, p2));
+        Team team1 = teamList.getFirst();
+        team1.setPositionPlayers(new ArrayList<>(List.of(p1, p2)));
         return Arrays.asList(p1, p2);
     }
 
     public static List<PositionPlayerDTO> buildPositionPlayerDTOs() {
         List<Team> teamList = setUpTeamMocks();
-        PositionPlayerDTO dto1 = new PositionPlayerDTO(PLAYER1_NAME, teamList.get(0).getName(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0);
-        PositionPlayerDTO dto2 = new PositionPlayerDTO(PLAYER2_NAME, teamList.get(0).getName(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0);
+        PositionPlayerDTO dto1 = new PositionPlayerDTO(PLAYER1_NAME, PLAYER1_NUMBER, teamList.getFirst().getName(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0, null);
+        PositionPlayerDTO dto2 = new PositionPlayerDTO(PLAYER2_NAME, PLAYER2_NUMBER, teamList.getFirst().getName(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0, null);
         return Arrays.asList(dto1, dto2);
     }
 
     public static List<PositionPlayerSummaryDTO> buildPositionPlayerSummaryDTOs() {
-        PositionPlayerSummaryDTO dto1 = new PositionPlayerSummaryDTO(PLAYER1_NAME, PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0);
-        PositionPlayerSummaryDTO dto2 = new PositionPlayerSummaryDTO(PLAYER2_NAME, PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0);
+        PositionPlayerSummaryDTO dto1 = new PositionPlayerSummaryDTO(PLAYER1_NAME, PLAYER1_NUMBER, PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0, null);
+        PositionPlayerSummaryDTO dto2 = new PositionPlayerSummaryDTO(PLAYER2_NAME, PLAYER2_NUMBER, PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0, null);
         return Arrays.asList(dto1, dto2);
     }
 
     // Pitcher mocks
     public static List<Pitcher> buildPitchers(List<Team> teamList) {
-        Pitcher p3 = new Pitcher(PLAYER3_NAME, teamList.get(1), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS);
+        Pitcher p3 = new Pitcher(PLAYER3_NAME, 13, teamList.get(1), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES);
+        p3.setInningsPitched(PLAYER3_INNINGS);
         p3.setTotalStrikeouts(PLAYER3_SO);
         p3.setWalks(PLAYER3_WALKS);
         p3.setHitsAllowed(PLAYER3_HITS_ALLOWED);
         p3.setRunsAllowed(PLAYER3_RUNS_ALLOWED);
         p3.setSaves(PLAYER3_SAVES);
-        p3.setSaveOpportunities(PLAYER3_SAVES_OPORTUNITIES);
+        p3.setSaveOpportunities(PLAYER3_SAVES_OPPORTUNITIES);
         Team team1 = teamList.get(1);
-        team1.setPitchers(Arrays.asList(p3));
+        team1.setPitchers(new ArrayList<>(List.of(p3)));
         return Arrays.asList(p3);
     }
 
     public static List<PitcherDTO> buildPitcherDTOs() {
         List<Team> teamList = setUpTeamMocks();
-        PitcherDTO dto3 = new PitcherDTO(PLAYER3_NAME, teamList.get(1).getName(), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        PitcherDTO dto3 = new PitcherDTO(PLAYER3_NAME, PLAYER3_NUMBER, teamList.get(1).getName(), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES, null);
         return Arrays.asList(dto3);
     }
 
     public static List<PitcherSummaryDTO> buildPitcherSummaryDTOs() {
-        PitcherSummaryDTO dto3 = new PitcherSummaryDTO(PLAYER3_NAME, PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPORTUNITIES);
+        PitcherSummaryDTO dto3 = new PitcherSummaryDTO(PLAYER3_NAME, PLAYER3_NUMBER, PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES, null);
         return Arrays.asList(dto3);
     }   
 }

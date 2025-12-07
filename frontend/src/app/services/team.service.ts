@@ -1,3 +1,4 @@
+import { PaginatedResponse } from './../models/pagination.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
@@ -19,6 +20,10 @@ export class TeamService {
 	private url = 'https://localhost:8443/api/v1/teams';
 
 	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
+
+	public getAvailableTeams(page: number, size: number): Observable<PaginatedResponse<TeamSummary>> {
+		return this.http.get<PaginatedResponse<TeamSummary>>(`${this.url}/available?page=${page}&size=${size}`);
+	}
 
 	public getStandings(): Observable<StandingsResponse> {
 		return this.http.get<StandingsResponse>(`${this.url}/standings`);

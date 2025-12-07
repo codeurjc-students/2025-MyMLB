@@ -94,6 +94,7 @@ public final class TestConstants {
     public static final String OCCUPIED_STADIUM = "Occupied Stadium";
 
     public static final String PLAYER1_NAME = "Player1";
+    public static final int PLAYER1_NUMBER = 33;
     public static final int PLAYER1_AT_BATS = 200;
     public static final int PLAYER1_WALKS = 10;
     public static final int PLAYER1_HITS = 85;
@@ -103,6 +104,7 @@ public final class TestConstants {
     public static final int PLAYER1_RBIS = 40;
 
     public static final String PLAYER2_NAME = "Player2";
+    public static final int PLAYER2_NUMBER = 32;
     public static final int PLAYER2_AT_BATS = 200;
     public static final int PLAYER2_WALKS = 10;
     public static final int PLAYER2_HITS = 85;
@@ -112,6 +114,7 @@ public final class TestConstants {
     public static final int PLAYER2_RBIS = 40;
 
     public static final String PLAYER3_NAME = "Player3";
+    public static final int PLAYER3_NUMBER = 13;
     public static final int PLAYER3_GAMES = 10;
     public static final int PLAYER3_WINS = 5;
     public static final int PLAYER3_LOSSES = 3;
@@ -121,7 +124,10 @@ public final class TestConstants {
     public static final int PLAYER3_HITS_ALLOWED = 21;
     public static final int PLAYER3_RUNS_ALLOWED = 7;
     public static final int PLAYER3_SAVES = 0;
-    public static final int PLAYER3_SAVES_OPORTUNITIES = 0;
+    public static final int PLAYER3_SAVES_OPPORTUNITIES = 0;
+
+    public static final String NEW_PLAYER_NAME = "New Player";
+    public static final int NEW_PLAYER_NUMBER = 61;
 
     public static final String UNKNOWN_PLAYER = "AnyPlayer";
 }
