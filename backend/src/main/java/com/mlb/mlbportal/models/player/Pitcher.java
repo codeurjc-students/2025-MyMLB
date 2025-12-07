@@ -34,21 +34,19 @@ public class Pitcher extends Player {
     private int saveOpportunities;
     private double whip;
 
-    public Pitcher(String name, int number,Team team, PitcherPositions position, int games, int wins, int losses, double inningsPitched) {
+    public Pitcher(String name, int number,Team team, PitcherPositions position, int games, int wins, int losses) {
         super(name, number, team);
         this.position = position;
         this.games = games;
         this.wins = wins;
         this.losses = losses;
-        this.inningsPitched = inningsPitched;
     }
 
-    public Pitcher(String name, int number, Team team, PictureInfo picture, PitcherPositions position, int games, int wins, int losses) {
+    public Pitcher(String name, int number, Team team, PictureInfo picture, PitcherPositions position, int games, int wins) {
         super(name, number,  team, picture);
         this.position = position;
         this.games = games;
         this.wins = wins;
-        this.losses = losses;
     }
 
     public Pitcher(String name, int number, Team team, PitcherPositions position) {

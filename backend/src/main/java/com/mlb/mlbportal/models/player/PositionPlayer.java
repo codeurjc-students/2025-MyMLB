@@ -33,21 +33,19 @@ public class PositionPlayer extends Player {
     private int triples;
     private double slugging;
 
-    public PositionPlayer(String name, int number, Team team, PlayerPositions position, int atBats, int walks, int hits, int doubles) {
+    public PositionPlayer(String name, int number, Team team, PlayerPositions position, int atBats, int walks, int hits) {
         super(name, number, team);
         this.position = position;
         this.atBats = atBats;
         this.hits = hits;
         this.walks = walks;
-        this.doubles = doubles;
     }
 
-    public PositionPlayer(String name, int number, Team team, PictureInfo picture, PlayerPositions position, int atBats, int walks, int hits) {
+    public PositionPlayer(String name, int number, Team team, PictureInfo picture, PlayerPositions position, int atBats, int walks) {
         super(name, number, team, picture);
         this.position = position;
         this.atBats = atBats;
         this.walks = walks;
-        this.hits = hits;
     }
 
     public PositionPlayer(String name, int number, Team team, PlayerPositions position) {

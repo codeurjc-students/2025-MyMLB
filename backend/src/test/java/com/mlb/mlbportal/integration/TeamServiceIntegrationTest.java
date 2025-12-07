@@ -125,7 +125,7 @@ class TeamServiceIntegrationTest {
         Page<TeamSummary> result = this.teamService.getAvailableTeams(0, 10);
 
         assertThat(result.getTotalElements()).isEqualTo(3);
-        assertThat(result.getContent().size()).isEqualTo(3);
+        assertThat(result.getContent()).hasSize(3);
     }
 
     @Test

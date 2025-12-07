@@ -284,9 +284,9 @@ public class InitController {
                         PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
                         ((Number) raw.get("games")).intValue(),
                         ((Number) raw.get("wins")).intValue(),
-                        ((Number) raw.get("losses")).intValue(),
-                        ((Number) raw.get("inningsPitched")).intValue()
+                        ((Number) raw.get("losses")).intValue()
                     );
+                    pitcher.setInningsPitched(((Number) raw.get("inningsPitched")).intValue());
                     pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
                     pitcher.setWalks(((Number) raw.get("walks")).intValue());
                     pitcher.setHitsAllowed(((Number) raw.get("hitsAllowed")).intValue());
@@ -303,9 +303,9 @@ public class InitController {
                         PlayerPositions.fromLabel((String) raw.get("position")),
                         ((Number) raw.get("atBats")).intValue(),
                         ((Number) raw.get("walks")).intValue(),
-                        ((Number) raw.get("hits")).intValue(),
-                        ((Number) raw.get("doubles")).intValue()
+                        ((Number) raw.get("hits")).intValue()
                     );
+                    player.setDoubles(((Number) raw.get("doubles")).intValue());
                     player.setTriples(((Number) raw.get("triples")).intValue());
                     player.setHomeRuns(((Number) raw.get("homeRuns")).intValue());
                     player.setRbis(((Number) raw.get("rbis")).intValue());

@@ -222,12 +222,14 @@ public class BuildMocksFactory {
 
     // Players
     public static List<PositionPlayer> buildPositionPlayers(List<Team> teamList) {
-        PositionPlayer p1 = new PositionPlayer(PLAYER1_NAME, 33, teamList.getFirst(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES);
+        PositionPlayer p1 = new PositionPlayer(PLAYER1_NAME, 33, teamList.getFirst(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS);
+        p1.setDoubles(PLAYER1_DOUBLES);
         p1.setTriples(PLAYER1_TRIPLES);
         p1.setHomeRuns(PLAYER1_HOME_RUNS);
         p1.setRbis(PLAYER1_RBIS);
 
-        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, 32, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES);
+        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, 32, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS);
+        p2.setDoubles(PLAYER2_DOUBLES);
         p2.setTriples(PLAYER2_TRIPLES);
         p2.setHomeRuns(PLAYER2_HOME_RUNS);
         p2.setRbis(PLAYER2_RBIS);
@@ -252,7 +254,8 @@ public class BuildMocksFactory {
 
     // Pitcher mocks
     public static List<Pitcher> buildPitchers(List<Team> teamList) {
-        Pitcher p3 = new Pitcher(PLAYER3_NAME, 13, teamList.get(1), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS);
+        Pitcher p3 = new Pitcher(PLAYER3_NAME, 13, teamList.get(1), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES);
+        p3.setInningsPitched(PLAYER3_INNINGS);
         p3.setTotalStrikeouts(PLAYER3_SO);
         p3.setWalks(PLAYER3_WALKS);
         p3.setHitsAllowed(PLAYER3_HITS_ALLOWED);
