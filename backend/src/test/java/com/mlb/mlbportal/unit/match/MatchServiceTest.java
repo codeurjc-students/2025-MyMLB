@@ -8,7 +8,6 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
