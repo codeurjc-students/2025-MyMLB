@@ -89,13 +89,13 @@ public class WebSecurityConfig {
 <span class="nc" id="L89">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/stadiums/*/pictures&quot;).permitAll()</span>
 
                      // Player Endpoints
-<span class="nc" id="L92">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players&quot;).permitAll()</span>
-<span class="nc" id="L93">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/**&quot;).permitAll()</span>
-<span class="nc" id="L94">                        .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/*/**&quot;).permitAll()</span>
-<span class="nc" id="L95">                        .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L96">                        .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/*/pictures&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L97">                        .requestMatchers(HttpMethod.PATCH, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L98">                        .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L92">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/players&quot;).permitAll()</span>
+<span class="nc" id="L93">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/**&quot;).permitAll()</span>
+<span class="nc" id="L94">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/players/*/**&quot;).permitAll()</span>
+<span class="nc" id="L95">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L96">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/players/*/pictures&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L97">                    .requestMatchers(HttpMethod.PATCH, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L98">                    .requestMatchers(HttpMethod.DELETE, &quot;/api/v1/players/**&quot;).hasRole(&quot;ADMIN&quot;)</span>
 
                     // Matches Endpoints
 <span class="nc" id="L101">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/matches/today&quot;).permitAll()</span>

@@ -104,7 +104,6 @@ class TeamServiceTest {
 
         assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(mockTeamInfoDTOs);
         assertThat(result.getTotalElements()).isEqualTo(3);
-        assertThat(result.getTotalElements()).isEqualTo(3);
     }
 
     @Test

@@ -24,8 +24,7 @@ describe('Team Calendar E2E Tests', () => {
 
 			matches[0].date = adjustedDate.toISOString();
 
-			cy.intercept('GET', '**/api/v1/matches/home/**', matches).as('getHomeMatches');
-			cy.intercept('GET', '**/api/v1/matches/away/**', matches).as('getAwayMatches');
+			cy.intercept('GET', '**/api/v1/matches/team/**', matches).as('getMatches');
 		});
 
 		cy.fixture('team-info').then((mockTeam) => {
@@ -45,7 +44,7 @@ describe('Team Calendar E2E Tests', () => {
 		});
 
 		cy.get('button').contains('Show Calendar').click();
-		cy.wait(['@getHomeMatches', '@getAwayMatches']);
+		cy.wait('@getMatches');
 		cy.get('app-calendar').should('exist').and('be.visible');
 	});
 

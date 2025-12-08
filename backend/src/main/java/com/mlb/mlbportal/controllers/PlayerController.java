@@ -2,7 +2,6 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;

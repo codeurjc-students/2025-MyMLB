@@ -52,10 +52,7 @@ describe('Calendar Component Tests', () => {
 	);
 
 	beforeEach(() => {
-		matchServiceSpy = jasmine.createSpyObj('MatchService', [
-			'getHomeMatches',
-			'getAwayMatches',
-		]);
+		matchServiceSpy = jasmine.createSpyObj('MatchService', ['getMatchesOfTeamByMonth']);
 		bgColorServiceSpy = jasmine.createSpyObj('BackgroundColorService', ['getBackgroundColor']);
 
 		TestBed.configureTestingModule({
@@ -69,12 +66,12 @@ describe('Calendar Component Tests', () => {
 		component = fixture.componentInstance;
 		component.team = mockTeamInfo;
 		matchServiceSpy = TestBed.inject(MatchService) as jasmine.SpyObj<MatchService>;
+		matchServiceSpy.getMatchesOfTeamByMonth.and.returnValue(of([]));
 		bgColorServiceSpy = TestBed.inject(BackgroundColorService) as jasmine.SpyObj<BackgroundColorService>;
 	});
 
 	it('ngOnInit should index matches from service', () => {
-		matchServiceSpy.getHomeMatches.and.returnValue(of([mockMatch]));
-		matchServiceSpy.getAwayMatches.and.returnValue(of([]));
+		matchServiceSpy.getMatchesOfTeamByMonth.and.returnValue(of([mockMatch]));
 
 		component.ngOnInit();
 
@@ -84,12 +81,11 @@ describe('Calendar Component Tests', () => {
 	});
 
 	it('ngOnInit should set errorMessage on service error', () => {
-		matchServiceSpy.getHomeMatches.and.returnValue(throwError(() => new Error('fail')));
-		matchServiceSpy.getAwayMatches.and.returnValue(of([]));
+		matchServiceSpy.getMatchesOfTeamByMonth.and.returnValue(throwError(() => new Error('fail')));
 
 		component.ngOnInit();
 
-		expect(component.errorMessage).toContain('Error trying to load the home matches');
+		expect(component.errorMessage).toContain('Error trying to load matches');
 	});
 
 	it('closeCalendar should emit close event', () => {
@@ -98,9 +94,9 @@ describe('Calendar Component Tests', () => {
 		expect(component.close.emit).toHaveBeenCalled();
 	});
 
+
 	it('getCellClass should return team color if home match exists', () => {
-		matchServiceSpy.getHomeMatches.and.returnValue(of([mockMatch]));
-		matchServiceSpy.getAwayMatches.and.returnValue(of([]));
+		matchServiceSpy.getMatchesOfTeamByMonth.and.returnValue(of([mockMatch]));
 		bgColorServiceSpy.getBackgroundColor.and.returnValue('bg-blue-900');
 
 		component.ngOnInit();

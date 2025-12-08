@@ -16,4 +16,5 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     public boolean existsByHomeTeamNameAndAwayTeamNameAndDate(String homeTeamName, String awayTeamName, LocalDateTime date);
     public List<Match> findByHomeTeam(Team homeTeam);
     public List<Match> findByAwayTeam(Team awayTeam);
+    public  List<Match> findByHomeTeamOrAwayTeamAndDateBetween(Team home, Team away, LocalDateTime start, LocalDateTime end);
 }

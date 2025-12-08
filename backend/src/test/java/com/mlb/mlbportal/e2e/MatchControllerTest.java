@@ -40,30 +40,65 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/matches/home/{teamName} should return all home matches of the given team")
-    void testGetHomeMatchesOfATeam() {
-        String url = MATCHES_PATH + "home/" + TEST_TEAM1_NAME;
+    @DisplayName("GET /api/v1/matches/{teamName}?location=home should return home matches")
+    void testGetHomeMatchesWithLocationParam() {
+        String url = MATCHES_PATH + TEST_TEAM1_NAME + "?location=home";
+
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .get(url)
                 .then()
                 .statusCode(200)
-                .body("size()", is(1))
-                .body("awayTeam.name", hasItems(this.team2.getName()));
+                .body("content.size()", is(1))
+                .body("content.awayTeam.name", hasItems(this.team2.getName()));
     }
 
     @Test
-    @DisplayName("GET /api/v1/matches/away/{teamName} should return all home matches of the given team")
-    void testGetAwayMatchesOfATeam() {
-        String url = MATCHES_PATH + "away/" + TEST_TEAM1_NAME;
+    @DisplayName("GET /api/v1/matches/{teamName}?location=away should return away matches")
+    void testGetAwayMatchesWithLocationParam() {
+        String url = MATCHES_PATH + TEST_TEAM1_NAME + "?location=away";
+
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .get(url)
                 .then()
                 .statusCode(200)
-                .body("size()", is(1))
-                .body("homeTeam.name", hasItems(this.team2.getName()));
+                .body("content.size()", is(1))
+                .body("content.homeTeam.name", hasItems(this.team2.getName()));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/matches/{teamName}?location=invalid should return 400 Bad Request")
+    void testGetMatchesWithInvalidLocationParam() {
+        String url = MATCHES_PATH + TEST_TEAM1_NAME + "?location=invalid";
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/matches/team/{teamName}?year=YYYY&month=MM should return all matches of the team in that month")
+    void testGetMatchesOfTeamByMonth() {
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+
+        String url = MATCHES_PATH + "team/" + TEST_TEAM1_NAME + "?year=" + year + "&month=" + month;
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("size()", is(2))
+                .body("homeTeam.name", hasItems(this.team1.getName(), this.team2.getName()))
+                .body("awayTeam.name", hasItems(this.team1.getName(), this.team2.getName()));
     }
 }

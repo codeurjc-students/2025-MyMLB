@@ -123,26 +123,21 @@ describe('Match Service Tests', () => {
 		req.flush(mockResponse);
 	});
 
-	it('should fetch the home matches of a certain team', () => {
-		service.getHomeMatches('New York Yankees').subscribe((response) => {
-			expect(response.length).toBe(2);
-			expect(response[0].awayTeam.name).toBe('Boston Red Sox');
-			expect(response[1].awayTeam.name).toBe('Los Angeles Dodgers');
+	it('should fetch matches of a team by month', () => {
+		const teamName = 'New York Yankees';
+		const year = 2025;
+		const month = 10;
+
+		service.getMatchesOfTeamByMonth(teamName, year, month).subscribe((data) => {
+			expect(data).toEqual(mockHomeMatches);
+			expect(data.length).toBe(2);
+			expect(data[0].homeTeam.name).toBe('New York Yankees');
+			expect(data[1].awayTeam.abbreviation).toBe('LAD');
+			expect(data[1].status).toBe('SCHEDULED');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/home/New York Yankees`);
+		const req = httpMock.expectOne(`${apiUrl}/team/${teamName}?year=${year}&month=${month}`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockHomeMatches);
-	});
-
-	it('should fetch the away matches of a certain team', () => {
-		service.getAwayMatches('Boston Red Sox').subscribe((response) => {
-			expect(response.length).toBe(1);
-			expect(response[0].homeTeam.name).toBe('New York Yankees');
-		});
-
-		const req = httpMock.expectOne(`${apiUrl}/away/Boston Red Sox`);
-		expect(req.request.method).toBe('GET');
-		req.flush(mockAwayMatches);
 	});
 });

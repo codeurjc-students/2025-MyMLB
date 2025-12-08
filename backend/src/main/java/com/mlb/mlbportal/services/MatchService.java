@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,7 @@ public class MatchService {
     private final UserService userService;
     private final Clock clock;
     private final TeamRepository teamRepository;
+    private final PaginationHandlerService paginationHandlerService;
 
     @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
@@ -89,14 +91,28 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
-    public List<MatchDTO> getHomeMatches(String teamName) {
+    public Page<MatchDTO> getHomeMatches(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
-        return this.matchMapper.toMatchDTOList(this.matchRepository.findByHomeTeam(team));
+        List<Match> matches = this.matchRepository.findByHomeTeam(team);
+        return this.paginationHandlerService.paginateAndMap(matches, page, size, this.matchMapper::toMatchDTO);
     }
 
     @Transactional(readOnly = true)
-    public List<MatchDTO> getAwayMatches(String teamName) {
+    public Page<MatchDTO> getAwayMatches(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
-        return this.matchMapper.toMatchDTOList(this.matchRepository.findByAwayTeam(team));
+        List<Match> matches = this.matchRepository.findByAwayTeam(team);
+        return this.paginationHandlerService.paginateAndMap(matches, page, size, this.matchMapper::toMatchDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MatchDTO> getMatchesOfTeamBetweenDates(String teamName, LocalDate start, LocalDate end) {
+        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
+
+        List<Match> matches = this.matchRepository.findByHomeTeamOrAwayTeamAndDateBetween(team, team, startDateTime, endDateTime);
+
+        return matches.stream().map(this.matchMapper::toMatchDTO).toList();
     }
 }

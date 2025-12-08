@@ -3,6 +3,7 @@ package com.mlb.mlbportal.integration;
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -133,7 +134,7 @@ class MatchServiceIntegrationTest {
 
     @Test
     @DisplayName("Should return the last 10 matches of a team in descending order")
-    void testGetLast10MatchesIntegration() {
+    void testGetLast10Matches() {
         for (int i = 0; i < 12; i++) {
             Match match = new Match(this.team1, this.team2, i, i + 1, LocalDateTime.now().minusDays(i), MatchStatus.FINISHED);
             this.matchRepository.save(match);
@@ -143,5 +144,38 @@ class MatchServiceIntegrationTest {
 
         assertThat(last10).hasSize(10);
         assertThat(last10.get(0).getDate()).isAfter(last10.get(1).getDate());
+    }
+
+    @Test
+    @DisplayName("Should return home matches of a certain team")
+    void testGetHomeMatchesOfATeam() {
+        Match homeMatch = new Match(this.team1, this.team3, 1, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
+        this.matchRepository.save(homeMatch);
+
+        Page<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM3_NAME, 0, 10);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().getFirst().awayTeam().name()).isEqualTo(this.team1.getName());
+    }
+
+    @Test
+    @DisplayName("Should return matches of a team between given dates")
+    void testGetMatchesOfTeamBetweenDates() {
+        Match matchInRange = new Match(this.team1, this.team2, 5, 3,
+                LocalDateTime.now().plusDays(2), MatchStatus.SCHEDULED);
+        Match matchOutOfRange = new Match(this.team1, this.team2, 2, 2,
+                LocalDateTime.now().plusMonths(2), MatchStatus.SCHEDULED);
+
+        this.matchRepository.saveAll(List.of(matchInRange, matchOutOfRange));
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate start = now.toLocalDate();
+        LocalDate end = now.toLocalDate().plusDays(7);
+
+        List<MatchDTO> result = this.matchService.getMatchesOfTeamBetweenDates(this.team1.getName(), start, end);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().homeTeam().name()).isEqualTo(this.team2.getName());
+        assertThat(result.getFirst().awayTeam().name()).isEqualTo(this.team1.getName());
     }
 }
