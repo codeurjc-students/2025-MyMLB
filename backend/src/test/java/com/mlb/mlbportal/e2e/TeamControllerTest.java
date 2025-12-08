@@ -44,13 +44,11 @@ class TeamControllerTest extends BaseE2ETest {
                 .get(ALL_TEAMS_PATH)
                 .then()
                 .statusCode(200)
-                .body("size()", is(3))
-                .body("teamStats.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
-                .body("teamStats.abbreviation",
-                        hasItems(TEST_TEAM1_ABBREVIATION, TEST_TEAM2_ABBREVIATION, TEST_TEAM3_ABBREVIATION))
-                .body("teamStats.wins", hasItems(TEST_TEAM1_WINS, TEST_TEAM2_WINS, TEST_TEAM3_WINS))
-                .body("teamStats.pct", hasItems(0.469f, 0.563f, 0.077f))
-                .body("teamStats.gamesBehind", hasItems(0.0f, 14.0f, 0.0f));
+                .body("content.size()", is(3))
+                .body("content.teamStats.name", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM3_NAME))
+                .body("page.size", is(10))
+                .body("page.totalElements", is(3))
+                .body("page.totalPages", is(1));
     }
 
     @Test

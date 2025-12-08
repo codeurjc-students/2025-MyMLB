@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CreatePlayerRequest, EditPositionPlayerRequest, PositionPlayerGlobal } from '../models/position-player.model';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { CreatePitcherRequest, EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
+import { EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
 import { Pictures } from '../models/pictures.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
 

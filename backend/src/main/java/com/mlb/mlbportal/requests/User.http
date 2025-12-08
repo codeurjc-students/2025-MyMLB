@@ -1,5 +1,5 @@
 ### Get All Users
-GET https://localhost:8443/api/v1/users
+GET https://localhost:8443/api/v1/users?page=0&size=10
 Accept: application/json
 
 ### Get Favourite Teams of a User

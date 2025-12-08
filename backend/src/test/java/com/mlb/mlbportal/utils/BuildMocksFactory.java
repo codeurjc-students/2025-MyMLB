@@ -16,6 +16,7 @@ import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -103,6 +104,14 @@ public class BuildMocksFactory {
         UserEntity user3 =  new UserEntity(TEST_USER_EMAIL, TEST_USER_USERNAME, TEST_USER_PASSWORD);
 
         return Arrays.asList(user1, user2, user3);
+    }
+
+    public static List<ShowUser> buildShowUserDTOs(List<UserEntity> users) {
+        ShowUser dto1 = new ShowUser(users.getFirst().getUsername(), users.getFirst().getEmail());
+        ShowUser dto2 = new ShowUser(users.get(1).getUsername(), users.get(1).getEmail());
+        ShowUser dto3 = new ShowUser(users.get(2).getUsername(), users.get(2).getEmail());
+
+        return Arrays.asList(dto1, dto2, dto3);
     }
 
     public static List<Team> setUpTeamMocks() {
@@ -276,5 +285,5 @@ public class BuildMocksFactory {
     public static List<PitcherSummaryDTO> buildPitcherSummaryDTOs() {
         PitcherSummaryDTO dto3 = new PitcherSummaryDTO(PLAYER3_NAME, PLAYER3_NUMBER, PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES, null);
         return Arrays.asList(dto3);
-    }   
+    }
 }

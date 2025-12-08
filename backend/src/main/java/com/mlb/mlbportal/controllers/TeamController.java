@@ -38,8 +38,8 @@ public class TeamController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<TeamInfoDTO>> getAllTeams() {
-        List<TeamInfoDTO> teams = this.teamService.getTeams();
+    public ResponseEntity<Page<TeamInfoDTO>> getAllTeams(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
+        Page<TeamInfoDTO> teams = this.teamService.getTeams(page, size);
         return ResponseEntity.ok(teams);
     }
 

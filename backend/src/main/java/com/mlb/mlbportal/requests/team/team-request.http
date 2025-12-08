@@ -1,5 +1,5 @@
 ### Get All Teams
-GET https://localhost:8443/api/v1/teams
+GET https://localhost:8443/api/v1/teams?page=0&size=10
 Content-Type: application/json
 
 ### Get Available Teams

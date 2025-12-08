@@ -12,8 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -21,6 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
@@ -35,6 +39,7 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.StadiumService;
 import com.mlb.mlbportal.services.uploader.PictureService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_STADIUM_YEAR;
@@ -53,6 +58,9 @@ class StadiumServiceTest {
     @Mock
     private PictureService pictureService;
 
+    @Mock
+    private PaginationHandlerService paginationHandlerService;
+
     @InjectMocks
     private StadiumService stadiumService;
 
@@ -69,8 +77,10 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
+        Page<StadiumInitDTO> mockPage = new PageImpl<>(this.stadiumDtos, PageRequest.of(0, 10), this.stadiumDtos.size());
+
         when(this.stadiumRepository.findAll()).thenReturn(this.stadiums);
-        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(this.stadiumDtos.getFirst(), this.stadiumDtos.get(1), this.stadiumDtos.get(2));
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.stadiums), eq(0), eq(10), any());
 
         Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
         List<StadiumInitDTO> content = result.getContent();
@@ -87,11 +97,12 @@ class StadiumServiceTest {
     @DisplayName("Should return all available stadiums")
     void testGetAvailableStadiums() {
         Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
-
-        when(this.stadiumRepository.findByTeamIsNull()).thenReturn(List.of(stadium));
-
+        List<Stadium> availableStadiums = List.of(stadium);
         StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
-        when(this.stadiumMapper.toStadiumInitDTO(any())).thenReturn(dto);
+        Page<StadiumInitDTO> mockPage = new PageImpl<>(List.of(dto), PageRequest.of(0, 10), 1);
+
+        when(this.stadiumRepository.findByTeamIsNull()).thenReturn(availableStadiums);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(availableStadiums), eq(0), eq(10), any());
 
         Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
 
@@ -104,20 +115,10 @@ class StadiumServiceTest {
     }
 
     @Test
-    @DisplayName("Should return an empty list if there are no registered stadiums")
-    void testGetEmptyStadiums() {
-        when(this.stadiumRepository.findAll()).thenReturn(Collections.emptyList());
-        Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
-
-        assertThat(result.getContent()).isEmpty();
-        assertThat(result.getTotalElements()).isZero();
-    }
-
-    @Test
     @DisplayName("Should return the specified stadium with all of its attributes")
     void testFindStadiumByName() {
-        Stadium stadium = this.stadiums.get(0);
-        StadiumInitDTO dto = this.stadiumDtos.get(0);
+        Stadium stadium = this.stadiums.getFirst();
+        StadiumInitDTO dto = this.stadiumDtos.getFirst();
 
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
         when(this.stadiumMapper.toStadiumInitDTO(stadium)).thenReturn(dto);

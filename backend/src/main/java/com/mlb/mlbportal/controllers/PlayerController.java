@@ -39,34 +39,34 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class PlayerController {
     private final PlayerService playerService;
 
-    @Operation(summary = "Get all players", description = "Returns a list of all MLB players, including both position players and pitchers.")
+    @Operation(summary = "Get all players", description = "Returns a paginated list of all MLB players, including both position players and pitchers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of players", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping
-    public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
-        return ResponseEntity.ok(this.playerService.getAllPlayers());
+    public ResponseEntity<Page<PlayerDTO>> getAllPlayers(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
+        return ResponseEntity.ok(this.playerService.getAllPlayers(page, size));
     }
 
-    @Operation(summary = "Get all position players", description = "Returns a list of all MLB position players with detailed stats.")
+    @Operation(summary = "Get all position players", description = "Returns a paginated list of all MLB position players with detailed stats.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of position players", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PositionPlayerDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/position-players")
-    public ResponseEntity<List<PositionPlayerDTO>> getAllPositionPlayers() {
-        return ResponseEntity.ok(this.playerService.getAllPositionPlayers());
+    public ResponseEntity<Page<PositionPlayerDTO>> getAllPositionPlayers(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
+        return ResponseEntity.ok(this.playerService.getAllPositionPlayers(page, size));
     }
 
-    @Operation(summary = "Get all pitchers", description = "Returns a list of all MLB pitchers with detailed stats.")
+    @Operation(summary = "Get all pitchers", description = "Returns a paginated list of all MLB pitchers with detailed stats.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of pitchers", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PitcherDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/pitchers")
-    public ResponseEntity<List<PitcherDTO>> getAllPitchers() {
-        return ResponseEntity.ok(this.playerService.getAllPitchers());
+    public ResponseEntity<Page<PitcherDTO>> getAllPitchers(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
+        return ResponseEntity.ok(this.playerService.getAllPitchers(page, size));
     }
 
     @Operation(summary = "Get player by name", description = "Returns detailed information about a specific player identified by name.")

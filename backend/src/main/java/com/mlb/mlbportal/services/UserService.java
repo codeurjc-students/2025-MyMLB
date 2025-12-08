@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final TeamRepository teamRepository;
+    private final PaginationHandlerService paginationHandlerService;
 
     @Transactional(readOnly = true)
-    public List<ShowUser> getAllUsers() {
-        return this.userMapper.toShowUsers(this.userRepository.findAll());
+    public Page<ShowUser> getAllUsers(int page, int size) {
+        List<UserEntity> users = this.userRepository.findAll();
+        return this.paginationHandlerService.paginateAndMap(users, page, size, this.userMapper::toShowUser);
     }
 
     @Transactional(readOnly = true)

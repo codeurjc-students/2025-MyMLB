@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit.player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +35,6 @@ import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.models.enums.PitcherPositions;
-import com.mlb.mlbportal.models.enums.PlayerPositions;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
@@ -42,6 +42,8 @@ import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceReadOnlyOperationsTest {
@@ -67,6 +69,9 @@ class PlayerServiceReadOnlyOperationsTest {
     @Mock
     private PictureService pictureService;
 
+    @Mock
+    private PaginationHandlerService paginationHandlerService;
+
     @InjectMocks
     private PlayerService playerService;
 
@@ -74,6 +79,7 @@ class PlayerServiceReadOnlyOperationsTest {
     private List<Pitcher> pitchers;
     private List<PositionPlayerDTO> positionPlayerDTOs;
     private List<PitcherDTO> pitcherDTOs;
+    private List<PlayerDTO> allPlayers;
     private List<PositionPlayerSummaryDTO> positionSummaryDTOs;
     private List<PitcherSummaryDTO> pitcherSummaryDTOs;
     private List<Team> teams;
@@ -90,53 +96,59 @@ class PlayerServiceReadOnlyOperationsTest {
         this.pitcherDTOs = BuildMocksFactory.buildPitcherDTOs();
         this.positionSummaryDTOs = BuildMocksFactory.buildPositionPlayerSummaryDTOs();
         this.pitcherSummaryDTOs = BuildMocksFactory.buildPitcherSummaryDTOs();
+
+        this.allPlayers = new ArrayList<>();
+        this.allPlayers.addAll(positionPlayerDTOs);
+        this.allPlayers.addAll(pitcherDTOs);
+        this.allPlayers.sort((p1, p2) -> p1.name().compareToIgnoreCase(p2.name()));
     }
 
     @Test
     @DisplayName("Should return all players mapped and sorted")
     void testGetAllPlayers() {
+        Page<PlayerDTO> mockPage = new PageImpl<>(this.allPlayers, PageRequest.of(0, 10), this.allPlayers.size());
         when(this.positionPlayerRepository.findAll()).thenReturn(this.positionPlayers);
         when(this.pitcherRepository.findAll()).thenReturn(this.pitchers);
-        when(this.positionPlayerMapper.toListPositionPlayerDTO(this.positionPlayers)).thenReturn(this.positionPlayerDTOs);
-        when(this.pitcherMapper.toListPitcherDTO(this.pitchers)).thenReturn(this.pitcherDTOs);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
 
-        List<PlayerDTO> result = this.playerService.getAllPlayers();
+        Page<PlayerDTO> result = this.playerService.getAllPlayers(0, 10);
 
-        assertThat(result).hasSize(3);
-        assertThat(result.get(0).name()).isEqualTo(PLAYER1_NAME);
-        assertThat(result.get(0).teamName()).isEqualTo(this.teams.getFirst().getName());
-        assertThat(result.get(1).name()).isEqualTo(PLAYER2_NAME);
-        assertThat(result.get(1).teamName()).isEqualTo(this.teams.get(0).getName());
-        assertThat(result.get(2).name()).isEqualTo(PLAYER3_NAME);
-        assertThat(result.get(2).teamName()).isEqualTo(this.teams.get(1).getName());
+        assertThat(result.getContent()).hasSize(allPlayers.size()).containsExactlyElementsOf(allPlayers);
+        assertThat(result.getTotalElements()).isEqualTo(allPlayers.size());
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getNumber()).isZero();
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.hasNext()).isFalse();
     }
 
     @Test
     @DisplayName("Should return all position players")
     void testGetAllPositionPlayers() {
+        Page<PositionPlayerDTO> mockPage = new PageImpl<>(this.positionPlayerDTOs, PageRequest.of(0, 10), this.positionPlayerDTOs.size());
         when(this.positionPlayerRepository.findAll()).thenReturn(this.positionPlayers);
-        when(this.positionPlayerMapper.toListPositionPlayerDTO(this.positionPlayers)).thenReturn(this.positionPlayerDTOs);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
 
-        List<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers();
+        Page<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers(0, 10);
 
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).name()).isEqualTo(PLAYER1_NAME);
-        assertThat(result.get(0).position()).isEqualTo(PlayerPositions.CF);
-        assertThat(result.get(1).name()).isEqualTo(PLAYER2_NAME);
-        assertThat(result.get(1).position()).isEqualTo(PlayerPositions.SS);
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent()).containsExactlyElementsOf(this.positionPlayerDTOs);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getSize()).isEqualTo(10);
     }
 
     @Test
     @DisplayName("Should return all pitchers")
     void testGetAllPitchers() {
+        Page<PitcherDTO> mockPage = new PageImpl<>(this.pitcherDTOs, PageRequest.of(0, 10), this.pitcherDTOs.size());
         when(this.pitcherRepository.findAll()).thenReturn(this.pitchers);
-        when(this.pitcherMapper.toListPitcherDTO(this.pitchers)).thenReturn(this.pitcherDTOs);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
 
-        List<PitcherDTO> result = this.playerService.getAllPitchers();
+        Page<PitcherDTO> result = this.playerService.getAllPitchers(0, 10);
 
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().name()).isEqualTo(PLAYER3_NAME);
-        assertThat(result.getFirst().position()).isEqualTo(PitcherPositions.SP);
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent()).containsExactlyElementsOf(this.pitcherDTOs);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getSize()).isEqualTo(10);
     }
 
     @Test
@@ -205,48 +217,41 @@ class PlayerServiceReadOnlyOperationsTest {
     @DisplayName("Should return paginated position players of a team")
     void testGetPositionPlayersOfTeam() {
         Team team = this.teams.getFirst();
+        Page<PositionPlayerSummaryDTO> mockPage = new PageImpl<>(this.positionSummaryDTOs, PageRequest.of(0, 10), this.positionSummaryDTOs.size());
+
         when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
-        when(this.positionPlayerMapper.toPositionPlayerSummaryDTO(any())).thenReturn(this.positionSummaryDTOs.getFirst(), this.positionSummaryDTOs.get(1));
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.positionPlayers), eq(0), eq(10), any());
 
         Page<PositionPlayerSummaryDTO> result = this.playerService.getAllPositionPlayersOfATeam(TEST_TEAM1_NAME, 0, 10);
         List<PositionPlayerSummaryDTO> resultContent = result.getContent();
 
-        assertThat(resultContent).hasSize(2);
+        assertThat(resultContent).hasSize(this.positionSummaryDTOs.size());
         assertThat(resultContent.get(0).name()).isEqualTo(PLAYER1_NAME);
         assertThat(resultContent.get(1).name()).isEqualTo(PLAYER2_NAME);
 
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isZero(); // page index
-        assertThat(result.getSize()).isEqualTo(10);  // requested size
-        assertThat(result.hasNext()).isFalse();
-        assertThat(result.hasPrevious()).isFalse();
-        assertThat(result.isFirst()).isTrue();
-        assertThat(result.isLast()).isTrue();
+        assertThat(result.getSize()).isEqualTo(10);
     }
 
     @Test
     @DisplayName("Should return paginated pitchers of a team")
     void testGetPitchersOfTeam() {
         Team team = this.teams.get(1);
+        Page<PitcherSummaryDTO> mockPage = new PageImpl<>(this.pitcherSummaryDTOs, PageRequest.of(0, 10), this.pitcherSummaryDTOs.size());
+
         when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
-        when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(pitchers);
-        when(this.pitcherMapper.toPitcherSummaryDTO(any())).thenReturn(this.pitcherSummaryDTOs.getFirst());
+        when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.pitchers), eq(0), eq(10), any());
 
         Page<PitcherSummaryDTO> result = this.playerService.getAllPitchersOfATeam(TEST_TEAM2_NAME, 0, 10);
         List<PitcherSummaryDTO> resultContent = result.getContent();
 
         assertThat(resultContent).hasSize(1);
         assertThat(resultContent.getFirst().name()).isEqualTo(PLAYER3_NAME);
-
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isZero(); // page index
-        assertThat(result.getSize()).isEqualTo(10);  // requested size
-        assertThat(result.hasNext()).isFalse();
-        assertThat(result.hasPrevious()).isFalse();
-        assertThat(result.isFirst()).isTrue();
-        assertThat(result.isLast()).isTrue();
+        assertThat(result.getSize()).isEqualTo(10);
     }
 }

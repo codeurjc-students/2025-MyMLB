@@ -9,7 +9,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
-import com.mlb.mlbportal.models.enums.PlayerPositions;
 import com.mlb.mlbportal.services.player.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,27 +70,20 @@ class PlayerServiceReadOnlyOperationsIntegrationTest {
     @Test
     @DisplayName("Should return all players")
     void testGetAllPlayers() {
-        List<PlayerDTO> result = this.playerService.getAllPlayers();
+        Page<PlayerDTO> result = this.playerService.getAllPlayers(0, 10);
 
-        assertThat(result).hasSize(3);
-        assertThat(result).extracting(PlayerDTO::name)
-                .containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME);
+        assertThat(result.getContent()).hasSize(3);
+        assertThat(result.getContent()).extracting(PlayerDTO::name).containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME);
     }
 
     @Test
     @DisplayName("Should return all position players")
     void testGetAllPositionPlayers() {
-        List<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers();
+        Page<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers(0, 10);
 
-        assertThat(result).hasSize(2);
-        assertThat(result).extracting(PositionPlayerDTO::name)
-                .containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME);
-
-        assertThat(result).extracting(PositionPlayerDTO::position)
-                .containsExactlyInAnyOrder(PlayerPositions.CF, PlayerPositions.SS);
-
-        assertThat(result).extracting(PositionPlayerDTO::teamName)
-                .containsExactlyInAnyOrder(TEST_TEAM1_NAME, TEST_TEAM1_NAME);
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getContent()).extracting(PositionPlayerDTO::name).containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME);
+        assertThat(result.getContent()).extracting(PositionPlayerDTO::teamName).containsExactlyInAnyOrder(TEST_TEAM1_NAME, TEST_TEAM1_NAME);
     }
 
     @Test

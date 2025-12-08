@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +20,7 @@ import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
 import lombok.AllArgsConstructor;
 
@@ -32,33 +30,18 @@ public class StadiumService {
     private final StadiumRepository stadiumRepository;
     private final StadiumMapper stadiumMapper;
     private final PictureService pictureService;
-
-    private Page<StadiumInitDTO> generatePagination(int page, int size, boolean allAvailable) {
-        List<Stadium> stadiums;
-        if (!allAvailable) {
-            stadiums = this.stadiumRepository.findAll();
-        }
-        else {
-            stadiums = this.stadiumRepository.findByTeamIsNull();
-        }
-        Pageable pageable = PageRequest.of(page, size);
-        int start = Math.min((int) pageable.getOffset(), stadiums.size());
-        int end = Math.min(start + pageable.getPageSize(), stadiums.size());
-
-        List<StadiumInitDTO> result = stadiums.subList(start, end).stream()
-                .map(this.stadiumMapper::toStadiumInitDTO).toList();
-
-        return new PageImpl<>(result, pageable, stadiums.size());
-    }
+    private final PaginationHandlerService paginationHandlerService;
 
     @Transactional(readOnly = true)
     public Page<StadiumInitDTO> getAllStadiums(int page, int size) {
-        return this.generatePagination(page, size, false);
+        List<Stadium> stadiums = this.stadiumRepository.findAll();
+        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);
     }
 
     @Transactional(readOnly = true)
     public Page<StadiumInitDTO> getAllAvailableStadiums(int page, int size) {
-        return this.generatePagination(page, size, true);
+        List<Stadium> stadiums = this.stadiumRepository.findByTeamIsNull();
+        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);
     }
 
     @Transactional(readOnly = true)
