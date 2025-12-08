@@ -33,13 +33,13 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="fc" id="L36">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L37">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="fc" id="L38">            body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="nc" id="L36">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L37">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="nc" id="L38">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="fc" id="L40">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
-<span class="fc" id="L41">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L42">        return body;</span>
+<span class="nc" id="L40">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="nc" id="L41">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="nc" id="L42">        return body;</span>
     }
 
     @ExceptionHandler(MaxiumPicturesExceededException.class)
@@ -81,14 +81,14 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 <span class="nc" id="L81">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
 <span class="nc" id="L83">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-<span class="nc" id="L84">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map&lt;String, Object&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
 <span class="nc" id="L90">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-<span class="nc" id="L91">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)

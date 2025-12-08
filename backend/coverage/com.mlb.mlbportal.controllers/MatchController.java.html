@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MatchController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">MatchController.java</span></div><h1>MatchController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
 
+import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,52 +23,61 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-import java.security.Principal;
-import java.util.List;
-
 @Tag(name = &quot;Matches&quot;, description = &quot;Operations related to the matches&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/matches&quot;)
 @AllArgsConstructor
 public class MatchController {
-    private final MatchService matchService;
+	private final MatchService matchService;
 
-    @Operation(summary = &quot;Get the matches of the day (paginated)&quot;, description = &quot;Returns a paginated list of matches scheduled for today. Always 10 matches per page.&quot;)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
-            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
-    })
-    @GetMapping(value = &quot;/today&quot;, produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfTheDayPaginated(
-            Principal principal,
-            @RequestParam(defaultValue = &quot;0&quot;) int page,
-            @RequestParam(defaultValue = &quot;10&quot;) int size) {
+	@Operation(summary = &quot;Get the matches of the day (paginated)&quot;, description = &quot;Returns a paginated list of matches scheduled for today. Always 10 matches per page.&quot;)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+	})
+	@GetMapping(value = &quot;/today&quot;, produces = &quot;application/json&quot;)
+	public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfTheDayPaginated(
+			Principal principal,
+			@RequestParam(defaultValue = &quot;0&quot;) int page,
+			@RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
-<span class="nc" id="L44">        Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
-<span class="nc" id="L45">        return ResponseEntity.ok(matches);</span>
-    }
+<span class="nc bnc" id="L44" title="All 2 branches missed.">		String username = (principal != null) ? principal.getName() : null;</span>
+<span class="nc" id="L45">		Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
+<span class="nc" id="L46">		return ResponseEntity.ok(matches);</span>
+	}
 
-    @Operation(summary = &quot;Get home matches of a team&quot;, description = &quot;Returns a list of all matches where the specified team plays at home.&quot;)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved home matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
-            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no home matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
-            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
-    })
-    @GetMapping(value = &quot;home/{teamName}&quot;, produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getHomeMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L56">        return ResponseEntity.ok(this.matchService.getHomeMatches(teamName));</span>
-    }
+	@Operation(summary = &quot;Get matches of a team (home/away)&quot;, description = &quot;Returns a paginated list of matches for the specified team, filtered by location (home or away).&quot;)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid location parameter (must be 'home' or 'away')&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+			@ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+	})
+	@GetMapping(value = &quot;/{teamName}&quot;, produces = &quot;application/json&quot;)
+	public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfATeam(@PathVariable(&quot;teamName&quot;) String teamName,
+			@RequestParam String location, @RequestParam(defaultValue = &quot;0&quot;) int page,
+			@RequestParam(defaultValue = &quot;10&quot;) int size) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (&quot;home&quot;.equalsIgnoreCase(location)) {</span>
+<span class="fc" id="L61">			return ResponseEntity.ok(this.matchService.getHomeMatches(teamName, page, size));</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		} else if (&quot;away&quot;.equalsIgnoreCase(location)) {</span>
+<span class="fc" id="L63">			return ResponseEntity.ok(this.matchService.getAwayMatches(teamName, page, size));</span>
+		} else {
+<span class="fc" id="L65">			return ResponseEntity.badRequest().build();</span>
+		}
+	}
 
-    @Operation(summary = &quot;Get away matches of a team&quot;, description = &quot;Returns a list of all matches where the specified team plays away.&quot;)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved away matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
-            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no away matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
-            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
-    })
-    @GetMapping(value = &quot;away/{teamName}&quot;, produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getAwayMatches(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L67">        return ResponseEntity.ok(this.matchService.getAwayMatches(teamName));</span>
-    }
+	@Operation(summary = &quot;Get matches of a team by month&quot;, description = &quot;Returns all matches of the specified team within a given year and month.&quot;)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no matches available for the given month&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+	})
+	@GetMapping(value = &quot;/team/{teamName}&quot;, produces = &quot;application/json&quot;)
+	public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getMatchesOfTeamByMonth(@PathVariable String teamName,
+			@RequestParam int year, @RequestParam int month) {
+<span class="fc" id="L78">		LocalDate start = LocalDate.of(year, month, 1);</span>
+<span class="fc" id="L79">		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());</span>
+<span class="fc" id="L80">		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));</span>
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

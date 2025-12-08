@@ -33,33 +33,31 @@ public class PositionPlayer extends Player {
     private int triples;
     private double slugging;
 
-    public PositionPlayer(String name, int number, Team team, PlayerPositions position, int atBats, int walks, int hits, int doubles) {
+    public PositionPlayer(String name, int number, Team team, PlayerPositions position, int atBats, int walks, int hits) {
 <span class="fc" id="L37">        super(name, number, team);</span>
 <span class="fc" id="L38">        this.position = position;</span>
 <span class="fc" id="L39">        this.atBats = atBats;</span>
 <span class="fc" id="L40">        this.hits = hits;</span>
 <span class="fc" id="L41">        this.walks = walks;</span>
-<span class="fc" id="L42">        this.doubles = doubles;</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L42">    }</span>
 
-    public PositionPlayer(String name, int number, Team team, PictureInfo picture, PlayerPositions position, int atBats, int walks, int hits) {
-<span class="nc" id="L46">        super(name, number, team, picture);</span>
-<span class="nc" id="L47">        this.position = position;</span>
-<span class="nc" id="L48">        this.atBats = atBats;</span>
-<span class="nc" id="L49">        this.walks = walks;</span>
-<span class="nc" id="L50">        this.hits = hits;</span>
-<span class="nc" id="L51">    }</span>
+    public PositionPlayer(String name, int number, Team team, PictureInfo picture, PlayerPositions position, int atBats, int walks) {
+<span class="nc" id="L45">        super(name, number, team, picture);</span>
+<span class="nc" id="L46">        this.position = position;</span>
+<span class="nc" id="L47">        this.atBats = atBats;</span>
+<span class="nc" id="L48">        this.walks = walks;</span>
+<span class="nc" id="L49">    }</span>
 
     public PositionPlayer(String name, int number, Team team, PlayerPositions position) {
-<span class="fc" id="L54">        super(name, number, team);</span>
-<span class="fc" id="L55">        this.position = position;</span>
-<span class="fc" id="L56">        this.atBats = 0;</span>
-<span class="fc" id="L57">        this.walks = 0;</span>
-<span class="fc" id="L58">        this.hits = 0;</span>
-<span class="fc" id="L59">        this.doubles = 0;</span>
-<span class="fc" id="L60">        this.triples = 0;</span>
-<span class="fc" id="L61">        this.homeRuns = 0;</span>
-<span class="fc" id="L62">        this.rbis = 0;</span>
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L52">        super(name, number, team);</span>
+<span class="fc" id="L53">        this.position = position;</span>
+<span class="fc" id="L54">        this.atBats = 0;</span>
+<span class="fc" id="L55">        this.walks = 0;</span>
+<span class="fc" id="L56">        this.hits = 0;</span>
+<span class="fc" id="L57">        this.doubles = 0;</span>
+<span class="fc" id="L58">        this.triples = 0;</span>
+<span class="fc" id="L59">        this.homeRuns = 0;</span>
+<span class="fc" id="L60">        this.rbis = 0;</span>
+<span class="fc" id="L61">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

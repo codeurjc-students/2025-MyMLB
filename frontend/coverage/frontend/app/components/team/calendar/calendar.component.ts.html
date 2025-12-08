@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">88.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/49</span>
+                <span class='fraction'>46/52</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>18/22</span>
+                <span class='fraction'>18/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.41% </span>
+                <span class="strong">88.23% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/48</span>
+                <span class='fraction'>45/51</span>
             </div>
         
             
@@ -191,7 +191,8 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,24 +228,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -279,9 +279,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -319,7 +321,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatchService, ShowMatch } from '../../../services/match.service';
 import { TeamInfo } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
@@ -353,26 +355,25 @@ export class CalendarComponent implements OnInit {
 	) {}
 &nbsp;
 	ngOnInit() {
-		this.matchService.getHomeMatches(this.team.teamStats.name).subscribe({
-			next: (home) =&gt; {
-				this.indexMatches(home);
-			},
-			error: () =&gt; (this.errorMessage = 'Error trying to load the home matches'),
-		});
-&nbsp;
-		this.matchService.getAwayMatches(this.team.teamStats.name).subscribe({
-			next: (away) =&gt; {
-				this.indexMatches(away);
-			},
-			error: <span class="fstat-no" title="function not covered" >() =</span>&gt; (<span class="cstat-no" title="statement not covered" >this.errorMessage = 'Error trying to load the away matches')</span>,
-		});
+		this.loadMatchesForMonth(this.viewDate);
 	}
 &nbsp;
 	public closeCalendar() {
 		this.close.emit();
 	}
 &nbsp;
+	private loadMatchesForMonth(date: Date) {
+		const year = date.getFullYear();
+		const month = date.getMonth() + 1;
+&nbsp;
+		this.matchService.getMatchesOfTeamByMonth(this.team.teamStats.name, year, month).subscribe({
+			next: (matches) =&gt; this.indexMatches(matches),
+			error: () =&gt; (this.errorMessage = 'Error trying to load matches'),
+		});
+	}
+&nbsp;
 	private indexMatches(matches: ShowMatch[]) {
+		this.matchesByDay.clear();
 		matches.forEach((m) =&gt; {
 			const key = new Date(m.date).toDateString();
 			if (!this.matchesByDay.has(key)) {
@@ -407,10 +408,12 @@ export class CalendarComponent implements OnInit {
 &nbsp;
 	public previousMonth() {
 		this.viewDate = subMonths(this.viewDate, 1);
+		this.loadMatchesForMonth(this.viewDate);
 	}
 &nbsp;
 	public nextMonth() {
 		this.viewDate = addMonths(this.viewDate, 1);
+		this.loadMatchesForMonth(this.viewDate);
 	}
 &nbsp;
 	public isOutsideCurrentMonth(day: Date): boolean {
@@ -454,7 +457,7 @@ export class CalendarComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-07T16:15:54.494Z
+                at 2025-12-08T16:09:26.832Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

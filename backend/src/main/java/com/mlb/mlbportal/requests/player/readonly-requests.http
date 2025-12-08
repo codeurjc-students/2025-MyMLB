@@ -1,13 +1,13 @@
 ### Get All Players
-GET https://localhost:8443/api/v1/players
+GET https://localhost:8443/api/v1/players?page=0&size=10
 Accept: application/json
 
 ### Get All Position Players
-GET https://localhost:8443/api/v1/players/position-players
+GET https://localhost:8443/api/v1/players/position-players?page=0&size=10
 Accept: application/json
 
 ### Get All Pitchers
-GET https://localhost:8443/api/v1/players/pitchers
+GET https://localhost:8443/api/v1/players/pitchers?page=0&size=10
 Accept: application/json
 
 ### Get Player by name (Position Player)

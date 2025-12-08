@@ -15,13 +15,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -41,6 +46,7 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
 import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
@@ -65,6 +71,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
+    @SuppressWarnings("unused")
     private UserMapper userMapper;
 
     @Mock
@@ -81,6 +88,9 @@ class UserServiceTest {
 
     @Mock
     private TeamMapper teamMapper;
+
+    @Mock
+    private PaginationHandlerService paginationHandlerService;
 
     @InjectMocks
     private UserService userService;
@@ -119,23 +129,18 @@ class UserServiceTest {
     @Test
     @DisplayName("getAllUsers should return all users from the repository")
     void testGetAllUsers() {
-        List<UserEntity> mockUsers = Arrays.asList(user1, user2);
-        when(this.userRepository.findAll()).thenReturn(mockUsers);
+        List<UserEntity> users = Arrays.asList(user1, user2, testUser);
+        List<ShowUser> mockUsers = BuildMocksFactory.buildShowUserDTOs(users);
+        Page<ShowUser> mockPage = new PageImpl<>(mockUsers, PageRequest.of(0, 10), mockUsers.size());
 
-        List<ShowUser> mappedUsers = Arrays.asList(
-                new ShowUser(USER1_USERNAME, USER1_EMAIL),
-                new ShowUser(USER2_USERNAME, USER2_EMAIL));
-        when(this.userMapper.toShowUsers(mockUsers)).thenReturn(mappedUsers);
+        when(this.userRepository.findAll()).thenReturn(users);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(users), eq(0), eq(10), any());
 
-        List<ShowUser> result = this.userService.getAllUsers();
+        Page<ShowUser> result = this.userService.getAllUsers(0, 10);
 
-        assertThat(result).hasSize(2);
-
-        assertThat(result).extracting(ShowUser::username)
-                .containsExactly(USER1_USERNAME, USER2_USERNAME);
-
-        assertThat(result).extracting(ShowUser::email)
-                .contains(USER1_EMAIL, USER2_EMAIL);
+        assertThat(result.getContent()).hasSize(3);
+        assertThat(result.getContent()).extracting(ShowUser::username).containsExactly(USER1_USERNAME, USER2_USERNAME, TEST_USER_USERNAME);
+        assertThat(result.getContent()).extracting(ShowUser::email).contains(USER1_EMAIL, USER2_EMAIL, TEST_USER_EMAIL);
     }
 
     @Test

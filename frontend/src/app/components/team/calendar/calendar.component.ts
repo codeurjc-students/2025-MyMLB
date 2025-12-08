@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatchService, ShowMatch } from '../../../services/match.service';
 import { TeamInfo } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
@@ -32,26 +32,25 @@ export class CalendarComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.matchService.getHomeMatches(this.team.teamStats.name).subscribe({
-			next: (home) => {
-				this.indexMatches(home);
-			},
-			error: () => (this.errorMessage = 'Error trying to load the home matches'),
-		});
-
-		this.matchService.getAwayMatches(this.team.teamStats.name).subscribe({
-			next: (away) => {
-				this.indexMatches(away);
-			},
-			error: () => (this.errorMessage = 'Error trying to load the away matches'),
-		});
+		this.loadMatchesForMonth(this.viewDate);
 	}
 
 	public closeCalendar() {
 		this.close.emit();
 	}
 
+	private loadMatchesForMonth(date: Date) {
+		const year = date.getFullYear();
+		const month = date.getMonth() + 1;
+
+		this.matchService.getMatchesOfTeamByMonth(this.team.teamStats.name, year, month).subscribe({
+			next: (matches) => this.indexMatches(matches),
+			error: () => (this.errorMessage = 'Error trying to load matches'),
+		});
+	}
+
 	private indexMatches(matches: ShowMatch[]) {
+		this.matchesByDay.clear();
 		matches.forEach((m) => {
 			const key = new Date(m.date).toDateString();
 			if (!this.matchesByDay.has(key)) {
@@ -86,10 +85,12 @@ export class CalendarComponent implements OnInit {
 
 	public previousMonth() {
 		this.viewDate = subMonths(this.viewDate, 1);
+		this.loadMatchesForMonth(this.viewDate);
 	}
 
 	public nextMonth() {
 		this.viewDate = addMonths(this.viewDate, 1);
+		this.loadMatchesForMonth(this.viewDate);
 	}
 
 	public isOutsideCurrentMonth(day: Date): boolean {

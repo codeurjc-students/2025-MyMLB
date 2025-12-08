@@ -71,9 +71,12 @@ class UserControllerTest extends BaseE2ETest {
     void testGetAllUsers() {
         given().contentType(ContentType.JSON).when().get("/api/v1/users").then()
             .statusCode(200)
-            .body("size()", is(2))
-            .body("username", hasItems(USER1_USERNAME, USER2_USERNAME))
-            .body("email", hasItems(USER1_EMAIL, USER2_EMAIL));
+            .body("content.size()", is(2))
+            .body("content.username", hasItems(USER1_USERNAME, USER2_USERNAME))
+            .body("content.email", hasItems(USER1_EMAIL, USER2_EMAIL))
+            .body("page.size", is(10))
+            .body("page.totalElements", is(2))
+            .body("page.totalPages", is(1));
     }
 
     @Test

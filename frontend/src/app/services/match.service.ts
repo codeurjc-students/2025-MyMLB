@@ -36,11 +36,7 @@ export class MatchService {
 		return this.http.get<PaginatedMatches>(`${this.apiUrl}/today?page=${page}&size=${size}`);
 	}
 
-	public getHomeMatches(teamName: string): Observable<ShowMatch[]> {
-		return this.http.get<ShowMatch[]>(`${this.apiUrl}/home/${teamName}`);
-	}
-
-	public getAwayMatches(teamName: string): Observable<ShowMatch[]> {
-		return this.http.get<ShowMatch[]>(`${this.apiUrl}/away/${teamName}`);
+	public getMatchesOfTeamByMonth(teamName: string, year: number, month: number): Observable<ShowMatch[]> {
+		return this.http.get<ShowMatch[]>(`${this.apiUrl}/team/${teamName}?year=${year}&month=${month}`);
 	}
 }

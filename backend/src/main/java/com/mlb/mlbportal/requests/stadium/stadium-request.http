@@ -1,9 +1,9 @@
 ### Get All Stadiums
-GET https://localhost:8443/api/v1/stadiums
+GET https://localhost:8443/api/v1/stadiums?page=0&size=10
 Content-Type: application/json
 
 ### Get All Available Stadiums
-GET https://localhost:8443/api/v1/stadiums/available
+GET https://localhost:8443/api/v1/stadiums/available?page=0&size=10
 Content-Type: application/json
 
 ### Get Stadium by Name

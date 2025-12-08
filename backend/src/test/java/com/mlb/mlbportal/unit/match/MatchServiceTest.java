@@ -1,25 +1,24 @@
 package com.mlb.mlbportal.unit.match;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 
@@ -33,9 +32,13 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MatchServiceTest {
@@ -54,6 +57,9 @@ class MatchServiceTest {
 
     @Mock
     private TeamRepository teamRepository;
+
+    @Mock
+    private PaginationHandlerService paginationHandlerService;
 
     @InjectMocks
     private MatchService matchService;
@@ -151,14 +157,17 @@ class MatchServiceTest {
     void testGetHomeMatchesOfATeam() {
         Team team1 = this.teams.get(1);
         List<Match> homeMatches = Arrays.asList(this.matches.getFirst());
+        List<MatchDTO> homeMatchesDTO = BuildMocksFactory.buildMatchDTOMocks(homeMatches);
+        Page<MatchDTO> mockPage = new PageImpl<>(homeMatchesDTO, PageRequest.of(0, 10), homeMatchesDTO.size());
 
         when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(team1));
         when(this.matchRepository.findByHomeTeam(team1)).thenReturn(homeMatches);
-        when(this.matchMapper.toMatchDTOList(homeMatches))
-            .thenReturn(Arrays.asList(this.mockMatchDTOs.getFirst()));
+        doReturn(mockPage).when(this.paginationHandlerService)
+                .paginateAndMap(eq(homeMatches), eq(0), eq(10), any());
 
-        List<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM2_NAME);
-        assertThat(result).hasSize(1);
+        Page<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM2_NAME, 0, 10);
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -166,13 +175,52 @@ class MatchServiceTest {
     void testGetAwayMatchesOfATeam() {
         Team team1 = this.teams.getFirst();
         List<Match> awayMatches = Arrays.asList(this.matches.get(2));
+        List<MatchDTO> awayMatchesDTO = BuildMocksFactory.buildMatchDTOMocks(awayMatches);
+        Page<MatchDTO> mockPage = new PageImpl<>(awayMatchesDTO, PageRequest.of(0, 10), awayMatchesDTO.size());
 
         when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(team1));
         when(this.matchRepository.findByAwayTeam(team1)).thenReturn(awayMatches);
-        when(this.matchMapper.toMatchDTOList(awayMatches))
-            .thenReturn(Arrays.asList(this.mockMatchDTOs.get(2)));
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(awayMatches), eq(0), eq(10), any());
 
-        List<MatchDTO> result = this.matchService.getAwayMatches(TEST_TEAM1_NAME);
-        assertThat(result).hasSize(1);
+        Page<MatchDTO> result = this.matchService.getAwayMatches(TEST_TEAM1_NAME, 0, 10);
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Should return matches of a team between given dates")
+    void testGetMatchesOfTeamBetweenDates() {
+        Team team = this.teams.getFirst();
+        LocalDate start = fixedNow.toLocalDate().minusDays(1);
+        LocalDate end = fixedNow.toLocalDate().plusDays(1);
+
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(team));
+
+        when(this.matchRepository.findByHomeTeamOrAwayTeamAndDateBetween(
+                team, team, start.atStartOfDay(), end.atTime(LocalTime.MAX))).thenReturn(this.matches);
+        when(this.matchMapper.toMatchDTO(any(Match.class))).thenAnswer(invocation -> {
+            Match m = invocation.getArgument(0);
+            return this.mockMatchDTOs.stream()
+                    .filter(dto -> dto.date().equals(m.getDate()))
+                    .findFirst()
+                    .orElseThrow();
+        });
+
+        List<MatchDTO> result = this.matchService.getMatchesOfTeamBetweenDates(TEST_TEAM1_NAME, start, end);
+
+        assertThat(result).hasSize(this.matches.size()).containsExactlyElementsOf(this.mockMatchDTOs);
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException if team does not exist")
+    void testGetMatchesOfTeamBetweenDatesTeamNotFound() {
+        LocalDate start = fixedNow.toLocalDate().minusDays(1);
+        LocalDate end = fixedNow.toLocalDate().plusDays(1);
+
+        when(this.teamRepository.findByName("UnknownTeam")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                this.matchService.getMatchesOfTeamBetweenDates("UnknownTeam", start, end)
+        ).isInstanceOf(TeamNotFoundException.class);
     }
 }

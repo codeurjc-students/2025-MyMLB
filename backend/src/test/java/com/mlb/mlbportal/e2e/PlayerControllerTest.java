@@ -49,9 +49,9 @@ class PlayerControllerTest extends BaseE2ETest {
                 .get(ALL_PLAYERS_PATH)
                 .then()
                 .statusCode(200)
-                .body("size()", is(3))
-                .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME))
-                .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME, TEST_TEAM2_NAME));
+                .body("content.size()", is(3))
+                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME))
+                .body("content.teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME, TEST_TEAM2_NAME));
     }
 
     @Test
@@ -63,9 +63,9 @@ class PlayerControllerTest extends BaseE2ETest {
                 .get(ALL_POSITION_PLAYERS_PATH)
                 .then()
                 .statusCode(200)
-                .body("size()", is(2))
-                .body("name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
-                .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME));
+                .body("content.size()", is(2))
+                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
+                .body("content.teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME));
     }
 
     @Test

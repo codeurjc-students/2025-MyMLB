@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
@@ -39,12 +37,15 @@ import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -64,6 +65,9 @@ class TeamServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private PaginationHandlerService paginationHandlerService;
 
     @Mock
     private StadiumRepository stadiumRepository;
@@ -91,12 +95,15 @@ class TeamServiceTest {
     @DisplayName("Should return all teams mapped correctly as DTOs")
     void testGetAllTeams() {
         List<Team> mockTeams = List.of(team1, team2, team3);
+        Page<TeamInfoDTO> mockPage = new PageImpl<>(mockTeamInfoDTOs, PageRequest.of(0, 10), mockTeams.size());
+
         when(this.teamRepository.findAll()).thenReturn(mockTeams);
-        when(this.teamMapper.toTeamInfoDTOList(mockTeams)).thenReturn(this.mockTeamInfoDTOs);
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(mockTeams), eq(0), eq(10), any());
 
-        List<TeamInfoDTO> result = this.teamService.getTeams();
+        Page<TeamInfoDTO> result = this.teamService.getTeams(0, 10);
 
-        assertThat(result).hasSize(3).containsExactlyElementsOf(this.mockTeamInfoDTOs);
+        assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(mockTeamInfoDTOs);
+        assertThat(result.getTotalElements()).isEqualTo(3);
     }
 
     @Test
@@ -104,15 +111,15 @@ class TeamServiceTest {
     void testGetAvailableTeams() {
         List<Team> mockTeams = Arrays.asList(team1, team2, team3);
         List<TeamSummary> teamSummaries = BuildMocksFactory.buildTeamSummaryMocks(mockTeams);
+        Page<TeamSummary> mockPage = new PageImpl<>(teamSummaries, PageRequest.of(0, 10), mockTeams.size());
+
         when(teamRepository.findAvailableTeams()).thenReturn(mockTeams);
-        when(teamMapper.toTeamSummaryDTO(team1)).thenReturn(teamSummaries.getFirst());
-        when(teamMapper.toTeamSummaryDTO(team2)).thenReturn(teamSummaries.get(1));
-        when(teamMapper.toTeamSummaryDTO(team3)).thenReturn(teamSummaries.getLast());
+        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(mockTeams), eq(0), eq(10), any());
 
         Page<TeamSummary> result = this.teamService.getAvailableTeams(0, 10);
 
         assertThat(result.getTotalElements()).isEqualTo(3);
-        assertThat(result.getContent()).hasSize(3);
+        assertThat(result.getContent()).hasSize(3).containsExactlyElementsOf(teamSummaries);
     }
 
     @Test

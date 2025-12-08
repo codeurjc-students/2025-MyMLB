@@ -109,9 +109,9 @@ class TeamServiceIntegrationTest {
     @Test
     @DisplayName("Should return all teams with calculated stats")
     void testGetAllTeams() {
-        List<TeamInfoDTO> result = this.teamService.getTeams();
+        Page<TeamInfoDTO> result = this.teamService.getTeams(0, 10);
 
-        assertThat(result).hasSize(3);
+        assertThat(result.getContent()).hasSize(3);
 
         TeamInfoDTO teamDTO1 = result.stream().filter(team -> team.teamStats().abbreviation().equals(TEST_TEAM1_ABBREVIATION))
                 .findFirst().orElseThrow();
