@@ -1,0 +1,56 @@
+name: CD Main (Dev Publish)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: fonssi29/mlb-portal
+
+jobs:
+  build-and-publish-dev:
+    runs-on: ubuntu-latest
+    env:
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Backend build
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: mvn -q -B clean package -DskipTests
+        working-directory: ./backend
+
+      # Frontend build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+      # Docker login
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build & push image with tag dev
+      - name: Build & Push Docker image
+        run: |
+          docker build -t $REGISTRY/$IMAGE_NAME:dev .
+          docker push $REGISTRY/$IMAGE_NAME:dev
+
+      # Publish Compose OCI with tag dev
+      - name: Publish Compose OCI
+        run: docker compose publish $REGISTRY/$IMAGE_NAME:dev --with-env

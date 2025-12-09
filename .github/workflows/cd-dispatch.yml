@@ -1,0 +1,68 @@
+name: CD Dispatch (Manual Build)
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: fonssi29/mlb-portal
+
+jobs:
+  build-and-publish-dispatch:
+    runs-on: ubuntu-latest
+    env:
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit || github.event.inputs.branch }}
+
+      # Backend build
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: mvn -q -B clean package -DskipTests
+        working-directory: ./backend
+
+      # Frontend build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+      # Docker login
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Compute tag dinamic
+      - name: Compute Tag
+        id: compute
+        run: |
+          BRANCH=${{ github.event.inputs.branch }}
+          COMMIT=${{ github.event.inputs.commit || github.sha }}
+          DATE=$(date +'%Y%m%d-%H%M%S')
+          echo "tag=${BRANCH}-${DATE}-${COMMIT}" >> $GITHUB_OUTPUT
+
+      # Build & push image with dinamic tag
+      - name: Build & Push Docker image
+        run: |
+          TAG=${{ steps.compute.outputs.tag }}
+          docker build -t $REGISTRY/$IMAGE_NAME:$TAG .
+          docker push $REGISTRY/$IMAGE_NAME:$TAG
+
+      # Publish Compose OCI with dinamic tag
+      - name: Publish Compose OCI
+        run: |
+          TAG=${{ steps.compute.outputs.tag }}
+          docker compose publish $REGISTRY/$IMAGE_NAME:$TAG --with-env
