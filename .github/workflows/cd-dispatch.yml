@@ -37,7 +37,7 @@ jobs:
         working-directory: ./backend
 
   build-frontend:
-    name: Frontend Build BC
+    name: Frontend Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +79,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Restore keystore from secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > backend/src/main/resources/keystore.p12
+
       - name: Compute Tag
         id: compute
         run: |
@@ -90,7 +94,7 @@ jobs:
       - name: Build & Push Docker image
         run: |
           TAG=${{ steps.compute.outputs.tag }}
-          docker build -t $REGISTRY/$IMAGE_NAME:$TAG .
+          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:$TAG .
           docker push $REGISTRY/$IMAGE_NAME:$TAG
 
   publish-compose:
@@ -105,4 +109,4 @@ jobs:
       - name: Publish Compose OCI with dynamic tag
         run: |
           TAG=${{ needs.docker-build-push.outputs.tag }}
-          docker compose publish $REGISTRY/$IMAGE_NAME:$TAG --with-env
+          docker compose -f ./docker/docker-compose.yml publish $REGISTRY/$IMAGE_NAME:$TAG --with-env

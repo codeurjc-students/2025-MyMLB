@@ -38,7 +38,7 @@ jobs:
         working-directory: ./backend
 
   build-frontend:
-    name: Frontend Build BC
+    name: Frontend Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,11 +77,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Restore keystore from secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > backend/src/main/resources/keystore.p12
 
       - name: Build & Push Docker image
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker build -t $REGISTRY/$IMAGE_NAME:${VERSION}.0 .
+          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:${VERSION}.0 .
           docker push $REGISTRY/$IMAGE_NAME:${VERSION}.0
           docker tag $REGISTRY/$IMAGE_NAME:${VERSION}.0 $REGISTRY/$IMAGE_NAME:latest
           docker push $REGISTRY/$IMAGE_NAME:latest
@@ -98,5 +102,5 @@ jobs:
       - name: Publish Compose OCI with version and latest
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker compose publish $REGISTRY/$IMAGE_NAME:${VERSION}
-          docker compose publish $REGISTRY/$IMAGE_NAME:latest
+          docker compose -f ./docker/Dockerfile publish $REGISTRY/$IMAGE_NAME:${VERSION}
+          docker compose -f ./docker/Dockerfile publish $REGISTRY/$IMAGE_NAME:latest
