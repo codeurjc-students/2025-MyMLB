@@ -109,4 +109,4 @@ jobs:
       - name: Publish Compose OCI with dynamic tag
         run: |
           TAG=${{ needs.docker-build-push.outputs.tag }}
-          docker compose -f ./docker/docker-compose.yml publish $REGISTRY/$IMAGE_NAME:$TAG --with-env
+          docker compose -f ./docker/docker-compose.yml publish $REGISTRY/$IMAGE_NAME:$TAG --with-env 
