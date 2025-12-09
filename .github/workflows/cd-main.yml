@@ -27,7 +27,7 @@ jobs:
         working-directory: ./backend
 
   build-frontend:
-    name: Frontend Build BC
+    name: Frontend Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          docker build -t $REGISTRY/$IMAGE_NAME:dev .
+          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:dev .
           docker push $REGISTRY/$IMAGE_NAME:dev
 
   publish-compose:
