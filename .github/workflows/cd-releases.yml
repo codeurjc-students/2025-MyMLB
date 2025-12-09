@@ -9,44 +9,75 @@ env:
   IMAGE_NAME: fonssi29/mlb-portal
 
 jobs:
-  build-and-publish-release:
+  checkout-code:
+    name: Checkout Code
     runs-on: ubuntu-latest
-    env:
-      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      # Backend build
+  build-backend:
+    name: Backend Build
+    runs-on: ubuntu-latest
+    needs: checkout-code
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - run: mvn -q -B clean package -DskipTests
+
+      - name: Backend Package
+        run: mvn -q -B clean package -DskipTests
         working-directory: ./backend
 
-      # Frontend build
+  build-frontend:
+    name: Frontend Build BC
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node.js 22 Configuration
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - run: npm run build -- --configuration production
+          node-version: "22"
+
+      # Install Angular Dependencies
+      - name: Install Dependencias
+        run: npm install
         working-directory: ./frontend
 
-      # Docker login
-      - name: Login to DockerHub
+      - name: Compile Frontend
+        run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+  docker-build-push:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    env:
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Docker login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Build & push image with version and latest
       - name: Build & Push Docker image
         run: |
           VERSION=${{ github.event.release.tag_name }}
@@ -55,8 +86,16 @@ jobs:
           docker tag $REGISTRY/$IMAGE_NAME:${VERSION}.0 $REGISTRY/$IMAGE_NAME:latest
           docker push $REGISTRY/$IMAGE_NAME:latest
 
-      # Publish Compose OCI with version and latest
-      - name: Publish Compose OCI
+  publish-compose:
+    name: Publish Compose OCI
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Publish Compose OCI with version and latest
         run: |
           VERSION=${{ github.event.release.tag_name }}
           docker compose publish $REGISTRY/$IMAGE_NAME:${VERSION}
