@@ -17,10 +17,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.mlb.mlbportal.models.others.PictureInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
@@ -34,6 +33,7 @@ import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.MatchRepository;
@@ -45,7 +45,7 @@ import com.mlb.mlbportal.services.MlbImportService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@Component
 @RequiredArgsConstructor
 public class InitController {
 
