@@ -18,18 +18,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.mlb.mlbportal.controllers.InitController;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.DataInitializerService;
 import com.mlb.mlbportal.services.MlbImportService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 
 @ExtendWith(MockitoExtension.class)
-class InitControllerTest {
+class DataInitializerServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -47,18 +47,19 @@ class InitControllerTest {
     private StadiumRepository stadiumRepository;
 
     @Mock
+    @SuppressWarnings("unused")
     private MlbImportService mlbImportService;
 
     @InjectMocks
-    private InitController initController;
+    private DataInitializerService dataInitializerService;
 
     private static final int TEAM_COUNT = 3;
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setup() {
-        ReflectionTestUtils.setField(this.initController, "fonssiPassword", "test1234");
-        ReflectionTestUtils.setField(this.initController, "arminPassword", "test5678");
+        ReflectionTestUtils.setField(this.dataInitializerService, "fonssiPassword", "test1234");
+        ReflectionTestUtils.setField(this.dataInitializerService, "arminPassword", "test5678");
     }
 
     /**
@@ -73,7 +74,7 @@ class InitControllerTest {
     void testCreateAdmins() {
         when(this.passwordEncoder.encode(anyString())).thenReturn("hashed_password");
 
-        ReflectionTestUtils.invokeMethod(this.initController, "createAdmins");
+        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "createAdmins");
 
         ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
 
@@ -89,7 +90,7 @@ class InitControllerTest {
 
     @Test
     void testSetUpTeams() {
-        ReflectionTestUtils.invokeMethod(this.initController, "setUpTeams");
+        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpTeams");
         verify(this.teamRepository, times(1)).saveAll(anyList());
     }
 
@@ -97,7 +98,7 @@ class InitControllerTest {
     void testSetUpStadiums() {
         when(this.teamRepository.findAll()).thenReturn(this.generateMockTeams());
 
-        ReflectionTestUtils.invokeMethod(this.initController, "setUpStadiums");
+        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpStadiums");
 
         verify(this.stadiumRepository, times(1)).saveAll(anyList());
         verify(this.teamRepository, times(1)).saveAll(anyList());
@@ -108,7 +109,7 @@ class InitControllerTest {
         List<Team> mockTeams = this.generateMockTeams();
         when(this.teamRepository.findAll()).thenReturn(mockTeams);
 
-        ReflectionTestUtils.invokeMethod(this.initController, "setUpMatches");
+        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpMatches");
 
         verify(this.matchRepository, times(1)).saveAll(anyList());
 
@@ -121,7 +122,7 @@ class InitControllerTest {
         List<Team> mockTeams = this.generateMockTeams();
         when(this.teamRepository.findAll()).thenReturn(mockTeams);
 
-        ReflectionTestUtils.invokeMethod(this.initController, "setUpPlayers");
+        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpPlayers");
 
         verify(this.teamRepository, times(1)).findAll();
         verify(this.teamRepository, times(1)).saveAll(anyList());

@@ -30,7 +30,7 @@ public class Stadium {
 
     private int openingDate;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<PictureInfo> pictures = new ArrayList<>();
 
     @OneToOne(mappedBy = "stadium")

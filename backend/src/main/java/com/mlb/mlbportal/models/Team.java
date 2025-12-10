@@ -71,20 +71,20 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Match> homeMatches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Match> awayMatches = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PositionPlayer> positionPlayers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pitcher> pitchers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favTeams")
