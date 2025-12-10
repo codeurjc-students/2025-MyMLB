@@ -16,15 +16,15 @@ services:
 
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: mlbportal29@gmail.com
-      SPRING_MAIL_PASSWORD: wzjmephecegyelui
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
       
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT: 10000
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT: 10000
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT: 10000
-    depends_on: 
+    depends_on:
       db:
         condition: service_healthy
 
@@ -32,10 +32,10 @@ services:
     container_name: mysql-container
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mlb
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data_dev:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
