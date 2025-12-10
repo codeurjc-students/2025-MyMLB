@@ -43,6 +43,7 @@ import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.MlbImportService;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -67,6 +68,7 @@ public class InitController {
     private String arminPassword;
 
     @PostConstruct
+    @Transactional
     public void init() {
         this.createAdmins();
         this.setUpTeams();
