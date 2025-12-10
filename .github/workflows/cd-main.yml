@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: fonssi29/mlb-portal
-
 jobs:
   build-backend:
     name: Backend Build
@@ -69,8 +65,8 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:dev .
-          docker push $REGISTRY/$IMAGE_NAME:dev
+          docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:dev .
+          docker push docker.io/fonssi29/mlb-portal:dev
 
   publish-compose:
     name: Publish Compose OCI
@@ -80,4 +76,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Publish Compose OCI with tag dev
-        run: docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal:0.1 --with-env
+        run: docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal:dev --with-env
