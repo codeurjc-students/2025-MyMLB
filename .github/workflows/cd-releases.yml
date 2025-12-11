@@ -4,10 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: fonssi29/mlb-portal
-
 jobs:
   checkout-code:
     name: Checkout Code
@@ -72,8 +68,8 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       
-      SPRING_MAIL_USERNAME: ${{ secrets.SPRING_MAIL_USERNAME }}
-      SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
+      SPRING_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
@@ -120,8 +116,8 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       
-      SPRING_MAIL_USERNAME: ${{ secrets.SPRING_MAIL_USERNAME }}
-      SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
+      SPRING_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
@@ -138,5 +134,5 @@ jobs:
       - name: Publish Compose OCI with version and latest
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker compose -f ./docker/Dockerfile publish $REGISTRY/$IMAGE_NAME:${VERSION}
-          docker compose -f ./docker/Dockerfile publish $REGISTRY/$IMAGE_NAME:latest
+          docker compose -f ./docker/Dockerfile publish docker.io/fonssi29/mlb-portal:${VERSION}
+          docker compose -f ./docker/Dockerfile publish docker.io/fonssi29/mlb-portal:latest

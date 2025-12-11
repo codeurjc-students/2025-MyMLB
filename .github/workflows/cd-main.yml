@@ -56,8 +56,8 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       
-      SPRING_MAIL_USERNAME: ${{ secrets.SPRING_MAIL_USERNAME }}
-      SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
+      SPRING_MAIL_USERNAME: "${{ secrets.MAIL_USERNAME }}"
+      SPRING_MAIL_PASSWORD: "${{ secrets.MAIL_PASSWORD }}"
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
@@ -99,8 +99,8 @@ jobs:
       CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
       CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       
-      SPRING_MAIL_USERNAME: ${{ secrets.SPRING_MAIL_USERNAME }}
-      SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
+      SPRING_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
@@ -119,4 +119,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish Compose OCI with tag dev
-        run: docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev --with-env
+        run: docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev --with-env -y
