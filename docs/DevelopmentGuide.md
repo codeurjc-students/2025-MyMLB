@@ -272,7 +272,7 @@ This will generate it in `frontend/coverage/frontend`. Opening the `index.html` 
 
 ---
 
-## 🚀 Deployment with Docker
+## 🐋 Deployment with Docker
 
 ### Image Creation
 The project generates Docker images with two different tags: one for development (`dev`) and other for production, which corresponds to the current version of the project (currently `0.1`). To build the image using the `Dockerfile`, navigate to the project’s root directory and run the following command:
