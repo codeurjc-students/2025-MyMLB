@@ -7,6 +7,7 @@
 - [Backend](#-backend)
 - [Frontend](#-frontend)
 - [Executable Generation](#-executable-generation)
+- [Docker Deployment](#-docker-deployment)
 - [Tools Usage](#-tools-usage)
 - [Tests Execution](#-tests-execution)
 - [Release Creation](#-release-creation)
@@ -60,6 +61,14 @@ cd 2025-MLB
       <td>MySQL</td>
       <td>8.0</td>
     </tr>
+    <tr>
+      <td>Docker</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>Docker Conpose</td>
+      <td>2.34-desktop.1</td>
+    </tr>
   </tbody>
 </table>
 
@@ -79,7 +88,7 @@ Once there, you can run the backend of the application by using the following co
 mvn spring-boot:run
 ```
 
-If everything goes as expected, you will be able to access it at: **http://localhost:8080**
+If everything goes as expected, you will be able to access it at: **https://localhost:8443**
 
 ---
 ## 🌐 Frontend
@@ -130,10 +139,46 @@ cl
 > 5) Select it and click `Install`.
 
 ---
+
+## 🐳 Docker Deployment
+Docker was used to containerize the application by generating it's images to an easily deployment. These are the instructions you need to follow in order to run this image, aswell the requirements for it.
+
+### Requirements for Windows and Mac OS
+If you are a Windows or Mac user, you will need to have `Docker Desktop` installed in your system, in case you don't have it, you can consult the [official website](https://www.docker.com/products/docker-desktop/) for the installation process.
+
+### Requirements for Linux OS
+If you are a Linux user, you will need to have `Docker` and `Docker Compose` installed in your system, in case you don't have it, you can consult these official websites for the installation process:
+
+- [Docker Installation](https://docs.docker.com/engine/install/ubuntu/)
+- [Docker Compose Installation](https://docs.docker.com/compose/install/linux/)
+
+### Running Instructions
+
+> [!IMPORTANT]
+> If you are a Windows or Mac user, to run any `docker` command you will need to have `Docker Desktop` open, as this allows the `Docker Daemon` to be operational.
+
+To run and deploy the application, you will need to pull the `compose` published in `Docker Hub`, by running the following command:
+```bash
+docker compose pull
+```
+
+And then:
+```bash
+docker compose up
+```
+
+---
+
 ## 🔧 Tools Usage
 
 ### Visual Studio Code
 Is the main IDE used during the development of the application. Its usage its simple, the only requirements are having a `JDK` in your system (for this project is recommended JDK21) and install the `Java Extension Pack` and the `Spring Boot Extension Pack` extensions for Visual Studio Code.
+
+### IntelliJ
+This IDE was used as a secondary tool during the development process. As the backend of the project became more complex, Visual Studio Code started to present issues. To mitigate these problems and improve development efficiency, the backend of the application was developed in IntelliJ.
+
+### Cloudinary
+Is a cloud-based service for managing, storing, and delivering media assets. In this application, Cloudinary was used to host and manage the non-static images, ensuring reliable storage and optimized delivery.
 
 ### REST Client
 REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](../backend/src/main/java/com/mlb/mlbportal/requests).
