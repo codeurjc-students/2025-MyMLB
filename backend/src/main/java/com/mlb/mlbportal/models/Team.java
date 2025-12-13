@@ -12,6 +12,7 @@ import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -60,7 +61,8 @@ public class Team {
 
     @Lob
     private String generalInfo;
-    
+
+    @ElementCollection
     private List<Integer> championships = new LinkedList<>();
 
     @Enumerated(EnumType.STRING)
@@ -69,10 +71,10 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Match> homeMatches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Match> awayMatches = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
