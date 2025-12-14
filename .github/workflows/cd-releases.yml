@@ -134,5 +134,5 @@ jobs:
       - name: Publish Compose OCI with version and latest
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker compose -f ./docker/Dockerfile publish docker.io/fonssi29/mlb-portal:${VERSION}
-          docker compose -f ./docker/Dockerfile publish docker.io/fonssi29/mlb-portal:latest
+          docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:${VERSION} --with-env -y
+          docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:latest --with-env -y
