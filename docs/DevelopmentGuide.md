@@ -319,7 +319,7 @@ docker compose -f ./docker/docker-compose.yml up
 
 ---
 ## 🔄 Development Process
-The development process of the application follows an `itterative and incremental` process that follows the principles of the `Agile Manifesto` and incorporates some best practices from `Extreme Programming (XP) and Kanban` such as short development iterations, automated testing and continous integration (CI).
+The development process of the application follows an `iterative and incremental` process that follows the principles of the `Agile Manifesto` and incorporates some best practices from `Extreme Programming (XP) and Kanban` such as short development iterations, automated testing and continous integration (CI).
 
 ### 📋 Task Management
 For managing the tasks during the development process, it was used `GitHub Issues and GitHub Projects`.
@@ -372,6 +372,24 @@ This workflow enables the integration of `SonarCloud` with the repository, allow
 #### Continous Integration Diagram
 
 ![CI Diagram](../images/diagrams/CI.jpg)
+
+### Continous Delivery (CD)
+For CD, this project uses three workflows that triggers on different scenarios: pull request to main, workflow dispatch from any branch, and when a release occur.
+
+#### CD Main
+This workflow triggers on ever pull request open to the main branch.
+
+#### Jobs
+- **build-backend:** Set up and compile the backend.
+- **build-frontend:** Set up and compile the frontend.
+- **docker-build-push:** Build the docker image under the `dev` tag with `docker build -f ./docker/Dockerfile -t fonssi29/mlb-portal:tag .`,  and publish it on `Docker Hub` with `docker push fonssi29/mlb-portal:tag`.
+- **publish-compose:** Publish the compose as an OCI artifact using the [docker-compose.yml](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docker/docker-compose.yml) file, under the `dev` tag with `docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev --with-env -y`.
+
+#### CD Dispatch
+This workflow triggers manually from every branch. The jobs are exactly the same one as the previous workflow, the difference is that the tag will be `<branch-name>-<date-hour>-<commit>`.
+
+#### CD Release
+This workflow is triggered whenever a `release` occurs. The jobs are the same as in the previous workflows; however, it publishes both Docker images and Compose artifacts using the release version and latest as tags.
 
 ---
 [👈 Return to README](../README.md)
