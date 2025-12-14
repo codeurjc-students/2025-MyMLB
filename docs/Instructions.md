@@ -238,8 +238,25 @@ npx cypress open
 ```
 
 ---
+
 ## 🚀 Release Creation
-You can create a release directly from GitHub, the only thing yo need to do is go to the repository´s releases section, create a new release and publish it.
+You can create a release directly from GitHub, the only thing yo need to do is go to the repository's releases section, create a new release and publish it.
+
+### 0.1 Version Release
+**Date of Release:** TBD
+
+**Features Developed:** The features developed on this version were the basic ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+### 0.2 Version Release
+**Date of Release:** TBD
+
+**Features Developed:** The features developed on this version were the intermediate ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+
+### 1.0 Version Release
+**Date of Release:** TBD
+
+**Features Developed:** The features developed on this version were the advanced ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
 ---
 [👈 Return to README](../README.md)
