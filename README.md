@@ -1,4 +1,4 @@
-# 2025-MyMLB
+# MLB Portal
 
 ## 🧾 Table of Contents
 - [Authors](./docs/Authors.md)
@@ -45,9 +45,6 @@ The main objective of this app is to offer baseball fans a comprehensive and up-
 At this time, the functional and technical objectives are only defined but not implemented.
 
 ## 🔀 Page Layouts and Navigation
-
-> [!WARNING]
-> The drafts that are shown below may look a bit plain, as their purpose is to show the structure of each page and how the main elements will be displayed. As you can see, the background and the images are not shown in this draft, and the color tones shown in certain elements are not definitve. These will be refinede using CSS to achieve the desired look.
 
 ### 1: Login, Registration and Password Recovery
 
