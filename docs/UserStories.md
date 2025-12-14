@@ -11,6 +11,9 @@
   - [Update Team Information](#update-team-information)
   - [Edit Player Information](#edit-player-information)
   - [Edit Stadium Information](#edit-stadium-information)
+  - [Create Stadium](#create-stadium)
+  - [Create Player](#create-player)
+  - [Delete Player](#delete-player)
 - [Intermediate Features](#-intermediate-features)
   - [Delete Account](#delete-account)
   - [Edit Profile Settings](#edit-profile-settings)
@@ -161,7 +164,7 @@
 
 **I want to:** Update the editable team information.
 
-**So that:** The team´s data remains up to date.
+**So that:** The team's data remains up to date.
 
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
@@ -237,7 +240,7 @@
 
 **I want to:** Edit the stadium information.
 
-**So that:** The stadium`s data can be updated whenever is needed.
+**So that:** The stadium's data can be updated whenever is needed.
 
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
@@ -250,8 +253,77 @@
 
 #### Tests
 - Verify that this section is only visible to admins.
-- Verify that the new stadium´s picture is correctly saved in the database.
+- Verify that the new stadium's picture is correctly saved in the database.
 - Verify that the success message is correctly displayed once the operation is completed.
+
+### Create Stadium
+**As a:** Admin.
+
+**I want to:** Create a new stadium.
+
+**So that:** new stadiums can be added into the system.
+
+#### Acceptance Criteria
+- An admin-only section must be available for this operation.
+- The admin must fill the following fields in order to create the stadium:
+  - Name of the stadium.
+  - Opening date.
+- Once is finished, a success message must be displayed.
+
+#### Dependencies
+- The stadium must not exists in the database.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the inputs are valid.
+- Verify that the success message is correctly displayed once the operation is completed.
+
+### Create Player
+**As a:** Admin.
+
+**I want to:** Add a new player to the MLB roster.
+
+**So that:** New players making their league debut will be eligible to be included in the app.
+
+#### Acceptance Criteria
+- An admin-only section must be available for this operation.
+- The admin must fill the following fields in order to create the player:
+  - Name of the player.
+  - Position of the player.
+  - Team he will play.
+  - Number of the player.
+- Once is finished, a success message must be displayed.
+
+#### Dependencies
+- The player must not exists in the database.
+- The team must not have a full roster.
+- The position must be a valid one.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the inputs are valid.
+- Verify that the entered team does not have a full roster.
+- Verify that the entered position is a valid one.
+- Verify that the success message is correctly displayed once the operation is completed.
+
+### Delete Player
+**As a:** Admin.
+
+**I want to:** Remove a player from the MLB roster.
+
+**So that:** Players who retire or leave MLB may be removed from the application.
+
+#### Acceptance Criteria
+- An admin-only section must be available for this operation.
+- A confirmation modal should appear before deleting the player.
+- Once the operation is confirmed, a success message should be displayed.
+
+#### Dependencies
+- The player must exists in the database.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the player does not exists in the database.
 
 ---
 ## 🟡 Intermediate Features
