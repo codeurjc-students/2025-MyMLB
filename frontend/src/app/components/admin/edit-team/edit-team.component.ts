@@ -84,7 +84,7 @@ export class EditTeamComponent
 	protected updateEntityService(request: UpdateTeamRequest) {
 		const req: UpdateTeamRequest = { ...request };
 
-		if (this.formInputs.stadiumName) {
+		if (this.formInputs.stadiumName && this.formInputs.stadiumName !== this.team.stadium.name) {
 			req.newStadiumName = this.formInputs.stadiumName;
 		}
 
