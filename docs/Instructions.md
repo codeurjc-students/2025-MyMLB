@@ -157,12 +157,35 @@ If you are a Linux user, you will need to have `Docker` and `Docker Compose` ins
 > [!IMPORTANT]
 > If you are a Windows or Mac user, to run any `docker` command you will need to have `Docker Desktop` open, as this allows the `Docker Daemon` to be operational.
 
-To run and deploy the application, you will need to pull the `compose` published in `Docker Hub`, by running the following command:
+To run and deploy the application, you will need to pull the `compose` published in `Docker Hub`. Additionally, you must have a`.env` file located in the [docker folder](https://github.com/codeurjc-students/2025-MyMLB/tree/main/docker). This file should follow the template below:
+
+```bash
+SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=root
+MYSQL_ROOT_PASSWORD=root
+
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+MAIL_USERNAME=
+MAIL_PASSWORD=
+```
+
+> [!NOTE]
+> To obtain your Cloudinary credentials, you need to create an account in [Cloudinary](https://cloudinary.com/). Once your account is created, you cand find this information in your dashboard.
+
+Once you have created this file, follow these steps to launch the application container:
+
+1) Pull the compose from the DockerHub repository:
+
 ```bash
 docker compose pull
 ```
 
-And then:
+2) Launch the container using the compose:
+
 ```bash
 docker compose up
 ```
