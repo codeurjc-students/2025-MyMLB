@@ -21,7 +21,7 @@ The application will be developed as a web platform with a client-server archite
 
 The **backend** will be implemented with **Spring Boot** to manage the business logic, communication with the **MySQL database**, and the exposure of services through a REST API. 
 
-The **frontend** will be implemented with **HTML, CSS (it`s being considered to use TailwindCSS), JavaScript, and Angular**, offering a responsive interface. The **ng2-charts** library will be integrated to display statistical data (charts).
+The **frontend** will be implemented with **HTML, CSS (with TailwindCSS), JavaScript, and Angular**, offering a responsive interface. The **ng2-charts** library will be integrated to display statistical data (charts), while the **angular-calendar** library will be used to display each team's season schedule.
 
 **Postman** will be used during the development and testing of REST services, and the workflow will include version control with **Git**. Additionally, **Docker** will be used as part of the Continuous Integration (CI), Continuous Delivery (CD), and Continuous Deployment processes, ensuring that the application can be built, packaged, tested, and deployed consistently across different environments. 
 
