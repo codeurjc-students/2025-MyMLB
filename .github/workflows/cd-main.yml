@@ -78,5 +78,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Create dummy .env for compose publish
+        run: |
+          cat <<EOF > docker/.env
+          SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
+          SPRING_DATASOURCE_USERNAME=dummy
+          SPRING_DATASOURCE_PASSWORD=dummy
+          MYSQL_ROOT_PASSWORD=dummy
+
+          CLOUDINARY_CLOUD_NAME=
+          CLOUDINARY_API_KEY=
+          CLOUDINARY_API_SECRET=
+
+          MAIL_USERNAME=
+          MAIL_PASSWORD=
+          EOF
+
       - name: Publish Compose OCI with tag dev
         run: docker compose -f docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev -y
+
+      - name: Cleanup .env
+        run: rm -f docker/.env

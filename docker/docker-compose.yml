@@ -5,6 +5,9 @@ services:
     ports:
       - "8443:8443"
 
+    env_file:
+      - .env
+
     depends_on:
       db:
         condition: service_healthy
@@ -15,8 +18,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mlb
+
     volumes:
       - db_data:/var/lib/mysql
+
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
