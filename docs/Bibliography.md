@@ -22,6 +22,7 @@
 - [Tailwind Gradient](https://tailwind-gradient-generator.vercel.app/)
 - [TailBlocks](https://tailblocks.cc/#google_vignette)
 - [Angular Calendar](https://mattlewis92.github.io/angular-calendar/#/kitchen-sink)
+- [Heroicons](https://heroicons.com/outline)
 
 ## 🤖 IA Agents
 - GitHub Copilot
