@@ -79,4 +79,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Publish Compose OCI with tag dev
-        run: docker compose -f docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev --no-buildkit --no-ansi
+        run: env -i docker compose -f docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:dev -y
