@@ -156,6 +156,16 @@ The backend exposes a `REST API` as communication method with the frontend.
 
 👉 [View REST API Documentation](./api)
 
+### 🧠 Backend Structure
+The following diagram illustrates the backend structire, showing each layer of the `hexagonal architecture`, and how the interact between each other.
+
+![Backend Structure](../images/diagrams/Backend.jpg)
+
+### 🌐 Frontend Structure
+The following diagram illustrates the frontend structire, showing each layer of the `MVC architecture`, and how the interact between each other.
+
+![Frontend Structure](../images/diagrams/Frontend.jpg)
+
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
 
