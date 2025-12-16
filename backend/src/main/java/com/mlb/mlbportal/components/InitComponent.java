@@ -1,15 +1,15 @@
-package com.mlb.mlbportal.controllers;
+package com.mlb.mlbportal.components;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import com.mlb.mlbportal.services.DataInitializerService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@Component
 @RequiredArgsConstructor
-public class InitController {
+public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
 
