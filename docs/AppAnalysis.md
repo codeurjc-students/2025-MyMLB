@@ -154,6 +154,8 @@
     </tr>
 </table>
 
+Below is the relational diagram illustrating all the entities and their relationships within the application.
+
 
 ```mermaid
 erDiagram
@@ -265,9 +267,6 @@ erDiagram
   TEAM ||--o{ PITCHER : ""
   TEAM }|--|{ USERENTITY : ""
 ```
-
-
-![DB Diagram](../images/diagrams/DB.png)
 
 ## 🔒 Type of Users and Browsing Permissions
 ### 🕵️‍♂️ Anonymous User
