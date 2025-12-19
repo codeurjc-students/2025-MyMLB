@@ -46,6 +46,15 @@ At this time, the functional and technical objectives are only defined but not i
 
 ## 🔀 Page Layouts and Navigation
 
+> [!NOTE]
+> The images shown below represent the initial designs for each page of the application. To view the final versions, please refer to the section corresponding to the release in which these pages were completed.
+> <br>
+> For version 0.1 click [here](url).
+> <br>
+> For version 0.2 click [here](url).
+> <br>
+> For version 1.0 click [here](url).
+
 ### 1: Login, Registration and Password Recovery
 
 ![Login Screen](images/screens/Login.png)
