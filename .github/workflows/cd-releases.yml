@@ -77,10 +77,10 @@ jobs:
       - name: Build & Push Docker image
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:${VERSION} .
-          docker push $REGISTRY/$IMAGE_NAME:${VERSION}.0
-          docker tag $REGISTRY/$IMAGE_NAME:${VERSION}.0 $REGISTRY/$IMAGE_NAME:latest
-          docker push $REGISTRY/$IMAGE_NAME:latest
+          docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:${VERSION} .
+          docker push docker.io/fonssi29/mlb-portal:${VERSION}
+          docker tag docker.io/fonssi29/mlb-portal:${VERSION} docker.io/fonssi29/mlb-portal:latest
+          docker push docker.io/fonssi29/mlb-portal:latest
 
   publish-compose:
     name: Publish Compose OCI
