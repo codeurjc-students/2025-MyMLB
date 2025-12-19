@@ -30,6 +30,9 @@
   - [17: Matches](#17-matches)
   - [18: Update Scoreboard](#18-update-scoreboard)
   - [19: Statistics](#19-statistics)
+- [0.1 Version](#-01-version)
+- [0.2 Version](#-02-version)
+- [1.0 Version](#-10-version)
 - [Bibliography](./docs/Bibliography.md) 
 - [License](#-license) 
 
@@ -49,11 +52,11 @@ At this time, the functional and technical objectives are only defined but not i
 > [!NOTE]
 > The images shown below represent the initial designs for each page of the application. To view the final versions, please refer to the section corresponding to the release in which these pages were completed.
 > <br>
-> For version 0.1 click [here](url).
+> For version 0.1 click [here](#-01-version).
 > <br>
-> For version 0.2 click [here](url).
+> For version 0.2 click [here](#-02-version).
 > <br>
-> For version 1.0 click [here](url).
+> For version 1.0 click [here](#-10-version).
 
 ### 1: Login, Registration and Password Recovery
 
@@ -260,6 +263,12 @@ As a reminder, the **status** has only three possible values:
 When the admin clicks on [Statistics](#2-headers), they will be redirected to this page. This page is divided into two sections:
 - **User´s Favourite Teams:** In this section, it will display a chart with its legend, showing the most frequently selected “favourite” teams by users.
 - **Ticket Selling per Teams:** In this section, it will display a chart with its legend, showing the teams that sell the most tickets for their games.
+
+## 🟢 0.1 Version
+
+## 🟡 0.2 Version
+
+## 🔴 1.0 Version
 
 ## 📜 License
 This project follows the Apache 2.0 license regulations. For more information you can consult it [here](./LICENSE).
