@@ -383,7 +383,7 @@ This workflow enables the integration of `SonarCloud` with the repository, allow
 
 ![CI Diagram](../images/diagrams/CI.jpg)
 
-### Continous Delivery (CD)
+### 📦 Continous Delivery (CD)
 For CD, this project uses three workflows that triggers on different scenarios: pull request to main, workflow dispatch from any branch, and when a release occur.
 
 #### CD Main
