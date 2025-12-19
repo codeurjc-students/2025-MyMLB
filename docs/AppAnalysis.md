@@ -13,7 +13,7 @@
 - Team
 - Stadium
 - Player
-- Game
+- Match
 - Ticket
 - PasswordResetToken
 
@@ -63,7 +63,7 @@
       <td>1..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>1..N</td>
     </tr>
   </tbody>
@@ -95,13 +95,13 @@
       <td>1..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>1..N</td>
     </tr>
   </tbody>
 </table>
 
-### 🆚 Game
+### 🆚 Match
 <table>
   <thead>
     <th>Related with...</th>
@@ -135,7 +135,7 @@
       <td>N..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>N..1</td>
     </tr>
   </tbody>
