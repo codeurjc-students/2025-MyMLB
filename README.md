@@ -264,9 +264,60 @@ When the admin clicks on [Statistics](#2-headers), they will be redirected to th
 - **User´s Favourite Teams:** In this section, it will display a chart with its legend, showing the most frequently selected “favourite” teams by users.
 - **Ticket Selling per Teams:** In this section, it will display a chart with its legend, showing the teams that sell the most tickets for their games.
 
+---
+
 ## 🟢 0.1 Version
+In this version, the main features of the application were developed. These include the complete authentication process (including password recovery), the landing page with all its sections (daily matches and the standings widget), as well as the standings and team pages.
+
+Registered users can now select a team as their favorite and remove it if desired. Admin users can create new stadiums, create and delete players, and edit teams, stadiums, and players. 
+
+For more detailed information about the features included in this version, please refer to the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+To see this features in action, check the video below that shows the current state of the application:
+
+
+https://github.com/user-attachments/assets/b803a192-e652-4755-87b4-5123fd2014c9
+
+### Common Features
+As it can be seen from the video, the landing page cointains the matches of the day and the standings widget where the user can have a quickly access to this information. In addition, all users have access to a dedicated team page where comprehensive team information is available, including championships, stadium details, season statistics, and players.
+
+Regarding the navigation bar, its content varies depending on the type of user. Users can also switch between dark mode and light mode at any time.
+
+### Registered User Features
+The regisered user can manage ther favorite teams as a way to personalize the displayed information in the application. This way, when the user checks thet matches of the day or standings, the first matches and standings that will appear will the ones involving the user's favorite teams. 
+
+When a user selects a team as their favorite, a modal appears displaying all MLB teams. The user can then click on a team to add it to their favorites list. To prevent users from selecting a team that is already present in the frontend, the modal displays only the available teams and is dynamically updated whenever a team is added to or removed from the favorites list.
+
+The profile page is still in development, since right now only has the option to logout, but, for the 0.2 version, the user will be able to edit it's own account information.
+
+#### Favorite Teams Page
+![Fav Teams](../images/features/user/FavTeams.png)
+
+![Select Modal](../images/features/user/SelectionList.png)
+
+#### Personalized Information
+Matches of the day and standings without any team as favorite:
+
+![Normal Matches of the Day](NormalMatches.png)
+
+![Normal Standings](NormalStandings.png)
+
+Matches of the day and standings with a team selected as favorite:
+
+![Custom Matches of the Day](CustomMatches.png)
+
+![Custom Standings](CustomStandings.png)
+
+### Admin User Features
+
+
+
+
+---
 
 ## 🟡 0.2 Version
+
+---
 
 ## 🔴 1.0 Version
 
