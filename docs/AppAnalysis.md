@@ -13,7 +13,7 @@
 - Team
 - Stadium
 - Player
-- Game
+- Match
 - Ticket
 - PasswordResetToken
 
@@ -63,7 +63,7 @@
       <td>1..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>1..N</td>
     </tr>
   </tbody>
@@ -95,13 +95,13 @@
       <td>1..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>1..N</td>
     </tr>
   </tbody>
 </table>
 
-### 🆚 Game
+### 🆚 Match
 <table>
   <thead>
     <th>Related with...</th>
@@ -135,7 +135,7 @@
       <td>N..1</td>
     </tr>
     <tr>
-      <td>Game</td>
+      <td>Match</td>
       <td>N..1</td>
     </tr>
   </tbody>
@@ -153,6 +153,120 @@
       <td>1..1</td>
     </tr>
 </table>
+
+Below is the relational diagram illustrating all the entities and their relationships within the application.
+
+
+```mermaid
+erDiagram
+  MATCH {
+    long id
+    Team homeTeam
+    Team awayTeam
+    int homeScore
+    int awayScore
+    LocalDateTime date
+    MatchStatus status
+  }
+
+  PASSWORDRESETTOKEN {
+    long id
+    String code
+    UserEntity user
+    LocalDateTime expirationDate
+  }
+
+  PITCHER {
+    PitcherPositions position
+    int games
+    double era
+    int wins
+    int losses
+    double inningsPitched
+    int totalStrikeouts
+    int walks
+    int hitsAllowed
+    int runsAllowed
+    int saves
+    int saveOpportunities
+    double whip
+  }
+
+  PLAYER {
+    long id
+    String name
+    int playerNumber
+    Team team
+    PictureInfo picture
+  }
+
+  POSITIONPLAYER {
+    PlayerPositions position
+    int atBats
+    int hits
+    int walks
+    int homeRuns
+    int rbis
+    double average
+    double obp
+    double ops
+    int doubles
+    int triples
+    double slugging
+  }
+
+  STADIUM {
+    long id
+    String name
+    int openingDate
+    List_PictureInfo pictures
+    Team team
+  }
+
+  TEAM {
+    long id
+    String name
+    String abbreviation
+    int totalGames
+    int wins
+    int losses
+    double pct
+    double gamesBehind
+    String lastTen
+    String teamLogo
+    String city
+    String generalInfo
+    List_Integer championships
+    League league
+    Division division
+    List_Match homeMatches
+    List_Match awayMatches
+    Stadium stadium
+    List_PositionPlayer positionPlayers
+    List_Pitcher pitchers
+    Set_UserEntity favoritedByUsers
+    Team other
+  }
+
+  USERENTITY {
+    long id
+    String email
+    String username
+    String name
+    String password
+    PasswordResetToken resetToken
+    Set_Team favTeams
+    List_String roles
+  }
+
+  MATCH }o--|| TEAM : ""
+  PASSWORDRESETTOKEN ||--|| USERENTITY : ""
+  PLAYER }o--|| TEAM : ""
+  STADIUM ||--|| TEAM : ""
+  TEAM ||--o{ POSITIONPLAYER : ""
+  TEAM ||--o{ PITCHER : ""
+  TEAM }|--|{ USERENTITY : ""
+```
 
 ## 🔒 Type of Users and Browsing Permissions
 ### 🕵️‍♂️ Anonymous User

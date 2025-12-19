@@ -6,8 +6,8 @@
   - [See Application General Information](#see-application-general-information)
   - [User Login](#user-login)
   - [User Logout](#user-logout)
-  - [Add Favourite Team](#add-favourite-team)
-  - [Remove Favourite Team](#remove-favourite-team)
+  - [Add Favorite Team](#add-favorite-team)
+  - [Remove Favorite Team](#remove-favorite-team)
   - [Update Team Information](#update-team-information)
   - [Edit Player Information](#edit-player-information)
   - [Edit Stadium Information](#edit-stadium-information)
@@ -28,6 +28,7 @@
   - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
 
 ## 🟢 Basic Features
+**These features were included in version 0.1.**
 
 ### User Registration
 **As a:** Anonymous User.
@@ -41,13 +42,13 @@
   - Username.
   - Email.
   - Password.
-- The email must be unique.
+- The username must be unique.
 
 #### Dependencies
-- The user must not already exists in the application`s database.
+- The user must not already exists in the application's database.
 
 #### Tests
-- Verify that the entered email by the user does not exist before allowing the registration.
+- Verify that the entered username by the user, does not exist before allowing the registration.
 - Attempting to register an user that already exist, should show an error message.
 
 ---
@@ -63,15 +64,13 @@
 - It must be displayed on the main page (Home).
 - The home page must include an option to sign in/sign up.
 - The standings for each league and division must be correctly displayed.
-- The news around the league must be correctly displayed (TBD).
 - A dropdown menu listing every team in the league must be available for the user.
-- Selecting a team must redirect to that team´s detailed view.
+- Selecting a team must redirect to that team's detailed view.
 
 #### Tests
 - Verify that the home page is accessible without authentication.
 - Verify that the standings are correctly displayed.
 - Verify that selecting a team displays correctly its detailed information.
-- Verify that the news around the league are correctly displayed (TBD).
 - Verify that selecting the sign in/sign up option redirects to the login/register page.
 - Attempting to purchase a ticket for any game should redirect to the login/register page.
 
@@ -92,10 +91,10 @@
 - A "Recover my Password" option is available via email.
 
 #### Dependencies
-- The user must be register in the application´s database.
+- The user must be register in the application's database.
 
 #### Tests
-- Verify that the entered email and password are both correct.
+- Verify that the entered username and password are both correct.
 - Attempting to log in with an user that does not exists, should show an error message.
 - If the user selects the "Recover my Password" option; verify that the recovery email is sent successfully.
 
@@ -108,7 +107,7 @@
 **So that:** I can close my session and switch to another account.
 
 #### Acceptance Criteria
-- The user´s data must not be deleted during the log out process.
+- The user's data must not be deleted during the log out process.
 - The current session must be properly terminated.
 - The user must be redirected to the login/register page.
 
@@ -116,47 +115,45 @@
 - The system must have session/token management implemented.
 
 #### Tests
-- Verify that the user´s account still exists in the database after logging out.
+- Verify that the user's account still exists in the database after logging out.
 - Verify that the user is redirected to the login/register page once the session is closed.
 - Verify that accessing a restricted page once the session is closed, instantly redirects to the login/register page.
 
 ---
-### Add Favourite Team
+### Add Favorite Team
 **As a:** Registered User.
 
-**I want to:** Select a team as my "favourite".
+**I want to:** Select a team as my "favorite".
 
 **So that:** I can personalized the information that the application provides me.
 
 #### Acceptance Criteria
-- The selected team must not already be in the list of favourites.
-- The number of favourites team must not exceed the maximun allowed (3 (can change)).
+- The selected team must not already be in the list of favorites.
 
 #### Tests
-- Verify that a user cannot add the same team more than once to their favourites.
-- Verify that adding a team beyond the allowed limit is prevented and shows a proper message.
-- Verify that favourite teams are stored correctly and can be retrieved/displayed.
+- Verify that a user cannot add the same team more than once to their favorites.
+- Verify that favorite teams are stored correctly and can be retrieved/displayed.
+- Verify that the matches of the day and standings are displayed, prioritizing the teams marked as favorites by the user.
 
 ---
-### Remove Favourite Team
+### Remove Favorite Team
 **As a:** Registered User.
 
-**I want to:** Remove a team as my "favourite".
+**I want to:** Remove a team as my "favorite".
 
 **So that:** I can udpate my preferences.
 
 #### Acceptance Criteria
-- The current ammount of favourite teams that exists on the list, must be updated.
-- After removal, the user can add a new favourite team.
-- A confirmation message may be shwown before the removal (TBD).
+- The current ammount of favorite teams that exists on the list, must be updated.
+- After removal, the user can add a new favorite team.
+- A confirmation message may be shwown before the removal.
 
 #### Dependencies
-- The team must be currently present in the user´s list.
+- The team must be currently present in the user's list.
 
 #### Tests
-- Verify that a team can be removed from the list of favourites.
+- Verify that a team can be removed from the list of favorites.
 - Verify if the list is correctly updated after the removal.
-- Verify that removing a favourite allows a new one to be added within the limit.
 
 ---
 ### Update Team Information
@@ -169,24 +166,19 @@
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
 - The admin must be able to edit the following fields:
-  - Number of Wins.
-  - Number of Losses.
-- All other team stats must be automatically calculated based on the previously mentioned stats.
+  - City.
+  - General information of the team.
+  - The championships.
+  - The stadium.
 - Once the information has been updated, a success message must be displayed.
-- Every quantity (except the run differential) must be a positive number.
-- The team`s position in the standings must be updated automatically based on the new data.
 
 #### Dependencies
 - The team must already exists in the database.
+- If the stadium will be modify, the new stadium must not be associated with any team.
 
 #### Tests
 - Verify that this section is only visible to admins.
-- Verify that the updated number of wins/losses of a team is correctly saved in the database.
-- Verify that the total number of games played by a team is correctly calculated.
-- Verify that the win percentage of a team is correctly calculated.
-- Verify that the games behind (if its not in the first position) of a team is correctly calculated.
-- Verify that the run differential is correctly calculated.
-- Verify that the team´s position within its division is correctly updated.
+- Verify that the editable fields of a team are correctly saved in the database.
 - Verify that the success message is correctly displayed.
 - Verify that entering invalid values triggers an error message.
 
@@ -196,7 +188,7 @@
 
 **I want to:** Edit the player information.
 
-**So that:** The player`s data can be updated whenever is needed.
+**So that:** The player's data can be updated whenever is needed.
 
 #### Acceptance Criteria
 - An admin-only section must be available for this operation.
@@ -211,18 +203,18 @@
 - The Batting Average (Avg) must be automatically calculated from AB and H.
 - Once is finished, a success message must be displayed.
 - Every numeric value must be positive.
-- In case the player change teams, the new team must be a valid one (exists in the database).
-- In case the player change position, the new position must be a valid one (exists in the database).
+- In case the player change teams, the new team must be a valid one (the team's roster should be less than 24 players).
+- In case the player change position, the new position must be a valid one.
 
 #### Dependencies
 - The player must already exists in the database.
-- The new team must exist in the database.
+- The new team must exist in the database and not have a full roster.
 - The new position must be a valid one.
 
 #### Tests
 - Verify that this section is only visible to admins.
-- Verify that the new player´s picture is correctly saved in the database.
-- Verify that the new player´s team is correctly reflected in the player´s profile.
+- Verify that the new player's picture is correctly saved in the database.
+- Verify that the new player's team is correctly reflected in the player's profile.
 - Verify that the new team correctly registers the new player in its roster.
 - Verify that the total ammount of ABs a player have are correctly updated.
 - Verify that the ammount of Hits of a player are correctly updated.
@@ -250,6 +242,7 @@
 
 #### Dependencies
 - The stadium must already exists in the database.
+- The number of pictures must not exceed 5.
 
 #### Tests
 - Verify that this section is only visible to admins.

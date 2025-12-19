@@ -1,4 +1,4 @@
-# 2025-MyMLB
+# MLB Portal
 
 ## 🧾 Table of Contents
 - [Authors](./docs/Authors.md)
@@ -30,6 +30,9 @@
   - [17: Matches](#17-matches)
   - [18: Update Scoreboard](#18-update-scoreboard)
   - [19: Statistics](#19-statistics)
+- [0.1 Version](#-01-version)
+- [0.2 Version](#-02-version)
+- [1.0 Version](#-10-version)
 - [Bibliography](./docs/Bibliography.md) 
 - [License](#-license) 
 
@@ -46,8 +49,14 @@ At this time, the functional and technical objectives are only defined but not i
 
 ## 🔀 Page Layouts and Navigation
 
-> [!WARNING]
-> The drafts that are shown below may look a bit plain, as their purpose is to show the structure of each page and how the main elements will be displayed. As you can see, the background and the images are not shown in this draft, and the color tones shown in certain elements are not definitve. These will be refinede using CSS to achieve the desired look.
+> [!NOTE]
+> The images shown below represent the initial designs for each page of the application. To view the final versions, please refer to the section corresponding to the release in which these pages were completed.
+> <br>
+> For version 0.1 click [here](#-01-version).
+> <br>
+> For version 0.2 click [here](#-02-version).
+> <br>
+> For version 1.0 click [here](#-10-version).
 
 ### 1: Login, Registration and Password Recovery
 
@@ -254,6 +263,105 @@ As a reminder, the **status** has only three possible values:
 When the admin clicks on [Statistics](#2-headers), they will be redirected to this page. This page is divided into two sections:
 - **User´s Favourite Teams:** In this section, it will display a chart with its legend, showing the most frequently selected “favourite” teams by users.
 - **Ticket Selling per Teams:** In this section, it will display a chart with its legend, showing the teams that sell the most tickets for their games.
+
+---
+
+## 🟢 0.1 Version
+In this version, the main features of the application were developed. These include the complete authentication process (including password recovery), the landing page with all its sections (daily matches and the standings widget), as well as the standings and team pages.
+
+Registered users can now select a team as their favorite and remove it if desired. Admin users can create new stadiums, create and delete players, and edit teams, stadiums, and players. 
+
+For more detailed information about the features included in this version, please refer to the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+To see this features in action, check the video below that shows the current state of the application:
+
+https://github.com/user-attachments/assets/b803a192-e652-4755-87b4-5123fd2014c9
+
+### Common Features
+As it can be seen from the video, the landing page cointains the matches of the day and the standings widget where the user can have a quickly access to this information. In addition, all users have access to a dedicated team page where comprehensive team information is available, including championships, stadium details, season statistics, and players.
+
+Regarding the navigation bar, its content varies depending on the type of user. Users can also switch between dark mode and light mode at any time.
+
+### Registered User Features
+The regisered user can manage ther favorite teams as a way to personalize the displayed information in the application. This way, when the user checks thet matches of the day or standings, the first matches and standings that will appear will the ones involving the user's favorite teams. 
+
+When a user selects a team as their favorite, a modal appears displaying all MLB teams. The user can then click on a team to add it to their favorites list. To prevent users from selecting a team that is already present in the frontend, the modal displays only the available teams and is dynamically updated whenever a team is added to or removed from the favorites list.
+
+The profile page is still in development, since right now only has the option to logout, but, for the 0.2 version, the user will be able to edit it's own account information.
+
+#### Favorite Teams Page
+![Fav Teams](images/features/user/FavTeams.png)
+
+![Select Modal](images/features/user/SelectionList.png)
+
+#### Personalized Information
+Matches of the day and standings without any team as favorite:
+<p align="center">
+  <img src="images/features/user/NormalMatches.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/NormalStandings.png" width="40%" />
+</p>
+
+Matches of the day and standings with a team selected as favorite:
+<p align="center">
+  <img src="images/features/user/CustomMatches.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/CustomStandings.png" width="40%" />
+</p>
+
+
+### Admin User Features
+Admin users can modify team, stadium, and player information. To centralize all these features in a single section, admins can access the `Edit Menu` page, where they can search for and select the type of entity they wish to edit.
+
+![Edit Menu](images/features/admin/EditMenu.png)
+
+#### Edit Team
+The editable fields of a team include the city, general information, championships, and stadium. Since the team's name follows the `city|name` pattern, any change to the city automatically updates the team name. For example, if an admin edits the city of the `New York Yankees` to `Caracas`, the updated name will be `Caracas Yankees`.
+
+As for the stadium, the same formula from the `favorite teams` is applied. When clicking on the stadium button, it opens a modal listing all available stadium (an available stadium is defined as one that is not currently assigned to any MLB team). This ensures that an admin user cannot assign a stadium that is already in use by another team.
+
+![Edit Team](images/features/admin/EditTeam.png)
+
+#### Edit Player
+Admin users can edit the player's editable information without any inconvenience, but when modifying the team the player belongs to, it opens a modal listing all available MLB teams.In this context, an available team is defined as one that does not have a full roster, with the maximum number of players per roster set to 24. This ensures that an admin user cannot assign a team that has no room for one more player.
+
+The player's picture can also be updated. The only restrictions is that the image format must be `webp` for storage optimization purposes.
+
+![Edit Player](images/features/admin/EditPlayer.png)
+
+#### Edit Stadium
+Admin users can only edit a stadium’s pictures. The restrictions are that images must be in `webp` format and that a maximum of five pictures are allowed per stadium. This latter restriction is handled in the UI design, as the option to upload a new picture is only visible when the number of uploaded images is fewer than five.
+
+![Edit Stadium](images/features/admin/EditStadium.png)
+
+#### Create Player
+Creating a player means that the player has been promoted to the MLB team, and that he is playing hist first season in the MLB.
+The only information needed to complete the operation are the name, number, position and the team. Since the player will be making his MLB debut, all of his stats will be set to 0.
+
+![Create Player](images/features/admin/CreatePlayer.png)
+
+#### Delete Player
+Deleting a player means that the player has retired from the MLB. Before the operation is done, a confirmation modal appears to make sure the user really wants to remove the selected player from the database, avoiding any possible mistakes.
+
+#### Create Stadium
+Admin users can create a stadium, the only information they will need to provide are only the name and the oppening date.
+
+![Create Stadium](images/features/admin/CreateStadium.png)
+
+
+In addition to these features, the application now has a custom error page when a user tries to access a non-existent URL or a page they do not have access to.
+
+![Error Page](images/features/common/ErrorPage.png)
+
+For the next version, the application will include the option to purchase tickets for a game, edit the user's account, enable email notifications for a user along with the management of notification preferences.
+
+---
+
+## 🟡 0.2 Version
+
+---
+
+## 🔴 1.0 Version
 
 ## 📜 License
 This project follows the Apache 2.0 license regulations. For more information you can consult it [here](./LICENSE).

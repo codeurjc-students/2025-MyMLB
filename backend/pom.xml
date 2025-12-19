@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.mlb</groupId>
     <artifactId>MLBPortal</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <name>MLBPortal</name>
     <description>MLBPortal</description>
     <url/>
