@@ -34,7 +34,7 @@ In this phase, the repository will be created along with the basic implementatio
 
 **Due Date:** December 15
 
-**Real End Date:** TBD
+**Real End Date:** December 19
 
 The basic features will be implemented along with their corresponding automated tests, and the application will be packaged using Docker (adding Continous Delivery). Finally, the 0.1 version will be released.
 
@@ -44,7 +44,7 @@ This phase will follow an **iterative and incremental development process**, mea
 > This process will also be followed in phases 4 through 5.
 
 ## 🟡 Phase 4: Version 0.2 - Intermediate Features
-**Start Date:** TBD
+**Start Date:** December 22
 
 **Due Date:** March 1
 
