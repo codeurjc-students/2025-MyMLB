@@ -77,9 +77,9 @@ jobs:
       - name: Build & Push Docker image
         run: |
           VERSION=${{ github.event.release.tag_name }}
-          docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:${VERSION} .
-          docker push docker.io/fonssi29/mlb-portal:${VERSION}
-          docker tag docker.io/fonssi29/mlb-portal:${VERSION} docker.io/fonssi29/mlb-portal:latest
+          docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:${VERSION}.0 .
+          docker push docker.io/fonssi29/mlb-portal:${VERSION}.0
+          docker tag docker.io/fonssi29/mlb-portal:${VERSION}.0 docker.io/fonssi29/mlb-portal:latest
           docker push docker.io/fonssi29/mlb-portal:latest
 
   publish-compose:
