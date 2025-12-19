@@ -275,7 +275,6 @@ For more detailed information about the features included in this version, pleas
 
 To see this features in action, check the video below that shows the current state of the application:
 
-
 https://github.com/user-attachments/assets/b803a192-e652-4755-87b4-5123fd2014c9
 
 ### Common Features
@@ -291,27 +290,68 @@ When a user selects a team as their favorite, a modal appears displaying all MLB
 The profile page is still in development, since right now only has the option to logout, but, for the 0.2 version, the user will be able to edit it's own account information.
 
 #### Favorite Teams Page
-![Fav Teams](../images/features/user/FavTeams.png)
+![Fav Teams](images/features/user/FavTeams.png)
 
-![Select Modal](../images/features/user/SelectionList.png)
+![Select Modal](images/features/user/SelectionList.png)
 
 #### Personalized Information
 Matches of the day and standings without any team as favorite:
-
-![Normal Matches of the Day](NormalMatches.png)
-
-![Normal Standings](NormalStandings.png)
+<p align="center">
+  <img src="images/features/user/NormalMatches.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/NormalStandings.png" width="40%" />
+</p>
 
 Matches of the day and standings with a team selected as favorite:
+<p align="center">
+  <img src="images/features/user/CustomMatches.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/CustomStandings.png" width="40%" />
+</p>
 
-![Custom Matches of the Day](CustomMatches.png)
-
-![Custom Standings](CustomStandings.png)
 
 ### Admin User Features
+Admin users can modify team, stadium, and player information. To centralize all these features in a single section, admins can access the `Edit Menu` page, where they can search for and select the type of entity they wish to edit.
+
+![Edit Menu](images/features/admin/EditMenu.png)
+
+#### Edit Team
+The editable fields of a team include the city, general information, championships, and stadium. Since the team's name follows the `city|name` pattern, any change to the city automatically updates the team name. For example, if an admin edits the city of the `New York Yankees` to `Caracas`, the updated name will be `Caracas Yankees`.
+
+As for the stadium, the same formula from the `favorite teams` is applied. When clicking on the stadium button, it opens a modal listing all available stadium (an available stadium is defined as one that is not currently assigned to any MLB team). This ensures that an admin user cannot assign a stadium that is already in use by another team.
+
+![Edit Team](images/features/admin/EditTeam.png)
+
+#### Edit Player
+Admin users can edit the player's editable information without any inconvenience, but when modifying the team the player belongs to, it opens a modal listing all available MLB teams.In this context, an available team is defined as one that does not have a full roster, with the maximum number of players per roster set to 24. This ensures that an admin user cannot assign a team that has no room for one more player.
+
+The player's picture can also be updated. The only restrictions is that the image format must be `webp` for storage optimization purposes.
+
+![Edit Player](images/features/admin/EditPlayer.png)
+
+#### Edit Stadium
+Admin users can only edit a stadium’s pictures. The restrictions are that images must be in `webp` format and that a maximum of five pictures are allowed per stadium. This latter restriction is handled in the UI design, as the option to upload a new picture is only visible when the number of uploaded images is fewer than five.
+
+![Edit Stadium](images/features/admin/EditStadium.png)
+
+#### Create Player
+Creating a player means that the player has been promoted to the MLB team, and that he is playing hist first season in the MLB.
+The only information needed to complete the operation are the name, number, position and the team. Since the player will be making his MLB debut, all of his stats will be set to 0.
+
+![Create Player](images/features/admin/CreatePlayer.png)
+
+#### Delete Player
+Deleting a player means that the player has retired from the MLB. Before the operation is done, a confirmation modal appears to make sure the user really wants to remove the selected player from the database, avoiding any possible mistakes.
+
+#### Create Stadium
+Admin users can create a stadium, the only information they will need to provide are only the name and the oppening date.
+
+![Create Stadium](images/features/admin/CreateStadium.png)
 
 
+In addition to these features, the application now has a custom error page when a user tries to access a non-existent URL or a page they do not have access to.
 
+![Error Page](images/features/common/ErrorPage.png)
 
 ---
 
