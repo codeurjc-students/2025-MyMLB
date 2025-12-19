@@ -179,7 +179,7 @@ MAIL_PASSWORD=application_password
 > [!IMPORTANT]
 > For the email account, it is not an ordinary email account, it has to be an `application account`. The `MAIL_USERNAME` can be an ordinary one, but the password is the `application password` google generates when creating the account. To do this follow these steps:
 > <br>
-> 1. Go to [https://myaccount.google.com/](https://myaccount.google.com)
+> 1. Go to [https://myaccount.google.com](https://myaccount.google.com)
 > 2. Activate two-step verification if it is not already enabled.
 > 3. Search in the search bar for `Application Password`.
 > 4. Once there, fill in the requested information and if everything goes correctly the password will have been created successfully, copy it and paste it into your `.env` file.
