@@ -169,12 +169,20 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
-MAIL_USERNAME=
-MAIL_PASSWORD=
+MAIL_USERNAME=mailusername@gmail.com
+MAIL_PASSWORD=application_password
 ```
 
 > [!NOTE]
 > To obtain your Cloudinary credentials, you need to create an account in [Cloudinary](https://cloudinary.com/). Once your account is created, you cand find this information in your dashboard.
+
+> [!IMPORTANT]
+> For the email account, it is not an ordinary email account, it has to be an `application account`. The `MAIL_USERNAME` can be an ordinary one, but the password is the `application password` google generates when creating the account. To do this follow these steps:
+> <br>
+> 1. Go to [https://myaccount.google.com/](https://myaccount.google.com)
+> 2. Activate two-step verification if it is not already enabled.
+> 3. Search in the search bar for `Application Password`.
+> 4. Once there, fill in the requested information and if everything goes correctly the password will have been created successfully, copy it and paste it into your `.env` file.
 
 Once you have created this file, follow these steps to launch the application container:
 
