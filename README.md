@@ -353,6 +353,8 @@ In addition to these features, the application now has a custom error page when 
 
 ![Error Page](images/features/common/ErrorPage.png)
 
+For the next version, the application will include the option to purchase tickets for a game, edit the user's account, enable email notifications for a user along with the management of notification preferences.
+
 ---
 
 ## 🟡 0.2 Version
