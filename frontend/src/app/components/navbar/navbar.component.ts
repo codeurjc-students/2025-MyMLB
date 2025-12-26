@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter<void> = new EventEmitter();
 
+	private selectedTeamAbbr: string | undefined = '';
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 	public currentRoute = '';
@@ -39,12 +40,14 @@ export class NavbarComponent implements OnInit {
 			this.currentRoute = event.urlAfterRedirects;
 			if (!this.currentRoute.includes('/team')) {
 				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
+				this.selectedTeamAbbr = '';
 			}
 		});
 
 		this.currentRoute = this.router.url;
 
 		this.selectTeamService.selectedTeam$.subscribe((team) => {
+			this.selectedTeamAbbr = team?.teamStats.abbreviation;
 			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
 		});
 	}
@@ -62,11 +65,19 @@ export class NavbarComponent implements OnInit {
 	}
 
 	public applyStyle(page: string): string {
-		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? 'active-nav' : '';
+		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? this.activeItem() : '';
 	}
 
 	public navBarBackgroundColor(abbreviation: string | undefined) {
 		return this.backgroundService.navBarBackground(abbreviation);
+	}
+
+	public itemsHover(): string {
+		return this.backgroundService.navBarItemsHover(this.selectedTeamAbbr);
+	}
+
+	private activeItem(): string {
+		return this.backgroundService.navBarActiveItem(this.selectedTeamAbbr);
 	}
 
 	public redirect(page: string) {
