@@ -49,6 +49,10 @@ export class NavbarComponent implements OnInit {
 		});
 	}
 
+	ngOnDestroy() {
+		this.selectTeamService.clearSelectedTeam();
+	}
+
 	public toggleDarkModeButton(): void {
 		this.toggleDarkMode.emit();
 	}

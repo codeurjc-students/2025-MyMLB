@@ -24,6 +24,7 @@ describe('Navigation Bar Integration Tests', () => {
 	const selectedTeamSubject = new Subject<any>();
 	const mockSelectedTeamService = {
 		selectedTeam$: selectedTeamSubject.asObservable(),
+		clearSelectedTeam: () => {}
 	};
 
 	beforeEach(() => {
