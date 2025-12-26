@@ -73,11 +73,15 @@ export class NavbarComponent implements OnInit {
 	}
 
 	public itemsHover(): string {
-		return this.backgroundService.navBarItemsHover(this.selectedTeamAbbr);
+		return this.backgroundService.navBarItems(this.selectedTeamAbbr, 'hover:');
 	}
 
 	private activeItem(): string {
-		return this.backgroundService.navBarActiveItem(this.selectedTeamAbbr);
+		return this.backgroundService.navBarItems(this.selectedTeamAbbr, 'active-nav');
+	}
+
+	public toggleButtonColor(): string {
+		return this.backgroundService.toggleButton(this.selectedTeamAbbr);
 	}
 
 	public redirect(page: string) {

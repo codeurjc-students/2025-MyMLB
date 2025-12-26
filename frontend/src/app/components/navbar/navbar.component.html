@@ -88,8 +88,9 @@
 							class="sr-only peer"
 						/>
 						<div
-							class="relative w-12 h-7 bg-gray-200 bg-opacity-80 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-600 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-700"
-						></div>
+							class="relative w-12 h-7 bg-gray-200 bg-opacity-80 rounded-full peer peer-focus:ring-4 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600"
+							[ngClass]="toggleButtonColor()"
+							></div>
 						<span
 							class="ms-3 text-xl py-2.5 px-3 font-medium text-gray-200 dark:text-gray-300"
 							>Dark Mode</span

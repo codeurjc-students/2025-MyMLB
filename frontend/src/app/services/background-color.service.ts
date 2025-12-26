@@ -120,117 +120,124 @@ export class BackgroundColorService {
 		}
 	}
 
-	public navBarItemsHover(abbreviation: string | undefined) {
+	public navBarItems(abbreviation: string | undefined, prefix: string): string {
+		let color = '';
+
 		switch (abbreviation) {
 			case 'TOR':
-				return 'hover:bg-sky-500';
+				color = 'sky-700';
+				break;
+
 			case 'LAA':
 			case 'CIN':
 			case 'AZ':
 			case 'PHI':
 			case 'WSH':
-				return 'hover:bg-red-500';
+				color = 'red-700';
+				break;
+
 			case 'TB':
 			case 'KC':
-				return 'hover:bg-sky-300';
-			case 'BAL':
+			case 'MIA':
+				color = 'sky-600';
+				break;
+
 			case 'HOU':
 			case 'DET':
-				return 'hover:bg-orange-500';
+				color = 'blue-800';
+				break;
 
-			case 'CLE':
-			case 'SEA':
-			case 'TEX':
-			case 'NYM':
-			case 'ATL':
-			case 'MIL':
-			case 'MIN':
-			case 'NYY':
-			case 'BOS':
-				return 'hover:bg-blue-900';
-
-			case 'MIA':
-				return 'hover:bg-sky-400';
+			case 'BAL':
+			case 'SD':
+				color = 'black';
+				break;
 
 			case 'CHC':
-				return 'hover:bg-blue-700';
+				color = 'blue-500';
+				break;
 
 			case 'ATH':
-				return 'hover:bg-green-500';
+				color = 'green-500';
+				break;
+
+			case 'SF':
+				color = 'orange-600';
+				break;
 
 			case 'PIT':
+				color = 'yellow-500'
+				break;
+
 			case 'CWS':
-			case 'SF':
-				return 'hover:bg-black';
+				color = 'gray-800';
+				break;
 
 			case 'LAD':
-				return 'hover:bg-blue-600';
-
-			case 'SD':
-				return 'hover:bg-yellow-500';
+				color = 'blue-400';
+				break;
 
 			case 'COL':
-				return 'hover:bg-purple-700';
+				color = 'purple-500';
+				break;
 
 			default:
-				return 'hover:bg-blue-700';
+				color = 'blue-700';
 		}
+
+		if (prefix === 'active-nav') {
+			return `active-nav bg-${color}`;
+		}
+		return `${prefix}bg-${color}`;
 	}
 
-	public navBarActiveItem(abbreviation: string | undefined) {
+	public toggleButton(abbreviation: string | undefined) {
 		switch (abbreviation) {
 			case 'TOR':
-				return 'active-nav bg-sky-500';
+				return 'peer-focus:ring-sky-600 peer-checked:bg-sky-700';
+
 			case 'LAA':
 			case 'CIN':
 			case 'AZ':
 			case 'PHI':
 			case 'WSH':
-				return 'active-nav bg-red-500';
-			case 'TB':
+				return 'peer-focus:ring-red-600 peer-checked:bg-red-700';
+
+				case 'TB':
 			case 'KC':
-				return 'active-nav bg-sky-300';
-			case 'BAL':
+			case 'MIA':
+				return 'peer-focus:ring-sky-500 peer-checked:bg-sky-600';
+
 			case 'HOU':
 			case 'DET':
-				return 'active-nav bg-orange-500';
+				return 'peer-focus:ring-blue-700 peer-checked:bg-blue-800';
 
-			case 'CLE':
-			case 'SEA':
-			case 'TEX':
-			case 'NYM':
-			case 'ATL':
-			case 'MIL':
-			case 'MIN':
-			case 'NYY':
-			case 'BOS':
-				return 'active-nav bg-blue-900';
-
-			case 'MIA':
-				return 'active-nav bg-sky-400';
+			case 'BAL':
+			case 'SD':
+				return 'peer-focus:ring-gray-800 peer-checked:bg-black'
 
 			case 'CHC':
-				return 'active-nav bg-blue-700';
+				return 'peer-focus:ring-blue-400 peer-checked:bg-blue-500';
 
 			case 'ATH':
-				return 'active-nav bg-green-500';
+				return 'peer-focus:ring-green-400 peer-checked:bg-green-500';
 
 			case 'PIT':
-			case 'CWS':
+				return 'peer-focus:ring-yellow-400 peer-checked:bg-yellow-500';
+
 			case 'SF':
-				return 'active-nav bg-black';
+				return 'peer-focus:ring-orange-500 peer-checked:bg-orange-600';
+
+			case 'CWS':
+				return 'peer-focus:ring-gray-700 peer-checked:bg-gray-800';
 
 			case 'LAD':
-				return 'active-nav bg-blue-600';
-
-			case 'SD':
-				return 'active-nav bg-yellow-500';
+				return 'peer-focus:ring-blue-300 peer-checked:bg-blue-400';
 
 			case 'COL':
-				return 'active-nav bg-purple-700';
+				return 'peer-focus:ring-purple-400 peer-checked:bg-purple-500';
 
 			default:
-				return 'active-nav bg-blue-700';
+				return 'peer-focus:ring-blue-600 peer-checked:bg-blue-700';
 		}
 	}
 }
