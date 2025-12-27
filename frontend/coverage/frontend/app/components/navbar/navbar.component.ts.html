@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.38% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/42</span>
+                <span class='fraction'>28/49</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.63% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/11</span>
+                <span class='fraction'>11/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">55.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/38</span>
+                <span class='fraction'>25/45</span>
             </div>
         
             
@@ -152,7 +152,26 @@
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,6 +196,7 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -190,6 +210,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -200,7 +221,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -217,6 +243,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -261,6 +299,7 @@ export class NavbarComponent implements OnInit {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter&lt;void&gt; = new EventEmitter();
 &nbsp;
+	private selectedTeamAbbr: string | undefined = '';
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 	public currentRoute = '';
@@ -282,14 +321,20 @@ export class NavbarComponent implements OnInit {
 <span class="cstat-no" title="statement not covered" >			this.currentRoute = event.urlAfterRedirects;</span>
 <span class="cstat-no" title="statement not covered" >			<span class="missing-if-branch" title="if path not taken" >I</span>if (!this.currentRoute.includes('/team')) {</span>
 <span class="cstat-no" title="statement not covered" >				this.navBarStyleClass = this.navBarBackgroundColor(undefined);</span>
+<span class="cstat-no" title="statement not covered" >				this.selectedTeamAbbr = '';</span>
 			}
 		});
 &nbsp;
 		this.currentRoute = this.router.url;
 &nbsp;
 		this.selectTeamService.selectedTeam$.subscribe((team) =&gt; {
+			this.selectedTeamAbbr = team?.teamStats.abbreviation;
 			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
 		});
+	}
+&nbsp;
+	ngOnDestroy() {
+		this.selectTeamService.clearSelectedTeam();
 	}
 &nbsp;
 	public toggleDarkModeButton(): void {
@@ -301,11 +346,23 @@ export class NavbarComponent implements OnInit {
 	}
 &nbsp;
 	public applyStyle(page: string): string {
-		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? 'active-nav' : '';
+		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? this.activeItem() : '';
 	}
 &nbsp;
 	public navBarBackgroundColor(abbreviation: string | undefined) {
 		return this.backgroundService.navBarBackground(abbreviation);
+	}
+&nbsp;
+	public itemsHover(): string {
+		return this.backgroundService.navBarItemsHover(this.selectedTeamAbbr);
+	}
+&nbsp;
+	private activeItem(): string {
+		return this.backgroundService.navBarItemsActive(this.selectedTeamAbbr);
+	}
+&nbsp;
+	public toggleButtonColor(): string {
+		return this.backgroundService.toggleButton(this.selectedTeamAbbr);
 	}
 &nbsp;
 	public <span class="fstat-no" title="function not covered" >redirect(</span>page: string) {
@@ -337,7 +394,7 @@ export class NavbarComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-08T16:09:26.832Z
+                at 2025-12-27T14:45:24.321Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

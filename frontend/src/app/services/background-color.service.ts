@@ -75,7 +75,7 @@ export class BackgroundColorService {
 				return 'bg-red-500';
 			case 'TB':
 			case 'KC':
-				return 'bg-sky-300';
+				return 'bg-sky-600';
 			case 'BAL':
 			case 'HOU':
 			case 'DET':
@@ -120,74 +120,106 @@ export class BackgroundColorService {
 		}
 	}
 
-	public navBarItems(abbreviation: string | undefined, prefix: string): string {
-		let color = '';
-
+	public navBarItemsHover(abbreviation: string | undefined): string {
 		switch (abbreviation) {
 			case 'TOR':
-				color = 'sky-700';
-				break;
+				return 'hover:bg-sky-700';
 
 			case 'LAA':
 			case 'CIN':
 			case 'AZ':
 			case 'PHI':
 			case 'WSH':
-				color = 'red-700';
-				break;
+				return 'hover:bg-red-700';
 
 			case 'TB':
 			case 'KC':
 			case 'MIA':
-				color = 'sky-600';
-				break;
+				return 'hover:bg-sky-400';
 
 			case 'HOU':
 			case 'DET':
-				color = 'blue-800';
-				break;
+				return 'hover:bg-blue-800';
 
 			case 'BAL':
 			case 'SD':
-				color = 'black';
-				break;
+				return 'hover:bg-black';
 
 			case 'CHC':
-				color = 'blue-500';
-				break;
+				return 'hover:bg-blue-500';
 
 			case 'ATH':
-				color = 'green-500';
-				break;
+				return 'hover:bg-green-500';
 
 			case 'SF':
-				color = 'orange-600';
-				break;
+				return 'hover:bg-orange-600';
 
 			case 'PIT':
-				color = 'yellow-500'
-				break;
+				return 'hover:bg-yellow-500'
 
 			case 'CWS':
-				color = 'gray-800';
-				break;
+				return 'hover:bg-gray-800';
 
 			case 'LAD':
-				color = 'blue-400';
-				break;
+				return 'hover:bg-blue-400';
 
 			case 'COL':
-				color = 'purple-500';
-				break;
+				return 'hover:bg-purple-500';
 
 			default:
-				color = 'blue-700';
+				return 'hover:bg-blue-700';
 		}
+	}
 
-		if (prefix === 'active-nav') {
-			return `active-nav bg-${color}`;
+	public navBarItemsActive(abbreviation: string | undefined): string {
+		switch (abbreviation) {
+			case 'TOR':
+				return 'active-nav bg-sky-700';
+
+			case 'LAA':
+			case 'CIN':
+			case 'AZ':
+			case 'PHI':
+			case 'WSH':
+				return 'active-nav bg-red-700';
+
+			case 'TB':
+			case 'KC':
+			case 'MIA':
+				return 'active-nav bg-sky-400';
+
+			case 'HOU':
+			case 'DET':
+				return 'active-nav bg-blue-800';
+
+			case 'BAL':
+			case 'SD':
+				return 'active-nav bg-black';
+
+			case 'CHC':
+				return 'active-nav bg-blue-500';
+
+			case 'ATH':
+				return 'active-nav bg-green-500';
+
+			case 'SF':
+				return 'active-nav bg-orange-600';
+
+			case 'PIT':
+				return 'active-nav bg-yellow-500'
+
+			case 'CWS':
+				return 'active-nav bg-gray-800';
+
+			case 'LAD':
+				return 'active-nav bg-blue-400';
+
+			case 'COL':
+				return 'active-nav bg-purple-500';
+
+			default:
+				return 'active-nav bg-blue-700';
 		}
-		return `${prefix}bg-${color}`;
 	}
 
 	public toggleButton(abbreviation: string | undefined) {
@@ -202,10 +234,10 @@ export class BackgroundColorService {
 			case 'WSH':
 				return 'peer-focus:ring-red-600 peer-checked:bg-red-700';
 
-				case 'TB':
+			case 'TB':
 			case 'KC':
 			case 'MIA':
-				return 'peer-focus:ring-sky-500 peer-checked:bg-sky-600';
+				return 'peer-focus:ring-sky-300 peer-checked:bg-sky-400';
 
 			case 'HOU':
 			case 'DET':
