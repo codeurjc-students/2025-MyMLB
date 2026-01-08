@@ -8,6 +8,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mlb.mlbportal.dto.user.ShowUser;
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,7 @@ import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -125,6 +127,16 @@ class UserServiceIntegrationTest {
 
         UserEntity saved = this.userRepository.findByUsername(TEST_USER_USERNAME).orElseThrow();
         assertThat(saved.getEmail()).isEqualTo(TEST_USER_EMAIL);
+    }
+
+    @Test
+    @DisplayName("Should delete the user's account successfully from the system")
+    void testDeleteAccount() {
+        this.userService.deleteAccount(USER1_USERNAME);
+
+        assertThatThrownBy(() -> this.userService.getUser(USER1_USERNAME))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
     }
 
     @Test

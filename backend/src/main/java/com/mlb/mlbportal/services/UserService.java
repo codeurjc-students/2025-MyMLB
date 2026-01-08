@@ -73,6 +73,12 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteAccount(String username) {
+        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        this.userRepository.delete(user);
+    }
+
+    @Transactional
     public boolean resetPassword(String code, String newPassword) {
         Optional<PasswordResetToken> optReset = this.emailService.getCode(code);
 
