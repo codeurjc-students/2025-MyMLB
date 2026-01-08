@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static com.mlb.mlbportal.utils.TestConstants.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,22 +50,6 @@ import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
-import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD_ENCODED;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -174,6 +160,23 @@ class UserServiceTest {
             () -> this.userService.createUser(registerRequest));
 
         assertThat(exception.getMessage()).isEqualTo("The User Already Exists in the Database");
+    }
+
+    @Test
+    @DisplayName("Should delete the user's account successfully")
+    void testDeleteAccount() {
+        when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
+        assertThatNoException().isThrownBy(() -> this.userService.deleteAccount(TEST_USER_USERNAME));
+        verify(this.userRepository, times(1)).delete(this.testUser);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException when the user does not exists")
+    void testDeleteAccountError(){
+        when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> this.userService.deleteAccount(UNKNOWN_USER))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
     }
 
     @Test

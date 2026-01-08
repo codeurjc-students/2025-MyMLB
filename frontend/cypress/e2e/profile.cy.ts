@@ -59,4 +59,22 @@ describe('Profile Component E2E Tests', () => {
 			cy.url().should('eq', Cypress.config().baseUrl + '/');
 		});
 	});
+
+	describe('Delete Account', () => {
+		it('should successfully delete the user account and redirect him to the home page', () => {
+			cy.intercept('DELETE', AUTH_API_URL, {
+				statusCode: 200,
+				body: {
+					status: 'SUCCESS',
+					message: 'Account Successfully Deleted',
+				},
+			}).as('delete-account');
+
+			cy.contains('button', 'Delete Account').click();
+			cy.contains('button', 'Yes, Delete').click();
+
+			cy.wait('@delete-account');
+			cy.url().should('eq', Cypress.config().baseUrl + '/');
+		});
+	});
 });

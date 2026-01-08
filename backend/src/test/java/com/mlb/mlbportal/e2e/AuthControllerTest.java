@@ -121,6 +121,20 @@ class AuthControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("DELETE /api/v1/auth should delete the user's account from the system")
+    void testDeleteAccount() {
+        given()
+                .header("X-Mock-User", TEST_USER_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("api/v1/auth")
+                .then()
+                .statusCode(200)
+                .body("status", is(SUCCESS))
+                .body("message", is("Account Successfully Deleted"));
+    }
+
+    @Test
     @DisplayName("POST /api/v1/auth/forgot-password should send the recovery email")
     void testForgotPassword() {
         ForgotPasswordRequest request = new ForgotPasswordRequest(TEST_USER_EMAIL);

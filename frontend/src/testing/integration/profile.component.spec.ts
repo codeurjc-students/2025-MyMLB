@@ -41,6 +41,9 @@ describe('Profile Component Integration Test', () => {
 		fixture = TestBed.createComponent(ProfileComponent);
 		component = fixture.componentInstance;
 		httpMock = TestBed.inject(HttpTestingController);
+
+		const reqs = httpMock.match(`${apiUrl}/me`);
+		reqs.forEach(r => r.flush(mockUser));
 	});
 
 	afterEach(() => {
@@ -51,7 +54,7 @@ describe('Profile Component Integration Test', () => {
 		fixture.detectChanges();
 
 		const requests = httpMock.match(`${apiUrl}/me`);
-		expect(requests.length).toBe(2);
+		expect(requests.length).toBe(1);
 		requests.forEach((req) => req.flush(mockUser));
 
 		fixture.detectChanges();
@@ -62,7 +65,7 @@ describe('Profile Component Integration Test', () => {
 		fixture.detectChanges();
 
 		const requests = httpMock.match(`${apiUrl}/me`);
-		expect(requests.length).toBe(2);
+		expect(requests.length).toBe(1);
 		requests.forEach((req) => req.error(new ErrorEvent('Network error')));
 
 		fixture.detectChanges();
@@ -74,7 +77,8 @@ describe('Profile Component Integration Test', () => {
 
 		httpMock.match(`${apiUrl}/me`).forEach((req) => req.flush(mockUser));
 
-		component.confirmLogout();
+		component.activeAction = 'logout';
+		component.confirm();
 
 		const logoutReq = httpMock.expectOne(`${apiUrl}/logout`);
 		expect(logoutReq.request.method).toBe('POST');
@@ -82,15 +86,43 @@ describe('Profile Component Integration Test', () => {
 
 		fixture.detectChanges();
 		expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+		expect(component.activeAction).toBeNull();
 	});
 
-	it('should show logout confirmation panel when logoutButton is clicked', () => {
+	it('should trigger account deletion and navigate to root', () => {
 		fixture.detectChanges();
 
 		httpMock.match(`${apiUrl}/me`).forEach((req) => req.flush(mockUser));
 
-		expect(component.showPanel).toBeFalse();
-		component.logoutButton();
-		expect(component.showPanel).toBeTrue();
+		component.activeAction = 'delete';
+		component.confirm();
+
+		const deleteReq = httpMock.expectOne(apiUrl);
+		expect(deleteReq.request.method).toBe('DELETE');
+		deleteReq.flush({ status: 'SUCCESS', message: 'Account deleted' });
+
+		fixture.detectChanges();
+		expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+		expect(component.activeAction).toBeNull();
+	});
+
+	it('should open modal with correct action when openModal is called', () => {
+		expect(component.activeAction).toBeNull();
+
+		component.openModal('logout');
+		expect(component.activeAction).toBe('logout');
+
+		component.openModal('delete');
+		expect(component.activeAction).toBe('delete');
+	});
+
+	it('should cancel modal and reset activeAction', () => {
+		component.activeAction = 'logout';
+		component.cancel();
+		expect(component.activeAction).toBeNull();
+
+		component.activeAction = 'delete';
+		component.cancel();
+		expect(component.activeAction).toBeNull();
 	});
 });

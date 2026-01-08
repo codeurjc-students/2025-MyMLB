@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,31 +17,6 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
-import static com.mlb.mlbportal.utils.TestConstants.FAV_TEAMS_PATH;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -69,7 +45,8 @@ class UserControllerTest extends BaseE2ETest {
     @Test
     @DisplayName("GET /api/v1/users returns all users with correct fields")
     void testGetAllUsers() {
-        given().contentType(ContentType.JSON).when().get("/api/v1/users").then()
+        given()
+                 .contentType(ContentType.JSON).when().get("/api/v1/users").then()
             .statusCode(200)
             .body("content.size()", is(2))
             .body("content.username", hasItems(USER1_USERNAME, USER2_USERNAME))

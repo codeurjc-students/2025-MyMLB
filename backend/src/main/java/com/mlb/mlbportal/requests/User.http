@@ -2,26 +2,30 @@
 GET https://localhost:8443/api/v1/users?page=0&size=10
 Accept: application/json
 
-### Get Favourite Teams of a User
+### Get Favorite Teams of a User
 GET https://localhost:8443/api/v1/users/favorites/teams
 Accept: application/json
 
-### Add a Favourite Team
+### Add a Favorite Team
 POST https://localhost:8443/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json
 
-### Add a Favourite Team
+### Add a Favorite Team
 POST https://localhost:8443/api/v1/users/favorites/teams/Los Angeles Dodgers
 Accept: application/json
 
-### Add a Favourite Team
+### Add a Favorite Team
 POST https://localhost:8443/api/v1/users/favorites/teams/Team1
 Accept: application/json
 
-### Remove a Favourite Team
+### Remove a Favorite Team
 DELETE https://localhost:8443/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json
 
-### Remove a Favourite Team
+### Remove a Favorite Team
 DELETE https://localhost:8443/api/v1/users/favorites/teams/Detroit Tigers
+Accept: application/json
+
+### Delete the User's Account
+DELETE https://localhost:8443/api/v1/users
 Accept: application/json

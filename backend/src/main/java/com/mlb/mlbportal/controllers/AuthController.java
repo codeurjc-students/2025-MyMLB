@@ -2,14 +2,10 @@ package com.mlb.mlbportal.controllers;
 
 import java.security.Principal;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -92,6 +88,19 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logOut(HttpServletResponse response) {
         return this.userLoginService.logout(response);
+    }
+
+    @Operation(summary = "Delete the user's account", description = "Delete the account of the active user from the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Account successfully removed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping(produces = "application/json")
+    public ResponseEntity<AuthResponse> deleteAccount(Principal principal) {
+        this.userService.deleteAccount(principal.getName());
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Account Successfully Deleted"));
     }
 
     @Operation(summary = "Request password recovery", description = "Sends a recovery email to the user containing a reset link or verification code.", responses = {

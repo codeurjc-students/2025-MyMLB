@@ -7,6 +7,15 @@ Content-Type: application/json
     "password": "pollitoPio"
 }
 
+### Login
+POST https://localhost:8443/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "armiin13",
+    "password": "eras13"
+}
+
 ### Login with new user
 POST https://localhost:8443/api/v1/auth/login
 Content-Type: application/json
