@@ -84,17 +84,4 @@ public class UserController {
         this.userService.removeFavTeam(principal.getName(), teamName);
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Successfully Remove"));
     }
-
-    @Operation(summary = "Delete the user's account", description = "Delete the account of the active user from the system.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Account successfully removed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
-    })
-    @DeleteMapping(produces = "application/json")
-    public ResponseEntity<AuthResponse> deleteAccount(Principal principal) {
-        this.userService.deleteAccount(principal.getName());
-        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Account Successfully Deleted"));
-    }
 }

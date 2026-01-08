@@ -99,18 +99,4 @@ class UserControllerTest extends BaseE2ETest {
                 .body("status", is("SUCCESS"))
                 .body("message", is("Team Successfully Remove"));
     }
-
-    @Test
-    @DisplayName("DELETE /api/v1/users should delete the user's account from the system")
-    void testDeleteAccount() {
-        given()
-                .header("X-Mock-User", USER1_USERNAME)
-                .contentType(ContentType.JSON)
-                .when()
-                .delete("api/v1/users")
-                .then()
-                .statusCode(200)
-                .body("status", is(SUCCESS))
-                .body("message", is("Account Successfully Deleted"));
-    }
 }

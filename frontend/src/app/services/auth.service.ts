@@ -59,6 +59,11 @@ export class AuthService {
 			.pipe(tap(() => this.currentUserSubject.next(this.defaultGuestUser)));
 	}
 
+	public deleteAccount(): Observable<AuthResponse> {
+		return this.http.delete<AuthResponse>(this.apiUrl, { withCredentials: true})
+			.pipe(tap(() => this.currentUserSubject.next(this.defaultGuestUser)));
+	}
+
 	public forgotPassword(forgotPassRequest: ForgotPasswordRequest): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/forgot-password`, forgotPassRequest);
 	}
