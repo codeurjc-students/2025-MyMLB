@@ -19,11 +19,18 @@ describe('Navigation Bar Integration Tests', () => {
 	const mockBackgroundService = {
 		navBarBackground: (abbr: string | undefined) =>
 			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default',
+		navBarItemsHover: (abbr: string | undefined) =>
+			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default',
+		navBarItemsActive: (abbr: string | undefined) =>
+			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default',
+		toggleButton: (abbr: string | undefined) =>
+			abbr ? `bg-${abbr.toLowerCase()}` : 'bg-default'
 	};
 
 	const selectedTeamSubject = new Subject<any>();
 	const mockSelectedTeamService = {
 		selectedTeam$: selectedTeamSubject.asObservable(),
+		clearSelectedTeam: () => {}
 	};
 
 	beforeEach(() => {

@@ -72,11 +72,11 @@ html {
 /* Navbar Styles */
 
 .nav-elems {
-	@apply py-2.5 px-3 text-xl text-gray-300 rounded-xl transition duration-300 ease-in-out cursor-pointer hover:bg-blue-700 hover:text-white hover:shadow-md hover:scale-[1.03];
+	@apply py-2.5 px-3 text-xl text-gray-300 rounded-xl transition duration-300 ease-in-out cursor-pointer hover:text-white hover:shadow-md hover:scale-[1.03];
 }
 
 .active-nav {
-	@apply text-white font-bold bg-blue-700 rounded-md shadow-md px-4 py-2;
+	@apply text-white font-bold rounded-md shadow-md px-4 py-2;
 }
 
 /* Landing Page Styles */

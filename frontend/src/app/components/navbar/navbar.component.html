@@ -24,54 +24,55 @@
 				<div class="flex items-center justify-center flex-grow min-w-0">
 					<ul class="flex flex-row flex-wrap gap-x-4 sm:gap-x-6 font-medium items-center">
 						<li>
-							<a [routerLink]="'/'" class="nav-elems" [ngClass]="applyStyle('/')">Home</a>
+							<a [routerLink]="'/'" class="nav-elems" [ngClass]="[applyStyle('/'), itemsHover()]">Home</a>
 						</li>
 
 						@if (!roles.includes("USER") && !roles.includes("ADMIN")) {
 						<li>
-							<a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" class="nav-elems"
-								>Login</a
+							<a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" class="nav-elems" [ngClass]="itemsHover()">
+								Login
+							</a
 							>
 						</li>
 						<li>
 							<a
 								[routerLink]="'/auth'"
 								[queryParams]="{ form: 'register' }"
-								class="nav-elems"
+								class="nav-elems" [ngClass]="itemsHover()"
 								>Sign Up</a
 							>
 						</li>
 						} @if (roles.includes("USER")) {
 						<li>
-							<a href="#" class="nav-elems" [ngClass]="applyStyle('/my-tickets')">My Tickets</a>
+							<a href="#" class="nav-elems" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]">My Tickets</a>
 						</li>
 						<li>
-							<a class="nav-elems" [ngClass]="applyStyle('/favorite-teams')" (click)="redirect('fav-teams')">Fav Teams</a>
+							<a class="nav-elems" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a>
 						</li>
 						}
 
 						@if (!roles.includes("ADMIN")) {
 						<li class="relative group">
-							<a class="nav-elems" [ngClass]="applyStyle('/team')">Teams</a>
+							<a class="nav-elems" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
 							<app-dropdown-menu></app-dropdown-menu>
 						</li>
 						<li>
-							<a class="nav-elems" [ngClass]="applyStyle('/standings')" (click)="redirect('standings')">Standings</a>
+							<a class="nav-elems" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a>
 						</li>
 						}
 
 						@else if (roles.includes("ADMIN")) {
 							<li>
-								<a class="nav-elems" [ngClass]="applyStyle('/edit-menu')" (click)="redirect('edit-menu')">Edit Info</a>
+								<a class="nav-elems" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Info</a>
 							</li>
 							<li>
-								<a class="nav-elems" [ngClass]="applyStyle('/create-player')" (click)="redirect('create-player')">Create Player</a>
+								<a class="nav-elems" [ngClass]="[applyStyle('/create-player'), itemsHover()]" (click)="redirect('create-player')">Create Player</a>
 							</li>
 							<li>
-								<a class="nav-elems" [ngClass]="applyStyle('/create-stadium')" (click)="redirect('create-stadium')">Create Stadium</a>
+								<a class="nav-elems" [ngClass]="[applyStyle('/create-stadium'), itemsHover()]" (click)="redirect('create-stadium')">Create Stadium</a>
 							</li>
 							<li>
-								<a href="#" class="nav-elems" [ngClass]="applyStyle('/statistics')">Statistics</a>
+								<a href="#" class="nav-elems" [ngClass]="[applyStyle('/statistics'), itemsHover()]">Statistics</a>
 							</li>
 						}
 					</ul>
@@ -87,8 +88,9 @@
 							class="sr-only peer"
 						/>
 						<div
-							class="relative w-12 h-7 bg-gray-200 bg-opacity-80 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-600 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-700"
-						></div>
+							class="relative w-12 h-7 bg-gray-200 bg-opacity-80 rounded-full peer peer-focus:ring-4 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600"
+							[ngClass]="toggleButtonColor()"
+							></div>
 						<span
 							class="ms-3 text-xl py-2.5 px-3 font-medium text-gray-200 dark:text-gray-300"
 							>Dark Mode</span
