@@ -1,10 +1,14 @@
 package com.mlb.mlbportal.services;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +33,7 @@ import com.mlb.mlbportal.repositories.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +47,7 @@ public class UserService {
     private final EmailService emailService;
     private final TeamRepository teamRepository;
     private final PaginationHandlerService paginationHandlerService;
+    private final PictureService pictureService;
 
     @Transactional(readOnly = true)
     public Page<ShowUser> getAllUsers(int page, int size) {
@@ -74,7 +80,7 @@ public class UserService {
 
     @Transactional
     public void deleteAccount(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.getUser(username);
         this.userRepository.delete(user);
     }
 
@@ -109,19 +115,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserRole getUserRole(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.getUser(username);
         return this.authenticationMapper.toUserRole(user);
     }
 
     @Transactional(readOnly = true)
     public Set<TeamSummary> getFavTeamsOfAUser(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.getUser(username);
         return this.teamMapper.toTeamSummarySet(user.getFavTeams());
     }
 
     @Transactional
     public void addFavTeam(String username, String teamName) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.getUser(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         if (!user.getFavTeams().add(team)) {
             throw new TeamAlreadyExistsException();
@@ -132,7 +138,7 @@ public class UserService {
 
     @Transactional
     public void removeFavTeam(String username, String teamName) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.getUser(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         if (!user.getFavTeams().contains(team)) {
             throw new TeamNotFoundException();
@@ -140,5 +146,27 @@ public class UserService {
         user.getFavTeams().remove(team);
         this.userRepository.save(user);
         team.getFavoritedByUsers().remove(user);
+    }
+
+    @Transactional
+    public PictureInfo changeProfilePicture(String username, MultipartFile file) throws IOException {
+        UserEntity user = this.getUser(username);
+        PictureInfo picture = this.pictureService.uploadPicture(file);
+        user.setPicture(picture);
+        this.userRepository.save(user);
+        return picture;
+    }
+
+    @Transactional
+    public ShowUser updateProfile(String username, EditProfileRequest request) {
+        UserEntity user = this.getUser(username);
+        if (request.email() != null) {
+            user.setEmail(request.email());
+        }
+        if (request.password() != null) {
+            user.setPassword(this.passwordEncoder.encode(request.password()));
+        }
+        this.userRepository.save(user);
+        return this.userMapper.toShowUser(user);
     }
 }

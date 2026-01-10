@@ -3,15 +3,11 @@ package com.mlb.mlbportal.controllers;
 import java.security.Principal;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
@@ -55,6 +51,19 @@ public class UserController {
     @GetMapping(value = "/favorites/teams", produces = "application/json")
     public ResponseEntity<Set<TeamSummary>> getFavoriteTeams(Principal principal) {
         return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));
+    }
+
+    @Operation(summary = "Edit the authenticated user's profile", description = "Updates the profile of the authenticated user, allowing them to modify their email and password.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShowUser.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PatchMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<ShowUser> editProfile(Principal principal, @Valid @RequestBody EditProfileRequest request) {
+        return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));
     }
 
     @Operation(summary = "Add a favorite team", description = "Adds a team to the authenticated user's list of favorites.")
