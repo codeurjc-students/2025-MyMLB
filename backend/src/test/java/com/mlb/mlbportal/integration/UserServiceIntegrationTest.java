@@ -1,12 +1,16 @@
 package com.mlb.mlbportal.integration;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -31,19 +36,7 @@ import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.INVALID_CODE;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -135,6 +128,43 @@ class UserServiceIntegrationTest {
         this.userService.deleteAccount(USER1_USERNAME);
 
         assertThatThrownBy(() -> this.userService.getUser(USER1_USERNAME))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should edit the active user's profile correctly")
+    void testEditProfile() {
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        this.userService.updateProfile(USER1_USERNAME, request);
+
+        UserEntity storedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+
+        assertThat(storedUser.getEmail()).isEqualTo(NEW_EMAIL);
+    }
+
+    @Test
+    @DisplayName("Should change the profile picture of the active user successfully")
+    void testUpdateProfilePicture() throws IOException {
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpg", "fake".getBytes());
+        this.userService.changeProfilePicture(USER1_USERNAME, file);
+
+        UserEntity storedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(storedUser.getPicture().getUrl()).contains("test.jpg");
+    }
+
+    @Test
+    @DisplayName("Should delete the current profile picture of the user")
+    void testDeleteProfilePicture() {
+        this.userService.deleteProfilePicture(USER1_USERNAME);
+        UserEntity storedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();
+        assertThat(storedUser.getPicture()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidProfileDeletion() {
+        assertThatThrownBy(() -> this.userService.deleteProfilePicture(UNKNOWN_USER))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User Not Found");
     }

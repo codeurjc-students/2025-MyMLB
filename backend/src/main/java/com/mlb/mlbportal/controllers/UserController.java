@@ -1,9 +1,11 @@
 package com.mlb.mlbportal.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Set;
 
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Users", description = "Operations related to MLB Portal users and their favorite teams")
 @RestController
@@ -64,6 +67,29 @@ public class UserController {
     @PatchMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ShowUser> editProfile(Principal principal, @Valid @RequestBody EditProfileRequest request) {
         return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));
+    }
+
+    @Operation(summary = "Upload a new profile picture", description = "Uploads or updates the profile picture of the active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture successfully uploaded", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid file format", content = @Content)
+    })
+    @PostMapping(value = "/picture", consumes = "multipart/form-data", produces = "application/json")
+    public ResponseEntity<PictureInfo> editProfilePicture(Principal principal, @RequestParam MultipartFile file) throws IOException {
+        return ResponseEntity.ok(this.userService.changeProfilePicture(principal.getName(), file));
+    }
+
+    @Operation(summary = "Delete the profile picture", description = "Deletes the profile picture of the current active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping(value = "/picture", produces = "application/json")
+    public ResponseEntity<AuthResponse> deleteProfilePicture(Principal principal) {
+        this.userService.deleteProfilePicture(principal.getName());
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Picture Deleted"));
     }
 
     @Operation(summary = "Add a favorite team", description = "Adds a team to the authenticated user's list of favorites.")

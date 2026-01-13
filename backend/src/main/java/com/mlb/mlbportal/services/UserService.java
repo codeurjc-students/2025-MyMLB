@@ -158,6 +158,13 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteProfilePicture(String username) {
+        UserEntity user = this.getUser(username);
+        user.setPicture(null);
+        this.userRepository.save(user);
+    }
+
+    @Transactional
     public ShowUser updateProfile(String username, EditProfileRequest request) {
         UserEntity user = this.getUser(username);
         if (request.email() != null) {

@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,20 +12,20 @@ import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import com.mlb.mlbportal.services.uploader.PictureService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -50,6 +51,7 @@ import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -77,6 +79,9 @@ class UserServiceTest {
 
     @Mock
     private PaginationHandlerService paginationHandlerService;
+
+    @Mock
+    private PictureService pictureService;
 
     @InjectMocks
     private UserService userService;
@@ -165,9 +170,9 @@ class UserServiceTest {
     @Test
     @DisplayName("Should delete the user's account successfully")
     void testDeleteAccount() {
-        when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
-        assertThatNoException().isThrownBy(() -> this.userService.deleteAccount(TEST_USER_USERNAME));
-        verify(this.userRepository, times(1)).delete(this.testUser);
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        assertThatNoException().isThrownBy(() -> this.userService.deleteAccount(USER1_USERNAME));
+        verify(this.userRepository, times(1)).delete(this.user1);
     }
 
     @Test
@@ -175,6 +180,63 @@ class UserServiceTest {
     void testDeleteAccountError(){
         when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> this.userService.deleteAccount(UNKNOWN_USER))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should edit the active user's profile correctly")
+    void testEditProfile() {
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        ShowUser user = new ShowUser(USER1_USERNAME, NEW_EMAIL);
+
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.passwordEncoder.encode(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_ENCODED);
+        when(this.userMapper.toShowUser(this.user1)).thenReturn(user);
+
+        ShowUser editedUser = this.userService.updateProfile(USER1_USERNAME, request);
+
+        assertThat(editedUser.email()).isEqualTo(NEW_EMAIL);
+        verify(this.userRepository, times(1)).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidEditProfile() {
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+
+        when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.userService.updateProfile(UNKNOWN_USER, request))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should change the profile picture of the active user successfully")
+    void testUpdateProfilePicture() throws IOException {
+        MultipartFile mockFile = mock(MultipartFile.class);
+        PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.pictureService.uploadPicture(mockFile)).thenReturn(picture);
+
+        PictureInfo result = this.userService.changeProfilePicture(USER1_USERNAME, mockFile);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getUrl()).isEqualTo(picture.getUrl());
+        assertThat(result.getPublicId()).isEqualTo(picture.getPublicId());
+        verify(this.userRepository, times(1)).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidUpdateProfilePicture() {
+        MultipartFile mockFile = mock(MultipartFile.class);
+
+        when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.userService.changeProfilePicture(UNKNOWN_USER, mockFile))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User Not Found");
     }

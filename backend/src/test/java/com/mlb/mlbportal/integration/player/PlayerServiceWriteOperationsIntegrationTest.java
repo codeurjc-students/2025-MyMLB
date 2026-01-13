@@ -121,10 +121,9 @@ class PlayerServiceWriteOperationsIntegrationTest {
     @Test
     @DisplayName("Should upload picture and persist URL + publicId")
     void testUpdatePicture() throws Exception {
-        PositionPlayer player = this.positionPlayerRepository.findByName(PLAYER1_NAME).orElseThrow(PlayerNotFoundException::new);
-
-        MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpg", "fake".getBytes());
         PictureInfo dto = this.playerService.updatePicture(PLAYER1_NAME, file);
+        PositionPlayer player = this.positionPlayerRepository.findByName(PLAYER1_NAME).orElseThrow(PlayerNotFoundException::new);
 
         assertThat(dto.getUrl()).contains("http://fake.cloudinary.com/test.jpg");
         assertThat(dto.getPublicId()).isEqualTo("fake123");
