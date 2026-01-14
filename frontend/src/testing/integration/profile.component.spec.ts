@@ -6,6 +6,7 @@ import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
 import { Router } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { UserService } from '../../app/services/user.service';
 
 describe('Profile Component Integration Test', () => {
 	let fixture: ComponentFixture<ProfileComponent>;
@@ -18,6 +19,8 @@ describe('Profile Component Integration Test', () => {
 	const mockUser: UserRole = {
 		username: 'testUser',
 		roles: ['USER'],
+		email: 'test@gmail.com',
+		password: '123'
 	};
 
 	const mockLogoutResponse: AuthResponse = {
@@ -32,6 +35,7 @@ describe('Profile Component Integration Test', () => {
 			imports: [ProfileComponent],
 			providers: [
 				AuthService,
+				UserService,
 				{ provide: Router, useValue: routerSpy },
 				provideHttpClient(withFetch()),
 				provideHttpClientTesting(),

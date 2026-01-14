@@ -14,7 +14,7 @@ import { UserRole } from '../models/auth/user-role.model';
 export class AuthService {
 	private apiUrl = 'https://localhost:8443/api/v1/auth';
 
-	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
+	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: '', password: '' };
 	private currentUserSubject = new BehaviorSubject<UserRole>(this.defaultGuestUser);
 	public currentUser$ = this.currentUserSubject.asObservable();
 

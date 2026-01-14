@@ -14,7 +14,7 @@ describe('Email Phase Component Integration Tests', () => {
 
 	const apiUrl = 'https://localhost:8443/api/v1/auth';
 	const forgotPasswordUrl = `${apiUrl}/forgot-password`;
-	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: '', password: '' };
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({

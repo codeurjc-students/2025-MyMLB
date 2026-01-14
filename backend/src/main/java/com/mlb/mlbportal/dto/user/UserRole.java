@@ -8,5 +8,9 @@ public record UserRole(
     @NotBlank(message= "Username is required")
     String username,
 
-    List<String> roles
+    List<String> roles,
+
+    String email,
+
+    String password
 ){}

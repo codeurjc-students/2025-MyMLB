@@ -280,7 +280,7 @@ class UserServiceTest {
     @Test
     @DisplayName("getUserRole should successfully return the UserRole object")
     void testGetUserRole() {
-        UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"));
+        UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"), TEST_USER_EMAIL, TEST_USER_PASSWORD);
 
         when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
         when(this.authenticationMapper.toUserRole(this.testUser)).thenReturn(mockUserRole);

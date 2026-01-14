@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../models/user.model';
+import { EditProfileRequest, User } from '../models/user.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
 import { TeamSummary } from '../models/team.model';
 
@@ -14,6 +14,10 @@ export class UserService {
 	public favTeams$ = this.favTeamsSubject.asObservable();
 
 	constructor(private http: HttpClient) {}
+
+	public editProfile(request: EditProfileRequest): Observable<User> {
+		return this.http.patch<User>(this.apiUrl, request, { withCredentials: true });
+	}
 
 	public getFavTeams() {
 		this.http.get<TeamSummary[]>(`${this.apiUrl}/favorites/teams`, { withCredentials: true })

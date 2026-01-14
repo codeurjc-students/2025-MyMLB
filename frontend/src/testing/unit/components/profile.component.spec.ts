@@ -5,11 +5,13 @@ import { AuthResponse } from '../../../app/models/auth/auth-response.model';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserRole } from '../../../app/models/auth/user-role.model';
+import { UserService } from '../../../app/services/user.service';
 
 describe('Profile Component Tests', () => {
 	let component: ProfileComponent;
 	let fixture: ComponentFixture<ProfileComponent>;
 	let authServiceSpy: jasmine.SpyObj<AuthService>;
+	let userServiceSpy: jasmine.SpyObj<UserService>;
 	let routerSpy: jasmine.SpyObj<Router>;
 
 	beforeEach(() => {
@@ -18,11 +20,15 @@ describe('Profile Component Tests', () => {
 			'getActiveUser',
 			'deleteAccount'
 		]);
+		const userServiceMock = jasmine.createSpyObj('UserService', [
+			'editProfile'
+		]);
 		const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
 		TestBed.configureTestingModule({
 			imports: [ProfileComponent],
 			providers: [
+				{ provide: UserService, useValue: userServiceMock },
 				{ provide: AuthService, useValue: authServiceMock },
 				{ provide: Router, useValue: routerMock }
 			],
@@ -39,6 +45,8 @@ describe('Profile Component Tests', () => {
 		const mockResponse: UserRole = {
 			username: 'testUser',
 			roles: ['GUEST', 'USER'],
+			email: 'test@gmail.com',
+			password: '123'
 		};
 
 		authServiceSpy.getActiveUser.and.returnValue(of(mockResponse));

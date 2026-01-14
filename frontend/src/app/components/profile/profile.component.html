@@ -1,29 +1,114 @@
-<div class="min-h-screen app-background flex flex-col items-center justify-center gap-8 p-6">
-	<h1 class="text-3xl font-semibold text-blue-600 dark:text-blue-400">
-		{{ username }}
-	</h1>
+<div class="min-h-screen app-background flex flex-col items-center justify-center gap-12 p-6">
 
-	<div class="flex flex-row items-center justify-center gap-5">
-		<app-profile-buttons [content]="'Logout'" (confirm)="openModal('logout')"></app-profile-buttons>
-		<app-profile-buttons [content]="'Delete Account'" (confirm)="openModal('delete')"></app-profile-buttons>
-	</div>
+    <!-- FOTO + WELCOME -->
+    <div class="flex flex-col items-center gap-6">
 
-	@if (activeAction) {
-		<app-remove-confirmation-modal
-			[title]="
-				activeAction === 'logout'
-					? 'Are you sure you want to log out?'
-					: 'Are you sure you want to delete your account?'
-			"
-			[contentMessage]="
-				activeAction === 'logout'
-					? 'You will be signed out of your account and will need to log in again to continue.'
-					: 'Your account will be deleted from the system and this is an irreversible change.'
-			"
-			[buttonContent]="activeAction === 'logout' ? 'Yes, Logout' : 'Yes, Delete'"
-			[isDelete]="activeAction === 'delete'"
-			(confirm)="confirm()"
-			(cancel)="cancel()"
-		></app-remove-confirmation-modal>
-	}
+        <!-- CONTENEDOR FOTO + ICONO EDITAR -->
+        <div class="relative group">
+            <img
+                src="assets/account-avatar.png"
+                alt="Profile picture"
+                class="w-36 h-36 rounded-full object-cover shadow-xl ring-4 ring-white dark:ring-gray-700"
+            />
+
+            <!-- ICONO EDITAR -->
+            <button
+                class="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-md opacity-90 group-hover:opacity-100 transition"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536M9 11l6.232-6.232a2 2 0 112.828 2.828L11.828 13.828a2 2 0 01-1.414.586H7v-3a2 2 0 01.586-1.414z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- TEXTO WELCOME -->
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+            Welcome,
+            <span class="text-blue-600 dark:text-blue-400">{{ username }}</span>
+        </h1>
+    </div>
+
+    <!-- CARD DE INFORMACIÓN DEL PERFIL -->
+    <div class="w-full max-w-lg bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 flex flex-col gap-8">
+
+        <h2 class="text-2xl font-semibold text-blue-600 dark:text-blue-400 text-center">
+            Profile Information
+        </h2>
+
+        <!-- EMAIL -->
+        <div class="flex flex-col gap-2">
+            <label class="text-gray-700 dark:text-gray-300 font-medium">Email</label>
+            <input
+                type="email"
+                [placeholder]="currentEmail"
+                [(ngModel)]="emailInput"
+                class="px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                       bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100
+                       placeholder:text-gray-400 dark:placeholder:text-gray-500
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                       outline-none transition hover:border-blue-400 dark:hover:border-blue-500"
+            />
+        </div>
+
+        <!-- PASSWORD (CAMPO NORMAL) -->
+        <div class="flex flex-col gap-2">
+            <label class="text-gray-700 dark:text-gray-300 font-medium">Password</label>
+            <input
+                type="password"
+                [(ngModel)]="passwordInput"
+                placeholder="•••••••••• (new password)"
+                class="px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                       bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100
+                       placeholder:text-gray-400 dark:placeholder:text-gray-500
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                       outline-none transition hover:border-blue-400 dark:hover:border-blue-500"
+            />
+        </div>
+
+        <!-- BOTÓN GUARDAR -->
+        <button
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-md transition"
+            (click)="editProfile()"
+        >
+            Save Changes
+        </button>
+    </div>
+
+    <!-- BOTONES DE LOGOUT / DELETE -->
+    <div class="flex flex-row items-center justify-center gap-5">
+        <app-profile-buttons
+            [content]="'Logout'"
+            (confirm)="openModal('logout')"
+        ></app-profile-buttons>
+
+        <app-profile-buttons
+            [content]="'Delete Account'"
+            (confirm)="openModal('delete')"
+        ></app-profile-buttons>
+    </div>
+
+    <!-- MODALES -->
+    @if (activeAction) {
+        <app-remove-confirmation-modal
+            [title]="
+                activeAction === 'logout'
+                    ? 'Are you sure you want to log out?'
+                    : 'Are you sure you want to delete your account?'
+            "
+            [contentMessage]="
+                activeAction === 'logout'
+                    ? 'You will be signed out of your account and will need to log in again to continue.'
+                    : 'Your account will be deleted from the system and this is an irreversible change.'
+            "
+            [buttonContent]="activeAction === 'logout' ? 'Yes, Logout' : 'Yes, Delete'"
+            [isDelete]="activeAction === 'delete'"
+            (confirm)="confirm()"
+            (cancel)="cancel()"
+        ></app-remove-confirmation-modal>
+    }
+
+    @if (sucess) {
+        <app-success-modal [message]="successMessage" (continue)="sucess = false"></app-success-modal>
+    }
 </div>

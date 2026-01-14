@@ -17,7 +17,7 @@ describe('Register Component Integration Test', () => {
 	const apiUrl = 'https://localhost:8443/api/v1/auth';
 	const registerUrl = `${apiUrl}/register`;
 	const meUrl = `${apiUrl}/me`;
-	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: 'test@gmail.com', password: '123' };
 
 	beforeEach(() => {
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);

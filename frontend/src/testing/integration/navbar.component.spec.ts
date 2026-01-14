@@ -63,6 +63,8 @@ describe('Navigation Bar Integration Tests', () => {
 		const response: UserRole = {
 			username: 'testUser',
 			roles: ['GUEST', 'USER'],
+			email: 'test@gmail.com',
+			password: '123'
 		};
 
 		const req = httpMock.expectOne(authUrl);
@@ -77,6 +79,8 @@ describe('Navigation Bar Integration Tests', () => {
 		const response: UserRole = {
 			username: '',
 			roles: ['GUEST'],
+			email: 'test@gmail.com',
+			password: '123'
 		};
 
 		const req = httpMock.expectOne(authUrl);
