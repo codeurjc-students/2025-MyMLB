@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.services.uploader.PictureService;
@@ -242,6 +243,30 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Should return the information of the profile of the active user")
+    void testGetUserProfile() {
+        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
+
+        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userMapper.toProfileDTO(this.user1)).thenReturn(dto);
+
+        ProfileDTO result = this.userService.getUserProfile(USER1_USERNAME);
+        assertThat(result.email()).isEqualTo(USER1_EMAIL);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidGetProfile() {
+        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
+
+        when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.userService.getUserProfile(UNKNOWN_USER))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
     @DisplayName("resetPassword should return true and update the password with a valid code")
     void testResetPasswordWithValidToken() {
         when(this.emailService.getCode(VALID_CODE)).thenReturn(Optional.of(this.validCode));
@@ -280,7 +305,7 @@ class UserServiceTest {
     @Test
     @DisplayName("getUserRole should successfully return the UserRole object")
     void testGetUserRole() {
-        UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"), TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"));
 
         when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
         when(this.authenticationMapper.toUserRole(this.testUser)).thenReturn(mockUserRole);
@@ -292,7 +317,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return the favourite teams of a certain user")
+    @DisplayName("Should return the favorite teams of a certain user")
     void testGetFavTeams() {
         when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
         Set<TeamSummary> expectedResult = new HashSet<>(List.of(this.teamSummaries.get(0), this.teamSummaries.get(1)));

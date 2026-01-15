@@ -44,9 +44,7 @@ describe('Profile Component Tests', () => {
 	it('should retrieve the active user on init', () => {
 		const mockResponse: UserRole = {
 			username: 'testUser',
-			roles: ['GUEST', 'USER'],
-			email: 'test@gmail.com',
-			password: '123'
+			roles: ['GUEST', 'USER']
 		};
 
 		authServiceSpy.getActiveUser.and.returnValue(of(mockResponse));

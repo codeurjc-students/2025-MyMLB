@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
@@ -167,13 +168,19 @@ public class UserService {
     @Transactional
     public ShowUser updateProfile(String username, EditProfileRequest request) {
         UserEntity user = this.getUser(username);
-        if (request.email() != null) {
+        if (request.email() != null && !request.email().isEmpty()) {
             user.setEmail(request.email());
         }
-        if (request.password() != null) {
+        if (request.password() != null && !request.password().isEmpty()) {
             user.setPassword(this.passwordEncoder.encode(request.password()));
         }
         this.userRepository.save(user);
         return this.userMapper.toShowUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileDTO getUserProfile(String username) {
+        UserEntity user = this.getUser(username);
+        return this.userMapper.toProfileDTO(user);
     }
 }

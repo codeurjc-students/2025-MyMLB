@@ -103,6 +103,20 @@ class UserControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/users/profile should retrieve the profile information of the active user")
+    void testGetUserProfile() {
+        String url = USERS_PATH + "/profile";
+        given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("email", is(USER1_EMAIL));
+    }
+
+    @Test
     @DisplayName("GET /api/v1/users/favorites/teams should return all favorite teams of te active user")
     void testGetFavTeams() {
         given()

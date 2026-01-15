@@ -8,12 +8,16 @@ import { EditProfileRequest } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { SuccessModalComponent } from "../success-modal/success-modal.component";
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
+import { LoadingModalComponent } from "../modal/loading-modal/loading-modal.component";
+import { Pictures } from '../../models/pictures.model';
 
 @Component({
 	selector: 'app-profile',
 	standalone: true,
 	templateUrl: './profile.component.html',
-	imports: [CommonModule, FormsModule, RemoveConfirmationModalComponent, ProfileButtons, SuccessModalComponent],
+	imports: [CommonModule, FormsModule, RemoveConfirmationModalComponent, ProfileButtons, SuccessModalComponent, ErrorModalComponent, LoadingModalComponent],
 })
 export class ProfileComponent implements OnInit {
 	private authService = inject(AuthService);
@@ -21,26 +25,49 @@ export class ProfileComponent implements OnInit {
 	private userService = inject(UserService);
 
 	public username = '';
+
+	public error = false;
 	public errorMessage = '';
 	public activeAction: 'logout' | 'delete' | null = null;
 
-	public editRequest!: EditProfileRequest;
+	public editRequest: EditProfileRequest = {};
+	public pictureSrc: Pictures | null = null;
 	public emailInput = '';
 	public passwordInput = '';
 
 	public currentEmail = '';
+	public oldEmail = '';
 
 	public sucess = false;
 	public successMessage = '';
+
+	public loading = false;
 
 	ngOnInit(): void {
 		this.authService.getActiveUser().subscribe({
 			next: (response) => {
 				this.username = response.username;
-				this.currentEmail = response.email;
-				this.passwordInput = response.password;
 			},
-			error: () => (this.errorMessage = 'Unexpected error while retrieving the user'),
+			error: () => {
+				this.error = true;
+				this.errorMessage = 'Unexpected error while retrieving the user';
+			}
+		});
+
+		this.retrieveProfileData();
+	}
+
+	private retrieveProfileData() {
+		this.userService.getUserProfile().subscribe({
+			next: (response) => {
+				this.currentEmail = response.email;
+				this.oldEmail = response.email;
+				this.pictureSrc = response.picture;
+			},
+			error: (_) => {
+				this.error = true;
+				this.errorMessage = 'Unexpected error while retrieving the profile data';
+			}
 		});
 	}
 
@@ -79,9 +106,58 @@ export class ProfileComponent implements OnInit {
 			next: (_) => {
 				this.sucess = true;
 				this.successMessage = 'Profile Updated!';
-				this.currentEmail = this.editRequest.email;
+				this.currentEmail = (this.editRequest.email === null || this.editRequest.email === undefined) ? this.oldEmail : this.editRequest.email;
+				this.emailInput = '';
+				this.passwordInput = '';
 			},
-			error: (_) => this.errorMessage = 'Invalid format for some of the fields entered'
+			error: (_) => {
+				this.error = true;
+				this.errorMessage = 'Invalid format for some of the fields entered';
+			}
+		});
+	}
+
+	public handleProfilePicture(event: Event): void {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) {
+			const file = input.files[0];
+
+			if (file.type !== 'image/webp') {
+				this.error = true;
+				this.errorMessage = 'Only .webp images are allowed';
+				this.loading = false;
+				return;
+			}
+			this.changeProfilePicture(file);
+		}
+	}
+
+	public getPictureUrl() {
+		if (this.pictureSrc === null) {
+			return 'assets/account-avatar.png';
+		}
+		return this.pictureSrc.url;
+	}
+
+	private changeProfilePicture(file: File) {
+		if (file.type !== 'image/webp') {
+			this.error = true;
+			this.errorMessage = 'Only .webp images are allowed';
+			return;
+		}
+
+		this.loading = true;
+		this.userService.editProfilePicture(file).pipe(finalize(() => this.loading = false)).subscribe({
+			next: (response) => {
+				this.sucess = true;
+				this.successMessage = 'Picture uploaded successfully';
+				this.pictureSrc = response;
+				this.userService.setProfilePicture(response.url);
+			},
+			error: (_) => {
+				this.error = true;
+				this.errorMessage = 'An error occurred trying to upload the picture';
+			}
 		});
 	}
 }

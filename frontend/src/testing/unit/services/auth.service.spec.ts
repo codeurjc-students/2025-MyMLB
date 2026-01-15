@@ -14,7 +14,7 @@ describe('Auth Service Tests', () => {
     let authService: AuthService;
     let httpMock: HttpTestingController;
 
-    const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: '', password: '' };
+    const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -61,9 +61,7 @@ describe('Auth Service Tests', () => {
         it('should successfully return the active user', () => {
             const mockUserRole: UserRole = {
                 username: 'testUser',
-                roles: ['USER'],
-				email: 'test@gamil.com',
-				password: '123'
+                roles: ['USER']
             };
 
             authService.getActiveUser().subscribe((response) => {
@@ -99,7 +97,7 @@ describe('Auth Service Tests', () => {
     // Login Tests
     describe('Login User', () => {
         let loginUrl: string;
-        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'], email: 'test@gmail.com', password: '123' };
+        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'] };
         const mockLoginRequest: LoginRequest = { username: 'testUser', password: 'test' };
         const mockLoginResponse: AuthResponse = { status: 'SUCCESS', message: 'Auth successful. Tokens are created in cookie.' };
 
@@ -154,7 +152,7 @@ describe('Auth Service Tests', () => {
 
         beforeEach(() => {
             logoutUrl = `${authService['apiUrl']}/logout`;
-            authService['currentUserSubject'].next({ username: 'testUser', roles: ['USER'], email: 'test@gmail.com', password: '123' });
+            authService['currentUserSubject'].next({ username: 'testUser', roles: ['USER'] });
         });
 
         it('should successfully logout the user and update status to GUEST', () => {

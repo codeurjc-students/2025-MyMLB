@@ -3,6 +3,7 @@ package com.mlb.mlbportal.mappers;
 import java.util.Collection;
 import java.util.List;
 
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,6 +15,8 @@ public interface UserMapper {
     ShowUser toShowUser(UserEntity user);
     
     List<ShowUser> toShowUsers(Collection<UserEntity> users);
+
+    ProfileDTO toProfileDTO(UserEntity user);
 
     @Mapping(target= "id", ignore=true)
     @Mapping(target= "name", ignore=true)

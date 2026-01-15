@@ -17,7 +17,7 @@ describe('New Password Phase Integration Tests', () => {
 	const apiUrl = 'https://localhost:8443/api/v1/auth';
 	const resetPasswordUrl = `${apiUrl}/reset-password`;
 	const meUrl = `${apiUrl}/me`;
-	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: 'test@gmail.com', password: '123' };
+	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);

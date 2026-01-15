@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.Set;
 
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,17 @@ public class UserController {
     @GetMapping(produces = "application/json")
     public ResponseEntity<Page<ShowUser>> getUsers(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
         return ResponseEntity.ok(this.userService.getAllUsers(page, size));
+    }
+
+    @Operation(summary = "Get the profile of the active user", description = "Retrieves the information displayed at the profile of the active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProfileDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/profile", produces = "application/json")
+    public ResponseEntity<ProfileDTO> getUserProfile(Principal principal) {
+        return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));
     }
 
     @Operation(summary = "Get favorite teams of a user", description = "Returns the list of favorite MLB teams for the authenticated user.")

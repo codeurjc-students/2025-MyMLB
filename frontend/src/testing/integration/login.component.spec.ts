@@ -17,7 +17,7 @@ describe("Login Component Integration Test", () => {
     const apiUrl = "https://localhost:8443/api/v1/auth";
     const loginUrl = `${apiUrl}/login`;
     const meUrl = `${apiUrl}/me`;
-    const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'], email: '', password: '' };
+    const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
     beforeEach(() => {
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -67,7 +67,7 @@ describe("Login Component Integration Test", () => {
         const meReq = httpMock.expectOne(meUrl);
         expect(meReq.request.method).toBe('GET');
 
-        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'], email: 'test@gmail.com', password: '123' };
+        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'] };
         meReq.flush(mockUserRole);
 
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);

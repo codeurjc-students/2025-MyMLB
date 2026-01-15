@@ -18,9 +18,7 @@ describe('Profile Component Integration Test', () => {
 
 	const mockUser: UserRole = {
 		username: 'testUser',
-		roles: ['USER'],
-		email: 'test@gmail.com',
-		password: '123'
+		roles: ['USER']
 	};
 
 	const mockLogoutResponse: AuthResponse = {
