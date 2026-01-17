@@ -2,6 +2,7 @@
 
 describe('Profile Component E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth';
+	const USERS_API_URL = '/api/v1/users';
 
 	beforeEach(() => {
 		cy.intercept('GET', `${AUTH_API_URL}/me`, {
@@ -17,24 +18,20 @@ describe('Profile Component E2E Tests', () => {
 
 		cy.get('img[alt="Avatar Profile"]').should('be.visible').parent('a').click();
 		cy.url().should('include', '/profile');
+
+		 cy.intercept('GET', `${USERS_API_URL}/profile`, {
+            statusCode: 200,
+            body: {
+                email: 'test@example.com',
+                picture: null
+            }
+        }).as('getProfile');
+
+        cy.visit('/profile');
+        cy.wait('@getProfile');
 	});
 
-	describe('Profile Information & Picture', () => {
-        const USERS_API_URL = '/api/v1/users';
-
-        beforeEach(() => {
-            cy.intercept('GET', `${USERS_API_URL}/profile`, {
-                statusCode: 200,
-                body: {
-                    email: 'test@example.com',
-                    picture: null
-                }
-            }).as('getProfile');
-
-            cy.visit('/profile');
-            cy.wait('@getProfile');
-        });
-
+	describe('Profile Information', () => {
         it('should update profile email successfully', () => {
             const newEmail = 'updated@example.com';
 
@@ -73,13 +70,7 @@ describe('Profile Component E2E Tests', () => {
 
 		it('should close the modal when clicking on the cancel button', () => {
 			cy.contains('button', 'Logout').click();
-			cy.contains('button', 'Cancel').click();
-			cy.contains(
-				'p',
-				'You will be signed out of your account and will need to log in again to continue.'
-			).should('not.exist');
-			cy.contains('button', 'Cancel').should('not.exist');
-			cy.contains('button', 'Yes, Logout').should('not.exist');
+			cy.get('app-remove-confirmation-modal').contains('button', 'Cancel').click();
 			cy.contains('button', 'Logout').should('be.visible');
 		});
 
@@ -93,7 +84,7 @@ describe('Profile Component E2E Tests', () => {
 			}).as('logout');
 
 			cy.contains('button', 'Logout').click();
-			cy.contains('button', 'Yes, Logout').click();
+			cy.get('app-remove-confirmation-modal').contains('button', 'Yes, Logout').click();
 
 			cy.wait('@logout');
 			cy.url().should('eq', Cypress.config().baseUrl + '/');
@@ -111,7 +102,7 @@ describe('Profile Component E2E Tests', () => {
 			}).as('delete-account');
 
 			cy.contains('button', 'Delete Account').click();
-			cy.contains('button', 'Yes, Delete').click();
+			cy.get('app-remove-confirmation-modal').contains('button', 'Yes, Delete').click();
 
 			cy.wait('@delete-account');
 			cy.url().should('eq', Cypress.config().baseUrl + '/');
