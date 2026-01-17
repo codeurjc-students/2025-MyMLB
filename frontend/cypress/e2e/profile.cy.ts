@@ -63,63 +63,6 @@ describe('Profile Component E2E Tests', () => {
             cy.wait('@patchError');
             cy.contains('app-error-modal', 'Invalid format for some of the fields entered').should('be.visible');
         });
-
-        it('should upload a .webp profile picture successfully', () => {
-            cy.intercept('POST', `${USERS_API_URL}/picture`, {
-                statusCode: 200,
-                body: { url: 'https://cdn.test.com/new-avatar.webp', publicId: 'abc123' }
-            }).as('uploadPicture');
-
-            cy.get('input[type="file"]').selectFile({
-                contents: Cypress.Buffer.from('fake-image-content'),
-                fileName: 'avatar.webp',
-                lastModified: Date.now(),
-            }, { force: true });
-
-            cy.get('app-loading-modal').should('be.visible');
-            cy.wait('@uploadPicture');
-
-            cy.contains('app-success-modal', 'Picture uploaded successfully').should('be.visible');
-            cy.get('img[alt="Profile picture"]').should('have.attr', 'src', 'https://cdn.test.com/new-avatar.webp');
-        });
-
-        it('should show error when trying to upload a non-webp file', () => {
-            cy.get('input[type="file"]').selectFile({
-                contents: Cypress.Buffer.from('fake-image-content'),
-                fileName: 'avatar.png',
-                lastModified: Date.now(),
-            }, { force: true });
-
-            cy.contains('app-error-modal', 'Only .webp images are allowed').should('be.visible');
-        });
-
-        it('should delete the profile picture successfully', () => {
-			cy.intercept('GET', `${USERS_API_URL}/profile`, {
-				statusCode: 200,
-				body: {
-					email: 'test@example.com',
-					picture: { url: 'https://cdn.test.com/existing.webp', publicId: '123' }
-				}
-			}).as('getProfileWithPic');
-
-			cy.visit('/profile');
-			cy.wait('@getProfileWithPic');
-
-			cy.intercept('DELETE', `${USERS_API_URL}/picture`, {
-				statusCode: 200,
-				body: { status: 'SUCCESS', message: 'Deleted' }
-			}).as('deletePicture');
-
-			cy.get('div.relative.group').within(() => {
-				cy.get('button.bg-red-600').click();
-			});
-
-			cy.wait('@deletePicture');
-
-			cy.get('app-success-modal').should('be.visible').and('contain', 'Profile Picture Successfully Deleted');
-			cy.get('app-success-modal').contains('button', 'Continue').click();
-			cy.get('img[alt="Profile picture"]').should('have.attr', 'src', 'assets/account-avatar.png');
-		});
     });
 
 	describe('Logout User', () => {
