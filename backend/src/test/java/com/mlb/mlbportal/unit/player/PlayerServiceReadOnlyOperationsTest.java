@@ -155,7 +155,7 @@ class PlayerServiceReadOnlyOperationsTest {
     @DisplayName("Should return the position player by its name")
     void testFindPositionPlayerByName() {
         PositionPlayer player = this.positionPlayers.getFirst();
-        when(this.playerRepository.findByName(PLAYER1_NAME)).thenReturn(Optional.of(player));
+        when(this.playerRepository.findByNameOrThrow(PLAYER1_NAME)).thenReturn(player);
         when(this.positionPlayerMapper.toPositionPlayerDTO(player)).thenReturn(this.positionPlayerDTOs.getFirst());
 
         assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER1_NAME));
@@ -168,7 +168,7 @@ class PlayerServiceReadOnlyOperationsTest {
     @DisplayName("Should return the pitcher by its name")
     void testFindPitcherByName() {
         Pitcher pitcher = this.pitchers.getFirst();
-        when(this.playerRepository.findByName(PLAYER3_NAME)).thenReturn(Optional.of(pitcher));
+        when(this.playerRepository.findByNameOrThrow(PLAYER3_NAME)).thenReturn(pitcher);
         when(this.pitcherMapper.toPitcherDTO(pitcher)).thenReturn(this.pitcherDTOs.getFirst());
 
         assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER3_NAME));
@@ -180,7 +180,7 @@ class PlayerServiceReadOnlyOperationsTest {
     @Test
     @DisplayName("Should throw PlayerNotFoundException for an unknown player")
     void testFindUnknownPlayerByName() {
-        when(this.playerRepository.findByName(UNKNOWN_PLAYER)).thenReturn(Optional.empty());
+        when(this.playerRepository.findByNameOrThrow(UNKNOWN_PLAYER)).thenCallRealMethod();
 
         assertThatThrownBy(() -> this.playerService.findPlayerByName(UNKNOWN_PLAYER))
                 .isInstanceOf(PlayerNotFoundException.class)
@@ -219,7 +219,7 @@ class PlayerServiceReadOnlyOperationsTest {
         Team team = this.teams.getFirst();
         Page<PositionPlayerSummaryDTO> mockPage = new PageImpl<>(this.positionSummaryDTOs, PageRequest.of(0, 10), this.positionSummaryDTOs.size());
 
-        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+        when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
         when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
         doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.positionPlayers), eq(0), eq(10), any());
 
@@ -241,7 +241,7 @@ class PlayerServiceReadOnlyOperationsTest {
         Team team = this.teams.get(1);
         Page<PitcherSummaryDTO> mockPage = new PageImpl<>(this.pitcherSummaryDTOs, PageRequest.of(0, 10), this.pitcherSummaryDTOs.size());
 
-        when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+        when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
         when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
         doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.pitchers), eq(0), eq(10), any());
 

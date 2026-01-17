@@ -3,6 +3,7 @@ package com.mlb.mlbportal.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,11 +14,18 @@ import com.mlb.mlbportal.models.enums.League;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    public List<Team> findByLeagueAndDivision(League league, Division division);
-    public Optional<Team> findByName(String name);
-    public Optional<Team> findByAbbreviation(String abbreviation);
-    public List<Team> findByNameContainingIgnoreCase(String input);
+    List<Team> findByLeagueAndDivision(League league, Division division);
+
+    Optional<Team> findByName(String name);
+
+    default Team findByNameOrThrow(String name) {
+        return this.findByName(name).orElseThrow(TeamNotFoundException::new);
+    }
+
+    Optional<Team> findByAbbreviation(String abbreviation);
+
+    List<Team> findByNameContainingIgnoreCase(String input);
 
     @Query("SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) < 24")
-    public List<Team> findAvailableTeams();
+    List<Team> findAvailableTeams();
 }

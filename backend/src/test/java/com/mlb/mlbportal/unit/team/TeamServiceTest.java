@@ -125,7 +125,7 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should return the team")
     void testGetTeam() {
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
         assertThatNoException().isThrownBy(() -> this.teamService.getTeam(TEST_TEAM1_NAME));
 
         Team result = this.teamService.getTeam(TEST_TEAM1_NAME);
@@ -136,7 +136,7 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should throw TeamNotFound for an unknown player")
     void testGetUnknownTeam() {
-        when(this.teamRepository.findByName(UNKNOWN_TEAM)).thenReturn(Optional.empty());
+        when(this.teamRepository.findByNameOrThrow(UNKNOWN_TEAM)).thenCallRealMethod();
 
         assertThatThrownBy(() -> this.teamService.getTeam(UNKNOWN_TEAM))
                 .isInstanceOf(TeamNotFoundException.class)
@@ -217,7 +217,7 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should return the general info of a team with updated players and pitchers")
     void testGetTeamInfo() {
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(team1));
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(team1);
 
         List<PositionPlayer> mockPositionPlayers = BuildMocksFactory.buildPositionPlayers(List.of(team1, team2, team3));
         List<Pitcher> mockPitchers = BuildMocksFactory.buildPitchers(List.of(team1, team2, team3));
@@ -225,7 +225,7 @@ class TeamServiceTest {
         when(this.playerService.getUpdatedPositionPlayersOfTeam(team1)).thenReturn(mockPositionPlayers);
         when(this.playerService.getUpdatedPitchersOfTeam(team1)).thenReturn(mockPitchers);
 
-        TeamInfoDTO expected = this.mockTeamInfoDTOs.get(0);
+        TeamInfoDTO expected = this.mockTeamInfoDTOs.getFirst();
         when(this.teamMapper.toTeamInfoDTO(team1)).thenReturn(expected);
 
         TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
@@ -239,13 +239,13 @@ class TeamServiceTest {
         assertThat(team1.getPositionPlayers()).isNotEmpty();
         assertThat(team1.getPitchers()).isNotEmpty();
 
-        verify(this.teamRepository).findByName(TEST_TEAM1_NAME);
+        verify(this.teamRepository).findByNameOrThrow(TEST_TEAM1_NAME);
     }
 
     @Test
     @DisplayName("Should throw TeamNotFoundException for a non existent team")
     void testGetNonExistentTeamInfo() {
-        when(this.teamRepository.findByName(any())).thenReturn(Optional.empty());
+        when(this.teamRepository.findByNameOrThrow(any())).thenCallRealMethod();
 
         assertThatThrownBy(() -> this.teamService.getTeamInfo(UNKNOWN_TEAM))
                 .isInstanceOf(TeamNotFoundException.class)
@@ -255,7 +255,7 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should update city, championship and info when provided")
     void testUpdateTeamBasicFields() {
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
 
         UpdateTeamRequest request = new UpdateTeamRequest(
                 Optional.of("City1"),
@@ -279,8 +279,8 @@ class TeamServiceTest {
         Stadium stadium = new Stadium();
         stadium.setName("New Stadium");
 
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
-        when(this.stadiumRepository.findByName("New Stadium")).thenReturn(Optional.of(stadium));
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
+        when(this.stadiumRepository.findByNameOrThrow("New Stadium")).thenReturn(stadium);
 
         UpdateTeamRequest request = new UpdateTeamRequest(
                 Optional.empty(),
@@ -302,8 +302,8 @@ class TeamServiceTest {
         stadium.setName(OCCUPIED_STADIUM);
         stadium.setTeam(new Team());
 
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
-        when(this.stadiumRepository.findByName(OCCUPIED_STADIUM)).thenReturn(Optional.of(stadium));
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
+        when(this.stadiumRepository.findByNameOrThrow(OCCUPIED_STADIUM)).thenReturn(stadium);
 
         UpdateTeamRequest request = new UpdateTeamRequest(
                 Optional.empty(),
@@ -322,7 +322,7 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should throw TeamNotFoundException when team does not exist")
     void testUpdateTeamWithUnknownTeam() {
-        when(this.teamRepository.findByName(UNKNOWN_TEAM)).thenReturn(Optional.empty());
+        when(this.teamRepository.findByNameOrThrow(UNKNOWN_TEAM)).thenCallRealMethod();
 
         UpdateTeamRequest request = new UpdateTeamRequest(
                 Optional.of("City"),
@@ -341,8 +341,8 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should throw StadiumNotFoundException when stadium does not exist")
     void testUpdateTeamWithUnknownStadium() {
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.team1));
-        when(this.stadiumRepository.findByName(UNKNOWN_STADIUM)).thenReturn(Optional.empty());
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
+        when(this.stadiumRepository.findByNameOrThrow(UNKNOWN_STADIUM)).thenCallRealMethod();
 
         UpdateTeamRequest request = new UpdateTeamRequest(
                 Optional.empty(),

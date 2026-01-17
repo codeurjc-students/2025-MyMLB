@@ -22,7 +22,6 @@ import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.RosterFullException;
-import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.player.PitcherMapper;
 import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
@@ -55,10 +54,6 @@ public class PlayerService {
     private final PictureService pictureService;
 
     private final PaginationHandlerService paginationHandlerService;
-
-    private Player getPlayer(String name) {
-        return this.playerRepository.findByName(name).orElseThrow(PlayerNotFoundException::new);
-    }
 
     @Transactional
     public Page<PlayerDTO> getAllPlayers(int page, int size) {
@@ -118,7 +113,7 @@ public class PlayerService {
 
     @Transactional
     public PlayerDTO findPlayerByName(String name) {
-        Player player = this.getPlayer(name);
+        Player player = this.playerRepository.findByNameOrThrow(name);
         this.saveIfStatsChanged(player);
         return (player instanceof PositionPlayer pp)
                 ? positionPlayerMapper.toPositionPlayerDTO(pp)
@@ -151,14 +146,14 @@ public class PlayerService {
 
     @Transactional
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        Team team = this.teamRepository.findByNameOrThrow(teamName);
         List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(team);
         return this.paginationHandlerService.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);
     }
 
     @Transactional
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        Team team = this.teamRepository.findByNameOrThrow(teamName);
         List<Pitcher> players = this.getUpdatedPitchersOfTeam(team);
         return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);
     }
@@ -190,7 +185,7 @@ public class PlayerService {
         if (this.playerRepository.findByName(playerName).isPresent()) {
             throw new PlayerAlreadyExistsException();
         }
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        Team team = this.teamRepository.findByNameOrThrow(teamName);
         this.checkTeamAvailability(team);
         return team;
     }
@@ -225,7 +220,7 @@ public class PlayerService {
 
     @Transactional
     public PictureInfo updatePicture(String playerName, MultipartFile file) throws IOException {
-        Player player = this.getPlayer(playerName);
+        Player player = this.playerRepository.findByNameOrThrow(playerName);
         PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
         player.setPicture(pictureInfo);
         this.playerRepository.save(player);
@@ -239,7 +234,7 @@ public class PlayerService {
      */
     private void updateTeamIfNeeded(Player player, Optional<String> teamNameOpt) {
         teamNameOpt.ifPresent(newTeamName -> {
-            Team newTeam = teamRepository.findByName(newTeamName).orElseThrow(TeamNotFoundException::new);
+            Team newTeam = this.teamRepository.findByNameOrThrow(newTeamName);
             this.checkTeamAvailability(newTeam);
             Team oldTeam = player.getTeam();
             if (oldTeam != null) {
@@ -261,7 +256,7 @@ public class PlayerService {
 
     @Transactional
     public void updatePositionPlayer(String playerName, EditPositionPlayerRequest request) {
-        PositionPlayer player = this.positionPlayerRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);
+        PositionPlayer player = this.positionPlayerRepository.findByNameOrThrow(playerName);
 
         request.playerNumber().ifPresent(player::setPlayerNumber);
         request.position().ifPresent(player::setPosition);
@@ -279,7 +274,7 @@ public class PlayerService {
 
     @Transactional
     public void updatePitcher(String playerName, EditPitcherRequest request) {
-        Pitcher player = this.pitcherRepository.findByName(playerName).orElseThrow(PlayerNotFoundException::new);
+        Pitcher player = this.pitcherRepository.findByNameOrThrow(playerName);
 
         request.playerNumber().ifPresent(player::setPlayerNumber);
         request.position().ifPresent(player::setPosition);
@@ -303,8 +298,8 @@ public class PlayerService {
      */
     @Transactional
     public PlayerDTO deletePlayer(String playerName) {
-        Player player = this.getPlayer(playerName);
-        Team team = this.teamRepository.findByName(player.getTeam().getName()).orElseThrow(TeamNotFoundException::new);
+        Player player = this.playerRepository.findByNameOrThrow(playerName);
+        Team team = this.teamRepository.findByNameOrThrow(player.getTeam().getName());
 
         PlayerDTO result = switch (player) {
             case PositionPlayer p -> {
