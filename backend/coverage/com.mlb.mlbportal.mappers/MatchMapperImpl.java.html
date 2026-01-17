@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-12-08T17:06:02+0100&quot;,
+    date = &quot;2026-01-17T19:03:57+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -49,16 +49,16 @@ import org.springframework.stereotype.Component;
 
     @Override
     public List&lt;MatchDTO&gt; toMatchDTOList(List&lt;Match&gt; matchList) {
-<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if ( matchList == null ) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if ( matchList == null ) {</span>
 <span class="nc" id="L53">            return null;</span>
         }
 
-<span class="fc" id="L56">        List&lt;MatchDTO&gt; list = new ArrayList&lt;MatchDTO&gt;( matchList.size() );</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        for ( Match match : matchList ) {</span>
-<span class="fc" id="L58">            list.add( toMatchDTO( match ) );</span>
-<span class="fc" id="L59">        }</span>
+<span class="nc" id="L56">        List&lt;MatchDTO&gt; list = new ArrayList&lt;MatchDTO&gt;( matchList.size() );</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for ( Match match : matchList ) {</span>
+<span class="nc" id="L58">            list.add( toMatchDTO( match ) );</span>
+<span class="nc" id="L59">        }</span>
 
-<span class="fc" id="L61">        return list;</span>
+<span class="nc" id="L61">        return list;</span>
     }
 
     @Override

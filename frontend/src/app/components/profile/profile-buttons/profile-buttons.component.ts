@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ProfileButtons {
 	@Input() content! : string;
+	@Input() buttonType!: 'delete' | 'logout';
 	@Output() confirm = new EventEmitter<void>();
 
 	public handleConfirm() {

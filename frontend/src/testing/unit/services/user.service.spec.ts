@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { UserService } from '../../../app/services/user.service';
-import { User } from '../../../app/models/user.model';
+import { Profile, User } from '../../../app/models/user.model';
 import { MockFactory } from '../../utils/mock-factory';
 import { skip } from 'rxjs';
 import { TeamSummary } from '../../../app/models/team.model';
@@ -34,6 +34,73 @@ describe('User Service Tests', () => {
 	afterEach(() => {
 		httpMock.verify();
 	});
+
+    it('should fetch user profile data', () => {
+        const mockProfile: Profile = {
+            email: 'test@test.com',
+            picture: { url: 'http://image.com', publicId: '123' }
+        };
+
+        service.getUserProfile().subscribe((profile) => {
+            expect(profile).toEqual(mockProfile);
+        });
+
+        const req = httpMock.expectOne(`${apiUrl}/profile`);
+        expect(req.request.method).toBe('GET');
+        expect(req.request.withCredentials).toBeTrue();
+        req.flush(mockProfile);
+    });
+
+    it('should update user profile', () => {
+        const updateRequest = { email: 'new@test.com', password: 'password123' };
+        const mockUserResponse = MockFactory.buildUserMocks('user1', 'new@test.com');
+
+        service.editProfile(updateRequest).subscribe((user) => {
+            expect(user).toEqual(mockUserResponse);
+        });
+
+        const req = httpMock.expectOne(apiUrl);
+        expect(req.request.method).toBe('PATCH');
+        expect(req.request.body).toEqual(updateRequest);
+        expect(req.request.withCredentials).toBeTrue();
+        req.flush(mockUserResponse);
+    });
+
+    it('should upload a profile picture', () => {
+        const mockFile = new File([''], 'avatar.png', { type: 'image/png' });
+        const mockPictureResponse = { url: 'http://cloudinary.com/new', publicId: 'new_id' };
+
+        service.editProfilePicture(mockFile).subscribe((response) => {
+            expect(response).toEqual(mockPictureResponse);
+        });
+
+        const req = httpMock.expectOne(`${apiUrl}/picture`);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body instanceof FormData).toBeTrue();
+        req.flush(mockPictureResponse);
+    });
+
+    it('should delete the profile picture', () => {
+        const mockResponse = MockFactory.buildMockResponse('SUCCESS', 'Picture deleted');
+
+        service.deleteProfilePicture().subscribe((response) => {
+            expect(response).toEqual(mockResponse);
+        });
+
+        const req = httpMock.expectOne(`${apiUrl}/picture`);
+        expect(req.request.method).toBe('DELETE');
+        req.flush(mockResponse);
+    });
+
+    it('should update the profile picture observable via setProfilePicture', () => {
+        const newUrl = 'http://new-image-url.com/photo.jpg';
+
+        service.profilePicture$.pipe(skip(1)).subscribe((url) => {
+            expect(url).toBe(newUrl);
+        });
+
+        service.setProfilePicture(newUrl);
+    });
 
 	it('should fetch all favorite teams of the active user', () => {
 		service.favTeams$.pipe(skip(1)).subscribe((favs) => {

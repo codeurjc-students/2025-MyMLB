@@ -11,7 +11,6 @@ import static com.mlb.mlbportal.utils.TestConstants.NEW_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
-import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;

@@ -119,16 +119,18 @@ export class ProfileComponent implements OnInit {
 
 	public handleProfilePicture(event: Event): void {
 		const input = event.target as HTMLInputElement;
+
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
-
 			if (file.type !== 'image/webp') {
 				this.error = true;
 				this.errorMessage = 'Only .webp images are allowed';
 				this.loading = false;
+				input.value = '';
 				return;
 			}
 			this.changeProfilePicture(file);
+			input.value = '';
 		}
 	}
 
@@ -157,6 +159,21 @@ export class ProfileComponent implements OnInit {
 			error: (_) => {
 				this.error = true;
 				this.errorMessage = 'An error occurred trying to upload the picture';
+			}
+		});
+	}
+
+	public removeProfilePicture() {
+		this.userService.deleteProfilePicture().subscribe({
+			next: (_) => {
+				this.sucess = true;
+				this.successMessage = 'Profile Picture Successfully Deleted';
+				this.pictureSrc = null;
+				this.userService.setProfilePicture('');
+			},
+			error: (_) => {
+				this.error = true;
+				this.errorMessage = 'An error ocurr while deleting the profile picture';
 			}
 		});
 	}

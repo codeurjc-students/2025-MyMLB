@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-12-08T17:06:02+0100&quot;,
+    date = &quot;2026-01-17T19:03:57+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -184,16 +184,16 @@ import org.springframework.stereotype.Component;
 
     @Override
     public List&lt;TeamInfoDTO&gt; toTeamInfoDTOList(List&lt;Team&gt; teamList) {
-<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if ( teamList == null ) {</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if ( teamList == null ) {</span>
 <span class="nc" id="L188">            return null;</span>
         }
 
-<span class="fc" id="L191">        List&lt;TeamInfoDTO&gt; list = new ArrayList&lt;TeamInfoDTO&gt;( teamList.size() );</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        for ( Team team : teamList ) {</span>
-<span class="fc" id="L193">            list.add( toTeamInfoDTO( team ) );</span>
-<span class="fc" id="L194">        }</span>
+<span class="nc" id="L191">        List&lt;TeamInfoDTO&gt; list = new ArrayList&lt;TeamInfoDTO&gt;( teamList.size() );</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        for ( Team team : teamList ) {</span>
+<span class="nc" id="L193">            list.add( toTeamInfoDTO( team ) );</span>
+<span class="nc" id="L194">        }</span>
 
-<span class="fc" id="L196">        return list;</span>
+<span class="nc" id="L196">        return list;</span>
     }
 
     protected PositionPlayerSummaryDTO positionPlayerToPositionPlayerSummaryDTO(PositionPlayer positionPlayer) {

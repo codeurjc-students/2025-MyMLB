@@ -12,5 +12,5 @@ export type EditProfileRequest = {
 
 export type Profile = {
 	email: string,
-	picture: Pictures
+	picture: Pictures | null;
 }

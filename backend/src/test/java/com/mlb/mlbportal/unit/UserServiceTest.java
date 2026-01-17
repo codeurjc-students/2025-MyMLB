@@ -257,8 +257,6 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw UserNotFoundException if the username does not exists")
     void testInvalidGetProfile() {
-        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
-
         when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> this.userService.getUserProfile(UNKNOWN_USER))

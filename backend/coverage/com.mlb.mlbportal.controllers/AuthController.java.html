@@ -2,14 +2,10 @@
 
 import java.security.Principal;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -48,10 +44,10 @@ public class AuthController {
     })
     @GetMapping(&quot;/me&quot;)
     public ResponseEntity&lt;UserRole&gt; getActiveUser(Principal principal) {
-<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (principal == null) {</span>
-<span class="nc" id="L52">            throw new AuthenticationCredentialsNotFoundException(&quot;User Not Authenticated&quot;);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (principal == null) {</span>
+<span class="nc" id="L48">            throw new AuthenticationCredentialsNotFoundException(&quot;User Not Authenticated&quot;);</span>
         }
-<span class="fc" id="L54">        return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));</span>
+<span class="fc" id="L50">        return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));</span>
     }
 
     @Operation(summary = &quot;User login&quot;, description = &quot;Authenticates the user and returns JWT tokens (access and refresh).&quot;, responses = {
@@ -61,7 +57,7 @@ public class AuthController {
     @PostMapping(&quot;/login&quot;)
     public ResponseEntity&lt;AuthResponse&gt; login(@Valid @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
-<span class="fc" id="L64">        return this.userLoginService.login(response, loginRequest);</span>
+<span class="fc" id="L60">        return this.userLoginService.login(response, loginRequest);</span>
     }
 
     @Operation(summary = &quot;Register new user&quot;, description = &quot;Creates a new user account in the system.&quot;, responses = {
@@ -71,8 +67,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/register&quot;)
     public ResponseEntity&lt;AuthResponse&gt; register(@Valid @RequestBody RegisterRequest registerRequest) {
-<span class="fc" id="L74">        this.userService.createUser(registerRequest);</span>
-<span class="fc" id="L75">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
+<span class="fc" id="L70">        this.userService.createUser(registerRequest);</span>
+<span class="fc" id="L71">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;User registered successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Refresh JWT token&quot;, description = &quot;Generates new JWT tokens using the refresh token stored in cookies.&quot;, responses = {
@@ -83,7 +79,7 @@ public class AuthController {
     public ResponseEntity&lt;AuthResponse&gt; refreshToken(
             @Parameter(description = &quot;Refresh token (from cookie named RefreshToken)&quot;) @CookieValue(name = &quot;RefreshToken&quot;, required = false) String refreshToken,
             HttpServletResponse response) {
-<span class="nc" id="L86">        return userLoginService.refresh(response, refreshToken);</span>
+<span class="nc" id="L82">        return userLoginService.refresh(response, refreshToken);</span>
     }
 
     @Operation(summary = &quot;User logout&quot;, description = &quot;Clears authentication cookies and invalidates session tokens.&quot;, responses = {
@@ -91,7 +87,20 @@ public class AuthController {
     })
     @PostMapping(&quot;/logout&quot;)
     public ResponseEntity&lt;AuthResponse&gt; logOut(HttpServletResponse response) {
-<span class="fc" id="L94">        return this.userLoginService.logout(response);</span>
+<span class="fc" id="L90">        return this.userLoginService.logout(response);</span>
+    }
+
+    @Operation(summary = &quot;Delete the user's account&quot;, description = &quot;Delete the account of the active user from the system.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Account successfully removed&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @DeleteMapping(produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; deleteAccount(Principal principal) {
+<span class="fc" id="L102">        this.userService.deleteAccount(principal.getName());</span>
+<span class="fc" id="L103">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Account Successfully Deleted&quot;));</span>
     }
 
     @Operation(summary = &quot;Request password recovery&quot;, description = &quot;Sends a recovery email to the user containing a reset link or verification code.&quot;, responses = {
@@ -101,8 +110,8 @@ public class AuthController {
     })
     @PostMapping(&quot;/forgot-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-<span class="fc" id="L104">        this.emailService.sendEmail(request.email());</span>
-<span class="fc" id="L105">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
+<span class="fc" id="L113">        this.emailService.sendEmail(request.email());</span>
+<span class="fc" id="L114">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Recovery email sent successfully&quot;));</span>
     }
 
     @Operation(summary = &quot;Reset user password&quot;, description = &quot;Allows the user to set a new password using a valid recovery code.&quot;, responses = {
@@ -111,11 +120,11 @@ public class AuthController {
     })
     @PostMapping(&quot;/reset-password&quot;)
     public ResponseEntity&lt;AuthResponse&gt; resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-<span class="fc" id="L114">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (success) {</span>
-<span class="fc" id="L116">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
+<span class="fc" id="L123">        boolean success = this.userService.resetPassword(request.code(), request.newPassword());</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (success) {</span>
+<span class="fc" id="L125">            return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Password restored&quot;));</span>
         }
-<span class="nc" id="L118">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
+<span class="nc" id="L127">        return ResponseEntity.badRequest().body(new AuthResponse(Status.FAILURE, &quot;Invalid or expired code&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
