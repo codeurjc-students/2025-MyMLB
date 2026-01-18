@@ -1,11 +1,12 @@
-import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from './../../services/auth.service';
+import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
 import { filter } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -18,12 +19,18 @@ export class NavbarComponent implements OnInit {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter<void> = new EventEmitter();
 
+	private authService = inject(AuthService);
+	private userService = inject(UserService);
+	private backgroundService = inject(BackgroundColorService);
+	private selectTeamService = inject(SelectedTeamService);
+	private router = inject(Router);
+
 	private selectedTeamAbbr: string | undefined = '';
 	public roles: string[] = ['GUEST'];
 	public username: string = '';
 	public currentRoute = '';
 	public navBarStyleClass = '';
-	constructor(private authService: AuthService, private backgroundService: BackgroundColorService, private selectTeamService: SelectedTeamService, private router: Router) {}
+	public profilePicture = '';
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
@@ -50,6 +57,8 @@ export class NavbarComponent implements OnInit {
 			this.selectedTeamAbbr = team?.teamStats.abbreviation;
 			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
 		});
+
+		this.userService.profilePicture$.subscribe((url) => this.profilePicture = url);
 	}
 
 	ngOnDestroy() {
@@ -105,5 +114,9 @@ export class NavbarComponent implements OnInit {
 				this.router.navigate(['create-player']);
 				break;
 		}
+	}
+
+	public getProfilePicture() {
+		return (this.profilePicture === '') ? 'assets/account-avatar.png' : this.profilePicture;
 	}
 }

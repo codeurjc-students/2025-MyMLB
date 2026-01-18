@@ -16,8 +16,6 @@ import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
-import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -65,12 +63,12 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public Team getTeam(String teamName) {
-        return this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        return this.teamRepository.findByNameOrThrow(teamName);
     }
 
     @Transactional
     public TeamInfoDTO getTeamInfo(String teamName) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        Team team = this.teamRepository.findByNameOrThrow(teamName);
         TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
         
         List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);
@@ -144,7 +142,7 @@ public class TeamService {
 
     @Transactional
     public void updateTeam(String teamName, UpdateTeamRequest request) {
-        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
+        Team team = this.teamRepository.findByNameOrThrow(teamName);
 
         request.city().ifPresent(newCity -> {
             String updatedName = team.getName().replace(team.getCity(), newCity);
@@ -154,7 +152,7 @@ public class TeamService {
         request.newChampionship().ifPresent(team.getChampionships()::addLast);
         request.newInfo().ifPresent(team::setGeneralInfo);
         request.newStadiumName().ifPresent(stadiumName -> {
-            Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+            Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
             if (stadium.getTeam() != null) {
                 throw new IllegalArgumentException("The stadium " + stadium.getName() + " already has a team");
             }

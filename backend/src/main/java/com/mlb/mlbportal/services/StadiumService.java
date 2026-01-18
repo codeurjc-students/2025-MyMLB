@@ -14,7 +14,6 @@ import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
-import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
@@ -46,19 +45,19 @@ public class StadiumService {
 
     @Transactional(readOnly = true)
     public StadiumInitDTO findStadiumByName(String name) {
-        Stadium stadium = this.stadiumRepository.findByName(name).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(name);
         return this.stadiumMapper.toStadiumInitDTO(stadium);
     }
 
     @Transactional(readOnly = true)
     public List<PictureInfo> getStadiumPictures(String stadiumName) {
-        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         return stadium.getPictures();
     }
 
     @Transactional
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
-        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
 
         if (stadium.getPictures().size() >= 5) {
             throw new IllegalArgumentException("Maximum amount of pictures reached");
@@ -73,7 +72,7 @@ public class StadiumService {
 
     @Transactional
     public void deletePicture(String stadiumName, String publicId) {
-        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         if (stadium.getPictures().size() <= 1) {
             throw new LastPictureDeletionException("Cannot delete the last picture of a stadium");
         }

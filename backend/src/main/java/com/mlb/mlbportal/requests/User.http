@@ -18,6 +18,33 @@ Accept: application/json
 POST https://localhost:8443/api/v1/users/favorites/teams/Team1
 Accept: application/json
 
+### Edit all fields of the user's profile
+PATCH https://localhost:8443/api/v1/users
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "televisor"
+}
+
+### Edit only one field of the user's profile
+PATCH https://localhost:8443/api/v1/users
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com"
+}
+
+### Edit profile with invalid email pattern
+PATCH https://localhost:8443/api/v1/users
+Content-Type: application/json
+
+{
+  "email": "bad_email",
+  "password": "televisor"
+}
+
+
 ### Remove a Favorite Team
 DELETE https://localhost:8443/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json

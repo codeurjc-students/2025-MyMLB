@@ -6,12 +6,19 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.player.Pitcher;
 
 @Repository
 public interface PitcherRepository extends JpaRepository<Pitcher, Long> {
-    public Optional<Pitcher> findByName(String name);
-    public List<Pitcher> findByTeamOrderByNameAsc(Team team);
-    public List<Pitcher> findByNameContainingIgnoreCase(String input);
+    Optional<Pitcher> findByName(String name);
+
+    default Pitcher findByNameOrThrow(String name) {
+        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);
+    }
+
+    List<Pitcher> findByTeamOrderByNameAsc(Team team);
+
+    List<Pitcher> findByNameContainingIgnoreCase(String input);
 }

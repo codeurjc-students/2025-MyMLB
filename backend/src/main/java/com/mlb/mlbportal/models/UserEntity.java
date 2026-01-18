@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -35,6 +36,8 @@ public class UserEntity {
     private String name;
 
     private String password;
+
+    private PictureInfo picture;
 
     @OneToOne(mappedBy="user", cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;

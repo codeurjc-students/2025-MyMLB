@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
@@ -24,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = &quot;Users&quot;, description = &quot;Operations related to MLB Portal users and their favorite teams&quot;)
 @RestController
@@ -46,6 +46,17 @@ public class UserController {
 <span class="fc" id="L46">        return ResponseEntity.ok(this.userService.getAllUsers(page, size));</span>
     }
 
+    @Operation(summary = &quot;Get the profile of the active user&quot;, description = &quot;Retrieves the information displayed at the profile of the active user.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the information&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ProfileDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/profile&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;ProfileDTO&gt; getUserProfile(Principal principal) {
+<span class="fc" id="L57">        return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));</span>
+    }
+
     @Operation(summary = &quot;Get favorite teams of a user&quot;, description = &quot;Returns the list of favorite MLB teams for the authenticated user.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved favorite teams&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TeamSummary.class))),
@@ -54,7 +65,43 @@ public class UserController {
     })
     @GetMapping(value = &quot;/favorites/teams&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Set&lt;TeamSummary&gt;&gt; getFavoriteTeams(Principal principal) {
-<span class="fc" id="L57">        return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));</span>
+<span class="fc" id="L68">        return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));</span>
+    }
+
+    @Operation(summary = &quot;Edit the authenticated user's profile&quot;, description = &quot;Updates the profile of the authenticated user, allowing them to modify their email and password.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Profile successfully updated&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = ShowUser.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input data&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @PatchMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;ShowUser&gt; editProfile(Principal principal, @Valid @RequestBody EditProfileRequest request) {
+<span class="fc" id="L81">        return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));</span>
+    }
+
+    @Operation(summary = &quot;Upload a new profile picture&quot;, description = &quot;Uploads or updates the profile picture of the active user.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture successfully uploaded&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Player not found&quot;, content = @Content),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid file format&quot;, content = @Content)
+    })
+    @PostMapping(value = &quot;/picture&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;PictureInfo&gt; editProfilePicture(Principal principal, @RequestParam MultipartFile file) throws IOException {
+<span class="fc" id="L92">        return ResponseEntity.ok(this.userService.changeProfilePicture(principal.getName(), file));</span>
+    }
+
+    @Operation(summary = &quot;Delete the profile picture&quot;, description = &quot;Deletes the profile picture of the current active user.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture deleted successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @DeleteMapping(value = &quot;/picture&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; deleteProfilePicture(Principal principal) {
+<span class="fc" id="L103">        this.userService.deleteProfilePicture(principal.getName());</span>
+<span class="fc" id="L104">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Picture Deleted&quot;));</span>
     }
 
     @Operation(summary = &quot;Add a favorite team&quot;, description = &quot;Adds a team to the authenticated user's list of favorites.&quot;)
@@ -67,8 +114,8 @@ public class UserController {
     @PostMapping(value = &quot;/favorites/teams/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; addFavoriteTeam(Principal principal,
             @PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L70">        this.userService.addFavTeam(principal.getName(), teamName);</span>
-<span class="fc" id="L71">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Succesfullly Added&quot;));</span>
+<span class="fc" id="L117">        this.userService.addFavTeam(principal.getName(), teamName);</span>
+<span class="fc" id="L118">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Succesfullly Added&quot;));</span>
     }
 
     @Operation(summary = &quot;Remove a favorite team&quot;, description = &quot;Removes a team from the authenticated user's list of favorites.&quot;)
@@ -81,8 +128,8 @@ public class UserController {
     @DeleteMapping(value = &quot;/favorites/teams/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; removeFavoriteTeam(Principal principal,
             @PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L84">        this.userService.removeFavTeam(principal.getName(), teamName);</span>
-<span class="fc" id="L85">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Successfully Remove&quot;));</span>
+<span class="fc" id="L131">        this.userService.removeFavTeam(principal.getName(), teamName);</span>
+<span class="fc" id="L132">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Successfully Remove&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

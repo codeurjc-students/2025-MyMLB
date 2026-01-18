@@ -11,11 +11,23 @@ html {
 }
 
 .app-button {
-	@apply text-lg py-2 font-semibold text-white rounded-lg shadow-md bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800 hover:brightness-125 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer dark:from-indigo-900 dark:via-blue-900 dark:to-sky-800;
+	@apply relative inline-flex items-center justify-center px-6 py-3 gap-2 overflow-hidden font-semibold text-white cursor-pointer transition-all duration-300 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-700 rounded-xl shadow-lg hover:from-sky-600 hover:to-indigo-800 hover:shadow-sky-500/20 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-sky-400;
 }
 
 .app-success-button {
-	@apply text-sm font-medium text-white bg-green-600 rounded-lg shadow-md cursor-pointer hover:bg-green-700 hover:shadow-lg transition focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500
+    @apply relative inline-flex items-center justify-center px-6 py-3 gap-2 overflow-hidden font-semibold text-white cursor-pointer transition-all duration-300 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl shadow-lg hover:from-emerald-600 hover:to-green-700 hover:shadow-green-500/20 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400;
+}
+
+.app-red-buttons {
+	@apply relative inline-flex items-center justify-center px-6 py-3 gap-2 overflow-hidden font-semibold text-white cursor-pointer transition-all duration-300 bg-gradient-to-r from-red-500 to-rose-600 rounded-xl shadow-lg hover:from-red-600 hover:to-rose-700 hover:shadow-red-500/20 hover:scale-105 active:scale-95;
+}
+
+.app-button-bright {
+	@apply absolute inset-0 transition-transform duration-500 ease-out translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-0;
+}
+
+.app-button-texts {
+	@apply relative z-10 text-base lg:text-lg tracking-wide;
 }
 
 .app-page-titles {
@@ -27,7 +39,7 @@ html {
 }
 
 .text-inputs {
-	@apply w-full px-4 py-2 border border-gray-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-700 placeholder:text-gray-500;
+	@apply w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 text-gray-900 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition hover:border-blue-400 dark:hover:border-blue-500;
 }
 
 .team-logo-container {

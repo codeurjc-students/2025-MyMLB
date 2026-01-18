@@ -61,7 +61,7 @@ describe('Auth Service Tests', () => {
         it('should successfully return the active user', () => {
             const mockUserRole: UserRole = {
                 username: 'testUser',
-                roles: ['USER'],
+                roles: ['USER']
             };
 
             authService.getActiveUser().subscribe((response) => {

@@ -120,7 +120,7 @@ class StadiumServiceTest {
         Stadium stadium = this.stadiums.getFirst();
         StadiumInitDTO dto = this.stadiumDtos.getFirst();
 
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
         when(this.stadiumMapper.toStadiumInitDTO(stadium)).thenReturn(dto);
         
         assertThatNoException().isThrownBy(() -> {
@@ -135,7 +135,7 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should throw StadiumNotFoundException for a non existent stadium")
     void testNonExistentStadium() {
-        when(this.stadiumRepository.findByName(any())).thenReturn(Optional.empty());
+        when(this.stadiumRepository.findByNameOrThrow(any())).thenCallRealMethod();
         assertThatThrownBy(() -> this.stadiumService.findStadiumByName(UNKNOWN_TEAM))
             .isInstanceOf(StadiumNotFoundException.class)
             .hasMessageContaining("Stadium Not Found");
@@ -148,7 +148,7 @@ class StadiumServiceTest {
         PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
         stadium.getPictures().add(picture);
 
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
         List<PictureInfo> result = this.stadiumService.getStadiumPictures(STADIUM1_NAME);
 
         assertThat(result).hasSize(1).containsExactlyElementsOf(List.of(picture));
@@ -161,7 +161,7 @@ class StadiumServiceTest {
         MultipartFile mockFile = mock(MultipartFile.class);
         PictureInfo pictureInfo = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
 
-        when(this.stadiumRepository.findByName(stadium.getName())).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(stadium.getName())).thenReturn(stadium);
         when(this.pictureService.uploadPicture(mockFile)).thenReturn(pictureInfo);
 
         PictureInfo result = this.stadiumService.addPicture(stadium.getName(), mockFile);
@@ -175,7 +175,7 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should throw exception when stadium already has 5 pictures")
     void testAddPictureLimitExceeded() {
-        Stadium stadium = this.stadiums.get(0);
+        Stadium stadium = this.stadiums.getFirst();
         stadium.getPictures().addAll(List.of(
             new PictureInfo("", ""),
             new PictureInfo("", ""),
@@ -185,7 +185,7 @@ class StadiumServiceTest {
         ));
 
         MultipartFile mockFile = mock(MultipartFile.class);
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
 
         assertThatThrownBy(() -> this.stadiumService.addPicture(STADIUM1_NAME, mockFile))
             .isInstanceOf(IllegalArgumentException.class)
@@ -220,7 +220,7 @@ class StadiumServiceTest {
     void testDeletePicture() {
         Stadium stadium = this.deletePictureTestSetUp(true);
 
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
 
         this.stadiumService.deletePicture(STADIUM1_NAME, "fake123");
 
@@ -233,7 +233,7 @@ class StadiumServiceTest {
     void testDeleteLastPicture() {
         Stadium stadium = this.deletePictureTestSetUp(false);
 
-        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(stadium));
+        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
 
         assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "fake123"))
                 .isInstanceOf(LastPictureDeletionException.class)

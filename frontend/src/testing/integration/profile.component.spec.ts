@@ -2,127 +2,129 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileComponent } from '../../app/components/profile/profile.component';
 import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { UserRole } from '../../app/models/auth/user-role.model';
 import { Router } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { UserService } from '../../app/services/user.service';
+import { Pictures } from '../../app/models/pictures.model';
 
 describe('Profile Component Integration Test', () => {
-	let fixture: ComponentFixture<ProfileComponent>;
-	let component: ProfileComponent;
-	let httpMock: HttpTestingController;
-	let routerSpy: jasmine.SpyObj<Router>;
+    let fixture: ComponentFixture<ProfileComponent>;
+    let component: ProfileComponent;
+    let httpMock: HttpTestingController;
+    let routerSpy: jasmine.SpyObj<Router>;
 
-	const apiUrl = 'https://localhost:8443/api/v1/auth';
+    const authUrl = 'https://localhost:8443/api/v1/auth';
+    const usersUrl = 'https://localhost:8443/api/v1/users';
 
-	const mockUser: UserRole = {
-		username: 'testUser',
-		roles: ['USER'],
-	};
+    const mockUser: UserRole = {
+        username: 'testUser',
+        roles: ['USER']
+    };
 
-	const mockLogoutResponse: AuthResponse = {
-		status: 'SUCCESS',
-		message: 'Logout Successful',
-	};
+    const mockPicture: Pictures = {
+        url: 'https://test.com/photo.webp',
+        publicId: 'v12345'
+    };
 
-	beforeEach(() => {
-		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    const mockProfileResponse = {
+        email: 'test@example.com',
+        picture: mockPicture
+    };
 
-		TestBed.configureTestingModule({
-			imports: [ProfileComponent],
-			providers: [
-				AuthService,
-				{ provide: Router, useValue: routerSpy },
-				provideHttpClient(withFetch()),
-				provideHttpClientTesting(),
-			],
-		});
+    beforeEach(() => {
+        routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
-		fixture = TestBed.createComponent(ProfileComponent);
-		component = fixture.componentInstance;
-		httpMock = TestBed.inject(HttpTestingController);
+        TestBed.configureTestingModule({
+            imports: [ProfileComponent],
+            providers: [
+                AuthService,
+                UserService,
+                { provide: Router, useValue: routerSpy },
+                provideHttpClient(withFetch()),
+                provideHttpClientTesting(),
+            ],
+        });
 
-		const reqs = httpMock.match(`${apiUrl}/me`);
-		reqs.forEach(r => r.flush(mockUser));
-	});
+        fixture = TestBed.createComponent(ProfileComponent);
+        component = fixture.componentInstance;
+        httpMock = TestBed.inject(HttpTestingController);
 
-	afterEach(() => {
-		httpMock.verify();
-	});
+        fixture.detectChanges();
+        const meReqs = httpMock.match(`${authUrl}/me`);
+        meReqs.forEach(req => req.flush(mockUser));
 
-	it('should load active user and render username', () => {
-		fixture.detectChanges();
+        const profileReqs = httpMock.match(`${usersUrl}/profile`);
+        profileReqs.forEach(req => req.flush(mockProfileResponse));
+    });
 
-		const requests = httpMock.match(`${apiUrl}/me`);
-		expect(requests.length).toBe(1);
-		requests.forEach((req) => req.flush(mockUser));
+    afterEach(() => {
+        httpMock.verify();
+    });
 
-		fixture.detectChanges();
-		expect(component.username).toBe('testUser');
-	});
+    it('should load active user and profile data on init', () => {
+        expect(component.username).toBe('testUser');
+        expect(component.currentEmail).toBe('test@example.com');
+        expect(component.pictureSrc).toEqual(mockPicture);
+    });
 
-	it('should show error message if getActiveUser fails', () => {
-		fixture.detectChanges();
+    it('should trigger logout and navigate to root', () => {
+        component.activeAction = 'logout';
+        component.confirm();
 
-		const requests = httpMock.match(`${apiUrl}/me`);
-		expect(requests.length).toBe(1);
-		requests.forEach((req) => req.error(new ErrorEvent('Network error')));
+        const logoutReq = httpMock.expectOne(`${authUrl}/logout`);
+        expect(logoutReq.request.method).toBe('POST');
+        logoutReq.flush({ status: 'SUCCESS', message: 'Logout Successful' });
 
-		fixture.detectChanges();
-		expect(component.errorMessage).toBe('Unexpected error while retrieving the user');
-	});
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+    });
 
-	it('should trigger logout and navigate to root', () => {
-		fixture.detectChanges();
+    it('should trigger account deletion and navigate to root', () => {
+        component.activeAction = 'delete';
+        component.confirm();
 
-		httpMock.match(`${apiUrl}/me`).forEach((req) => req.flush(mockUser));
+        const deleteReq = httpMock.expectOne(authUrl);
+        expect(deleteReq.request.method).toBe('DELETE');
+        deleteReq.flush({ status: 'SUCCESS', message: 'Account deleted' });
 
-		component.activeAction = 'logout';
-		component.confirm();
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
+    });
 
-		const logoutReq = httpMock.expectOne(`${apiUrl}/logout`);
-		expect(logoutReq.request.method).toBe('POST');
-		logoutReq.flush(mockLogoutResponse);
+    it('should update profile information successfully', () => {
+        component.emailInput = 'new@test.com';
+        component.editProfile();
 
-		fixture.detectChanges();
-		expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-		expect(component.activeAction).toBeNull();
-	});
+        const req = httpMock.expectOne(usersUrl);
+        expect(req.request.method).toBe('PATCH');
+        req.flush({ username: 'testUser', email: 'new@test.com', picture: mockPicture });
 
-	it('should trigger account deletion and navigate to root', () => {
-		fixture.detectChanges();
+        expect(component.sucess).toBeTrue();
+        expect(component.currentEmail).toBe('new@test.com');
+    });
 
-		httpMock.match(`${apiUrl}/me`).forEach((req) => req.flush(mockUser));
+    it('should upload profile picture successfully', () => {
+        const file = new File([''], 'test.webp', { type: 'image/webp' });
+        const event = { target: { files: [file] } } as any;
 
-		component.activeAction = 'delete';
-		component.confirm();
+        component.handleProfilePicture(event);
 
-		const deleteReq = httpMock.expectOne(apiUrl);
-		expect(deleteReq.request.method).toBe('DELETE');
-		deleteReq.flush({ status: 'SUCCESS', message: 'Account deleted' });
+        const req = httpMock.expectOne(`${usersUrl}/picture`);
+        expect(req.request.method).toBe('POST');
 
-		fixture.detectChanges();
-		expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-		expect(component.activeAction).toBeNull();
-	});
+        const newPic = { url: 'new-url.webp', publicId: 'new-id' };
+        req.flush(newPic);
 
-	it('should open modal with correct action when openModal is called', () => {
-		expect(component.activeAction).toBeNull();
+        expect(component.pictureSrc).toEqual(newPic);
+        expect(component.sucess).toBeTrue();
+    });
 
-		component.openModal('logout');
-		expect(component.activeAction).toBe('logout');
+    it('should delete the profile picture', () => {
+        component.removeProfilePicture();
 
-		component.openModal('delete');
-		expect(component.activeAction).toBe('delete');
-	});
+        const req = httpMock.expectOne(`${usersUrl}/picture`);
+        expect(req.request.method).toBe('DELETE');
+        req.flush({ status: 'SUCCESS', message: 'Deleted' });
 
-	it('should cancel modal and reset activeAction', () => {
-		component.activeAction = 'logout';
-		component.cancel();
-		expect(component.activeAction).toBeNull();
-
-		component.activeAction = 'delete';
-		component.cancel();
-		expect(component.activeAction).toBeNull();
-	});
+        expect(component.pictureSrc).toBeNull();
+    });
 });

@@ -1,33 +1,38 @@
 package com.mlb.mlbportal.services;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.dto.user.UserRole;
 import com.mlb.mlbportal.handler.conflict.TeamAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.UserAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
-import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.mappers.AuthenticationMapper;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.mappers.UserMapper;
 import com.mlb.mlbportal.models.PasswordResetToken;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.services.uploader.PictureService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -42,6 +47,7 @@ public class UserService {
     private final EmailService emailService;
     private final TeamRepository teamRepository;
     private final PaginationHandlerService paginationHandlerService;
+    private final PictureService pictureService;
 
     @Transactional(readOnly = true)
     public Page<ShowUser> getAllUsers(int page, int size) {
@@ -51,7 +57,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserEntity getUser(String username) {
-        return this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        return this.userRepository.findByUsernameOrThrow(username);
     }
 
     private boolean existsUser(RegisterRequest registerRequest) {
@@ -74,7 +80,7 @@ public class UserService {
 
     @Transactional
     public void deleteAccount(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         this.userRepository.delete(user);
     }
 
@@ -109,19 +115,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserRole getUserRole(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.authenticationMapper.toUserRole(user);
     }
 
     @Transactional(readOnly = true)
     public Set<TeamSummary> getFavTeamsOfAUser(String username) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.teamMapper.toTeamSummarySet(user.getFavTeams());
     }
 
     @Transactional
     public void addFavTeam(String username, String teamName) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         if (!user.getFavTeams().add(team)) {
             throw new TeamAlreadyExistsException();
@@ -132,7 +138,7 @@ public class UserService {
 
     @Transactional
     public void removeFavTeam(String username, String teamName) {
-        UserEntity user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         if (!user.getFavTeams().contains(team)) {
             throw new TeamNotFoundException();
@@ -140,5 +146,40 @@ public class UserService {
         user.getFavTeams().remove(team);
         this.userRepository.save(user);
         team.getFavoritedByUsers().remove(user);
+    }
+
+    @Transactional
+    public PictureInfo changeProfilePicture(String username, MultipartFile file) throws IOException {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        PictureInfo picture = this.pictureService.uploadPicture(file);
+        user.setPicture(picture);
+        this.userRepository.save(user);
+        return picture;
+    }
+
+    @Transactional
+    public void deleteProfilePicture(String username) {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        user.setPicture(null);
+        this.userRepository.save(user);
+    }
+
+    @Transactional
+    public ShowUser updateProfile(String username, EditProfileRequest request) {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        if (request.email() != null && !request.email().isEmpty()) {
+            user.setEmail(request.email());
+        }
+        if (request.password() != null && !request.password().isEmpty()) {
+            user.setPassword(this.passwordEncoder.encode(request.password()));
+        }
+        this.userRepository.save(user);
+        return this.userMapper.toShowUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileDTO getUserProfile(String username) {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        return this.userMapper.toProfileDTO(user);
     }
 }

@@ -18,9 +18,12 @@ public final class TestConstants {
 
     public static final String UNKNOWN_USER = "anyUser";
 
+    public static final String NEW_EMAIL = "new_email@gmail.com";
+
     public static final String FAV_TEAMS_PATH = "/api/v1/users/favorites/teams";
 
     public static final String BASE_URI = "http://localhost";
+    public static final String USERS_PATH = "/api/v1/users";
     public static final String ME_PATH = "/api/v1/auth/me";
     public static final String LOGIN_PATH = "/api/v1/auth/login";
     public static final String REGISTER_PATH = "/api/v1/auth/register";

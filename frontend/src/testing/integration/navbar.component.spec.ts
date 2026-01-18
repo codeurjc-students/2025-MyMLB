@@ -62,7 +62,7 @@ describe('Navigation Bar Integration Tests', () => {
 	it('should obtain the current active user', () => {
 		const response: UserRole = {
 			username: 'testUser',
-			roles: ['GUEST', 'USER'],
+			roles: ['GUEST', 'USER']
 		};
 
 		const req = httpMock.expectOne(authUrl);
@@ -76,7 +76,7 @@ describe('Navigation Bar Integration Tests', () => {
 	it('should set the role of the active user to GUEST if there is no user authenticated', () => {
 		const response: UserRole = {
 			username: '',
-			roles: ['GUEST'],
+			roles: ['GUEST']
 		};
 
 		const req = httpMock.expectOne(authUrl);

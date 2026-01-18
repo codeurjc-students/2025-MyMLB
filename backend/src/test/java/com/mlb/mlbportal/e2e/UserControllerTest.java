@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,8 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,6 +56,64 @@ class UserControllerTest extends BaseE2ETest {
             .body("page.size", is(10))
             .body("page.totalElements", is(2))
             .body("page.totalPages", is(1));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/v1/users should edit the profile of the active user")
+    void testEditProfile() {
+        given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .contentType(ContentType.JSON)
+                .body(new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD))
+                .when()
+                .patch(USERS_PATH)
+                .then()
+                .statusCode(200)
+                .body("email", equalTo(NEW_EMAIL));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/users/picture should upload the new profile picture of the user")
+    void testChangeProfilePicture() {
+        String url = USERS_PATH + "/picture";
+        given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .multiPart("file", "test.jpg", "fake-image".getBytes(), "image/jpg")
+                .when()
+                .post(url)
+                .then()
+                .statusCode(200)
+                .body("url", is("http://fake.cloudinary.com/test.jpg"))
+                .body("publicId", is("fake123"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/users/picture should delete the current profile picture of the user")
+    void testDeleteProfilePicture() {
+        String url = USERS_PATH + "/picture";
+        given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .delete(url)
+                .then()
+                .statusCode(200)
+                .body("status", is(SUCCESS))
+                .body("message", is("Picture Deleted"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/users/profile should retrieve the profile information of the active user")
+    void testGetUserProfile() {
+        String url = USERS_PATH + "/profile";
+        given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("email", is(USER1_EMAIL));
     }
 
     @Test

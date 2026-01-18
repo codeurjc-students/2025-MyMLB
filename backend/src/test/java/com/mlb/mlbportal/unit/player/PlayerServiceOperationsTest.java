@@ -50,7 +50,7 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should calculate and update stats for position player and save if changed")
     void testUpdatePositionPlayerStats() {
-        PositionPlayer player = this.positionPlayers.get(0);
+        PositionPlayer player = this.positionPlayers.getFirst();
         player.setAverage(0.0);
         player.setObp(0.0);
         player.setSlugging(0.0);
@@ -73,7 +73,7 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should calculate and update stats for pitcher and save if changed")
     void testUpdatePitcherStats() {
-        Pitcher pitcher = this.pitchers.get(0);
+        Pitcher pitcher = this.pitchers.getFirst();
         pitcher.setEra(0.0);
         pitcher.setWhip(0.0);
 
@@ -89,7 +89,7 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should not save position player if stats remain unchanged")
     void testNoSaveIfPositionStatsUnchanged() {
-        PositionPlayer player = this.positionPlayers.get(0);
+        PositionPlayer player = this.positionPlayers.getFirst();
 
         double avg = truncate((double) PLAYER1_HITS / PLAYER1_AT_BATS);
         double obp = truncate((double) (PLAYER1_HITS + PLAYER1_WALKS) / (PLAYER1_AT_BATS + PLAYER1_WALKS));
@@ -110,7 +110,7 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should not save pitcher if stats remain unchanged")
     void testNoSaveIfPitcherStatsUnchanged() {
-        Pitcher pitcher = this.pitchers.get(0);
+        Pitcher pitcher = this.pitchers.getFirst();
 
         double era = truncate((double) (PLAYER3_RUNS_ALLOWED * 9) / PLAYER3_INNINGS, 2);
         double whip = truncate((double) (PLAYER3_WALKS + PLAYER3_HITS_ALLOWED) / PLAYER3_INNINGS);
@@ -126,7 +126,7 @@ class PlayerServiceOperationsTest {
     @Test
     @DisplayName("Should assign 0.0 to AVG, OBP, SLG, OPS when atBats and walks are zero")
     void testZeroStatsForEmptyPositionPlayer() {
-        PositionPlayer player = new PositionPlayer("EmptyPlayer", 43, this.teams.get(0), PlayerPositions.CF, 0, 0, 0);
+        PositionPlayer player = new PositionPlayer("EmptyPlayer", 43, this.teams.getFirst(), PlayerPositions.CF, 0, 0, 0);
         player.setDoubles(0);
         player.setTriples(0);
         player.setHomeRuns(0);

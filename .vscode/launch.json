@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MlbPortalApplication<MLBPortal>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.mlb.mlbportal.MlbPortalApplication",
+            "projectName": "MLBPortal",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

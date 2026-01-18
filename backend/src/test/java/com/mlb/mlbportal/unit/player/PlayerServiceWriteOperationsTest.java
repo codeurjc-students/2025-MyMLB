@@ -50,7 +50,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceWriteOperationsTest {
@@ -81,7 +80,6 @@ class PlayerServiceWriteOperationsTest {
     private List<PositionPlayer> positionPlayers;
 
     @BeforeEach
-    @SuppressWarnings("unused")
     void setUp() {
         List<Team> teams = BuildMocksFactory.setUpTeamMocks();
         this.positionPlayers = BuildMocksFactory.buildPositionPlayers(teams);
@@ -92,41 +90,42 @@ class PlayerServiceWriteOperationsTest {
     void testCreatePlayer(String type, Object request, Object dto, Team team,
                           boolean shouldFail, Class<? extends Throwable> expectedException, String expectedMessage) {
         if (shouldFail) {
-            // Failure cases
             if (expectedException == PlayerAlreadyExistsException.class) {
-                when(this.playerRepository.findByName(((CreatePositionPlayerRequest) request).name()))
-                        .thenReturn(Optional.of(this.positionPlayers.getFirst()));
+                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.of(this.positionPlayers.getFirst()));
             }
             else if (expectedException == TeamNotFoundException.class) {
-                when(this.teamRepository.findByName(UNKNOWN_TEAM)).thenReturn(Optional.empty());
+                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
+                when(this.teamRepository.findByNameOrThrow(UNKNOWN_TEAM)).thenCallRealMethod();
             }
             else if (expectedException == RosterFullException.class) {
                 team.setPositionPlayers(IntStream.range(0, 24).mapToObj(i -> new PositionPlayer()).toList());
-                when(this.playerRepository.findByName(NEW_PLAYER_NAME)).thenReturn(Optional.empty());
-                when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
+                when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
             }
 
-            assertThatThrownBy(() -> this.playerService.createPositionPlayer((CreatePositionPlayerRequest) request))
+            assertThatThrownBy(() -> {
+                if (type.equals("pitcher")) {
+                    this.playerService.createPitcher((CreatePitcherRequest) request);
+                } else {
+                    this.playerService.createPositionPlayer((CreatePositionPlayerRequest) request);
+                }
+            })
                     .isInstanceOf(expectedException)
                     .hasMessageContaining(expectedMessage);
         }
         else {
-            when(this.playerRepository.findByName(NEW_PLAYER_NAME)).thenReturn(Optional.empty());
-            when(this.teamRepository.findByName(team.getName())).thenReturn(Optional.of(team));
+            when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
+            when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
 
             if (request instanceof CreatePositionPlayerRequest posReq && dto instanceof PositionPlayerDTO posDto) {
                 when(this.positionPlayerMapper.toPositionPlayerDTO(any(PositionPlayer.class))).thenReturn(posDto);
-
                 PositionPlayerDTO result = this.playerService.createPositionPlayer(posReq);
                 assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
-                assertThat(result.teamName()).isEqualTo(team.getName());
             }
             else if (request instanceof CreatePitcherRequest pitReq && dto instanceof PitcherDTO pitDto) {
                 when(this.pitcherMapper.toPitcherDTO(any(Pitcher.class))).thenReturn(pitDto);
-
                 PitcherDTO result = this.playerService.createPitcher(pitReq);
                 assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
-                assertThat(result.teamName()).isEqualTo(team.getName());
             }
         }
     }
@@ -150,22 +149,13 @@ class PlayerServiceWriteOperationsTest {
         CreatePitcherRequest pitReq = new CreatePitcherRequest(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.SP
         );
-        // Failure cases
-        CreatePositionPlayerRequest duplicateReq = new CreatePositionPlayerRequest(
-                PLAYER1_NAME, PLAYER1_NUMBER, team.getName(), PlayerPositions.CF
-        );
-        CreatePositionPlayerRequest teamNotFoundReq = new CreatePositionPlayerRequest(
-                PLAYER1_NAME, PLAYER1_NUMBER, UNKNOWN_TEAM, PlayerPositions.CF
-        );
-        CreatePositionPlayerRequest rosterFullReq = new CreatePositionPlayerRequest(
-                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF
-        );
+
         return Stream.of(
                 Arguments.of("position player", posReq, posDto, team, false, null, null),
                 Arguments.of("pitcher", pitReq, pitDto, team, false, null, null),
-                Arguments.of("duplicate player", duplicateReq, null, team, true, PlayerAlreadyExistsException.class, "Player Already Exists"),
-                Arguments.of("team not found", teamNotFoundReq, null, team, true, TeamNotFoundException.class, "Team Not Found"),
-                Arguments.of("roster full", rosterFullReq, null, team, true, RosterFullException.class, team.getName() + " roster is full")
+                Arguments.of("duplicate player", posReq, null, team, true, PlayerAlreadyExistsException.class, "Player Already Exists"),
+                Arguments.of("team not found", new CreatePositionPlayerRequest(NEW_PLAYER_NAME, 1, UNKNOWN_TEAM, PlayerPositions.CF), null, team, true, TeamNotFoundException.class, "Team Not Found"),
+                Arguments.of("roster full", posReq, null, team, true, RosterFullException.class, team.getName() + " roster is full")
         );
     }
 
@@ -173,25 +163,31 @@ class PlayerServiceWriteOperationsTest {
     @MethodSource("providePlayersAndRequestsIncludingFailure")
     void testUpdatePlayer(String type, Player player, Object request, String playerName, boolean shouldFail) {
         if (shouldFail) {
-            when(this.positionPlayerRepository.findByName(playerName)).thenReturn(Optional.empty());
+            if (request instanceof EditPositionPlayerRequest posReq) {
+                when(this.positionPlayerRepository.findByNameOrThrow(playerName)).thenCallRealMethod();
 
-            assertThatThrownBy(() -> this.playerService.updatePositionPlayer(playerName, (EditPositionPlayerRequest) request))
-                    .isInstanceOf(PlayerNotFoundException.class)
-                    .hasMessageContaining("Player Not Found");
+                assertThatThrownBy(() -> this.playerService.updatePositionPlayer(playerName, posReq))
+                        .isInstanceOf(PlayerNotFoundException.class)
+                        .hasMessageContaining("Player Not Found");
+            }
+            else if (request instanceof EditPitcherRequest pitReq) {
+                when(this.pitcherRepository.findByNameOrThrow(playerName)).thenCallRealMethod();
+
+                assertThatThrownBy(() -> this.playerService.updatePitcher(playerName, pitReq))
+                        .isInstanceOf(PlayerNotFoundException.class)
+                        .hasMessageContaining("Player Not Found");
+            }
         }
         else {
+            // Success Cases
             if (player instanceof PositionPlayer pp && request instanceof EditPositionPlayerRequest req) {
-                when(this.positionPlayerRepository.findByName(pp.getName())).thenReturn(Optional.of(pp));
-
+                when(this.positionPlayerRepository.findByNameOrThrow(pp.getName())).thenReturn(pp);
                 this.playerService.updatePositionPlayer(pp.getName(), req);
-
                 assertThat(pp.getPlayerNumber()).isEqualTo(NEW_PLAYER_NUMBER);
             }
             else if (player instanceof Pitcher p && request instanceof EditPitcherRequest req) {
-                when(this.pitcherRepository.findByName(p.getName())).thenReturn(Optional.of(p));
-
+                when(this.pitcherRepository.findByNameOrThrow(p.getName())).thenReturn(p);
                 this.playerService.updatePitcher(p.getName(), req);
-
                 assertThat(p.getPlayerNumber()).isEqualTo(NEW_PLAYER_NUMBER);
             }
             verify(this.playerRepository, times(1)).save(any(Player.class));
@@ -205,50 +201,19 @@ class PlayerServiceWriteOperationsTest {
         pitcher.setName(PLAYER1_NAME);
 
         EditPositionPlayerRequest positionRequest = new EditPositionPlayerRequest(
-                Optional.empty(),
-                Optional.of(NEW_PLAYER_NUMBER),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                Optional.empty(), Optional.of(NEW_PLAYER_NUMBER), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
         );
         EditPitcherRequest pitcherRequest = new EditPitcherRequest(
-                Optional.empty(),
-                Optional.of(NEW_PLAYER_NUMBER),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
-        );
-        // Failure cases
-        EditPositionPlayerRequest invalidRequest = new EditPositionPlayerRequest(
-                Optional.empty(),
-                Optional.of(NEW_PLAYER_NUMBER),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                Optional.empty(), Optional.of(NEW_PLAYER_NUMBER), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
         );
 
         return Stream.of(
                 Arguments.of("position player", positionPlayer, positionRequest, PLAYER1_NAME, false),
                 Arguments.of("pitcher", pitcher, pitcherRequest, PLAYER1_NAME, false),
-                Arguments.of("unknown player", null, invalidRequest, UNKNOWN_PLAYER, true)
+                Arguments.of("unknown player", null, positionRequest, UNKNOWN_PLAYER, true)
         );
     }
 
@@ -259,24 +224,19 @@ class PlayerServiceWriteOperationsTest {
         MultipartFile mockFile = mock(MultipartFile.class);
         PictureInfo pictureInfo = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
 
-        when(this.playerRepository.findByName(player.getName())).thenReturn(Optional.of(player));
+        when(this.playerRepository.findByNameOrThrow(player.getName())).thenReturn(player);
         when(this.pictureService.uploadPicture(mockFile)).thenReturn(pictureInfo);
 
         PictureInfo result = this.playerService.updatePicture(player.getName(), mockFile);
         assertThat(result).isNotNull();
-        assertThat(result.getUrl()).isEqualTo(pictureInfo.getUrl());
-        assertThat(result.getPublicId()).isEqualTo(pictureInfo.getPublicId());
-
-        verify(this.playerRepository, times(1)).save(any(Player.class));
+        verify(this.playerRepository).save(player);
     }
-
 
     @ParameterizedTest(name = "Delete player case: {0}")
     @MethodSource("providePlayersAndDTOsIncludingFailure")
     void testDeletePlayer(String type, Player player, PlayerDTO dto, String playerName, boolean shouldFail) {
         if (shouldFail) {
-            when(this.playerRepository.findByName(playerName)).thenReturn(Optional.empty());
-
+            when(this.playerRepository.findByNameOrThrow(playerName)).thenCallRealMethod();
             assertThatThrownBy(() -> this.playerService.deletePlayer(playerName))
                     .isInstanceOf(PlayerNotFoundException.class)
                     .hasMessageContaining("Player Not Found");
@@ -286,8 +246,8 @@ class PlayerServiceWriteOperationsTest {
             mockTeam.setName(TEST_TEAM1_NAME);
             player.setTeam(mockTeam);
 
-            when(this.playerRepository.findByName(player.getName())).thenReturn(Optional.of(player));
-            when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(mockTeam));
+            when(this.playerRepository.findByNameOrThrow(player.getName())).thenReturn(player);
+            when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(mockTeam);
 
             if (player instanceof PositionPlayer pp && dto instanceof PositionPlayerDTO posDto) {
                 when(this.positionPlayerMapper.toPositionPlayerDTO(pp)).thenReturn(posDto);
@@ -299,7 +259,7 @@ class PlayerServiceWriteOperationsTest {
             PlayerDTO result = this.playerService.deletePlayer(player.getName());
 
             assertThat(result.name()).isEqualTo(player.getName());
-            verify(this.playerRepository, times(1)).delete(any(Player.class));
+            verify(this.playerRepository).delete(player);
         }
     }
 

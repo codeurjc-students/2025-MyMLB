@@ -15,7 +15,7 @@ import com.mlb.mlbportal.repositories.UserRepository;
 
 @Service
 public class SecurityUserDetails implements UserDetailsService {
-    private final  UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public SecurityUserDetails(UserRepository userRepository) {
         this.userRepository = userRepository;

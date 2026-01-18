@@ -1,17 +1,16 @@
 package com.mlb.mlbportal.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.user.ShowUser;
@@ -24,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Users", description = "Operations related to MLB Portal users and their favorite teams")
 @RestController
@@ -46,6 +46,17 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getAllUsers(page, size));
     }
 
+    @Operation(summary = "Get the profile of the active user", description = "Retrieves the information displayed at the profile of the active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProfileDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/profile", produces = "application/json")
+    public ResponseEntity<ProfileDTO> getUserProfile(Principal principal) {
+        return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));
+    }
+
     @Operation(summary = "Get favorite teams of a user", description = "Returns the list of favorite MLB teams for the authenticated user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved favorite teams", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamSummary.class))),
@@ -55,6 +66,42 @@ public class UserController {
     @GetMapping(value = "/favorites/teams", produces = "application/json")
     public ResponseEntity<Set<TeamSummary>> getFavoriteTeams(Principal principal) {
         return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));
+    }
+
+    @Operation(summary = "Edit the authenticated user's profile", description = "Updates the profile of the authenticated user, allowing them to modify their email and password.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShowUser.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PatchMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<ShowUser> editProfile(Principal principal, @Valid @RequestBody EditProfileRequest request) {
+        return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));
+    }
+
+    @Operation(summary = "Upload a new profile picture", description = "Uploads or updates the profile picture of the active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture successfully uploaded", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid file format", content = @Content)
+    })
+    @PostMapping(value = "/picture", consumes = "multipart/form-data", produces = "application/json")
+    public ResponseEntity<PictureInfo> editProfilePicture(Principal principal, @RequestParam MultipartFile file) throws IOException {
+        return ResponseEntity.ok(this.userService.changeProfilePicture(principal.getName(), file));
+    }
+
+    @Operation(summary = "Delete the profile picture", description = "Deletes the profile picture of the current active user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @DeleteMapping(value = "/picture", produces = "application/json")
+    public ResponseEntity<AuthResponse> deleteProfilePicture(Principal principal) {
+        this.userService.deleteProfilePicture(principal.getName());
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Picture Deleted"));
     }
 
     @Operation(summary = "Add a favorite team", description = "Adds a team to the authenticated user's list of favorites.")

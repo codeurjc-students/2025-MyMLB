@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers</a> &gt; <span class="el_source">UserMapperImpl.java</span></div><h1>UserMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers;
 
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.models.others.PictureInfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,55 +12,72 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2025-12-08T17:06:02+0100&quot;,
+    date = &quot;2026-01-17T19:03:57+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
-<span class="fc" id="L17">public class UserMapperImpl implements UserMapper {</span>
+<span class="fc" id="L19">public class UserMapperImpl implements UserMapper {</span>
 
     @Override
     public ShowUser toShowUser(UserEntity user) {
-<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if ( user == null ) {</span>
-<span class="nc" id="L22">            return null;</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if ( user == null ) {</span>
+<span class="nc" id="L24">            return null;</span>
         }
 
-<span class="fc" id="L25">        String username = null;</span>
-<span class="fc" id="L26">        String email = null;</span>
+<span class="fc" id="L27">        String username = null;</span>
+<span class="fc" id="L28">        String email = null;</span>
 
-<span class="fc" id="L28">        username = user.getUsername();</span>
-<span class="fc" id="L29">        email = user.getEmail();</span>
+<span class="fc" id="L30">        username = user.getUsername();</span>
+<span class="fc" id="L31">        email = user.getEmail();</span>
 
-<span class="fc" id="L31">        ShowUser showUser = new ShowUser( username, email );</span>
+<span class="fc" id="L33">        ShowUser showUser = new ShowUser( username, email );</span>
 
-<span class="fc" id="L33">        return showUser;</span>
+<span class="fc" id="L35">        return showUser;</span>
     }
 
     @Override
     public List&lt;ShowUser&gt; toShowUsers(Collection&lt;UserEntity&gt; users) {
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if ( users == null ) {</span>
-<span class="nc" id="L39">            return null;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if ( users == null ) {</span>
+<span class="nc" id="L41">            return null;</span>
         }
 
-<span class="fc" id="L42">        List&lt;ShowUser&gt; list = new ArrayList&lt;ShowUser&gt;( users.size() );</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        for ( UserEntity userEntity : users ) {</span>
-<span class="fc" id="L44">            list.add( toShowUser( userEntity ) );</span>
-<span class="fc" id="L45">        }</span>
+<span class="nc" id="L44">        List&lt;ShowUser&gt; list = new ArrayList&lt;ShowUser&gt;( users.size() );</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        for ( UserEntity userEntity : users ) {</span>
+<span class="nc" id="L46">            list.add( toShowUser( userEntity ) );</span>
+<span class="nc" id="L47">        }</span>
 
-<span class="fc" id="L47">        return list;</span>
+<span class="nc" id="L49">        return list;</span>
+    }
+
+    @Override
+    public ProfileDTO toProfileDTO(UserEntity user) {
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if ( user == null ) {</span>
+<span class="nc" id="L55">            return null;</span>
+        }
+
+<span class="fc" id="L58">        String email = null;</span>
+<span class="fc" id="L59">        PictureInfo picture = null;</span>
+
+<span class="fc" id="L61">        email = user.getEmail();</span>
+<span class="fc" id="L62">        picture = user.getPicture();</span>
+
+<span class="fc" id="L64">        ProfileDTO profileDTO = new ProfileDTO( email, picture );</span>
+
+<span class="fc" id="L66">        return profileDTO;</span>
     }
 
     @Override
     public UserEntity toDomain(ShowUser registerRequest) {
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        if ( registerRequest == null ) {</span>
-<span class="nc" id="L53">            return null;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if ( registerRequest == null ) {</span>
+<span class="nc" id="L72">            return null;</span>
         }
 
-<span class="nc" id="L56">        UserEntity userEntity = new UserEntity();</span>
+<span class="nc" id="L75">        UserEntity userEntity = new UserEntity();</span>
 
-<span class="nc" id="L58">        userEntity.setEmail( registerRequest.email() );</span>
-<span class="nc" id="L59">        userEntity.setUsername( registerRequest.username() );</span>
+<span class="nc" id="L77">        userEntity.setEmail( registerRequest.email() );</span>
+<span class="nc" id="L78">        userEntity.setUsername( registerRequest.username() );</span>
 
-<span class="nc" id="L61">        return userEntity;</span>
+<span class="nc" id="L80">        return userEntity;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

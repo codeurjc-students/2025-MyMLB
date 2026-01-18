@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,20 +12,21 @@ import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.mlb.mlbportal.dto.user.EditProfileRequest;
+import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import com.mlb.mlbportal.services.uploader.PictureService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -50,6 +52,7 @@ import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -77,6 +80,9 @@ class UserServiceTest {
 
     @Mock
     private PaginationHandlerService paginationHandlerService;
+
+    @Mock
+    private PictureService pictureService;
 
     @InjectMocks
     private UserService userService;
@@ -165,16 +171,95 @@ class UserServiceTest {
     @Test
     @DisplayName("Should delete the user's account successfully")
     void testDeleteAccount() {
-        when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
-        assertThatNoException().isThrownBy(() -> this.userService.deleteAccount(TEST_USER_USERNAME));
-        verify(this.userRepository, times(1)).delete(this.testUser);
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
+        assertThatNoException().isThrownBy(() -> this.userService.deleteAccount(USER1_USERNAME));
+        verify(this.userRepository, times(1)).delete(this.user1);
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException when the user does not exists")
     void testDeleteAccountError(){
-        when(this.userRepository.findByUsername(UNKNOWN_USER)).thenReturn(Optional.empty());
+        when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenCallRealMethod();
         assertThatThrownBy(() -> this.userService.deleteAccount(UNKNOWN_USER))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should edit the active user's profile correctly")
+    void testEditProfile() {
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        ShowUser user = new ShowUser(USER1_USERNAME, NEW_EMAIL);
+
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
+        when(this.passwordEncoder.encode(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_ENCODED);
+        when(this.userMapper.toShowUser(this.user1)).thenReturn(user);
+
+        ShowUser editedUser = this.userService.updateProfile(USER1_USERNAME, request);
+
+        assertThat(editedUser.email()).isEqualTo(NEW_EMAIL);
+        verify(this.userRepository, times(1)).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidEditProfile() {
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+
+        when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenCallRealMethod();
+
+        assertThatThrownBy(() -> this.userService.updateProfile(UNKNOWN_USER, request))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should change the profile picture of the active user successfully")
+    void testUpdateProfilePicture() throws IOException {
+        MultipartFile mockFile = mock(MultipartFile.class);
+        PictureInfo picture = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
+        when(this.pictureService.uploadPicture(mockFile)).thenReturn(picture);
+
+        PictureInfo result = this.userService.changeProfilePicture(USER1_USERNAME, mockFile);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getUrl()).isEqualTo(picture.getUrl());
+        assertThat(result.getPublicId()).isEqualTo(picture.getPublicId());
+        verify(this.userRepository, times(1)).save(this.user1);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidUpdateProfilePicture() {
+        MultipartFile mockFile = mock(MultipartFile.class);
+
+        when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenCallRealMethod();
+
+        assertThatThrownBy(() -> this.userService.changeProfilePicture(UNKNOWN_USER, mockFile))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
+    }
+
+    @Test
+    @DisplayName("Should return the information of the profile of the active user")
+    void testGetUserProfile() {
+        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
+
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
+        when(this.userMapper.toProfileDTO(this.user1)).thenReturn(dto);
+
+        ProfileDTO result = this.userService.getUserProfile(USER1_USERNAME);
+        assertThat(result.email()).isEqualTo(USER1_EMAIL);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException if the username does not exists")
+    void testInvalidGetProfile() {
+        when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenCallRealMethod();
+
+        assertThatThrownBy(() -> this.userService.getUserProfile(UNKNOWN_USER))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User Not Found");
     }
@@ -220,7 +305,7 @@ class UserServiceTest {
     void testGetUserRole() {
         UserRole mockUserRole = new UserRole(TEST_USER_USERNAME, List.of("USER"));
 
-        when(this.userRepository.findByUsername(TEST_USER_USERNAME)).thenReturn(Optional.of(this.testUser));
+        when(this.userRepository.findByUsernameOrThrow(TEST_USER_USERNAME)).thenReturn(this.testUser);
         when(this.authenticationMapper.toUserRole(this.testUser)).thenReturn(mockUserRole);
 
         UserRole result = this.userService.getUserRole(TEST_USER_USERNAME);
@@ -230,9 +315,9 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should return the favourite teams of a certain user")
+    @DisplayName("Should return the favorite teams of a certain user")
     void testGetFavTeams() {
-        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         Set<TeamSummary> expectedResult = new HashSet<>(List.of(this.teamSummaries.get(0), this.teamSummaries.get(1)));
         when(this.teamMapper.toTeamSummarySet(new HashSet<>(List.of(this.teams.get(0), this.teams.get(1))))).thenReturn(expectedResult);
 
@@ -246,7 +331,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should successfully add a team as favourite")
     void testAddFavTeam() {
-        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         when(this.teamRepository.findByName(TEST_TEAM3_NAME)).thenReturn(Optional.of(this.teams.get(2)));
 
         this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM3_NAME);
@@ -258,7 +343,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw TeamAlreadyExistsException if the team is already marked as favourite")
     void testInvalidAddFavTeam() {
-        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.teams.getFirst()));
 
         assertThatThrownBy(() -> this.userService.addFavTeam(USER1_USERNAME, TEST_TEAM1_NAME))
@@ -269,7 +354,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should successfully remove a team as favourite")
     void testRemoveFavTeam() {
-        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(this.teams.get(1)));
 
         this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM2_NAME);
@@ -281,7 +366,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw TeamNotFoundException if the team to remove is not marked as favourite")
     void testInvalidRemoveFavTeam() {
-        when(this.userRepository.findByUsername(USER1_USERNAME)).thenReturn(Optional.of(this.user1));
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         when(this.teamRepository.findByName(TEST_TEAM3_NAME)).thenReturn(Optional.of(this.teams.get(2)));
 
         assertThatThrownBy(() -> this.userService.removeFavTeam(USER1_USERNAME, TEST_TEAM3_NAME))
