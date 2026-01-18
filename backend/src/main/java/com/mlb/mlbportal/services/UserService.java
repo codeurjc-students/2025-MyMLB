@@ -121,7 +121,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Set<TeamSummary> getFavTeamsOfAUser(String username) {
-        UserEntity user = this.getUser(username);
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.teamMapper.toTeamSummarySet(user.getFavTeams());
     }
 

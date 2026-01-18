@@ -2,7 +2,6 @@ package com.mlb.mlbportal.unit.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
