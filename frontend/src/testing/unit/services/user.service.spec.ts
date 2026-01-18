@@ -38,7 +38,8 @@ describe('User Service Tests', () => {
     it('should fetch user profile data', () => {
         const mockProfile: Profile = {
             email: 'test@test.com',
-            picture: { url: 'http://image.com', publicId: '123' }
+            picture: { url: 'http://image.com', publicId: '123' },
+			enableNotifications: false
         };
 
         service.getUserProfile().subscribe((profile) => {

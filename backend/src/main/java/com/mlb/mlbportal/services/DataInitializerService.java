@@ -79,7 +79,6 @@ public class DataInitializerService {
         UserEntity arminUser = new UserEntity("armin@gmail.com", "armiin13",
                 this.passwordEncoder.encode(this.arminPassword));
 
-        fonssiUser.getRoles().add("USER");
         fonssiUser.getRoles().add("ADMIN");
         arminUser.getRoles().add("ADMIN");
 
