@@ -16,8 +16,6 @@ import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
-import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -38,8 +36,8 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class TeamService {
-<span class="fc" id="L41">    private static final List&lt;League&gt; LEAGUE_ORDER = List.of(League.AL, League.NL);</span>
-<span class="fc" id="L42">    private static final List&lt;Division&gt; DIVISION_ORDER = List.of(Division.EAST, Division.CENTRAL, Division.WEST);</span>
+<span class="fc" id="L39">    private static final List&lt;League&gt; LEAGUE_ORDER = List.of(League.AL, League.NL);</span>
+<span class="fc" id="L40">    private static final List&lt;Division&gt; DIVISION_ORDER = List.of(Division.EAST, Division.CENTRAL, Division.WEST);</span>
 
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
@@ -51,116 +49,116 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public Page&lt;TeamInfoDTO&gt; getTeams(int page, int size) {
-<span class="fc" id="L54">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
-<span class="fc" id="L55">        teams.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));</span>
-<span class="fc" id="L56">        return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamInfoDTO);</span>
+<span class="fc" id="L52">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+<span class="fc" id="L53">        teams.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));</span>
+<span class="fc" id="L54">        return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamInfoDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;TeamSummary&gt; getAvailableTeams(int page, int size) {
-<span class="fc" id="L61">        List&lt;Team&gt; teams = this.teamRepository.findAvailableTeams();</span>
-<span class="fc" id="L62">        teams.sort((t1, t2) -&gt; t1.getName().compareToIgnoreCase(t2.getName()));</span>
-<span class="fc" id="L63">        return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamSummaryDTO);</span>
+<span class="fc" id="L59">        List&lt;Team&gt; teams = this.teamRepository.findAvailableTeams();</span>
+<span class="fc" id="L60">        teams.sort((t1, t2) -&gt; t1.getName().compareToIgnoreCase(t2.getName()));</span>
+<span class="fc" id="L61">        return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamSummaryDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Team getTeam(String teamName) {
-<span class="fc" id="L68">        return this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L66">        return this.teamRepository.findByNameOrThrow(teamName);</span>
     }
 
     @Transactional
     public TeamInfoDTO getTeamInfo(String teamName) {
-<span class="fc" id="L73">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L74">        TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);</span>
+<span class="fc" id="L71">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
+<span class="fc" id="L72">        TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);</span>
         
-<span class="fc" id="L76">        List&lt;PositionPlayer&gt; positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);</span>
-<span class="fc" id="L77">        List&lt;Pitcher&gt; pitchers = this.playerService.getUpdatedPitchersOfTeam(team);</span>
+<span class="fc" id="L74">        List&lt;PositionPlayer&gt; positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);</span>
+<span class="fc" id="L75">        List&lt;Pitcher&gt; pitchers = this.playerService.getUpdatedPitchersOfTeam(team);</span>
 
-<span class="fc" id="L79">        positionPlayers.forEach(p -&gt; p.setTeam(team));</span>
-<span class="fc" id="L80">        pitchers.forEach(p -&gt; p.setTeam(team));</span>
+<span class="fc" id="L77">        positionPlayers.forEach(p -&gt; p.setTeam(team));</span>
+<span class="fc" id="L78">        pitchers.forEach(p -&gt; p.setTeam(team));</span>
 
-<span class="fc" id="L82">        team.setPositionPlayers(positionPlayers);</span>
-<span class="fc" id="L83">        team.setPitchers(pitchers);</span>
-<span class="fc" id="L84">        this.teamRepository.save(team);</span>
-<span class="fc" id="L85">        return this.teamMapper.toTeamInfoDTO(team);</span>
+<span class="fc" id="L80">        team.setPositionPlayers(positionPlayers);</span>
+<span class="fc" id="L81">        team.setPitchers(pitchers);</span>
+<span class="fc" id="L82">        this.teamRepository.save(team);</span>
+<span class="fc" id="L83">        return this.teamMapper.toTeamInfoDTO(team);</span>
     }
 
     private List&lt;Map.Entry&lt;League, Division&gt;&gt; getPrioritizedLeagueDivisionOrder(UserEntity user) {
-<span class="fc" id="L89">        Set&lt;Map.Entry&lt;League, Division&gt;&gt; favPairs = user.getFavTeams().stream()</span>
-<span class="fc" id="L90">                .map(team -&gt; Map.entry(team.getLeague(), team.getDivision()))</span>
-<span class="fc" id="L91">                .collect(Collectors.toCollection(LinkedHashSet::new));</span>
+<span class="fc" id="L87">        Set&lt;Map.Entry&lt;League, Division&gt;&gt; favPairs = user.getFavTeams().stream()</span>
+<span class="fc" id="L88">                .map(team -&gt; Map.entry(team.getLeague(), team.getDivision()))</span>
+<span class="fc" id="L89">                .collect(Collectors.toCollection(LinkedHashSet::new));</span>
 
-<span class="fc" id="L93">        List&lt;Map.Entry&lt;League, Division&gt;&gt; ordered = new ArrayList&lt;&gt;(favPairs);</span>
+<span class="fc" id="L91">        List&lt;Map.Entry&lt;League, Division&gt;&gt; ordered = new ArrayList&lt;&gt;(favPairs);</span>
 
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (League league : LEAGUE_ORDER) {</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">            for (Division division : DIVISION_ORDER) {</span>
-<span class="fc" id="L97">                Map.Entry&lt;League, Division&gt; pair = Map.entry(league, division);</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">                if (!ordered.contains(pair)) {</span>
-<span class="fc" id="L99">                    ordered.add(pair);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        for (League league : LEAGUE_ORDER) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            for (Division division : DIVISION_ORDER) {</span>
+<span class="fc" id="L95">                Map.Entry&lt;League, Division&gt; pair = Map.entry(league, division);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                if (!ordered.contains(pair)) {</span>
+<span class="fc" id="L97">                    ordered.add(pair);</span>
                 }
-<span class="fc" id="L101">            }</span>
-<span class="fc" id="L102">        }</span>
-<span class="fc" id="L103">        return ordered;</span>
+            }
+        }
+<span class="fc" id="L101">        return ordered;</span>
     }
 
     @Transactional(readOnly = true)
     public Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; getStandings(String username) {
-<span class="fc" id="L108">        UserEntity user = null;</span>
-<span class="pc bpc" id="L109" title="1 of 4 branches missed.">        if (username != null &amp;&amp; !username.isBlank()) {</span>
-<span class="fc" id="L110">            user = this.userService.getUser(username);</span>
+<span class="fc" id="L106">        UserEntity user = null;</span>
+<span class="pc bpc" id="L107" title="1 of 4 branches missed.">        if (username != null &amp;&amp; !username.isBlank()) {</span>
+<span class="fc" id="L108">            user = this.userService.getUser(username);</span>
         }
 
-<span class="fc" id="L113">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
-<span class="fc" id="L114">        teams.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));</span>
+<span class="fc" id="L111">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+<span class="fc" id="L112">        teams.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));</span>
 
-<span class="fc" id="L116">        Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; grouped = teams.stream()</span>
-<span class="fc" id="L117">                .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));</span>
+<span class="fc" id="L114">        Map&lt;League, Map&lt;Division, List&lt;Team&gt;&gt;&gt; grouped = teams.stream()</span>
+<span class="fc" id="L115">                .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));</span>
 
-<span class="fc" id="L119">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L117">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = new LinkedHashMap&lt;&gt;();</span>
 
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        List&lt;Map.Entry&lt;League, Division&gt;&gt; leagueDivisionOrder = (user != null)</span>
-<span class="fc" id="L122">                ? getPrioritizedLeagueDivisionOrder(user)</span>
-<span class="fc" id="L123">                : LEAGUE_ORDER.stream()</span>
-<span class="fc" id="L124">                .flatMap(league -&gt; DIVISION_ORDER.stream().map(div -&gt; Map.entry(league, div)))</span>
-<span class="fc" id="L125">                .toList();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        List&lt;Map.Entry&lt;League, Division&gt;&gt; leagueDivisionOrder = (user != null)</span>
+<span class="fc" id="L120">                ? getPrioritizedLeagueDivisionOrder(user)</span>
+<span class="fc" id="L121">                : LEAGUE_ORDER.stream()</span>
+<span class="fc" id="L122">                .flatMap(league -&gt; DIVISION_ORDER.stream().map(div -&gt; Map.entry(league, div)))</span>
+<span class="fc" id="L123">                .toList();</span>
 
-<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (Map.Entry&lt;League, Division&gt; entry : leagueDivisionOrder) {</span>
-<span class="fc" id="L128">            League league = entry.getKey();</span>
-<span class="fc" id="L129">            Division division = entry.getValue();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for (Map.Entry&lt;League, Division&gt; entry : leagueDivisionOrder) {</span>
+<span class="fc" id="L126">            League league = entry.getKey();</span>
+<span class="fc" id="L127">            Division division = entry.getValue();</span>
 
-<span class="fc" id="L131">            List&lt;Team&gt; divisionTeams = grouped.getOrDefault(league, Map.of())</span>
-<span class="fc" id="L132">                    .getOrDefault(division, List.of());</span>
+<span class="fc" id="L129">            List&lt;Team&gt; divisionTeams = grouped.getOrDefault(league, Map.of())</span>
+<span class="fc" id="L130">                    .getOrDefault(division, List.of());</span>
 
-<span class="fc" id="L134">            List&lt;TeamDTO&gt; sorted = divisionTeams.stream()</span>
-<span class="fc" id="L135">                    .sorted((a, b) -&gt; Double.compare(b.getPct(), a.getPct()))</span>
-<span class="fc" id="L136">                    .map(this.teamMapper::toTeamDTO)</span>
-<span class="fc" id="L137">                    .toList();</span>
+<span class="fc" id="L132">            List&lt;TeamDTO&gt; sorted = divisionTeams.stream()</span>
+<span class="fc" id="L133">                    .sorted((a, b) -&gt; Double.compare(b.getPct(), a.getPct()))</span>
+<span class="fc" id="L134">                    .map(this.teamMapper::toTeamDTO)</span>
+<span class="fc" id="L135">                    .toList();</span>
 
-<span class="fc" id="L139">            standings.computeIfAbsent(league, l -&gt; new LinkedHashMap&lt;&gt;())</span>
-<span class="fc" id="L140">                    .put(division, sorted);</span>
-<span class="fc" id="L141">        }</span>
-<span class="fc" id="L142">        return standings;</span>
+<span class="fc" id="L137">            standings.computeIfAbsent(league, l -&gt; new LinkedHashMap&lt;&gt;())</span>
+<span class="fc" id="L138">                    .put(division, sorted);</span>
+        }
+<span class="fc" id="L140">        return standings;</span>
     }
 
     @Transactional
     public void updateTeam(String teamName, UpdateTeamRequest request) {
-<span class="fc" id="L147">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L145">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
 
-<span class="fc" id="L149">        request.city().ifPresent(newCity -&gt; {</span>
-<span class="fc" id="L150">            String updatedName = team.getName().replace(team.getCity(), newCity);</span>
-<span class="fc" id="L151">            team.setCity(newCity);</span>
-<span class="fc" id="L152">            team.setName(updatedName);</span>
-<span class="fc" id="L153">        });</span>
-<span class="fc" id="L154">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
-<span class="fc" id="L155">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
-<span class="fc" id="L156">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
-<span class="fc" id="L157">            Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
-<span class="fc bfc" id="L158" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
-<span class="fc" id="L159">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
+<span class="fc" id="L147">        request.city().ifPresent(newCity -&gt; {</span>
+<span class="fc" id="L148">            String updatedName = team.getName().replace(team.getCity(), newCity);</span>
+<span class="fc" id="L149">            team.setCity(newCity);</span>
+<span class="fc" id="L150">            team.setName(updatedName);</span>
+<span class="fc" id="L151">        });</span>
+<span class="fc" id="L152">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
+<span class="fc" id="L153">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
+<span class="fc" id="L154">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
+<span class="fc" id="L155">            Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
+<span class="fc" id="L157">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
             }
-<span class="fc" id="L161">            team.setStadium(stadium);</span>
-<span class="fc" id="L162">        });</span>
-<span class="fc" id="L163">        this.teamRepository.save(team);</span>
-<span class="fc" id="L164">    }</span>
+<span class="fc" id="L159">            team.setStadium(stadium);</span>
+<span class="fc" id="L160">        });</span>
+<span class="fc" id="L161">        this.teamRepository.save(team);</span>
+<span class="fc" id="L162">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

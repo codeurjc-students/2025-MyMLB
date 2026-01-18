@@ -8,6 +8,7 @@ import { ErrorComponent } from './components/error/error.component';
 import { TeamComponent } from './components/team/team.component';
 import { StandingsComponent } from './components/standings/standings.component';
 import { AdminGuard } from './guards/admin.guard';
+import { ComingSoonComponent } from './components/coming-soon/coming-soon.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
 	{ path: 'recovery', component: PasswordComponent },
 	{ path: 'team/:name', component: TeamComponent },
 	{ path: 'standings', component: StandingsComponent },
+	{ path: 'coming-soon', component: ComingSoonComponent },
 	{ path: 'error', component: ErrorComponent },
 	{
 		path: 'profile',

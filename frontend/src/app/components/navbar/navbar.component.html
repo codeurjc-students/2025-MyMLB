@@ -42,23 +42,24 @@
 								>Sign Up</a
 							>
 						</li>
-						} @if (roles.includes("USER")) {
-						<li>
-							<a href="#" class="nav-elems" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]">My Tickets</a>
-						</li>
-						<li>
-							<a class="nav-elems" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a>
-						</li>
+						}
+						@if (roles.includes("USER")) {
+							<li>
+								<a href="#" class="nav-elems" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]" (click)="redirect('coming-soon')">My Tickets</a>
+							</li>
+							<li>
+								<a class="nav-elems" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a>
+							</li>
 						}
 
 						@if (!roles.includes("ADMIN")) {
-						<li class="relative group">
-							<a class="nav-elems" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
-							<app-dropdown-menu></app-dropdown-menu>
-						</li>
-						<li>
-							<a class="nav-elems" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a>
-						</li>
+							<li class="relative group">
+								<a class="nav-elems" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
+								<app-dropdown-menu></app-dropdown-menu>
+							</li>
+							<li>
+								<a class="nav-elems" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a>
+							</li>
 						}
 
 						@else if (roles.includes("ADMIN")) {
@@ -72,7 +73,7 @@
 								<a class="nav-elems" [ngClass]="[applyStyle('/create-stadium'), itemsHover()]" (click)="redirect('create-stadium')">Create Stadium</a>
 							</li>
 							<li>
-								<a href="#" class="nav-elems" [ngClass]="[applyStyle('/statistics'), itemsHover()]">Statistics</a>
+								<a class="nav-elems" [ngClass]="[applyStyle('/statistics'), itemsHover()]" (click)="redirect('coming-soon')">Statistics</a>
 							</li>
 						}
 					</ul>

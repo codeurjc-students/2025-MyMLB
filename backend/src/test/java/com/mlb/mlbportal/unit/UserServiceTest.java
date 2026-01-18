@@ -188,7 +188,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should edit the active user's profile correctly")
     void testEditProfile() {
-        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD, true);
         ShowUser user = new ShowUser(USER1_USERNAME, NEW_EMAIL);
 
         when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
@@ -198,13 +198,14 @@ class UserServiceTest {
         ShowUser editedUser = this.userService.updateProfile(USER1_USERNAME, request);
 
         assertThat(editedUser.email()).isEqualTo(NEW_EMAIL);
+        verify(this.emailService, times(1)).sendProfileChangeNotification(USER1_USERNAME, USER1_EMAIL, NEW_EMAIL, true);
         verify(this.userRepository, times(1)).save(this.user1);
     }
 
     @Test
     @DisplayName("Should throw UserNotFoundException if the username does not exists")
     void testInvalidEditProfile() {
-        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD, false);
 
         when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenCallRealMethod();
 
@@ -245,7 +246,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should return the information of the profile of the active user")
     void testGetUserProfile() {
-        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"));
+        ProfileDTO dto = new ProfileDTO(USER1_EMAIL, new PictureInfo("http://cloudinary.com/test123.jpg", "test123"), false);
 
         when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
         when(this.userMapper.toProfileDTO(this.user1)).thenReturn(dto);

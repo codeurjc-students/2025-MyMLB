@@ -10,5 +10,8 @@ public record EditProfileRequest(
         String email,
 
         @Nullable
-        String password
+        String password,
+
+        @Nullable
+        boolean enableNotifications
 ) {}

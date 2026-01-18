@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.repositories.player</a> &gt; <span class="el_source">PlayerRepository.java</span></div><h1>PlayerRepository.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.repositories.player;
+
+import java.util.Optional;
+
+import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.mlb.mlbportal.models.player.Player;
+
+@Repository
+public interface PlayerRepository extends JpaRepository&lt;Player, Long&gt; {
+    Optional&lt;Player&gt; findByName(String name);
+
+    default Player findByNameOrThrow(String name) {
+<span class="fc" id="L16">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -39,6 +39,8 @@ public class UserEntity {
 
     private PictureInfo picture;
 
+    private boolean enableNotifications = true;
+
     @OneToOne(mappedBy="user", cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 

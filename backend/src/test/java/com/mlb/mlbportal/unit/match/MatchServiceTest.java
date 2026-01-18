@@ -1,14 +1,12 @@
 package com.mlb.mlbportal.unit.match;
 
 import java.time.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +32,7 @@ import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.TaskScheduler;
 
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
@@ -60,6 +59,12 @@ class MatchServiceTest {
 
     @Mock
     private PaginationHandlerService paginationHandlerService;
+
+    @Mock
+    private TaskScheduler taskScheduler;
+
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private MatchService matchService;
@@ -156,7 +161,7 @@ class MatchServiceTest {
     @DisplayName("Should return the home matches of a team")
     void testGetHomeMatchesOfATeam() {
         Team team1 = this.teams.get(1);
-        List<Match> homeMatches = Arrays.asList(this.matches.getFirst());
+        List<Match> homeMatches = Collections.singletonList(this.matches.getFirst());
         List<MatchDTO> homeMatchesDTO = BuildMocksFactory.buildMatchDTOMocks(homeMatches);
         Page<MatchDTO> mockPage = new PageImpl<>(homeMatchesDTO, PageRequest.of(0, 10), homeMatchesDTO.size());
 
@@ -174,7 +179,7 @@ class MatchServiceTest {
     @DisplayName("Should return the away matches of a team")
     void testGetAwayMatchesOfATeam() {
         Team team1 = this.teams.getFirst();
-        List<Match> awayMatches = Arrays.asList(this.matches.get(2));
+        List<Match> awayMatches = Collections.singletonList(this.matches.get(2));
         List<MatchDTO> awayMatchesDTO = BuildMocksFactory.buildMatchDTOMocks(awayMatches);
         Page<MatchDTO> mockPage = new PageImpl<>(awayMatchesDTO, PageRequest.of(0, 10), awayMatchesDTO.size());
 
@@ -222,5 +227,36 @@ class MatchServiceTest {
         assertThatThrownBy(() ->
                 this.matchService.getMatchesOfTeamBetweenDates("UnknownTeam", start, end)
         ).isInstanceOf(TeamNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("Should schedule notifications only for future matches")
+    void testNotificateMatchStartSuccess() {
+        this.mockClockAndRepository();
+
+        for (int i = 0; i < this.matches.size(); i++) {
+            this.matches.get(i).setId((long) i);
+        }
+        this.matches.getFirst().setDate(this.fixedNow.plusMinutes(30));
+        this.matches.get(1).setDate(this.fixedNow.plusMinutes(5));
+
+        this.matchService.notificateMatchStart();
+
+        verify(this.taskScheduler, times(1)).schedule(any(Runnable.class), any(Instant.class));
+        Instant expectedInstant = this.fixedNow.plusMinutes(20).atZone(ZoneId.systemDefault()).toInstant();
+        verify(this.taskScheduler).schedule(any(Runnable.class), eq(expectedInstant));
+    }
+
+    @Test
+    @DisplayName("Should not schedule anything if there are no matches scheduled for today")
+    void testNotificateMatchStartNoMatches() {
+        when(this.clock.instant()).thenReturn(this.fixedNow.atZone(ZoneId.of("Europe/Madrid")).toInstant());
+        when(this.clock.getZone()).thenReturn(ZoneId.of("Europe/Madrid"));
+
+        when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of());
+
+        this.matchService.notificateMatchStart();
+
+        verify(this.taskScheduler, never()).schedule(any(Runnable.class), any(Instant.class));
     }
 }

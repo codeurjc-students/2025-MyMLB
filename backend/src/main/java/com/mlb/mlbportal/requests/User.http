@@ -2,6 +2,10 @@
 GET https://localhost:8443/api/v1/users?page=0&size=10
 Accept: application/json
 
+### Get User's Profile
+GET https://localhost:8443/api/v1/users/profile
+Accept: application/json
+
 ### Get Favorite Teams of a User
 GET https://localhost:8443/api/v1/users/favorites/teams
 Accept: application/json
@@ -24,7 +28,8 @@ Content-Type: application/json
 
 {
   "email": "admin@gmail.com",
-  "password": "televisor"
+  "password": "televisor",
+  "enableNotifications": false
 }
 
 ### Edit only one field of the user's profile
@@ -44,6 +49,19 @@ Content-Type: application/json
   "password": "televisor"
 }
 
+### Upload a new Profile Picture
+POST https://localhost:8443/api/v1/users/picture
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="Chief1.png"
+Content-Type: image/png
+
+< ./Chief1.png
+--WebAppBoundary--
+
+### Remove the current Profile Picture
+DELETE https://localhost:8443/api/v1/users/picture
 
 ### Remove a Favorite Team
 DELETE https://localhost:8443/api/v1/users/favorites/teams/New York Yankees

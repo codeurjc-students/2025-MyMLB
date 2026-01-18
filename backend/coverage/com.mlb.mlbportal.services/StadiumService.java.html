@@ -14,7 +14,6 @@ import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
-import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.others.PictureInfo;
@@ -34,62 +33,62 @@ public class StadiumService {
 
     @Transactional(readOnly = true)
     public Page&lt;StadiumInitDTO&gt; getAllStadiums(int page, int size) {
-<span class="fc" id="L37">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findAll();</span>
-<span class="fc" id="L38">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
+<span class="fc" id="L36">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findAll();</span>
+<span class="fc" id="L37">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;StadiumInitDTO&gt; getAllAvailableStadiums(int page, int size) {
-<span class="fc" id="L43">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByTeamIsNull();</span>
-<span class="fc" id="L44">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
+<span class="fc" id="L42">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByTeamIsNull();</span>
+<span class="fc" id="L43">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public StadiumInitDTO findStadiumByName(String name) {
-<span class="fc" id="L49">        Stadium stadium = this.stadiumRepository.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
-<span class="fc" id="L50">        return this.stadiumMapper.toStadiumInitDTO(stadium);</span>
+<span class="fc" id="L48">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(name);</span>
+<span class="fc" id="L49">        return this.stadiumMapper.toStadiumInitDTO(stadium);</span>
     }
 
     @Transactional(readOnly = true)
     public List&lt;PictureInfo&gt; getStadiumPictures(String stadiumName) {
-<span class="fc" id="L55">        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
-<span class="fc" id="L56">        return stadium.getPictures();</span>
+<span class="fc" id="L54">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc" id="L55">        return stadium.getPictures();</span>
     }
 
     @Transactional
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
-<span class="fc" id="L61">        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
+<span class="fc" id="L60">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
 
-<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (stadium.getPictures().size() &gt;= 5) {</span>
-<span class="fc" id="L64">            throw new IllegalArgumentException(&quot;Maximum amount of pictures reached&quot;);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (stadium.getPictures().size() &gt;= 5) {</span>
+<span class="fc" id="L63">            throw new IllegalArgumentException(&quot;Maximum amount of pictures reached&quot;);</span>
         }
-<span class="fc" id="L66">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L65">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
 
-<span class="fc" id="L68">        stadium.getPictures().add(pictureInfo);</span>
-<span class="fc" id="L69">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L67">        stadium.getPictures().add(pictureInfo);</span>
+<span class="fc" id="L68">        this.stadiumRepository.save(stadium);</span>
 
-<span class="fc" id="L71">        return pictureInfo;</span>
+<span class="fc" id="L70">        return pictureInfo;</span>
     }
 
     @Transactional
     public void deletePicture(String stadiumName, String publicId) {
-<span class="fc" id="L76">        Stadium stadium = this.stadiumRepository.findByName(stadiumName).orElseThrow(StadiumNotFoundException::new);</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (stadium.getPictures().size() &lt;= 1) {</span>
-<span class="fc" id="L78">            throw new LastPictureDeletionException(&quot;Cannot delete the last picture of a stadium&quot;);</span>
+<span class="fc" id="L75">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (stadium.getPictures().size() &lt;= 1) {</span>
+<span class="fc" id="L77">            throw new LastPictureDeletionException(&quot;Cannot delete the last picture of a stadium&quot;);</span>
         }
-<span class="fc" id="L80">        stadium.getPictures().removeIf(p -&gt; publicId.equals(p.getPublicId()));</span>
-<span class="fc" id="L81">        this.stadiumRepository.save(stadium);</span>
-<span class="fc" id="L82">    }</span>
+<span class="fc" id="L79">        stadium.getPictures().removeIf(p -&gt; publicId.equals(p.getPublicId()));</span>
+<span class="fc" id="L80">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L81">    }</span>
 
     @Transactional
     public StadiumDTO createStadium(CreateStadiumRequest request) {
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (this.stadiumRepository.findByName(request.name()).isPresent()) {</span>
-<span class="fc" id="L87">            throw new StadiumAlreadyExistsException();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (this.stadiumRepository.findByName(request.name()).isPresent()) {</span>
+<span class="fc" id="L86">            throw new StadiumAlreadyExistsException();</span>
         }
-<span class="fc" id="L89">        StadiumDTO newStadium = new StadiumDTO(request.name(), request.openingDate(), Collections.emptyList());</span>
-<span class="fc" id="L90">        Stadium stadium = this.stadiumMapper.toDomainFromStadiumDTO(newStadium);</span>
-<span class="fc" id="L91">        this.stadiumRepository.save(stadium);</span>
-<span class="fc" id="L92">        return newStadium;</span>
+<span class="fc" id="L88">        StadiumDTO newStadium = new StadiumDTO(request.name(), request.openingDate(), Collections.emptyList());</span>
+<span class="fc" id="L89">        Stadium stadium = this.stadiumMapper.toDomainFromStadiumDTO(newStadium);</span>
+<span class="fc" id="L90">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L91">        return newStadium;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
