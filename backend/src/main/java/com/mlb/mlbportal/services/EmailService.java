@@ -33,8 +33,6 @@ public class EmailService {
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;
 
-    private EmailService self;
-
     @Transactional(readOnly = true)
     public Optional<PasswordResetToken> getCode(String code) {
         return this.passwordRepository.findByCode(code);
@@ -112,11 +110,6 @@ public class EmailService {
         }
     }
 
-    @Autowired
-    public void setSelf(EmailService self) {
-        this.self = self;
-    }
-
     @Transactional(readOnly = true)
     public void sendDynamicGameReminder(Long matchId) {
         Match match = this.matchRepository.findById(matchId).orElse(null);
@@ -134,7 +127,7 @@ public class EmailService {
         Set<UserEntity> filteredUsers = currentFans.stream().filter(UserEntity::isEnableNotifications).collect(Collectors.toSet());
 
         if (!filteredUsers.isEmpty()) {
-            this.self.sendGameReminder(filteredUsers, match);
+            this.sendGameReminder(filteredUsers, match);
         }
     }
 
