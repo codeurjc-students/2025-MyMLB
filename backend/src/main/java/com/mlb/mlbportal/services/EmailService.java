@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -31,6 +32,8 @@ public class EmailService {
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;
+
+    private EmailService self;
 
     @Transactional(readOnly = true)
     public Optional<PasswordResetToken> getCode(String code) {
@@ -109,6 +112,11 @@ public class EmailService {
         }
     }
 
+    @Autowired
+    public void setSelf(EmailService self) {
+        this.self = self;
+    }
+
     @Transactional(readOnly = true)
     public void sendDynamicGameReminder(Long matchId) {
         Match match = this.matchRepository.findById(matchId).orElse(null);
@@ -126,7 +134,7 @@ public class EmailService {
         Set<UserEntity> filteredUsers = currentFans.stream().filter(UserEntity::isEnableNotifications).collect(Collectors.toSet());
 
         if (!filteredUsers.isEmpty()) {
-            this.sendGameReminder(filteredUsers, match);
+            this.self.sendGameReminder(filteredUsers, match);
         }
     }
 
