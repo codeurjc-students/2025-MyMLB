@@ -200,9 +200,43 @@ public class DataInitializerService {
         return MatchStatus.IN_PROGRESS;
     }
 
+    // DELETE
+    private void addTestMatch(List<Match> matches, List<Team> allTeams) {
+        if (allTeams.size() < 2) return;
+
+        Team home = allTeams.get(0);
+        Team away = allTeams.get(1);
+
+        Team aux1 = allTeams.get(3);
+        Team aux2 = allTeams.get(4);
+
+        LocalDateTime matchDate = LocalDateTime.now().plusMinutes(15);
+
+        Match testMatch = new Match(
+                home,
+                away,
+                0,
+                0,
+                matchDate,
+                MatchStatus.SCHEDULED
+        );
+
+        Match match2 = new Match(
+                aux1,
+                aux2,
+                0,
+                0,
+                matchDate,
+                MatchStatus.SCHEDULED
+        );
+        matches.add(testMatch);
+        matches.add(match2);
+    }
+
     private void setUpMatches() {
         List<Team> allTeams = this.teamRepository.findAll();
         List<Match> matches = this.generateBalancedMatches(allTeams);
+        //this.addTestMatch(matches, allTeams);
         this.matchRepository.saveAll(matches);
 
         this.mlbImportService.getOfficialMatches(

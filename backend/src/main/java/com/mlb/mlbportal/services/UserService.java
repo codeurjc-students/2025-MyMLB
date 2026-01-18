@@ -167,13 +167,21 @@ public class UserService {
     @Transactional
     public ShowUser updateProfile(String username, EditProfileRequest request) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        boolean passwordChange = false;
+        String oldEmail = user.getEmail();
         if (request.email() != null && !request.email().isEmpty()) {
             user.setEmail(request.email());
         }
         if (request.password() != null && !request.password().isEmpty()) {
             user.setPassword(this.passwordEncoder.encode(request.password()));
+            passwordChange = true;
         }
+        user.setEnableNotifications(request.enableNotifications());
         this.userRepository.save(user);
+
+        if (user.isEnableNotifications()) {
+            this.emailService.sendProfileChangeNotification(user.getUsername(), oldEmail, user.getEmail(), passwordChange);
+        }
         return this.userMapper.toShowUser(user);
     }
 

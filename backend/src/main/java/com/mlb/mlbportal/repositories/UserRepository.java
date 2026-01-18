@@ -2,10 +2,10 @@ package com.mlb.mlbportal.repositories;
 
 import java.util.Optional;
 
-import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.models.UserEntity;
 
 @Repository

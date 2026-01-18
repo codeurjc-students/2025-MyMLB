@@ -64,7 +64,7 @@ class UserControllerTest extends BaseE2ETest {
         given()
                 .header("X-Mock-User", USER1_USERNAME)
                 .contentType(ContentType.JSON)
-                .body(new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD))
+                .body(new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD, false))
                 .when()
                 .patch(USERS_PATH)
                 .then()

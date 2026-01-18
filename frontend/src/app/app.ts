@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
 	constructor(private router: Router, private themeService: ThemeService, private cdr: ChangeDetectorRef, private viewportScroller: ViewportScroller) {
 		this.router.events.subscribe((event) => {
 			const url = this.router.url;
-			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery') || url.startsWith('/error');
+			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery') || url.startsWith('/error') || url.startsWith('/coming-soon');
 
 			if (event instanceof NavigationEnd) {
 				this.viewportScroller.scrollToPosition([0, 0]);

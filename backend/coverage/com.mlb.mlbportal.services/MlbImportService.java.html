@@ -37,7 +37,7 @@ public class MlbImportService {
     @Retry(name = &quot;mlbApi&quot;)
     public List&lt;MatchDTO&gt; getOfficialMatches(LocalDate start, LocalDate end) {
 <span class="fc" id="L39">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot; +</span>
-                     &quot;&amp;startDate=&quot; + start + &quot;&amp;endDate=&quot; + end;
+<span class="fc" id="L40">                     &quot;&amp;startDate=&quot; + start + &quot;&amp;endDate=&quot; + end;</span>
 
 <span class="fc" id="L42">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
 
@@ -73,13 +73,13 @@ public class MlbImportService {
 <span class="fc bfc" id="L73" title="All 2 branches covered.">        if (!cachedMatches.isEmpty()) {</span>
 <span class="fc" id="L74">            return cachedMatches.stream()</span>
 <span class="fc" id="L75">                    .map(m -&gt; new MatchDTO(</span>
-                            new TeamSummary(
+<span class="fc" id="L76">                            new TeamSummary(</span>
 <span class="fc" id="L77">                                m.getHomeTeam().getName(),</span>
 <span class="fc" id="L78">                                m.getHomeTeam().getAbbreviation(),</span>
 <span class="fc" id="L79">                                m.getHomeTeam().getLeague(),</span>
 <span class="fc" id="L80">                                m.getHomeTeam().getDivision()</span>
                             ),
-                            new TeamSummary(
+<span class="fc" id="L82">                            new TeamSummary(</span>
 <span class="fc" id="L83">                                m.getAwayTeam().getName(),</span>
 <span class="fc" id="L84">                                m.getAwayTeam().getAbbreviation(),</span>
 <span class="fc" id="L85">                                m.getAwayTeam().getLeague(),</span>
@@ -89,7 +89,7 @@ public class MlbImportService {
 <span class="fc" id="L89">                            m.getAwayScore(),</span>
 <span class="fc" id="L90">                            m.getDate(),</span>
 <span class="fc" id="L91">                            m.getStatus()</span>
-                    ))
+<span class="fc" id="L92">                    ))</span>
 <span class="fc" id="L93">                    .toList();</span>
         }
 <span class="fc" id="L95">        throw new ServiceUnavailableException(&quot;MLB API not available and without cached data&quot;);</span>
@@ -98,7 +98,7 @@ public class MlbImportService {
     private boolean isMlbTeamMatch(MatchDTO dto) {
 <span class="fc" id="L99">        boolean homeExists = this.teamRepository.findByName(dto.homeTeam().name()).isPresent();</span>
 <span class="fc" id="L100">        boolean awayExists = this.teamRepository.findByName(dto.awayTeam().name()).isPresent();</span>
-<span class="pc bpc" id="L101" title="2 of 4 branches missed.">        return homeExists &amp;&amp; awayExists;</span>
+<span class="fc bfc" id="L101" title="All 4 branches covered.">        return homeExists &amp;&amp; awayExists;</span>
     }
 
     private MatchDTO toMatchDTO(GameEntry game) {
@@ -113,8 +113,8 @@ public class MlbImportService {
     }
 
     private MatchStatus convertStatus(String apiStatus) {
-<span class="pc bpc" id="L116" title="3 of 4 branches missed.">        return switch (apiStatus) {</span>
-<span class="nc" id="L117">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
+<span class="pc bpc" id="L116" title="2 of 4 branches missed.">        return switch (apiStatus) {</span>
+<span class="fc" id="L117">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
 <span class="nc" id="L118">            case &quot;In Progress&quot; -&gt; MatchStatus.IN_PROGRESS;</span>
 <span class="fc" id="L119">            case &quot;Final&quot; -&gt; MatchStatus.FINISHED;</span>
 <span class="nc" id="L120">            default -&gt; MatchStatus.SCHEDULED;</span>

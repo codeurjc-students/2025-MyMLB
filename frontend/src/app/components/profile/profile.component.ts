@@ -38,6 +38,8 @@ export class ProfileComponent implements OnInit {
 	public currentEmail = '';
 	public oldEmail = '';
 
+	public notificationsEnabled = true;
+
 	public sucess = false;
 	public successMessage = '';
 
@@ -63,6 +65,7 @@ export class ProfileComponent implements OnInit {
 				this.currentEmail = response.email;
 				this.oldEmail = response.email;
 				this.pictureSrc = response.picture;
+				this.notificationsEnabled = response.enableNotifications ?? true;
 			},
 			error: (_) => {
 				this.error = true;
@@ -98,6 +101,7 @@ export class ProfileComponent implements OnInit {
 		if (this.passwordInput !== '') {
 			this.editRequest.password = this.passwordInput;
 		}
+		this.editRequest.enableNotifications = this.notificationsEnabled;
 	}
 
 	public editProfile() {
@@ -176,5 +180,9 @@ export class ProfileComponent implements OnInit {
 				this.errorMessage = 'An error ocurr while deleting the profile picture';
 			}
 		});
+	}
+
+	public toggleNotifications() {
+		this.notificationsEnabled = !this.notificationsEnabled;
 	}
 }

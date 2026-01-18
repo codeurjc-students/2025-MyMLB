@@ -1,11 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">EmailService.java</span></div><h1>EmailService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">EmailService.java</span></div><h1>EmailService.java</h1><pre class="source lang-java linenums"><span class="fc" id="L1">package com.mlb.mlbportal.services;</span>
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.repositories.MatchRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
 import com.mlb.mlbportal.models.PasswordResetToken;
@@ -13,49 +20,49 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class EmailService {
-<span class="fc" id="L22">    private static final Random RANDOM = new Random();</span>
+<span class="fc" id="L28">    private static final Random RANDOM = new Random();</span>
 
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
 
     @Transactional(readOnly = true)
     public Optional&lt;PasswordResetToken&gt; getCode(String code) {
-<span class="fc" id="L30">        return this.passwordRepository.findByCode(code);</span>
+<span class="fc" id="L37">        return this.passwordRepository.findByCode(code);</span>
     }
 
     @Transactional
     public void deleteToken(PasswordResetToken token) {
-<span class="fc" id="L35">        this.passwordRepository.delete(token);</span>
-<span class="fc" id="L36">    }</span>
+<span class="fc" id="L42">        this.passwordRepository.delete(token);</span>
+<span class="fc" id="L43">    }</span>
 
     private void sendEmailHelper(String destinyEmail, String subject, String body) {
-<span class="fc" id="L39">        SimpleMailMessage message = new SimpleMailMessage();</span>
-<span class="fc" id="L40">        message.setTo(destinyEmail);</span>
-<span class="fc" id="L41">        message.setSubject(subject);</span>
-<span class="fc" id="L42">        message.setText(body);</span>
-<span class="fc" id="L43">        this.mailSender.send(message);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L46">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L47">        message.setTo(destinyEmail);</span>
+<span class="fc" id="L48">        message.setSubject(subject);</span>
+<span class="fc" id="L49">        message.setText(body);</span>
+<span class="fc" id="L50">        this.mailSender.send(message);</span>
+<span class="fc" id="L51">    }</span>
 
     @Transactional
     public void sendEmail(String destinyEmail) {
-<span class="fc" id="L48">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
+<span class="fc" id="L55">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
         
-<span class="fc" id="L50">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
+<span class="fc" id="L57">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
         
-<span class="fc" id="L52">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
+<span class="fc" id="L59">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
         
-<span class="fc" id="L54">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
-<span class="fc" id="L55">        this.passwordRepository.save(resetToken);</span>
+<span class="fc" id="L61">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
+<span class="fc" id="L62">        this.passwordRepository.save(resetToken);</span>
 
-<span class="fc" id="L57">        String subject = &quot;Password Recovery&quot;;</span>
-<span class="fc" id="L58">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L64">        String subject = &quot;Password Recovery&quot;;</span>
+<span class="fc" id="L65">        String body = &quot;&quot;&quot;</span>
                 Hello %s,
 
                 You have requested to generate a new password for your account.
@@ -66,11 +73,86 @@ public class EmailService {
                 This code will expire in 15 minutes.
 
                 If you do not authorize this procedure, ignore this email.
-<span class="fc" id="L69">                &quot;&quot;&quot;.formatted(</span>
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
-                    code
+<span class="fc" id="L76">                &quot;&quot;&quot;.formatted(</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
+<span class="fc" id="L78">                    code</span>
                 );
-<span class="fc" id="L73">        this.sendEmailHelper(destinyEmail, subject, body);</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L80">        this.sendEmailHelper(destinyEmail, subject, body);</span>
+<span class="fc" id="L81">    }</span>
+
+    public void sendProfileChangeNotification(String username, String oldEmail, String newEmail, boolean passwordChange) {
+<span class="fc" id="L84">        String subject = &quot;Profile Update Confirmation&quot;;</span>
+
+<span class="fc" id="L86">        String body = &quot;&quot;&quot;</span>
+            Hello %s,
+           
+            We would like to inform you that %s
+            
+            If you did not authorize these modifications, please contact us immediately at mlbportal@gmail.com so we can investigate the issue and assist you accordingly.
+            
+            Thank you for your attention.
+            
+            Kind regards,
+            
+            The MLB Portal Team
+<span class="fc" id="L98">    &quot;&quot;&quot;.formatted(username, this.getKeyWords(newEmail, passwordChange));</span>
+
+<span class="fc" id="L100">        this.sendEmailHelper(oldEmail, subject, body);</span>
+<span class="fc" id="L101">    }</span>
+
+    private String getKeyWords(String newEmail, boolean passwordChange) {
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (passwordChange) {</span>
+<span class="fc" id="L105">            return &quot;your password have been successfully updated and your new credentials have been saved.&quot;;</span>
+        }
+        else {
+<span class="nc" id="L108">            return &quot;your email have been successfully updated to &quot; + newEmail + &quot; and your credentials have been saved.&quot;;</span>
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void sendDynamicGameReminder(Long matchId) {
+<span class="fc" id="L114">        Match match = this.matchRepository.findById(matchId).orElse(null);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (match == null) return;</span>
+
+<span class="fc" id="L117">        Set&lt;UserEntity&gt; currentFans = new HashSet&lt;&gt;();</span>
+
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if (match.getHomeTeam() != null) {</span>
+<span class="fc" id="L120">            currentFans.addAll(match.getHomeTeam().getFavoritedByUsers());</span>
+        }
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (match.getAwayTeam() != null) {</span>
+<span class="fc" id="L123">            currentFans.addAll(match.getAwayTeam().getFavoritedByUsers());</span>
+        }
+
+<span class="fc" id="L126">        Set&lt;UserEntity&gt; filteredUsers = currentFans.stream().filter(UserEntity::isEnableNotifications).collect(Collectors.toSet());</span>
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (!filteredUsers.isEmpty()) {</span>
+<span class="fc" id="L129">            this.sendGameReminder(filteredUsers, match);</span>
+        }
+<span class="fc" id="L131">    }</span>
+
+    @Async
+    protected void sendGameReminder(Set&lt;UserEntity&gt; users, Match match) {
+<span class="pc bpc" id="L135" title="2 of 4 branches missed.">        if (users == null || users.isEmpty()) {</span>
+<span class="nc" id="L136">            return;</span>
+        }
+
+<span class="fc" id="L139">        String subject = &quot;Match Starting Soon!&quot;;</span>
+<span class="fc" id="L140">        String body = &quot;&quot;&quot;</span>
+        Hello,
+        
+        The match %s vs %s will begin in 10 minutes.
+        
+        Good luck to your favorite teams!
+<span class="fc" id="L146">        &quot;&quot;&quot;.formatted(match.getAwayTeam().getName(), match.getHomeTeam().getName());</span>
+
+<span class="fc" id="L148">        String[] emails = users.stream().map(UserEntity::getEmail).toArray(String[]::new);</span>
+
+<span class="fc" id="L150">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L151">        message.setBcc(emails);</span>
+<span class="fc" id="L152">        message.setSubject(subject);</span>
+<span class="fc" id="L153">        message.setText(body);</span>
+
+<span class="fc" id="L155">        this.mailSender.send(message);</span>
+<span class="fc" id="L156">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

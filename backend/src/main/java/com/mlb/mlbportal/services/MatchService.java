@@ -1,9 +1,6 @@
 package com.mlb.mlbportal.services;
 
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
@@ -36,6 +34,8 @@ public class MatchService {
     private final Clock clock;
     private final TeamRepository teamRepository;
     private final PaginationHandlerService paginationHandlerService;
+    private final TaskScheduler taskScheduler;
+    private final EmailService emailService;
 
     @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
@@ -114,5 +114,30 @@ public class MatchService {
         List<Match> matches = this.matchRepository.findByHomeTeamOrAwayTeamAndDateBetween(team, team, startDateTime, endDateTime);
 
         return matches.stream().map(this.matchMapper::toMatchDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public void notificateMatchStart() {
+        LocalDate today = LocalDate.now(this.clock);
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        List<Match> todaysMatches = this.matchRepository.findByDateBetween(startOfDay, endOfDay);
+        LocalDateTime now = LocalDateTime.now(this.clock);
+
+        for (Match match : todaysMatches) {
+            LocalDateTime notificationTime = match.getDate().minusMinutes(10);
+
+            if (notificationTime.isBefore(now)) {
+                continue;
+            }
+
+            Long matchId = match.getId();
+
+            this.taskScheduler.schedule(
+                    () -> this.emailService.sendDynamicGameReminder(matchId),
+                    notificationTime.atZone(ZoneId.systemDefault()).toInstant()
+            );
+        }
     }
 }

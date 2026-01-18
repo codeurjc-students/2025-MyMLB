@@ -39,48 +39,50 @@ public class UserEntity {
 
     private PictureInfo picture;
 
+<span class="pc" id="L42">    private boolean enableNotifications = true;</span>
+
     @OneToOne(mappedBy=&quot;user&quot;, cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
-<span class="pc" id="L45">    @ManyToMany(fetch = FetchType.LAZY)</span>
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = &quot;user_fav_teams&quot;,
         joinColumns = @JoinColumn(name = &quot;user_id&quot;),
         inverseJoinColumns = @JoinColumn(name = &quot;team_id&quot;)
     )
-    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();
+<span class="pc" id="L53">    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();</span>
 
-<span class="pc" id="L53">    @ElementCollection(fetch= FetchType.EAGER)</span>
-    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
+    @ElementCollection(fetch= FetchType.EAGER)
+<span class="pc" id="L56">    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();</span>
 
     @PreRemove
     public void preRemove() {
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
-<span class="fc" id="L59">            team.getFavoritedByUsers().remove(this);</span>
-<span class="fc" id="L60">        }</span>
-<span class="fc" id="L61">        this.favTeams.clear();</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
+<span class="fc" id="L61">            team.getFavoritedByUsers().remove(this);</span>
+        }
+<span class="fc" id="L63">        this.favTeams.clear();</span>
+<span class="fc" id="L64">    }</span>
 
-<span class="fc" id="L64">    public UserEntity() {</span>
-<span class="fc" id="L65">        this.roles.add(&quot;GUEST&quot;);  </span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L66">    public UserEntity() {</span>
+<span class="fc" id="L67">        this.roles.add(&quot;GUEST&quot;);  </span>
+<span class="fc" id="L68">    }</span>
 
-<span class="fc" id="L68">    public UserEntity(String email, String username) {</span>
-<span class="fc" id="L69">        this.email = email;</span>
-<span class="fc" id="L70">        this.username = username;</span>
-<span class="fc" id="L71">    }</span>
+<span class="fc" id="L70">    public UserEntity(String email, String username) {</span>
+<span class="fc" id="L71">        this.email = email;</span>
+<span class="fc" id="L72">        this.username = username;</span>
+<span class="fc" id="L73">    }</span>
 
-<span class="fc" id="L73">    public UserEntity(String email, String username, String password) {</span>
-<span class="fc" id="L74">        this.email = email;</span>
-<span class="fc" id="L75">        this.username = username;</span>
-<span class="fc" id="L76">        this.password = password;</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L75">    public UserEntity(String email, String username, String password) {</span>
+<span class="fc" id="L76">        this.email = email;</span>
+<span class="fc" id="L77">        this.username = username;</span>
+<span class="fc" id="L78">        this.password = password;</span>
+<span class="fc" id="L79">    }</span>
 
-<span class="nc" id="L79">    public UserEntity(String name, String email, String username, String password) {</span>
-<span class="nc" id="L80">        this.name = name;</span>
-<span class="nc" id="L81">        this.email = email;</span>
-<span class="nc" id="L82">        this.username = username;</span>
-<span class="nc" id="L83">        this.password = password;</span>
-<span class="nc" id="L84">    }</span>
+<span class="nc" id="L81">    public UserEntity(String name, String email, String username, String password) {</span>
+<span class="nc" id="L82">        this.name = name;</span>
+<span class="nc" id="L83">        this.email = email;</span>
+<span class="nc" id="L84">        this.username = username;</span>
+<span class="nc" id="L85">        this.password = password;</span>
+<span class="nc" id="L86">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

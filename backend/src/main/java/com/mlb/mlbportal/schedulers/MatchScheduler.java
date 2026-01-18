@@ -1,10 +1,11 @@
 package com.mlb.mlbportal.schedulers;
 
-import com.mlb.mlbportal.services.MlbImportService;
+import java.time.LocalDate;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import com.mlb.mlbportal.services.MlbImportService;
 
 @Component
 public class MatchScheduler {

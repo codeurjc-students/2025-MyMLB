@@ -135,7 +135,7 @@ class UserServiceIntegrationTest {
     @Test
     @DisplayName("Should edit the active user's profile correctly")
     void testEditProfile() {
-        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD);
+        EditProfileRequest request = new EditProfileRequest(NEW_EMAIL, NEW_PASSWORD, false);
         this.userService.updateProfile(USER1_USERNAME, request);
 
         UserEntity storedUser = this.userRepository.findByUsername(USER1_USERNAME).orElseThrow();

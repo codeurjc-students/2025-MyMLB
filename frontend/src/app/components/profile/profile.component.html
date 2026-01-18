@@ -94,6 +94,28 @@
 			<span class="app-button-bright"></span>
 			<span class="app-button-texts">Save Changes</span>
         </button>
+
+		<!-- Notifications Toggle Button -->
+		<div class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 px-4 py-3 rounded-2xl shadow-inner">
+			<span class="text-gray-700 dark:text-gray-300 font-medium text-lg">
+				Notifications
+			</span>
+
+			<label class="inline-flex items-center cursor-pointer">
+				<input
+					type="checkbox"
+					[checked]="notificationsEnabled"
+					(change)="toggleNotifications()"
+					class="sr-only peer"
+				/>
+
+				<div
+					class="relative w-12 h-7 bg-gray-300 dark:bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer-checked:bg-blue-600 transition
+					peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white
+					after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-500"
+				></div>
+			</label>
+		</div>
     </div>
 
     <!-- Logout and Delete Buttons -->

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-01-17T19:03:57+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2026-01-18T19:03:42+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260101-2150, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L19">public class UserMapperImpl implements UserMapper {</span>
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L44">        List&lt;ShowUser&gt; list = new ArrayList&lt;ShowUser&gt;( users.size() );</span>
 <span class="nc bnc" id="L45" title="All 2 branches missed.">        for ( UserEntity userEntity : users ) {</span>
 <span class="nc" id="L46">            list.add( toShowUser( userEntity ) );</span>
-<span class="nc" id="L47">        }</span>
+        }
 
 <span class="nc" id="L49">        return list;</span>
     }
@@ -57,27 +57,29 @@ import org.springframework.stereotype.Component;
 
 <span class="fc" id="L58">        String email = null;</span>
 <span class="fc" id="L59">        PictureInfo picture = null;</span>
+<span class="fc" id="L60">        boolean enableNotifications = false;</span>
 
-<span class="fc" id="L61">        email = user.getEmail();</span>
-<span class="fc" id="L62">        picture = user.getPicture();</span>
+<span class="fc" id="L62">        email = user.getEmail();</span>
+<span class="fc" id="L63">        picture = user.getPicture();</span>
+<span class="fc" id="L64">        enableNotifications = user.isEnableNotifications();</span>
 
-<span class="fc" id="L64">        ProfileDTO profileDTO = new ProfileDTO( email, picture );</span>
+<span class="fc" id="L66">        ProfileDTO profileDTO = new ProfileDTO( email, picture, enableNotifications );</span>
 
-<span class="fc" id="L66">        return profileDTO;</span>
+<span class="fc" id="L68">        return profileDTO;</span>
     }
 
     @Override
     public UserEntity toDomain(ShowUser registerRequest) {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if ( registerRequest == null ) {</span>
-<span class="nc" id="L72">            return null;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if ( registerRequest == null ) {</span>
+<span class="nc" id="L74">            return null;</span>
         }
 
-<span class="nc" id="L75">        UserEntity userEntity = new UserEntity();</span>
+<span class="nc" id="L77">        UserEntity userEntity = new UserEntity();</span>
 
-<span class="nc" id="L77">        userEntity.setEmail( registerRequest.email() );</span>
-<span class="nc" id="L78">        userEntity.setUsername( registerRequest.username() );</span>
+<span class="nc" id="L79">        userEntity.setEmail( registerRequest.email() );</span>
+<span class="nc" id="L80">        userEntity.setUsername( registerRequest.username() );</span>
 
-<span class="nc" id="L80">        return userEntity;</span>
+<span class="nc" id="L82">        return userEntity;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

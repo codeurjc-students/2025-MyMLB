@@ -49,7 +49,7 @@ describe('Profile Component Tests', () => {
 
         const mockUser: UserRole = { username: 'testUser', roles: ['USER'] };
         authServiceSpy.getActiveUser.and.returnValue(of(mockUser));
-        userServiceSpy.getUserProfile.and.returnValue(of({ email: 'test@test.com', picture: null }));
+        userServiceSpy.getUserProfile.and.returnValue(of({ email: 'test@test.com', picture: null, enableNotifications: false }));
     });
 
     it('should retrieve the active user on init', () => {
@@ -83,7 +83,7 @@ describe('Profile Component Tests', () => {
 
     it('should retrieve profile data successfully', () => {
         const mockPicture: Pictures = { publicId: 'test-123', url: 'http://test-123.png' };
-        userServiceSpy.getUserProfile.and.returnValue(of({ email: 'newEmail@gmail.com', picture: mockPicture }));
+        userServiceSpy.getUserProfile.and.returnValue(of({ email: 'newEmail@gmail.com', picture: mockPicture, enableNotifications: false }));
         component['retrieveProfileData']();
         expect(component.currentEmail).toBe('newEmail@gmail.com');
         expect(component.pictureSrc).toEqual(mockPicture);

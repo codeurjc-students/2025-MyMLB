@@ -7,10 +7,12 @@ export interface User {
 
 export type EditProfileRequest = {
 	email?: string,
-	password?: string
+	password?: string,
+	enableNotifications?: boolean
 }
 
 export type Profile = {
 	email: string,
-	picture: Pictures | null;
+	picture: Pictures | null,
+	enableNotifications: boolean
 }
