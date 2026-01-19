@@ -44,22 +44,22 @@ public class UserEntity {
     @OneToOne(mappedBy=&quot;user&quot;, cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+<span class="pc" id="L47">    @ManyToMany(fetch = FetchType.LAZY)</span>
     @JoinTable(
         name = &quot;user_fav_teams&quot;,
         joinColumns = @JoinColumn(name = &quot;user_id&quot;),
         inverseJoinColumns = @JoinColumn(name = &quot;team_id&quot;)
     )
-<span class="pc" id="L53">    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();</span>
+    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();
 
-    @ElementCollection(fetch= FetchType.EAGER)
-<span class="pc" id="L56">    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();</span>
+<span class="pc" id="L55">    @ElementCollection(fetch= FetchType.EAGER)</span>
+    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
 <span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
 <span class="fc" id="L61">            team.getFavoritedByUsers().remove(this);</span>
-        }
+<span class="fc" id="L62">        }</span>
 <span class="fc" id="L63">        this.favTeams.clear();</span>
 <span class="fc" id="L64">    }</span>
 

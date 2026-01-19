@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.naming.ServiceUnavailableException;
 
 import com.mlb.mlbportal.handler.conflict.*;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -18,95 +19,102 @@ import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 
 @RestControllerAdvice
-<span class="fc" id="L21">public class GlobalHandler {</span>
+<span class="fc" id="L22">public class GlobalHandler {</span>
     private static final String FAILURE = &quot;FAILURE&quot;;
 
     private Map&lt;String, Object&gt; buildResponse(HttpStatus status, String message, String error) {
-<span class="fc" id="L25">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L26">        body.put(&quot;statusCode&quot;, status.value());</span>
-<span class="fc" id="L27">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="fc" id="L28">        body.put(&quot;message&quot;, message);</span>
-<span class="fc" id="L29">        body.put(&quot;error&quot;, error);</span>
-<span class="fc" id="L30">        return body;</span>
+<span class="fc" id="L26">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L27">        body.put(&quot;statusCode&quot;, status.value());</span>
+<span class="fc" id="L28">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="fc" id="L29">        body.put(&quot;message&quot;, message);</span>
+<span class="fc" id="L30">        body.put(&quot;error&quot;, error);</span>
+<span class="fc" id="L31">        return body;</span>
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
-<span class="nc" id="L36">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L37">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
-<span class="nc" id="L38">            body.put(error.getField(), error.getDefaultMessage())</span>
+<span class="nc" id="L37">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L38">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="nc" id="L39">            body.put(error.getField(), error.getDefaultMessage())</span>
         );
-<span class="nc" id="L40">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
-<span class="nc" id="L41">        body.put(&quot;status&quot;, FAILURE);</span>
-<span class="nc" id="L42">        return body;</span>
+<span class="nc" id="L41">        body.put(&quot;statusCode&quot;, HttpStatus.BAD_REQUEST.value());</span>
+<span class="nc" id="L42">        body.put(&quot;status&quot;, FAILURE);</span>
+<span class="nc" id="L43">        return body;</span>
     }
 
     @ExceptionHandler(MaxiumPicturesExceededException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleMaximumPicturesExceeded(MaxiumPicturesExceededException ex) {
-<span class="nc" id="L48">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;A maximum of 5 images is required&quot;);</span>
+<span class="nc" id="L49">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;A maximum of 5 images is required&quot;);</span>
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleIllegalArgument(IllegalArgumentException ex) {
-<span class="nc" id="L54">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;&quot;);</span>
+<span class="nc" id="L55">        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;&quot;);</span>
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map&lt;String, Object&gt; handleResourceNotFound(ResourceNotFoundException ex) {
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Not Found&quot; : ex.getMessage();</span>
-<span class="nc" id="L61">        return buildResponse(HttpStatus.NOT_FOUND, message, &quot;Resource Not Found&quot;);</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Not Found&quot; : ex.getMessage();</span>
+<span class="nc" id="L62">        return buildResponse(HttpStatus.NOT_FOUND, message, &quot;Resource Not Found&quot;);</span>
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleResourceAlreadyExists(ResourceAlreadyExistsException ex) {
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Already Exists&quot; : ex.getMessage();</span>
-<span class="nc" id="L68">        return buildResponse(HttpStatus.CONFLICT, message, &quot;Resource Already Exists&quot;);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        String message = (ex.getMessage() == null) ? &quot;Resource Already Exists&quot; : ex.getMessage();</span>
+<span class="nc" id="L69">        return buildResponse(HttpStatus.CONFLICT, message, &quot;Resource Already Exists&quot;);</span>
     }
 
     @ExceptionHandler(LastPictureDeletionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleLastPictureDeletion(LastPictureDeletionException ex) {
-<span class="nc" id="L74">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
+<span class="nc" id="L75">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
+    }
+
+    @ExceptionHandler(OptimisticEntityLockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map&lt;String, Object&gt; handleOptimisticLock(OptimisticEntityLockException ex) {
+<span class="nc" id="L81">        String message = &quot;This ticket has been answered by another admin. Please, refresh your inbox.&quot;;</span>
+<span class="nc" id="L82">        return this.buildResponse(HttpStatus.CONFLICT, message, &quot;Concurrent Update Conflict&quot;);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map&lt;String, Object&gt; handleNullPointer(NullPointerException ex) {
-<span class="nc bnc" id="L80" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="nc" id="L81">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="nc" id="L89">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L83">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-<span class="nc" id="L84">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
+<span class="nc" id="L91">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map&lt;String, Object&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="nc" id="L90">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-<span class="nc" id="L91">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
+<span class="nc" id="L98">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map&lt;String, Object&gt; handleAuthentication(AuthenticationException ex) {
-<span class="nc" id="L97">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
+<span class="nc" id="L105">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
     }
 
     @ExceptionHandler(InvalidSearchTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleInvalidSearchType(InvalidSearchTypeException ex) {
-<span class="fc" id="L103">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
+<span class="fc" id="L111">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Map&lt;String, Object&gt; handleServiceUnavailable(ServiceUnavailableException ex) {
-<span class="nc" id="L109">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
+<span class="nc" id="L117">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

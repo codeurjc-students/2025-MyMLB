@@ -1,0 +1,9 @@
+### Create a Ticket
+POST https://localhost:8443/api/v1/support
+Content-Type: application/json
+
+{
+  "email": "fonssitorodriguezgutt@gmail.com",
+  "subject": "No puedo iniciar sesión",
+  "body": "Hola, intento iniciar sesión y no me deja. ¿Me pueden ayudar?"
+}

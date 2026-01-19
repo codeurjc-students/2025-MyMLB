@@ -61,7 +61,7 @@ public class TeamLookupService {
 <span class="fc" id="L61">            Map.entry(&quot;SD&quot;, Division.WEST),</span>
 <span class="fc" id="L62">            Map.entry(&quot;COL&quot;, Division.WEST),</span>
 <span class="fc" id="L63">            Map.entry(&quot;ARI&quot;, Division.WEST)</span>
-<span class="fc" id="L64">    );</span>
+    );
 
     @CircuitBreaker(name = &quot;mlbApi&quot;, fallbackMethod = &quot;fallbackTeams&quot;)
     @Retry(name = &quot;mlbApi&quot;)
@@ -93,8 +93,8 @@ public class TeamLookupService {
 <span class="fc" id="L93">        TeamSummary summary = new TeamSummary(</span>
 <span class="fc" id="L94">                t.name(),</span>
 <span class="fc" id="L95">                t.abbreviation(),</span>
-<span class="fc" id="L96">                league,</span>
-<span class="fc" id="L97">                division);</span>
+                league,
+                division);
 
 <span class="fc" id="L99">        this.cache.put(teamId, summary);</span>
 <span class="fc" id="L100">        return summary;</span>

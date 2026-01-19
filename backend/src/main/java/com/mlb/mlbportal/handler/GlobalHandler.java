@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.naming.ServiceUnavailableException;
 
 import com.mlb.mlbportal.handler.conflict.*;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -72,6 +73,13 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> handleLastPictureDeletion(LastPictureDeletionException ex) {
         return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "Cannot delete the last picture of a stadium");
+    }
+
+    @ExceptionHandler(OptimisticEntityLockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleOptimisticLock(OptimisticEntityLockException ex) {
+        String message = "This ticket has been answered by another admin. Please, refresh your inbox.";
+        return this.buildResponse(HttpStatus.CONFLICT, message, "Concurrent Update Conflict");
     }
 
     @ExceptionHandler(NullPointerException.class)
