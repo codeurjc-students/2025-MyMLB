@@ -1,0 +1,33 @@
+<div class="app-background min-h-screen">
+    <div class="max-w-5xl mx-auto py-10 px-6">
+        <h1 class="app-page-titles text-center mb-10">
+            Support Inbox
+        </h1>
+
+        @if (tickets.length === 0) {
+            <div class="flex flex-col items-center justify-center text-center mt-10">
+                <img
+                    src="assets/no-tickets.png"
+                    alt="No Tickets Picture"
+                    class="w-72 max-w-full h-auto mb-6 drop-shadow-md"
+                />
+                <h2 class="text-4xl font-bold text-gray-700 dark:text-gray-200 mb-2">
+                    No Tickets at the moment
+                </h2>
+                <p class="text-lg text-gray-500 dark:text-gray-400">
+                    You're all caught up! 🎉
+                </p>
+            </div>
+        }
+
+        <div class="flex flex-col gap-4 mt-6">
+            @for (ticket of tickets; track ticket.id) {
+                <app-support-ticket-item [ticket]="ticket" (open)="openTicket(ticket.id)" />
+            }
+        </div>
+
+        @if (selectedTicketId !== null) {
+            <app-support-ticket-modal [ticketId]="selectedTicketId" (close)="closeModal()" />
+        }
+    </div>
+</div>

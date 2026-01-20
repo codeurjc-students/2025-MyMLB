@@ -113,6 +113,9 @@ export class NavbarComponent implements OnInit {
 			case 'create-player':
 				this.router.navigate(['create-player']);
 				break;
+			case 'inbox':
+				this.router.navigate(['inbox']);
+				break;
 			default:
 				this.router.navigate(['coming-soon']);
 				break;

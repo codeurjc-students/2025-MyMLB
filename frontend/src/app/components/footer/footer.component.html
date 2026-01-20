@@ -1,0 +1,30 @@
+<footer class="w-full bg-gray-900 dark:bg-gray-950 text-gray-300 py-8 px-6 border-t border-gray-800">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Branding -->
+        <div class="text-center md:text-left">
+            <h3 class="text-xl font-semibold tracking-tight bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                MLB Portal
+            </h3>
+            <p class="text-sm text-gray-400 mt-1">
+                Your baseball universe, beautifully crafted.
+            </p>
+        </div>
+
+        <!-- Contact Support -->
+        <button
+            (click)="showModal = true"
+            class="text-sm text-gray-300 cursor-pointer hover:text-white transition px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 shadow-md"
+        >
+            Contact Support
+        </button>
+
+        <!-- Copyright -->
+        <div class="text-sm text-gray-500 text-center md:text-right">
+            &copy; {{ currentYear }} MLB Portal. All rights reserved.
+        </div>
+    </div>
+
+    @if (showModal) {
+        <app-support [showModal]="showModal" (closeModal)="showModal = false"></app-support>
+    }
+</footer>

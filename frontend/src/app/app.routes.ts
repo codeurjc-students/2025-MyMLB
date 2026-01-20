@@ -49,5 +49,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/admin/create-player/create-player.component').then((m) => m.CreatePlayerComponent)
 	},
+	{
+		path: 'inbox',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/footer/support/inbox/inbox.component').then((m) => m.InboxComponent)
+	},
 	{ path: '**', redirectTo: 'error' },
 ];

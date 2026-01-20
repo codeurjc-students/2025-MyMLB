@@ -1,0 +1,69 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+	[appEscapeClose]="handleCancel">
+
+	<div class="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 relative">
+
+        <h2 class="text-2xl font-semibold text-center mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            Support Ticket
+        </h2>
+
+        <!-- Conversation -->
+        <div class="max-h-80 overflow-y-auto flex flex-col gap-4 pr-2">
+            @for (msg of messages; track msg.id) {
+                <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        From: {{ msg.senderEmail }}
+                    </p>
+                    <p class="text-gray-800 dark:text-gray-200 mt-2">
+                        {{ msg.body }}
+                    </p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                        {{ msg.creationDate | date:'short' }}
+                    </p>
+                </div>
+            }
+        </div>
+
+        <!-- Reply -->
+        <div class="mt-6">
+            <textarea
+                [(ngModel)]="replyBody"
+                rows="4"
+                class="text-inputs w-full resize-none placeholder-gray-300 dark:placeholder-gray-400"
+                placeholder="Write your reply..."
+            ></textarea>
+        </div>
+
+		<!-- Buttons -->
+        <div class="flex justify-between mt-6">
+            <button class="app-success-button group" (click)="sendReply()">
+                <span class="app-button-bright"></span>
+                <span class="app-button-texts">Send Reply</span>
+            </button>
+
+            <button class="app-red-buttons group" (click)="closeTicket()">
+				<span class="app-button-bright"></span>
+                <span class="app-button-texts"> Close Ticket </span>
+            </button>
+        </div>
+
+        <button class="absolute top-4 right-4 text-gray-400 hover:text-white transition" (click)="handleCancel()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+	@if (success) {
+		<app-success-modal [message]="successMessage" (continue)="success = false"></app-success-modal>
+	}
+
+	@if (error) {
+		<app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+	}
+
+	@if (loading) {
+		<app-loading-modal [message]="'Sending the response...'"></app-loading-modal>
+	}
+</div>

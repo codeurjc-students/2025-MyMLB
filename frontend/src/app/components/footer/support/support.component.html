@@ -1,0 +1,78 @@
+<div
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+	[ngClass]="isClosing ? 'animate-fade-out-down' : 'animate-fade-in-up'"
+	[appEscapeClose]="handleCancel">
+
+    <div class="w-full max-w-xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 relative">
+        <h2 class="text-2xl font-semibold text-center mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            Contact Support
+        </h2>
+
+        <form [formGroup]="supportForm" (ngSubmit)="createTicket()" class="flex flex-col gap-6">
+
+            <!-- Email -->
+            <div class="flex flex-col gap-2">
+                <label class="text-gray-700 dark:text-gray-300 font-medium">Your Email</label>
+                @if (emailControl) {
+					<input
+						type="email"
+						[formControl]="emailControl"
+						class="text-inputs"
+						[placeholder]="userEmail ? userEmail : 'Enter the email you wish to use'"
+						readonly
+					/>
+				}
+            </div>
+
+            <!-- Subject -->
+            <div class="flex flex-col gap-2">
+                <label class="text-gray-700 dark:text-gray-300 font-medium">Subject</label>
+                <input
+                    type="text"
+                    formControlName="subject"
+					class="text-inputs placeholder-gray-300 dark:placeholder-gray-300"
+        			placeholder="Subject..."
+                />
+            </div>
+
+            <!-- Body -->
+            <div class="flex flex-col gap-2">
+                <label class="text-gray-700 dark:text-gray-300 font-medium">Message</label>
+                <textarea
+                    formControlName="body"
+                    rows="5"
+                    class="text-inputs resize-none placeholder-gray-300 dark:placeholder-gray-300"
+        			placeholder="Write here..."
+                ></textarea>
+            </div>
+
+            <button
+                type="submit"
+                [class.disabled]="supportForm.invalid"
+                class="w-full app-success-button group"
+            >
+                <span class="app-button-bright"></span>
+                <span class="app-button-texts">Send Message</span>
+            </button>
+        </form>
+
+        <!-- Close Button -->
+        <button
+            type="button"
+            (click)="handleCancel()"
+            class="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+		<!-- Modals -->
+        @if (success) {
+            <app-success-modal [message]="successMessage" (continue)="success = false"></app-success-modal>
+        }
+        @if (error) {
+            <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+        }
+    </div>
+</div>

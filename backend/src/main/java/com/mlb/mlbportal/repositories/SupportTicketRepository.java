@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface SupportTicketRepository extends JpaRepository<SupportTicket, UUID> {
-    @Query("SELECT t FROM SupportTicket t WHERE t.status = com.mlb.mlbportal.models.enums.SupportTicketStatus.OPEN")
+    @Query("SELECT t FROM SupportTicket t WHERE t.status != com.mlb.mlbportal.models.enums.SupportTicketStatus.CLOSED")
     List<SupportTicket> findAllOpenTickets();
 }

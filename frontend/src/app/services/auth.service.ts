@@ -39,6 +39,10 @@ export class AuthService {
 		return this.http.get<UserRole>(`${this.apiUrl}/me`, { withCredentials: true });
 	}
 
+	public get currentUser(): UserRole {
+		return this.currentUserSubject.value;
+	}
+
 	public loginUser(loginRequest: LoginRequest): Observable<AuthResponse> {
 		return this.http
 			.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
