@@ -1,12 +1,12 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { UserService } from '../../../services/user.service';
-import { SupportService } from '../../../services/support/support.service';
+import { UserService } from '../../services/user.service';
+import { SupportService } from '../../services/support.service';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CreateTicketRequest } from '../../../models/support/create-ticket-request.model';
-import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
-import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
+import { CreateTicketRequest } from '../../models/support/create-ticket-request.model';
+import { EscapeCloseDirective } from "../../directives/escape-close.directive";
+import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 
 @Component({
 	selector: 'app-support',
@@ -39,8 +39,8 @@ export class Support implements OnInit {
 
 		this.supportForm = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
-			subject: ['Subject...', [Validators.required]],
-			body: ['Write here...', [Validators.required]]
+			subject: ['', [Validators.required]],
+			body: ['', [Validators.required]]
 		});
 	}
 
@@ -49,9 +49,6 @@ export class Support implements OnInit {
 			next: (response) => {
 				this.userEmail = response.email;
 				this.supportForm.get('email')?.setValue(this.userEmail);
-			},
-			error: (_) => {
-				this.userEmail = null;
 			}
 		});
 	}
@@ -100,6 +97,7 @@ export class Support implements OnInit {
 			next: (_) => {
 				this.success = true;
 				this.successMessage = 'Message sent successfully';
+				this.supportService.updateCurrentOpenTickets();
 			},
 			error: (_) => {
 				this.error = true;

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Support } from "./support/support.component";
+import { Support } from "../support/support.component";
 
 @Component({
 	selector: 'app-footer',

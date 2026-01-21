@@ -17,9 +17,10 @@
 					<input
 						type="email"
 						[formControl]="emailControl"
-						class="text-inputs"
 						[placeholder]="userEmail ? userEmail : 'Enter the email you wish to use'"
-						readonly
+						[readOnly]="!!userEmail"
+						class="text-inputs"
+						[ngClass]="{'opacity-70 cursor-not-allowed bg-gray-100 dark:bg-gray-800': !!userEmail}"
 					/>
 				}
             </div>
@@ -30,8 +31,8 @@
                 <input
                     type="text"
                     formControlName="subject"
-					class="text-inputs placeholder-gray-300 dark:placeholder-gray-300"
         			placeholder="Subject..."
+					class="text-inputs"
                 />
             </div>
 
@@ -41,8 +42,8 @@
                 <textarea
                     formControlName="body"
                     rows="5"
-                    class="text-inputs resize-none placeholder-gray-300 dark:placeholder-gray-300"
         			placeholder="Write here..."
+					class="text-inputs"
                 ></textarea>
             </div>
 

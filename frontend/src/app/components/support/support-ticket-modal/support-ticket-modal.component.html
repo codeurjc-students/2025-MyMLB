@@ -59,6 +59,10 @@
 		<app-success-modal [message]="successMessage" (continue)="success = false"></app-success-modal>
 	}
 
+	@if (ticketClosed) {
+		<app-success-modal [message]="successMessage" (continue)="closeModal()"></app-success-modal>
+	}
+
 	@if (error) {
 		<app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
 	}

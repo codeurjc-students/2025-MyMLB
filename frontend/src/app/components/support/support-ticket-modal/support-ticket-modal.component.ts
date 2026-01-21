@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SupportService } from '../../../../services/support/support.service';
-import { SupportMessage } from '../../../../models/support/support-message.model';
+import { SupportService } from '../../../services/support.service';
+import { SupportMessage } from '../../../models/support/support-message.model';
 import { FormsModule } from '@angular/forms';
-import { SuccessModalComponent } from "../../../success-modal/success-modal.component";
-import { ErrorModalComponent } from "../../../modal/error-modal/error-modal.component";
-import { LoadingModalComponent } from "../../../modal/loading-modal/loading-modal.component";
-import { EscapeCloseDirective } from "../../../../directives/escape-close.directive";
+import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
+import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
     selector: 'app-support-ticket-modal',
@@ -28,6 +28,7 @@ export class SupportTicketModalComponent implements OnInit {
 	public loading = false;
 	public success = false;
 	public error = false;
+	public ticketClosed = false;
 
 	public successMessage = '';
 	public errorMessage = '';
@@ -83,11 +84,20 @@ export class SupportTicketModalComponent implements OnInit {
 
     public closeTicket() {
         this.supportService.closeTicket(this.ticketId).subscribe({
-            next: (_) => this.close.emit(),
+            next: (_) => {
+				this.supportService.updateCurrentOpenTickets();
+				this.success = true;
+				this.successMessage = 'Ticket Successfully Closed';
+				this.ticketClosed = true;
+			},
 			error: (_) => {
 				this.error = true;
 				this.errorMessage = 'Unexpected error ocurred closing this ticket.';
 			}
         });
     }
+
+	public closeModal() {
+		this.close.emit();
+	}
 }

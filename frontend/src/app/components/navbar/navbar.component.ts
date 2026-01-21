@@ -7,6 +7,7 @@ import { filter } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { UserService } from '../../services/user.service';
+import { SupportService } from '../../services/support.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -23,6 +24,7 @@ export class NavbarComponent implements OnInit {
 	private userService = inject(UserService);
 	private backgroundService = inject(BackgroundColorService);
 	private selectTeamService = inject(SelectedTeamService);
+	private supportService = inject(SupportService);
 	private router = inject(Router);
 
 	private selectedTeamAbbr: string | undefined = '';
@@ -31,6 +33,9 @@ export class NavbarComponent implements OnInit {
 	public currentRoute = '';
 	public navBarStyleClass = '';
 	public profilePicture = '';
+	public currentOpenTickets: number = 0;
+
+	public isMenuOpen = false;
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
@@ -45,6 +50,7 @@ export class NavbarComponent implements OnInit {
 
 		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
 			this.currentRoute = event.urlAfterRedirects;
+			this.isMenuOpen = false;
 			if (!this.currentRoute.includes('/team')) {
 				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
 				this.selectedTeamAbbr = '';
@@ -59,11 +65,17 @@ export class NavbarComponent implements OnInit {
 		});
 
 		this.userService.profilePicture$.subscribe((url) => this.profilePicture = url);
+
+		this.supportService.opentTickets$.subscribe(ammount => this.currentOpenTickets = ammount);
 	}
 
 	ngOnDestroy() {
 		this.selectTeamService.clearSelectedTeam();
 	}
+
+	public toggleMenu(): void {
+        this.isMenuOpen = !this.isMenuOpen;
+    }
 
 	public toggleDarkModeButton(): void {
 		this.toggleDarkMode.emit();
@@ -94,6 +106,7 @@ export class NavbarComponent implements OnInit {
 	}
 
 	public redirect(page: string) {
+		this.isMenuOpen = false;
 		switch (page) {
 			case 'profile':
 				this.router.navigate(['profile']);

@@ -53,7 +53,7 @@ export const routes: Routes = [
 		path: 'inbox',
 		canActivate: [AdminGuard],
 		loadComponent: () =>
-			import('./components/footer/support/inbox/inbox.component').then((m) => m.InboxComponent)
+			import('./components/support/inbox/inbox.component').then((m) => m.InboxComponent)
 	},
 	{ path: '**', redirectTo: 'error' },
 ];

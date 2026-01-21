@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SupportTicket } from '../../../../models/support/support-ticket.model';
+import { SupportTicket } from '../../../models/support/support-ticket.model';
 
 @Component({
     selector: 'app-support-ticket-item',
