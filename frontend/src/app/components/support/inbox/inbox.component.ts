@@ -17,6 +17,9 @@ export class InboxComponent implements OnInit {
     public tickets: SupportTicket[] = [];
     public selectedTicketId: string | null = null;
 
+	public error = false;
+	public errorMessage = '';
+
     ngOnInit(): void {
         this.loadTickets();
     }
@@ -24,7 +27,10 @@ export class InboxComponent implements OnInit {
     public loadTickets() {
         this.supportService.getOpenTickets().subscribe({
             next: (data) => this.tickets = data,
-            error: (_) => console.error('Failed to load tickets')
+            error: (_) => {
+				this.error = true;
+				this.errorMessage = 'Failed to load tickets';
+			}
         });
     }
 
