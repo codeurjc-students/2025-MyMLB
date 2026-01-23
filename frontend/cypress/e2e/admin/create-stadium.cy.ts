@@ -4,6 +4,7 @@ describe('Create Stadium Component E2E Tests', () => {
 	const API_URL = '/api/v1/stadiums';
 
 	beforeEach(() => {
+		cy.viewport(1280, 720);
 		cy.intercept('GET', '/api/v1/auth/me', {
 			statusCode: 200,
 			body: { username: 'testUser', roles: ['ADMIN'] },

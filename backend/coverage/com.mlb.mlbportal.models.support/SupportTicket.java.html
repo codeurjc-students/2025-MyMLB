@@ -33,7 +33,7 @@ public class SupportTicket {
     @ToString.Exclude
     private List&lt;SupportMessage&gt; messages;
 
-    @Version // Optimistick Locking
+    @Version // Optimistick Locking. This manage the concurrent access to tickets.
     private Long version;
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

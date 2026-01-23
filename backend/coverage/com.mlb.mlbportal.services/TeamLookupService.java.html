@@ -82,9 +82,9 @@ public class TeamLookupService {
 
 <span class="fc" id="L83">        League league = null;</span>
 <span class="pc bpc" id="L84" title="2 of 4 branches missed.">        if (t.league() != null &amp;&amp; t.league().name() != null) {</span>
-<span class="fc bfc" id="L85" title="All 3 branches covered.">            league = switch (t.league().name()) {</span>
+<span class="pc bpc" id="L85" title="1 of 3 branches missed.">            league = switch (t.league().name()) {</span>
 <span class="fc" id="L86">                case &quot;American League&quot; -&gt; League.AL;</span>
-<span class="fc" id="L87">                case &quot;National League&quot; -&gt; League.NL;</span>
+<span class="nc" id="L87">                case &quot;National League&quot; -&gt; League.NL;</span>
 <span class="fc" id="L88">                default -&gt; null;</span>
             };
         }

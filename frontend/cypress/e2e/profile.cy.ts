@@ -16,7 +16,7 @@ describe('Profile Component E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getActiveUser');
 
-		cy.get('img[alt="Avatar Profile"]').should('be.visible').parent('a').click();
+		cy.get('img[alt="Avatar Profile"]').should('be.visible').parent('button').click();
 		cy.url().should('include', '/profile');
 
 		 cy.intercept('GET', `${USERS_API_URL}/profile`, {

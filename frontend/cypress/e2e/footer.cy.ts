@@ -15,10 +15,7 @@ describe('Footer E2E Tests', () => {
 
         cy.get('app-support').should('exist').and('be.visible');
 
-        cy.get('app-support')
-            .find('button')
-            .contains(/close/i)
-            .click({ force: true });
+        cy.get('#close-button').click();
 
         cy.get('app-support').should('not.exist');
     });

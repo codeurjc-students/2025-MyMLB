@@ -17,8 +17,13 @@ tags:
   description: Endpoints to fetch MLB official data from statsapi.mlb.com
 - name: Teams
   description: Operations related to MLB teams and standings
+- name: UserSupport
+  description: Allows the user to contact the admins of the applications regarding
+    any issue they might have
 - name: Users
   description: Operations related to MLB Portal users and their favorite teams
+- name: AdminSupport
+  description: Receives all the issues from the users and reply to each one of them
 - name: Matches
   description: Operations related to the matches
 - name: Search
@@ -43,6 +48,14 @@ paths:
               required:
               - file
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid file format
           content: {}
@@ -54,19 +67,11 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -86,6 +91,14 @@ paths:
       description: Deletes the profile picture of the current active user.
       operationId: deleteProfilePicture
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -102,22 +115,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
@@ -138,6 +143,10 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
         "400":
           description: Bad Request
           content:
@@ -154,16 +163,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -185,6 +190,10 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
         "400":
           description: Bad Request
           content:
@@ -201,20 +210,72 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
           description: Team successfully removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/support:
+    post:
+      tags:
+      - UserSupport
+      summary: Create a Ticket
+      description: Send the admins an email regarding the issue of the user
+      operationId: createTicket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTicketRequest"
+        required: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully created the email
           content:
             application/json:
               schema:
@@ -243,6 +304,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -259,10 +328,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -271,14 +336,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of stadiums
           content:
@@ -299,16 +360,20 @@ paths:
               $ref: "#/components/schemas/CreateStadiumRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid request body or missing required fields
           content:
             application/json: {}
         "409":
           description: Stadium already exists
-          content:
-            application/json: {}
-        "500":
-          description: Internal server error
           content:
             application/json: {}
         "404":
@@ -319,14 +384,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "201":
           description: Stadium created successfully
           content:
@@ -348,6 +409,14 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -364,22 +433,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found or no pictures available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved stadium pictures
           content:
@@ -411,6 +472,14 @@ paths:
               required:
               - file
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid file format or request parameters
           content:
@@ -423,22 +492,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Picture uploaded successfully
           content:
@@ -464,6 +525,14 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -476,22 +545,14 @@ paths:
           description: Cannot delete the last picture of a stadium
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium or picture not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
@@ -523,6 +584,14 @@ paths:
               required:
               - file
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid file format
           content: {}
@@ -534,19 +603,11 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -583,6 +644,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -599,10 +668,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -611,14 +676,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of position players
           content:
@@ -638,25 +699,25 @@ paths:
               $ref: "#/components/schemas/CreatePositionPlayerRequest"
         required: true
       responses:
-        "400":
-          description: Invalid request data
-          content: {}
-        "409":
-          description: Roster full or player already exists
-          content: {}
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid request data
+          content: {}
+        "409":
+          description: Roster full or player already exists
+          content: {}
         "404":
           description: Team not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -692,6 +753,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -708,10 +777,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -720,14 +785,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of pitchers
           content:
@@ -747,25 +808,25 @@ paths:
               $ref: "#/components/schemas/CreatePitcherRequest"
         required: true
       responses:
-        "400":
-          description: Invalid request data
-          content: {}
-        "409":
-          description: Roster full or player already exists
-          content: {}
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid request data
+          content: {}
+        "409":
+          description: Roster full or player already exists
+          content: {}
         "404":
           description: Team not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -792,18 +853,18 @@ paths:
               $ref: "#/components/schemas/ResetPasswordRequest"
         required: true
       responses:
-        "400":
-          description: Invalid or expired recovery code
-        "409":
-          description: Conflict
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Invalid or expired recovery code
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -818,8 +879,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -849,18 +910,18 @@ paths:
               $ref: "#/components/schemas/RegisterRequest"
         required: true
       responses:
-        "400":
-          description: Invalid registration data
-        "409":
-          description: User already exists in the database
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid registration data
+        "409":
+          description: User already exists in the database
         "404":
           description: Not Found
           content:
@@ -869,8 +930,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -901,6 +962,8 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Invalid or expired refresh token
         "400":
           description: Bad Request
           content:
@@ -917,14 +980,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Not Found
           content:
@@ -933,8 +988,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Invalid or expired refresh token
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Token refreshed successfully
           content:
@@ -952,6 +1013,14 @@ paths:
       description: Clears authentication cookies and invalidates session tokens.
       operationId: logOut
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -968,14 +1037,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Not Found
           content:
@@ -984,8 +1045,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1015,6 +1076,8 @@ paths:
               $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
+        "401":
+          description: Invalid credentials
         "400":
           description: Bad Request
           content:
@@ -1031,14 +1094,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Not Found
           content:
@@ -1047,8 +1102,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Invalid credentials
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Login successful
           content:
@@ -1073,6 +1134,14 @@ paths:
               $ref: "#/components/schemas/ForgotPasswordRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid email address
         "409":
@@ -1083,18 +1152,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: There is no user registered with this email
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1110,6 +1171,111 @@ paths:
               example:
                 status: SUCCESS
                 message: Recovery email sent successfully
+  /api/v1/admin/support/tickets/{ticketId}/reply:
+    post:
+      tags:
+      - AdminSupport
+      summary: Reply to a given ticket
+      description: Allows the admins to answer a ticket from the user.
+      operationId: reply
+      parameters:
+      - name: ticketId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplyRequest"
+        required: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Ticket has already been closed
+          content:
+            application/json: {}
+        "404":
+          description: Ticket not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully reply to the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportMessageDTO"
+  /api/v1/admin/support/tickets/{ticketId}/close:
+    post:
+      tags:
+      - AdminSupport
+      summary: Close the given ticket
+      description: "Allows the admins to close the given ticket, ending the issue\
+        \ of the user."
+      operationId: closeTicket
+      parameters:
+      - name: ticketId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Ticket has already been closed
+          content:
+            application/json: {}
+        "404":
+          description: Ticket not found
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully closes the ticket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
   /api/v1/users:
     get:
       tags:
@@ -1133,6 +1299,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1149,10 +1323,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1161,14 +1331,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of users
           content:
@@ -1189,6 +1355,10 @@ paths:
               $ref: "#/components/schemas/EditProfileRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
         "400":
           description: Invalid input data
           content:
@@ -1201,16 +1371,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -1235,6 +1401,14 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1251,22 +1425,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved team info
           content:
@@ -1293,6 +1459,14 @@ paths:
               $ref: "#/components/schemas/UpdateTeamRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid request body or missing required fields
           content:
@@ -1305,22 +1479,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Team successfully updated
           content:
@@ -1347,6 +1513,14 @@ paths:
               $ref: "#/components/schemas/EditPositionPlayerRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1358,19 +1532,11 @@ paths:
         "409":
           description: Roster full
           content: {}
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1403,6 +1569,14 @@ paths:
               $ref: "#/components/schemas/EditPitcherRequest"
         required: true
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1414,19 +1588,11 @@ paths:
         "409":
           description: Roster full
           content: {}
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1448,6 +1614,14 @@ paths:
         user.
       operationId: getUserProfile
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1464,22 +1638,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved the information
           content:
@@ -1494,6 +1660,10 @@ paths:
       description: Returns the list of favorite MLB teams for the authenticated user.
       operationId: getFavoriteTeams
       responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
         "400":
           description: Bad Request
           content:
@@ -1510,10 +1680,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1522,8 +1688,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -1556,6 +1722,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1572,10 +1746,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1584,14 +1754,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of teams
           content:
@@ -1608,6 +1774,14 @@ paths:
         \ win percentage, games back, and current streak."
       operationId: getStandings
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1624,10 +1798,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1636,14 +1806,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved standings
           content:
@@ -1674,6 +1840,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1690,10 +1864,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1702,14 +1872,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of teams
           content:
@@ -1731,6 +1897,14 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1747,22 +1921,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved stadium info
           content:
@@ -1790,6 +1956,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1806,14 +1980,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Not Found
           content:
@@ -1822,8 +1988,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1877,6 +2043,14 @@ paths:
           format: int32
           default: 0
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: "Missing or invalid parameters (e.g., playerType not provided\
             \ or incorrect)"
@@ -1890,22 +2064,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: "Invalid search type (not stadium, team, or player)"
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved search results
           content:
@@ -1936,6 +2102,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -1952,10 +2126,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1964,14 +2134,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved list of players
           content:
@@ -1993,6 +2159,14 @@ paths:
         schema:
           type: string
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2009,22 +2183,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Player not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved player info
           content:
@@ -2060,6 +2226,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2076,22 +2250,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved position players of the team
           content:
@@ -2127,6 +2293,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2143,22 +2317,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved pitchers of the team
           content:
@@ -2187,6 +2353,14 @@ paths:
           type: string
           format: date
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2203,14 +2377,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "404":
           description: Not Found
           content:
@@ -2219,8 +2385,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
             '*/*':
               schema:
@@ -2275,6 +2441,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Invalid location parameter (must be 'home' or 'away')
           content:
@@ -2287,22 +2461,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found or no matches available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved matches
           content:
@@ -2333,6 +2499,14 @@ paths:
           format: int32
           default: 10
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2349,10 +2523,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -2361,14 +2531,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved the matches
           content:
@@ -2402,6 +2568,14 @@ paths:
           type: integer
           format: int32
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2418,22 +2592,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found or no matches available for the given month
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal server error
           content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+            application/json: {}
         "200":
           description: Successfully retrieved matches
           content:
@@ -2448,6 +2614,8 @@ paths:
       description: Obtain details of the currently authenticated user.
       operationId: getActiveUser
       responses:
+        "401":
+          description: User not authenticated
         "400":
           description: Bad Request
           content:
@@ -2458,14 +2626,6 @@ paths:
                   type: object
         "409":
           description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -2480,8 +2640,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: User not authenticated
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: User successfully authenticated
           content:
@@ -2492,20 +2658,22 @@ paths:
                 username: johndoe
                 roles:
                 - USER
-  /api/v1/players/{playerName}:
-    delete:
+  /api/v1/admin/support/tickets:
+    get:
       tags:
-      - Players
-      summary: Delete player
-      description: Deletes a player by name and returns their details.
-      operationId: deletePlayer
-      parameters:
-      - name: playerName
-        in: path
-        required: true
-        schema:
-          type: string
+      - AdminSupport
+      summary: Get all open tickets
+      description: Returns a list of all open tickets the admins have.
+      operationId: getOpenTickets
       responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "400":
           description: Bad Request
           content:
@@ -2522,8 +2690,114 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "500":
-          description: Internal Server Error
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved the list of open tickets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTicketDTO"
+  /api/v1/admin/support/tickets/{ticketId}/conversation:
+    get:
+      tags:
+      - AdminSupport
+      summary: Get the conversation of a given ticket
+      description: Returns all messages between the admin and the user of a certain
+        ticket.
+      operationId: getConversation
+      parameters:
+      - name: ticketId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved the conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportTicketDTO"
+  /api/v1/players/{playerName}:
+    delete:
+      tags:
+      - Players
+      summary: Delete player
+      description: Deletes a player by name and returns their details.
+      operationId: deletePlayer
+      parameters:
+      - name: playerName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2533,8 +2807,8 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -2555,6 +2829,10 @@ paths:
       description: Delete the account of the active user from the system.
       operationId: deleteAccount
       responses:
+        "401":
+          description: Unauthorized access
+          content:
+            application/json: {}
         "400":
           description: Bad Request
           content:
@@ -2571,16 +2849,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized access
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "200":
@@ -2610,6 +2884,19 @@ components:
           type: string
         error:
           type: string
+    CreateTicketRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        subject:
+          type: string
+        body:
+          type: string
+      required:
+      - body
+      - email
+      - subject
     CreateStadiumRequest:
       type: object
       properties:
@@ -2833,6 +3120,28 @@ components:
           type: string
       required:
       - email
+    ReplyRequest:
+      type: object
+      properties:
+        adminEmail:
+          type: string
+        body:
+          type: string
+    SupportMessageDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        senderEmail:
+          type: string
+        body:
+          type: string
+        fromUser:
+          type: boolean
+        creationDate:
+          type: string
+          format: date-time
     EditProfileRequest:
       type: object
       properties:
@@ -2840,6 +3149,8 @@ components:
           type: string
         password:
           type: string
+        enableNotifications:
+          type: boolean
     ShowUser:
       type: object
       properties:
@@ -2951,6 +3262,8 @@ components:
           type: string
         picture:
           $ref: "#/components/schemas/PictureInfo"
+        enableNotifications:
+          type: boolean
     TeamSummary:
       type: object
       properties:
@@ -3230,3 +3543,22 @@ components:
             type: string
       required:
       - username
+    SupportTicketDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+        userEmail:
+          type: string
+        status:
+          type: string
+          enum:
+          - OPEN
+          - ANSWERED
+          - CLOSED
+        creationDate:
+          type: string
+          format: date-time

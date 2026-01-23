@@ -98,7 +98,7 @@ public class MlbImportService {
     private boolean isMlbTeamMatch(MatchDTO dto) {
 <span class="fc" id="L99">        boolean homeExists = this.teamRepository.findByName(dto.homeTeam().name()).isPresent();</span>
 <span class="fc" id="L100">        boolean awayExists = this.teamRepository.findByName(dto.awayTeam().name()).isPresent();</span>
-<span class="fc bfc" id="L101" title="All 4 branches covered.">        return homeExists &amp;&amp; awayExists;</span>
+<span class="pc bpc" id="L101" title="2 of 4 branches missed.">        return homeExists &amp;&amp; awayExists;</span>
     }
 
     private MatchDTO toMatchDTO(GameEntry game) {
@@ -113,8 +113,8 @@ public class MlbImportService {
     }
 
     private MatchStatus convertStatus(String apiStatus) {
-<span class="pc bpc" id="L116" title="2 of 4 branches missed.">        return switch (apiStatus) {</span>
-<span class="fc" id="L117">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
+<span class="pc bpc" id="L116" title="3 of 4 branches missed.">        return switch (apiStatus) {</span>
+<span class="nc" id="L117">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
 <span class="nc" id="L118">            case &quot;In Progress&quot; -&gt; MatchStatus.IN_PROGRESS;</span>
 <span class="fc" id="L119">            case &quot;Final&quot; -&gt; MatchStatus.FINISHED;</span>
 <span class="nc" id="L120">            default -&gt; MatchStatus.SCHEDULED;</span>

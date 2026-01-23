@@ -107,6 +107,11 @@ public class WebSecurityConfig {
 
                     // Search Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/searchs/**").hasRole("ADMIN")
+
+                    // Support Endpoints
+                    .requestMatchers(HttpMethod.POST, "/api/v1/support").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/admin/support/tickets/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/admin/support/tickets/**").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

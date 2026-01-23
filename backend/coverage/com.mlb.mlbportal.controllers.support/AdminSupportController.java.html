@@ -10,34 +10,66 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = &quot;AdminSupport&quot;, description = &quot;Receives all the issues from the users and reply to each one of them&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/admin/support/tickets&quot;)
 @RequiredArgsConstructor
 public class AdminSupportController {
     private final SupportService supportService;
 
+    @Operation(summary = &quot;Get all open tickets&quot;, description = &quot;Returns a list of all open tickets the admins have.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the list of open tickets&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @GetMapping(produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;List&lt;SupportTicketDTO&gt;&gt; getAllSupportTickets() {
-<span class="fc" id="L24">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
+    public ResponseEntity&lt;List&lt;SupportTicketDTO&gt;&gt; getOpenTickets() {
+<span class="fc" id="L37">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
     }
 
+    @Operation(summary = &quot;Get the conversation of a given ticket&quot;, description = &quot;Returns all messages between the admin and the user of a certain ticket.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the conversation&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @GetMapping(value = &quot;/{ticketId}/conversation&quot;, produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;List&lt;SupportMessageDTO&gt;&gt; getMessages(@PathVariable(&quot;ticketId&quot;) UUID ticketId) {
-<span class="fc" id="L29">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
+    public ResponseEntity&lt;List&lt;SupportMessageDTO&gt;&gt; getConversation(@PathVariable(&quot;ticketId&quot;) UUID ticketId) {
+<span class="fc" id="L47">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
     }
 
+    @Operation(summary = &quot;Reply to a given ticket&quot;, description = &quot;Allows the admins to answer a ticket from the user.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully reply to the user&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportMessageDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Ticket has already been closed&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @PostMapping(value = &quot;/{ticketId}/reply&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;SupportMessageDTO&gt; reply(@PathVariable(&quot;ticketId&quot;)UUID ticketId, @RequestBody ReplyRequest request) throws MessagingException {
-<span class="fc" id="L34">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
+<span class="fc" id="L59">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
     }
 
+    @Operation(summary = &quot;Close the given ticket&quot;, description = &quot;Allows the admins to close the given ticket, ending the issue of the user.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully closes the ticket&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Ticket has already been closed&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @PostMapping(value = &quot;/{ticketId}/close&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; closeTicket(@PathVariable(&quot;ticketId&quot;)UUID ticketId) {
-<span class="fc" id="L39">        this.supportService.closeTicket(ticketId);</span>
-<span class="fc" id="L40">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
+<span class="fc" id="L71">        this.supportService.closeTicket(ticketId);</span>
+<span class="fc" id="L72">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

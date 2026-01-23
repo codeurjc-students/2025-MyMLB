@@ -12,7 +12,7 @@ Content-Type: application/json
 
 {
   "adminEmail": "mlbportal29@gmail.com",
-  "body": "Hola, hemos reiniciado tu contraseña. Intenta ahora y avísanos si funciona."
+  "body": "Hello, we have reset your password, try again now."
 }
 
 ### Close a ticket
