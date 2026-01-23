@@ -11,6 +11,11 @@ export const RefreshInterceptor: HttpInterceptorFn = (req, next) => {
 
 	return next(req).pipe(
 		catchError((error) => {
+			const isGuest = auth.currentUser.roles.includes('GUEST');
+			if (error.status === 401 && isGuest) {
+				return throwError(() => error);
+			}
+
 			if (error.status === 401 && !req.url.endsWith('/refresh')) {
 				if (!isRefreshing) {
 					isRefreshing = true;

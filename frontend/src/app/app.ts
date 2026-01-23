@@ -4,11 +4,12 @@ import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ThemeService } from './services/theme.service';
 import { ViewportScroller } from '@angular/common';
+import { Footer } from "./components/footer/footer.component";
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, NavbarComponent],
+	imports: [RouterOutlet, NavbarComponent, Footer],
 	templateUrl: './app.html',
 })
 export class AppComponent implements OnInit {

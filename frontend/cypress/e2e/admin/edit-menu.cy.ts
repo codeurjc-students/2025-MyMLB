@@ -4,6 +4,7 @@ describe('Edit Menu E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
+		cy.viewport(1280, 720);
 		cy.intercept('GET', AUTH_API_URL, {
 			statusCode: 200,
 			body: {

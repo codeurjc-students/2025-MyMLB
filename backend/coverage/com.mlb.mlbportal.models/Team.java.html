@@ -62,8 +62,8 @@ public class Team {
     @Lob
     private String generalInfo;
 
-    @ElementCollection
-<span class="pc" id="L66">    private List&lt;Integer&gt; championships = new LinkedList&lt;&gt;();</span>
+<span class="pc" id="L65">    @ElementCollection</span>
+    private List&lt;Integer&gt; championships = new LinkedList&lt;&gt;();
 
     @Enumerated(EnumType.STRING)
     private League league;
@@ -71,24 +71,24 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-<span class="pc" id="L75">    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L74">    @OneToMany(mappedBy = &quot;homeTeam&quot;, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)</span>
+    private List&lt;Match&gt; homeMatches = new ArrayList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-<span class="pc" id="L78">    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L77">    @OneToMany(mappedBy = &quot;awayTeam&quot;, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)</span>
+    private List&lt;Match&gt; awayMatches = new ArrayList&lt;&gt;();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = &quot;stadium_id&quot;)
     private Stadium stadium;
 
-    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-<span class="pc" id="L85">    private List&lt;PositionPlayer&gt; positionPlayers = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L84">    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)</span>
+    private List&lt;PositionPlayer&gt; positionPlayers = new ArrayList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-<span class="pc" id="L88">    private List&lt;Pitcher&gt; pitchers = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L87">    @OneToMany(mappedBy = &quot;team&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)</span>
+    private List&lt;Pitcher&gt; pitchers = new ArrayList&lt;&gt;();
 
-    @ManyToMany(mappedBy = &quot;favTeams&quot;)
-<span class="pc" id="L91">    private Set&lt;UserEntity&gt; favoritedByUsers = new HashSet&lt;&gt;();</span>
+<span class="pc" id="L90">    @ManyToMany(mappedBy = &quot;favTeams&quot;)</span>
+    private Set&lt;UserEntity&gt; favoritedByUsers = new HashSet&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
@@ -96,17 +96,17 @@ public class Team {
 <span class="fc" id="L96">            stadium.setTeam(null);</span>
         }
 
-<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (PositionPlayer player: this.positionPlayers) {</span>
-<span class="fc" id="L100">            player.setTeam(null);</span>
-        }
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        for (PositionPlayer player: this.positionPlayers) {</span>
+<span class="nc" id="L100">            player.setTeam(null);</span>
+<span class="nc" id="L101">        }</span>
 
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        for (Pitcher pitcher : this.pitchers) {</span>
-<span class="fc" id="L104">            pitcher.setTeam(null);</span>
-        }
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        for (Pitcher pitcher : this.pitchers) {</span>
+<span class="nc" id="L104">            pitcher.setTeam(null);</span>
+<span class="nc" id="L105">        }</span>
 
 <span class="fc bfc" id="L107" title="All 2 branches covered.">        for (UserEntity user : this.favoritedByUsers) {</span>
 <span class="fc" id="L108">            user.getFavTeams().remove(this);</span>
-        }
+<span class="fc" id="L109">        }</span>
 <span class="fc" id="L110">        this.favoritedByUsers.clear();</span>
 <span class="fc" id="L111">    }</span>
 

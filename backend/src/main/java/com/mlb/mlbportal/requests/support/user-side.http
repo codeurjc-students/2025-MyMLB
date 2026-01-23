@@ -1,0 +1,9 @@
+### Create a Ticket
+POST https://localhost:8443/api/v1/support
+Content-Type: application/json
+
+{
+  "email": "fonssitorodriguezgutt@gmail.com",
+  "subject": "Login problems",
+  "body": "Hi, I'm trying to log in but I'm having trouble. Can you help me?"
+}

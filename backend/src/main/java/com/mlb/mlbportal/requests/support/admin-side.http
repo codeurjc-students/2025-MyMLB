@@ -1,0 +1,20 @@
+### Obtain all Tickets.
+GET https://localhost:8443/api/v1/admin/support/tickets
+Accept: application/json
+
+### Retrieve the entire conversation between the user and the admin of a given ticket
+GET https://localhost:8443/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/conversation
+Accept: application/json
+
+### Answer to a certain ticket
+POST https://localhost:8443/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/reply
+Content-Type: application/json
+
+{
+  "adminEmail": "mlbportal29@gmail.com",
+  "body": "Hello, we have reset your password, try again now."
+}
+
+### Close a ticket
+POST https://localhost:8443/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/close
+Accept: application/json

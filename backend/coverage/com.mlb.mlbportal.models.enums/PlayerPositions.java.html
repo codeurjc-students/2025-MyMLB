@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     @JsonCreator
     public static PlayerPositions fromLabel(String label) {
 <span class="pc bpc" id="L30" title="1 of 2 branches missed.">        for (PlayerPositions pos : values()) {</span>
-<span class="fc bfc" id="L31" title="All 4 branches covered.">            if (pos.name().equalsIgnoreCase(label) || pos.getLabel().equalsIgnoreCase(label)) {</span>
+<span class="pc bpc" id="L31" title="1 of 4 branches missed.">            if (pos.name().equalsIgnoreCase(label) || pos.getLabel().equalsIgnoreCase(label)) {</span>
 <span class="fc" id="L32">                return pos;</span>
             }
         }

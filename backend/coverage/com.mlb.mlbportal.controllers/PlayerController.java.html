@@ -119,7 +119,7 @@ public class PlayerController {
     @PostMapping(value = &quot;/position-players&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PositionPlayerDTO&gt; createPositionPlayer(@Valid @RequestBody CreatePositionPlayerRequest request) {
 <span class="fc" id="L121">        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);</span>
-<span class="fc" id="L122">        URI location = ServletUriComponentsBuilder</span>
+        URI location = ServletUriComponentsBuilder
 <span class="fc" id="L123">                .fromCurrentContextPath()</span>
 <span class="fc" id="L124">                .path(&quot;/api/v1/players/{name}&quot;)</span>
 <span class="fc" id="L125">                .buildAndExpand(player.name())</span>
@@ -137,7 +137,7 @@ public class PlayerController {
     @PostMapping(value = &quot;/pitchers&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PitcherDTO&gt; createPitcher(@Valid @RequestBody CreatePitcherRequest request) {
 <span class="nc" id="L139">        PitcherDTO player = this.playerService.createPitcher(request);</span>
-<span class="nc" id="L140">        URI location = ServletUriComponentsBuilder</span>
+        URI location = ServletUriComponentsBuilder
 <span class="nc" id="L141">                .fromCurrentContextPath()</span>
 <span class="nc" id="L142">                .path(&quot;/api/v1/players/{name}&quot;)</span>
 <span class="nc" id="L143">                .buildAndExpand(player.name())</span>

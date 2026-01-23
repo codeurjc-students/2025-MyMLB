@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 	templateUrl: './login.component.html',
 })
 export class LoginComponent {
-
 	@Output() toggleForm = new EventEmitter<void>();
 	public loginForm: FormGroup;
 	public errorMessage: string = "";

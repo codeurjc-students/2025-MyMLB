@@ -1,118 +1,94 @@
 <header>
-	<nav class="shadow-md px-2 py-2.5" [ngClass]="navBarStyleClass">
-		<div class="flex flex-wrap items-center justify-between mx-auto max-w-[95%]">
-			<!-- Logo -->
-			<div class="flex items-center pl-1">
-				<a
-					[routerLink]="'/'"
-					class="flex items-center hover:opacity-90 transition duration-300 ease-in-out"
-				>
-					<img
-						src="assets/logo.png"
-						class="h-8 sm:h-10 mr-2 rounded-md bg-white p-0.5 shadow-md"
-						alt="MLB Portal Logo"
-					/>
-					<span class="text-2xl font-semibold text-white whitespace-nowrap"
-						>MLB Portal</span
-					>
+	<nav class="shadow-md px-4 py-2 relative" [ngClass]="navBarStyleClass">
+		<div class="flex items-center justify-between mx-auto max-w-[98%] lg:max-w-[95%]">
+
+		<!-- Logo -->
+		<div class="z-20 flex-shrink-0">
+			<a [routerLink]="'/'" class="flex items-center hover:opacity-90 transition duration-300">
+			<img src="assets/logo.png" class="h-8 sm:h-10 mr-3 rounded-md bg-white p-0.5 shadow-md" alt="MLB Portal Logo" />
+			<span class="text-xl sm:text-2xl font-bold text-white whitespace-nowrap">MLB Portal</span>
+			</a>
+		</div>
+
+		<!-- Navigation Items -->
+		<div class="hidden lg:flex absolute inset-0 items-center justify-center pointer-events-none">
+			<ul class="flex flex-row items-center gap-x-4 xl:gap-x-6 font-medium pointer-events-auto">
+			<li>
+				<a [routerLink]="'/'" class="nav-elems px-4 py-2 rounded-md" [ngClass]="[applyStyle('/'), itemsHover()]">
+				Home
 				</a>
+			</li>
+
+			@if (!roles.includes("USER") && !roles.includes("ADMIN")) {
+				<li><a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" class="nav-elems" [ngClass]="itemsHover()">Login</a></li>
+				<li><a [routerLink]="'/auth'" [queryParams]="{ form: 'register' }" class="nav-elems" [ngClass]="itemsHover()">Sign Up</a></li>
+			}
+
+			@if (roles.includes("USER")) {
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]" (click)="redirect('coming-soon')">My Tickets</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a></li>
+			}
+
+			@if (!roles.includes("ADMIN")) {
+				<li class="relative group">
+				<a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
+				<app-dropdown-menu></app-dropdown-menu>
+				</li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a></li>
+			}
+			@else if (roles.includes("ADMIN")) {
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Info</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/create-player'), itemsHover()]" (click)="redirect('create-player')">Create Player</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/create-stadium'), itemsHover()]" (click)="redirect('create-stadium')">Create Stadium</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/statistics'), itemsHover()]" (click)="redirect('coming-soon')">Statistics</a></li>
+			}
+			</ul>
+		</div>
+
+		<div class="z-20 flex items-center gap-x-3 sm:gap-x-5">
+
+			<div class="flex items-center transition-all duration-300"
+				[ngClass]="!roles.includes('ADMIN') ? 'mr-8 sm:mr-12 lg:mr-16' : 'mr-2 sm:mr-4'">
+			<label class="relative inline-flex items-center cursor-pointer">
+				<input type="checkbox" [checked]="isDarkMode" (change)="toggleDarkModeButton()" class="sr-only peer" />
+				<div class="w-11 h-6 bg-gray-400/50 rounded-full peer peer-focus:ring-2 peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+				<span class="ml-2 text-sm font-medium text-white hidden xl:inline">Dark Mode</span>
+			</label>
 			</div>
 
-			<!-- Menu -->
-			<div class="lg:flex items-center justify-between flex-grow ml-49 id='mobile-menu-2'">
-				<!-- Links -->
-				<div class="flex items-center justify-center flex-grow min-w-0">
-					<ul class="flex flex-row flex-wrap gap-x-4 sm:gap-x-6 font-medium items-center">
-						<li>
-							<a [routerLink]="'/'" class="nav-elems" [ngClass]="[applyStyle('/'), itemsHover()]">Home</a>
-						</li>
+			@if (roles.includes('ADMIN')) {
+			<div class="relative">
+				<button (click)="redirect('inbox')" class="relative p-1.5 cursor-pointer text-gray-200 hover:bg-white/10 rounded-full transition flex items-center justify-center">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+				</svg>
 
-						@if (!roles.includes("USER") && !roles.includes("ADMIN")) {
-						<li>
-							<a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" class="nav-elems" [ngClass]="itemsHover()">
-								Login
-							</a
-							>
-						</li>
-						<li>
-							<a
-								[routerLink]="'/auth'"
-								[queryParams]="{ form: 'register' }"
-								class="nav-elems" [ngClass]="itemsHover()"
-								>Sign Up</a
-							>
-						</li>
-						}
-						@if (roles.includes("USER")) {
-							<li>
-								<a href="#" class="nav-elems" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]" (click)="redirect('coming-soon')">My Tickets</a>
-							</li>
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a>
-							</li>
-						}
-
-						@if (!roles.includes("ADMIN")) {
-							<li class="relative group">
-								<a class="nav-elems" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
-								<app-dropdown-menu></app-dropdown-menu>
-							</li>
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a>
-							</li>
-						}
-
-						@else if (roles.includes("ADMIN")) {
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Info</a>
-							</li>
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/create-player'), itemsHover()]" (click)="redirect('create-player')">Create Player</a>
-							</li>
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/create-stadium'), itemsHover()]" (click)="redirect('create-stadium')">Create Stadium</a>
-							</li>
-							<li>
-								<a class="nav-elems" [ngClass]="[applyStyle('/statistics'), itemsHover()]" (click)="redirect('coming-soon')">Statistics</a>
-							</li>
-						}
-					</ul>
-				</div>
-
-				<!-- Dark Mode Toggle Button -->
-				<div class="mr-4 sm:mr-10 lg:mr-20 xl:mr-40">
-					<label class="inline-flex items-center px-2 py-1 cursor-pointer">
-						<input
-							type="checkbox"
-							[checked]="isDarkMode"
-							(change)="toggleDarkModeButton()"
-							class="sr-only peer"
-						/>
-						<div
-							class="relative w-12 h-7 bg-gray-200 bg-opacity-80 rounded-full peer peer-focus:ring-4 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600"
-							[ngClass]="toggleButtonColor()"
-							></div>
-						<span
-							class="ms-3 text-xl py-2.5 px-3 font-medium text-gray-200 dark:text-gray-300"
-							>Dark Mode</span
-						>
-					</label>
-				</div>
-
-				<!-- Profile -->
-				<div class="flex-shrink-0 ml-2 sm:ml-4">
-					<a
-						class="flex items-center hover:opacity-90 transition duration-300 ease-in-out"
-						(click)="redirect('profile')"
-					>
-						<img
-							[src]="getProfilePicture()"
-							class="h-14 sm:h-16 rounded-full hover:ring-2 hover:ring-blue-700 hover:cursor-pointer transition duration-300 ease-in-out"
-							alt="Avatar Profile"
-						/>
-					</a>
-				</div>
+				@if (currentOpenTickets > 0) {
+					<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-slate-900 shadow-sm">
+					{{ currentOpenTickets }}
+					</span>
+				}
+				</button>
 			</div>
+			}
+
+			<!-- Profile -->
+			<button (click)="redirect('profile')" class="flex-shrink-0">
+				<img [src]="getProfilePicture()" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
+			</button>
+
+			<!-- Application Theme Toggle Button -->
+			<button (click)="toggleMenu()" class="lg:hidden p-1 text-white hover:bg-white/10 rounded-md transition ml-1">
+			<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				@if (!isMenuOpen) {
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+				}
+				@else {
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				}
+			</svg>
+			</button>
+		</div>
 		</div>
 	</nav>
 </header>

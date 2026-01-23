@@ -2,6 +2,7 @@
 
 import com.mlb.mlbportal.services.MatchService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Profile(&quot;!test&quot;)
 public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
@@ -19,12 +21,12 @@ public class InitComponent {
 
     @PostConstruct
     public void init() {
-<span class="fc" id="L22">        this.dataInitializerService.init();</span>
-<span class="fc" id="L23">    }</span>
+<span class="nc" id="L24">        this.dataInitializerService.init();</span>
+<span class="nc" id="L25">    }</span>
 
     @EventListener(ApplicationReadyEvent.class)
     public void triggerNotification() {
-<span class="fc" id="L27">        this.matchService.notificateMatchStart();</span>
-<span class="fc" id="L28">    }</span>
+<span class="nc" id="L29">        this.matchService.notificateMatchStart();</span>
+<span class="nc" id="L30">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

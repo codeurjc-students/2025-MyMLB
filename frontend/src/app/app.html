@@ -1,4 +1,13 @@
-@if (!hideNavbar) {
-	<app-navbar [isDarkMode] = "isDarkMode" (toggleDarkMode) = "toggleDarkMode()"></app-navbar>
-}
-<router-outlet>
+<div class="min-h-screen flex flex-col">
+    @if (!hideNavbar) {
+        <app-navbar [isDarkMode]="isDarkMode" (toggleDarkMode)="toggleDarkMode()"></app-navbar>
+    }
+
+    <main class="flex-grow">
+        <router-outlet></router-outlet>
+    </main>
+
+    @if (!hideNavbar) {
+		<app-footer></app-footer>
+	}
+</div>
