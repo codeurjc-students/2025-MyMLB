@@ -12,6 +12,7 @@ export type ShowMatch = {
 	awayScore: number;
 	date: string;
 	status: MatchStatus;
+	stadiumName: string;
 };
 
 export type PaginatedMatches = {

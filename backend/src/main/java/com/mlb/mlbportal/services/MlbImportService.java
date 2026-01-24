@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +34,7 @@ public class MlbImportService {
     private final TeamLookupService teamLookupService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
+    private final StadiumRepository stadiumRepository;
 
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
     @Retry(name = "mlbApi")
@@ -49,6 +52,7 @@ public class MlbImportService {
                 .flatMap(d -> d.games().stream())
                 .map(this::toMatchDTO)
                 .filter(this::isMlbTeamMatch)
+                .filter(dto -> this.stadiumRepository.findByName(dto.stadiumName()).isPresent())
                 .map(this::saveMatch)
                 .toList();
     }
@@ -59,9 +63,11 @@ public class MlbImportService {
         Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())
                 .orElseThrow(TeamNotFoundException::new);
 
-        Match match = new Match(awayEntity, homeEntity,
-                dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());
 
+        Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
+
+        match.setStadium(stadium);
         this.matchRepository.save(match);
         return dto;
     }
@@ -88,7 +94,8 @@ public class MlbImportService {
                             m.getHomeScore(),
                             m.getAwayScore(),
                             m.getDate(),
-                            m.getStatus()
+                            m.getStatus(),
+                            m.getStadium().getName()
                     ))
                     .toList();
         }
@@ -108,8 +115,9 @@ public class MlbImportService {
         TeamSummary away = teamLookupService.getTeamSummary(awayId);
         LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
         MatchStatus status = convertStatus(game.status().detailedState());
+        String stadiumName = game.venue().name();
         return new MatchDTO(home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
-                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status);
+                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);
     }
 
     private MatchStatus convertStatus(String apiStatus) {

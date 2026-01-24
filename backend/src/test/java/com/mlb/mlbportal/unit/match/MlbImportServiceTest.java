@@ -8,6 +8,10 @@ import javax.naming.ServiceUnavailableException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.mlbapi.*;
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,13 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.mlbapi.DateEntry;
-import com.mlb.mlbportal.dto.mlbapi.GameEntry;
-import com.mlb.mlbportal.dto.mlbapi.ScheduleResponse;
-import com.mlb.mlbportal.dto.mlbapi.Status;
-import com.mlb.mlbportal.dto.mlbapi.TeamData;
-import com.mlb.mlbportal.dto.mlbapi.TeamSide;
-import com.mlb.mlbportal.dto.mlbapi.Teams;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
@@ -57,10 +54,15 @@ class MlbImportServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private StadiumRepository stadiumRepository;
+
     @InjectMocks
     private MlbImportService mlbImportService;
 
     private List<Team> mockTeams;
+
+    private List<Stadium> mockStadiums;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -69,6 +71,7 @@ class MlbImportServiceTest {
         field.setAccessible(true);
         field.set(this.mlbImportService, this.restTemplate);
         this.mockTeams = BuildMocksFactory.setUpTeamMocks();
+        this.mockStadiums = BuildMocksFactory.setUpStadiums();
     }
 
     @Test
@@ -82,12 +85,15 @@ class MlbImportServiceTest {
 
         Teams teams = new Teams(homeSide, awaySide);
         Status status = new Status("Final");
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams);
+
+        String expectedStadiumName = this.mockStadiums.getFirst().getName();
+        Venue venue = new Venue(1, expectedStadiumName);
+
+        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
         ScheduleResponse scheduleResponse = new ScheduleResponse(List.of(dateEntry));
 
-        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class)))
-                .thenReturn(scheduleResponse);
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
 
         when(this.teamLookupService.getTeamSummary(1))
                 .thenReturn(
@@ -103,11 +109,13 @@ class MlbImportServiceTest {
         when(this.teamRepository.findByName(mockTeams.get(1).getName()))
                 .thenReturn(Optional.of(mockTeams.get(1)));
 
+        when(this.stadiumRepository.findByNameOrThrow(expectedStadiumName)).thenReturn(this.mockStadiums.getFirst());
+
         List<MatchDTO> matches = this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1),
                 LocalDate.of(2026, 3, 1));
 
         assertThat(matches).hasSize(1);
-        assertThat(matches.get(0).status()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(matches.getFirst().status()).isEqualTo(MatchStatus.FINISHED);
 
         verify(this.matchRepository, times(1)).save(any());
     }
@@ -121,8 +129,9 @@ class MlbImportServiceTest {
 
         Teams teams = new Teams(homeSide, awaySide);
         Status status = new Status(statusText);
+        Venue venue = new Venue(1, "Yankee Stadium");
 
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams);
+        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
 
         return new ScheduleResponse(List.of(dateEntry));
@@ -164,6 +173,7 @@ class MlbImportServiceTest {
                 5,
                 LocalDate.of(2026, 3, 1).atStartOfDay(),
                 MatchStatus.FINISHED);
+        cachedMatch.setStadium(this.mockStadiums.getFirst());
 
         when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of(cachedMatch));
 

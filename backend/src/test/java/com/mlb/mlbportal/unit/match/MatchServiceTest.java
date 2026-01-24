@@ -1,43 +1,53 @@
 package com.mlb.mlbportal.unit.match;
 
-import java.time.*;
-import java.util.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
-import com.mlb.mlbportal.services.EmailService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.TaskScheduler;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.MatchMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.TaskScheduler;
-
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MatchServiceTest {
@@ -64,6 +74,7 @@ class MatchServiceTest {
     private TaskScheduler taskScheduler;
 
     @Mock
+    @SuppressWarnings("unused")
     private EmailService emailService;
 
     @InjectMocks

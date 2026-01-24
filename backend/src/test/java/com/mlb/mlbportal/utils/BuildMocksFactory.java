@@ -105,9 +105,13 @@ public class BuildMocksFactory {
     // Matches Mocks
 
     public static List<Match> setUpMatches(List<Team> teams, LocalDateTime fixedNow) {
+        List<Stadium> stadiums = setUpStadiums();
         Match match1 = new Match(teams.get(0), teams.get(1), 0, 0, fixedNow.minusMinutes(5), MatchStatus.SCHEDULED);
+        match1.setStadium(stadiums.getFirst());
         Match match2 = new Match(teams.get(1), teams.get(2), 4, 9, fixedNow.minusMinutes(4), MatchStatus.IN_PROGRESS);
+        match2.setStadium(stadiums.get(1));
         Match match3 = new Match(teams.get(2), teams.get(0), 10, 14, fixedNow.minusMinutes(3), MatchStatus.FINISHED);
+        match3.setStadium(stadiums.get(2));
         return Arrays.asList(match1, match2, match3);
     }
 
@@ -115,7 +119,7 @@ public class BuildMocksFactory {
         return matches.stream().map(m -> {
             TeamSummary home = new TeamSummary(m.getHomeTeam().getName(), m.getHomeTeam().getAbbreviation(), m.getHomeTeam().getLeague(), m.getHomeTeam().getDivision());
             TeamSummary away = new TeamSummary(m.getAwayTeam().getName(), m.getAwayTeam().getAbbreviation(), m.getAwayTeam().getLeague(), m.getAwayTeam().getDivision());
-            return new MatchDTO(home, away, m.getHomeScore(), m.getAwayScore(), m.getDate(), m.getStatus());
+            return new MatchDTO(home, away, m.getHomeScore(), m.getAwayScore(), m.getDate(), m.getStatus(), m.getStadium().getName());
         }).toList();
     }
 

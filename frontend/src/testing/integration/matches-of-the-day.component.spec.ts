@@ -24,6 +24,7 @@ describe('Matches Of The Day Component Integration Test', () => {
 			awayScore: i + 1,
 			date: `2025-10-22 19:${String(i).padStart(2, '0')}`,
 			status: 'FINISHED',
+			stadiumName: 'Yankee Stadium'
 		})),
 		page: {
 			size: 10,

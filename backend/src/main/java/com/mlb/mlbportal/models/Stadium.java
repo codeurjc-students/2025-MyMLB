@@ -5,14 +5,7 @@ import java.util.List;
 
 import com.mlb.mlbportal.models.others.PictureInfo;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PreRemove;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +14,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Setter
+@Table(name = "T_STADIUM")
 public class Stadium {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,6 +29,9 @@ public class Stadium {
 
     @OneToOne(mappedBy = "stadium")
     private Team team;
+
+    @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Match> matches = new ArrayList<>();
 
     @PreRemove
     public void preRemove() {

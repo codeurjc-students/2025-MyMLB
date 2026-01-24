@@ -27,6 +27,7 @@ describe('Match Service Tests', () => {
 				awayScore: 3,
 				date: '2025-10-22 19:05',
 				status: 'FINISHED',
+				stadiumName: 'Yankee Stadium'
 			},
 		],
 		page: {
@@ -55,6 +56,7 @@ describe('Match Service Tests', () => {
 			awayScore: 3,
 			date: '2025-10-22 19:05',
 			status: 'FINISHED',
+			stadiumName: 'Yankee Stadium'
 		},
 
 		{
@@ -74,6 +76,7 @@ describe('Match Service Tests', () => {
 			awayScore: 0,
 			date: '2025-11-22 19:05',
 			status: 'SCHEDULED',
+			stadiumName: 'Yankee Stadium'
 		},
 	];
 
@@ -95,6 +98,7 @@ describe('Match Service Tests', () => {
 			awayScore: 3,
 			date: '2025-10-22 19:05',
 			status: 'FINISHED',
+			stadiumName: 'Yankee Stadium'
 		}
 	];
 

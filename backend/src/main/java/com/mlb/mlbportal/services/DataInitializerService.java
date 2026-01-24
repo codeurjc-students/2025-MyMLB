@@ -93,31 +93,31 @@ public class DataInitializerService {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);
 
             List<Team> teams = Arrays.stream(teamDtos)
-                .map(dto -> {
-                    League league = League.valueOf(dto.league().toUpperCase());
-                    Division division = Division.valueOf(dto.division().toUpperCase());
+                    .map(dto -> {
+                        League league = League.valueOf(dto.league().toUpperCase());
+                        Division division = Division.valueOf(dto.division().toUpperCase());
 
-                    Team team = new Team(
-                        dto.name(),
-                        dto.abbreviation(),
-                        dto.wins(),
-                        dto.losses(),
-                        dto.city(),
-                        dto.generalInfo(),
-                        dto.championships() != null ? dto.championships() : new ArrayList<>()
-                    );
-                    team.setLeague(league);
-                    team.setDivision(division);
+                        Team team = new Team(
+                                dto.name(),
+                                dto.abbreviation(),
+                                dto.wins(),
+                                dto.losses(),
+                                dto.city(),
+                                dto.generalInfo(),
+                                dto.championships() != null ? dto.championships() : new ArrayList<>()
+                        );
+                        team.setLeague(league);
+                        team.setDivision(division);
 
-                    int totalGames = dto.wins() + dto.losses();
-                    team.setTotalGames(totalGames);
-                    team.setPct((double) dto.wins() / totalGames);
-                    team.setGamesBehind(0);
-                    team.setLastTen("0-0");
-                    team.setTeamLogo(dto.abbreviation() + ".png");
+                        int totalGames = dto.wins() + dto.losses();
+                        team.setTotalGames(totalGames);
+                        team.setPct((double) dto.wins() / totalGames);
+                        team.setGamesBehind(0);
+                        team.setLastTen("0-0");
+                        team.setTeamLogo(dto.abbreviation() + ".png");
 
-                    return team;
-                }).collect(Collectors.toCollection(ArrayList::new ));
+                        return team;
+                    }).collect(Collectors.toCollection(ArrayList::new ));
 
             this.teamRepository.saveAll(teams);
         } catch (IOException e) {
@@ -177,14 +177,16 @@ public class DataInitializerService {
         LocalDateTime matchDate = generateRandomMatchDate(baseDate, day);
         MatchStatus status = determineMatchStatus(matchDate);
 
-        return new Match(
-            home,
-            away,
-            RANDOM.nextInt(10),
-            RANDOM.nextInt(10),
-            matchDate,
-            status
+        Match match = new Match(
+                away,
+                home,
+                RANDOM.nextInt(10),
+                RANDOM.nextInt(10),
+                matchDate,
+                status
         );
+        match.setStadium(home.getStadium());
+        return match;
     }
 
     private LocalDateTime generateRandomMatchDate(LocalDateTime baseDate, int day) {
@@ -240,10 +242,10 @@ public class DataInitializerService {
         this.matchRepository.saveAll(matches);
 
         this.mlbImportService.getOfficialMatches(
-            LocalDate.of(2026, Month.MARCH, 1), 
-            LocalDate.of(2026, Month.APRIL, 1)
+                LocalDate.of(2026, Month.MARCH, 1),
+                LocalDate.of(2026, Month.APRIL, 1)
         );
-        this.teamRepository.saveAll(allTeams); 
+        this.teamRepository.saveAll(allTeams);
     }
 
     private void setUpStadiums() {
@@ -257,9 +259,9 @@ public class DataInitializerService {
 
             for (StadiumInitDTO dto : stadiumDtos) {
                 Team team = allTeams.stream()
-                    .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
-                    .findFirst()
-                    .orElse(null);
+                        .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
+                        .findFirst()
+                        .orElse(null);
 
                 Stadium stadium = new Stadium(dto.name(), dto.openingDate(), team);
 
@@ -290,7 +292,7 @@ public class DataInitializerService {
             List<Team> allTeams = teamRepository.findAll();
 
             Map<String, Team> teamMap = allTeams.stream()
-                .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
+                    .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
 
             Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
             Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
@@ -308,13 +310,13 @@ public class DataInitializerService {
 
                 if ("Pitcher".equalsIgnoreCase(type)) {
                     Pitcher pitcher = new Pitcher(
-                        name,
-                        playerNumber,
-                        team,
-                        PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
-                        ((Number) raw.get("games")).intValue(),
-                        ((Number) raw.get("wins")).intValue(),
-                        ((Number) raw.get("losses")).intValue()
+                            name,
+                            playerNumber,
+                            team,
+                            PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
+                            ((Number) raw.get("games")).intValue(),
+                            ((Number) raw.get("wins")).intValue(),
+                            ((Number) raw.get("losses")).intValue()
                     );
                     pitcher.setInningsPitched(((Number) raw.get("inningsPitched")).intValue());
                     pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
@@ -327,13 +329,13 @@ public class DataInitializerService {
                     pitcher.setPicture(picture);
                 } else {
                     PositionPlayer player = new PositionPlayer(
-                        name,
-                        playerNumber,
-                        team,
-                        PlayerPositions.fromLabel((String) raw.get("position")),
-                        ((Number) raw.get("atBats")).intValue(),
-                        ((Number) raw.get("walks")).intValue(),
-                        ((Number) raw.get("hits")).intValue()
+                            name,
+                            playerNumber,
+                            team,
+                            PlayerPositions.fromLabel((String) raw.get("position")),
+                            ((Number) raw.get("atBats")).intValue(),
+                            ((Number) raw.get("walks")).intValue(),
+                            ((Number) raw.get("hits")).intValue()
                     );
                     player.setDoubles(((Number) raw.get("doubles")).intValue());
                     player.setTriples(((Number) raw.get("triples")).intValue());

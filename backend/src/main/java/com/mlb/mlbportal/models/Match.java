@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "matches")
+@Table(name = "T_Matches")
 public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -30,6 +30,10 @@ public class Match {
     private int awayScore;
 
     private LocalDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = "stadium_id")
+    private Stadium stadium;
 
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
