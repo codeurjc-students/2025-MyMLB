@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.mlb.mlbportal.models.others.PictureInfo;
 
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.Sector;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,12 @@ public class Stadium {
     @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches = new ArrayList<>();
 
+    @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Sector> sectors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stadium", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events = new ArrayList<>();
+
     @PreRemove
     public void preRemove() {
         if (team != null) {
@@ -51,5 +59,15 @@ public class Stadium {
         this.name = name;
         this.openingDate = openingDate;
         this.team = team;
+    }
+
+    public void addSector(Sector sector) {
+        this.sectors.add(sector);
+        sector.setStadium(this);
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+        event.setStadium(this);
     }
 }

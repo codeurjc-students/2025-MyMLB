@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
+import com.mlb.mlbportal.mappers.ticket.TicketMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class UserService {
     private final AuthenticationMapper authenticationMapper;
     private final UserMapper userMapper;
     private final TeamMapper teamMapper;
+    private final TicketMapper ticketMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final TeamRepository teamRepository;
@@ -189,5 +192,11 @@ public class UserService {
     public ProfileDTO getUserProfile(String username) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.userMapper.toProfileDTO(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketDTO> getPurchasedTickets(String username) {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        return this.ticketMapper.toListTicketDTO(user.getTickets());
     }
 }
