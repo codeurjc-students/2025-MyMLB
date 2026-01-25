@@ -1,0 +1,60 @@
+### Get Ticket
+GET https://localhost:8443/api/v1/tickets/1
+Accept: application/json
+
+### Get Tickets of an Event
+GET https://localhost:8443/api/v1/tickets/event/1
+Accept: application/json
+
+### Purchase a Ticket Correctly
+POST https://localhost:8443/api/v1/tickets
+Content-Type: application/json
+
+{
+  "eventManagerId": 1,
+  "ticketAmount": 2,
+  "seats": [
+    {
+    "id": 1,
+      "name": "G-1"
+    },
+    {
+      "id": 2,
+      "name": "G-2"
+    }
+  ],
+  "ownerName": "Alfonso Rodríguez",
+  "cardNumber": "4539148912345674",
+  "cvv": "123",
+  "expirationDate": "2028-12-01"
+}
+
+### Purchase a Ticket with different number of seats than tickets wanted
+POST https://localhost:8443/api/v1/tickets
+Content-Type: application/json
+
+{
+  "eventManagerId": 1,
+  "ticketAmount": 2,
+  "seats": [
+    {
+      "id": 1,
+      "name": "G-1"
+    }
+  ],
+  "cardNumber": "4539148912345674",
+  "cvv": "123",
+  "expirationDate": "2028-12-01"
+}
+
+### Purchase a Ticket Invalid
+POST https://localhost:8443/api/v1/tickets
+Content-Type: application/json
+
+{
+  "eventManagerId": 1,
+  "ticketAmount": 200,
+  "cardNumber": "4539148912345674",
+  "cvv": "123",
+  "expirationDate": "2028-12-01"
+}

@@ -1,0 +1,54 @@
+### Get All Events
+GET https://localhost:8443/api/v1/events
+Accept: application/json
+
+### Get an Event
+GET https://localhost:8443/api/v1/events/1
+Accept: application/json
+
+### Get Available Sectors
+GET https://localhost:8443/api/v1/events/1/sectors
+Accept: application/json
+
+### Get Available Seats
+GET https://localhost:8443/api/v1/events/1/sector/1
+Accept: application/json
+
+### Get Event by Match
+GET https://localhost:8443/api/v1/events/match/1
+Accept: application/json
+
+### Create an Event
+POST https://localhost:8443/api/v1/events
+Content-Type: application/json
+
+{
+  "matchId": 1,
+  "prices": [
+    200, 1440
+  ],
+  "sectors": [
+    {
+      "name": "Monkey Sector",
+      "totalCapacity": 100
+    },
+    {
+      "name": "Elephant Sector",
+      "totalCapacity": 200
+    }
+  ]
+}
+
+### Edit an Event
+PUT https://localhost:8443/api/v1/events
+Content-Type: application/json
+
+{
+  "eventId": 1,
+  "sectorIds": [
+    1, 2
+  ],
+  "prices": [
+    69.0, 123.45
+  ]
+}

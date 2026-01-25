@@ -17,6 +17,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Seat;
+import com.mlb.mlbportal.models.ticket.Sector;
+import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
+import com.mlb.mlbportal.repositories.ticket.EventRepository;
+import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,6 +63,10 @@ public class DataInitializerService {
 
     private final MlbImportService mlbImportService;
 
+    private final EventRepository eventRepository;
+    private final EventManagerRepository eventManagerRepository;
+    private final SectorRepository sectorRepository;
+
     private static final Random RANDOM = new Random();
 
     @Value("${init.user1.password}")
@@ -71,6 +82,7 @@ public class DataInitializerService {
         this.setUpStadiums();
         this.setUpMatches();
         this.setUpPlayers();
+        this.setUpEventsForTodayMatches();
     }
 
     private void createAdmins() {
@@ -357,6 +369,61 @@ public class DataInitializerService {
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading players data", e);
+        }
+    }
+
+    private void setUpEventsForTodayMatches() {
+        List<Match> todayMatches = this.matchRepository.findAll().stream()
+                .filter(m -> m.getDate().toLocalDate().isEqual(LocalDate.now()))
+                .filter(m -> m.getStatus() == MatchStatus.SCHEDULED)
+                .toList();
+
+        List<Event> eventsToSave = new ArrayList<>();
+
+        for (Match match : todayMatches) {
+            Stadium stadium = match.getStadium();
+            if (stadium == null) continue;
+
+            Event event = new Event();
+            event.setMatch(match);
+            event.setStadium(stadium);
+
+            List<Sector> eventSectors = this.createSectorsForStadium(stadium);
+
+            for (Sector sector : eventSectors) {
+                double basePrice = sector.getName().contains("VIP") ? 150.0 : 35.0;
+                double finalPrice = basePrice + RANDOM.nextInt(20);
+
+                EventManager em = new EventManager(event, sector, finalPrice);
+                event.addEventManager(em);
+            }
+            eventsToSave.add(event);
+        }
+        this.eventRepository.saveAll(eventsToSave);
+    }
+
+    private List<Sector> createSectorsForStadium(Stadium stadium) {
+        List<Sector> sectors = Arrays.asList(
+                new Sector(0, "Grada Norte", stadium, new ArrayList<>(), 100),
+                new Sector(0, "Grada Sur", stadium, new ArrayList<>(), 100),
+                new Sector(0, "Preferencia", stadium, new ArrayList<>(), 50),
+                new Sector(0, "Palco VIP", stadium, new ArrayList<>(), 20)
+        );
+        for (Sector sector : sectors) {
+            this.createSeatsForSector(sector);
+        }
+        return this.sectorRepository.saveAll(sectors);
+    }
+
+    private void createSeatsForSector(Sector sector) {
+        int capacity = sector.getTotalCapacity();
+        String prefix = sector.getName().substring(0, 1).toUpperCase();
+
+        for (int i = 1; i <= capacity; i++) {
+            Seat seat = new Seat();
+            seat.setName(prefix + "-" + i);
+            seat.setOccupied(false);
+            sector.addSeat(seat);
         }
     }
 }

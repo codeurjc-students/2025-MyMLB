@@ -2,8 +2,10 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
 import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.models.others.PictureInfo;
@@ -66,6 +68,11 @@ public class UserController {
     @GetMapping(value = "/favorites/teams", produces = "application/json")
     public ResponseEntity<Set<TeamSummary>> getFavoriteTeams(Principal principal) {
         return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));
+    }
+
+    @GetMapping(value = "/tickets", produces = "application/json")
+    public ResponseEntity<List<TicketDTO>> getTickets(Principal principal) {
+        return ResponseEntity.ok(this.userService.getPurchasedTickets(principal.getName()));
     }
 
     @Operation(summary = "Edit the authenticated user's profile", description = "Updates the profile of the authenticated user, allowing them to modify their email and password.")

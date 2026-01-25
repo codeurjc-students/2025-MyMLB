@@ -15,6 +15,8 @@ public interface TicketMapper {
     @Mapping(target = "stadiumName", source = "eventManager.event.stadium.name")
     @Mapping(target = "price", source = "eventManager.price")
     @Mapping(target = "matchDate", source = "eventManager.event.match.date")
+    @Mapping(target = "sectorName", source = "eventManager.sector.name")
+    @Mapping(target = "seatName", source = "seat.name")
     TicketDTO toTicketDTO(Ticket ticket);
 
     List<TicketDTO> toListTicketDTO(Collection<Ticket> list);

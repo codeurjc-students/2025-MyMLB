@@ -7,32 +7,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "T_EVENT_MANAGER")
+@Table(name = "T_SEAT")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class EventManager {
+@AllArgsConstructor
+public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sector_id")
     private Sector sector;
 
-    private double price;
+    @Column(name = "is_occupied")
+    private boolean isOccupied = false;
 
-    private int availability;
-
-    public EventManager(Event event, Sector sector, double price) {
-        this.event = event;
+    public Seat(String name, Sector sector, boolean state) {
+        this.name = name;
         this.sector = sector;
-        this.price = price;
-        this.availability = sector.getTotalCapacity();
+        this.isOccupied = state;
     }
 }

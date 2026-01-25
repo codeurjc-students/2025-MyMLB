@@ -2,6 +2,7 @@ package com.mlb.mlbportal.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class Match {
 
     private int awayScore;
 
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     private LocalDateTime date;
 
     @ManyToOne

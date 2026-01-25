@@ -1,10 +1,13 @@
 package com.mlb.mlbportal.handler;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
+import com.mlb.mlbportal.handler.badRequest.SeatSelectionMismatchException;
 import com.mlb.mlbportal.handler.conflict.*;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
@@ -55,6 +58,18 @@ public class GlobalHandler {
         return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "");
     }
 
+    @ExceptionHandler(SeatSelectionMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleSeatSelectionMissMatch(SeatSelectionMismatchException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "Seat Selection MissMatch");
+    }
+
+    @ExceptionHandler(EventRequestMissMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleEditEventRequestMissMatch(EventRequestMissMatchException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "Request MissMatch");
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleResourceNotFound(ResourceNotFoundException ex) {
@@ -82,14 +97,16 @@ public class GlobalHandler {
         return this.buildResponse(HttpStatus.CONFLICT, message, "Concurrent Update Conflict");
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleNullPointer(NullPointerException ex) {
-        if (ex.getMessage() == null || ex.getMessage().contains("getUser")) {
-            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), "User Not Authenticated");
-        }
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),
-                "Internal Server Error occurred due to NullPointerException");
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleInssuficientStock(InsufficientStockException ex) {
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "Cannot purchase the amount of tickets selected because there are no tickets available to purchase");
+    }
+
+    @ExceptionHandler(ConcurrentModificationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleConcurrentModification(ConcurrentModificationException ex) {
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "The transaction could not be completed due to a simultaneous update. Please refresh the page and try again");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -115,5 +132,21 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Map<String, Object> handleServiceUnavailable(ServiceUnavailableException ex) {
         return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), "Service Unavailable");
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public Map<String, Object> handlePayment(PaymentException ex) {
+        return this.buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), "Payment Business Error");
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleNullPointer(NullPointerException ex) {
+        if (ex.getMessage() == null || ex.getMessage().contains("getUser")) {
+            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), "User Not Authenticated");
+        }
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),
+                "Internal Server Error occurred due to NullPointerException");
     }
 }

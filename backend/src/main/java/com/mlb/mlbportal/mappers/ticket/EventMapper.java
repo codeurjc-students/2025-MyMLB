@@ -16,12 +16,15 @@ public interface EventMapper {
     @Mapping(target = "homeTeamName", source = "match.homeTeam.name")
     @Mapping(target = "stadiumName", source = "stadium.name")
     @Mapping(target = "date", source = "match.date")
-    @Mapping(target = "sectors", source = "sectorManagers")
+    @Mapping(target = "sectors", source = "eventManagers")
     EventResponseDTO toEventResponseDto(Event event);
 
+    @Mapping(target = "sectorId", source = "sector.id")
     @Mapping(target = "sectorName", source = "sector.name")
     @Mapping(target = "totalCapacity", source = "sector.totalCapacity")
     EventManagerDTO toManagerDto(EventManager eventManager);
 
     List<EventManagerDTO> toListManagerDTO(Collection<EventManager> list);
+
+    List<EventResponseDTO> toListEventResponseDTO(Collection<Event> list);
 }

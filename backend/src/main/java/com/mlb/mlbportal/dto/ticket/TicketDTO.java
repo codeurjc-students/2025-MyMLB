@@ -8,5 +8,7 @@ public record TicketDTO(
         String homeTeamName,
         String stadiumName,
         double price,
-        LocalDateTime matchDate
+        LocalDateTime matchDate,
+        String sectorName,
+        String seatName
 ) {}

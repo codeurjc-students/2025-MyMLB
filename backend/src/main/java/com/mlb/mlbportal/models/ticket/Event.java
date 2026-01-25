@@ -19,10 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
 
@@ -30,8 +30,13 @@ public class Event {
     @JoinColumn(name = "match_id")
     private Match match;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<EventManager> eventManagers = new ArrayList<>();
+
+    public Event(Stadium stadium, Match match) {
+        this.stadium = stadium;
+        this.match = match;
+    }
 
     public void addEventManager(EventManager eventManager) {
         this.eventManagers.add(eventManager);

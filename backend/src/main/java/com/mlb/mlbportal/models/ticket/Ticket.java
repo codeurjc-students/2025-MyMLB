@@ -15,16 +15,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_manager_id")
     private EventManager eventManager;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity owner;
+
+    private String ownerName;
+
+    @OneToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
 
     private LocalDateTime purchaseDate;
 }
