@@ -2,10 +2,6 @@
 GET https://localhost:8443/api/v1/tickets/1
 Accept: application/json
 
-### Get Tickets of an Event
-GET https://localhost:8443/api/v1/tickets/event/1
-Accept: application/json
-
 ### Purchase a Ticket Correctly
 POST https://localhost:8443/api/v1/tickets
 Content-Type: application/json

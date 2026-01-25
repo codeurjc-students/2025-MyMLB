@@ -1,6 +1,20 @@
 package com.mlb.mlbportal.services.ticket;
 
-import com.mlb.mlbportal.dto.ticket.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mlb.mlbportal.dto.ticket.EditEventRequest;
+import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
+import com.mlb.mlbportal.dto.ticket.EventManagerDTO;
+import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
+import com.mlb.mlbportal.dto.ticket.SeatDTO;
+import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
 import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
 import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
@@ -19,13 +33,8 @@ import com.mlb.mlbportal.repositories.ticket.SeatRepository;
 import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +50,9 @@ public class EventService {
     private final SeatBatchGenerationService seatBatchGenerationService;
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAllEvents() {
-        return this.eventMapper.toListEventResponseDTO(this.eventRepository.findAll());
+    public Page<EventResponseDTO> getAllEvents(int page, int size) {
+        List<Event> events = this.eventRepository.findAll();
+        return this.paginationHandlerService.paginateAndMap(events, page, size, this.eventMapper::toEventResponseDto);
     }
 
     @Transactional(readOnly = true)
@@ -52,10 +62,10 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public List<EventManagerDTO> getAvailableSectors(Long eventId) {
+    public Page<EventManagerDTO> getAvailableSectors(Long eventId, int page, int size) {
         this.eventRepository.findEventByIdOrElseThrow(eventId);
         List<EventManager> query = this.eventManagerRepository.findAvailableSectors(eventId);
-        return this.eventMapper.toListManagerDTO(query);
+        return this.paginationHandlerService.paginateAndMap(query, page, size, this.eventMapper::toManagerDto);
     }
 
     @Transactional(readOnly = true)
@@ -125,6 +135,12 @@ public class EventService {
                     .findFirst().ifPresent(manager -> manager.setPrice(newPrice));
         }
         this.eventRepository.save(event);
+        return this.eventMapper.toEventResponseDto(event);
+    }
+
+    public EventResponseDTO deleteEvent(Long eventId) {
+        Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);
+        this.eventRepository.delete(event);
         return this.eventMapper.toEventResponseDto(event);
     }
 }

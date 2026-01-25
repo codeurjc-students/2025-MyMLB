@@ -9,6 +9,10 @@ import java.time.LocalDate;
 @Service
 public class PaymentService {
 
+    /**
+     * Validates card credentials including Luhn check, expiration, and CVV format.
+     * @throws PaymentException if any validation fails.
+     */
     public void processPayment(PurchaseRequest cardData) {
         if (!this.isValidLuhn(cardData.cardNumber())) {
             throw new PaymentException("Cardnumber not valid");
@@ -21,6 +25,9 @@ public class PaymentService {
         }
     }
 
+    /**
+     * Performs the Luhn algorithm to verify the checksum of the credit card number.
+     */
     private boolean isValidLuhn(String cardNumber) {
         if (cardNumber == null) {
             return false;
@@ -44,6 +51,9 @@ public class PaymentService {
         return (sum % 10 == 0);
     }
 
+    /**
+     * Checks if the provided date is strictly before the current month.
+     */
     private boolean isExpired(LocalDate date) {
         try {
             LocalDate expiry = date.plusMonths(1);

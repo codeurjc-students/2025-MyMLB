@@ -1,5 +1,15 @@
 package com.mlb.mlbportal.services.ticket;
 
+import java.time.LocalDateTime;
+import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.mlb.mlbportal.dto.ticket.PurchaseRequest;
 import com.mlb.mlbportal.dto.ticket.SeatDTO;
 import com.mlb.mlbportal.dto.ticket.TicketDTO;
@@ -16,19 +26,15 @@ import com.mlb.mlbportal.repositories.ticket.EventRepository;
 import com.mlb.mlbportal.repositories.ticket.SeatRepository;
 import com.mlb.mlbportal.repositories.ticket.TicketRepository;
 import com.mlb.mlbportal.services.EmailService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.services.utilities.PdfGeneratorService;
-import com.mysql.cj.log.Log;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedList;
-import java.util.List;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TicketService {
     private final EventManagerRepository eventManagerRepository;
     private final EventRepository eventRepository;
@@ -36,6 +42,7 @@ public class TicketService {
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final TicketMapper ticketMapper;
+    private final PaginationHandlerService paginationHandlerService;
     private final PaymentService paymentService;
     private final EmailService emailService;
     private final PdfGeneratorService pdfGeneratorService;
@@ -47,37 +54,43 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketDTO> getTicketsOfEvent(Long eventId) {
+    public Page<TicketDTO> getTicketsOfEvent(Long eventId, int page, int size) {
         this.eventRepository.findEventByIdOrElseThrow(eventId);
         List<Ticket> query = this.ticketRepository.findTicketByEvent(eventId);
-        return this.ticketMapper.toListTicketDTO(query);
+        return this.paginationHandlerService.paginateAndMap(query, page, size, this.ticketMapper::toTicketDTO);
     }
 
     @Transactional
-    public List<TicketDTO> purchaseTicket(String username, PurchaseRequest request) {
+    public Page<TicketDTO> purchaseTicket(String username, PurchaseRequest request, int page, int size) {
         this.validateRequest(request);
 
         this.updateStocks(request);
 
-        this.paymentService.processPayment(request);
-
         EventManager eventManager = this.fetchEventManagerWithLock(request.eventManagerId());
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+
+        this.paymentService.processPayment(request);
 
         List<Ticket> tickets = this.createTickets(user, request.ownerName(),eventManager, request.seats());
 
         this.userRepository.save(user);
         this.sendEmailWithPdf(user, tickets);
 
-        return this.ticketMapper.toListTicketDTO(tickets);
+        return this.paginationHandlerService.paginateAndMap(tickets, page, size, this.ticketMapper::toTicketDTO);
     }
 
+    /**
+     * Verifies that the number of selected seats matches the requested ticket amount.
+     */
     private void validateRequest(PurchaseRequest request) {
         if (request.seats().size() != request.ticketAmount()) {
             throw new SeatSelectionMismatchException();
         }
     }
 
+    /**
+     * Atomically updates event stock and marks individual seats as occupied.
+     */
     private void updateStocks(PurchaseRequest request) {
         int stockUpdated = this.eventManagerRepository.updateStockAvailability(request.eventManagerId(), request.ticketAmount());
         if (stockUpdated == 0) {
@@ -90,10 +103,16 @@ public class TicketService {
         }
     }
 
+    /**
+     * Retrieves the EventManager using a pessimistic lock to prevent race conditions during purchase.
+     */
     private EventManager fetchEventManagerWithLock(Long id) {
         return this.eventManagerRepository.findByIdWithBlock(id).orElseThrow(ConcurrentModificationException::new);
     }
 
+    /**
+     * Creates the tickets, linking them to the user, event manager, and specific seats.
+     */
     private List<Ticket> createTickets(UserEntity user, String ownerName, EventManager eventManager, List<SeatDTO> seatDtos) {
         List<Ticket> tickets = new LinkedList<>();
         LocalDateTime now = LocalDateTime.now();
@@ -110,6 +129,9 @@ public class TicketService {
         return tickets;
     }
 
+    /**
+     * Generates a PDF document and triggers an asynchronous email delivery to the purchaser.
+     */
     private void sendEmailWithPdf(UserEntity user, List<Ticket> tickets) {
         try {
             byte[] pdfContent = this.pdfGeneratorService.generateTicketsPdf(tickets);
@@ -130,8 +152,8 @@ public class TicketService {
                     "Tickets.pdf"
             );
         }
-        catch (Exception e) {
-            System.err.println("Error enviando email: " + e.getMessage()); // TODO
+        catch (MessagingException e) {
+            log.error("Failed to send the purchase confirmation email to the user: {}", user.getUsername());
         }
     }
 }

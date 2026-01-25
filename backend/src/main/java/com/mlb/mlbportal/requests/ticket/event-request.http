@@ -18,6 +18,10 @@ Accept: application/json
 GET https://localhost:8443/api/v1/events/match/1
 Accept: application/json
 
+### Get Tickets of an Event
+GET https://localhost:8443/api/v1/events/1/tickets
+Accept: application/json
+
 ### Create an Event
 POST https://localhost:8443/api/v1/events
 Content-Type: application/json
@@ -52,3 +56,7 @@ Content-Type: application/json
     69.0, 123.45
   ]
 }
+
+### Delete an Event
+DELETE https://localhost:8443/api/v1/events/1
+Accept: application/json

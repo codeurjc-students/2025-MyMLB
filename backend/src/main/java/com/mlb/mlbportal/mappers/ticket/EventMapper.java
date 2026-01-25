@@ -25,6 +25,4 @@ public interface EventMapper {
     EventManagerDTO toManagerDto(EventManager eventManager);
 
     List<EventManagerDTO> toListManagerDTO(Collection<EventManager> list);
-
-    List<EventResponseDTO> toListEventResponseDTO(Collection<Event> list);
 }
