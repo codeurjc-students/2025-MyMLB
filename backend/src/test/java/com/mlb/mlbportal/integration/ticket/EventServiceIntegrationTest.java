@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class EmailServiceIntegrationTest {
+public class EventServiceIntegrationTest {
     @Autowired
     private EventRepository eventRepository;
 
