@@ -1,7 +1,6 @@
 package com.mlb.mlbportal.models.ticket;
 
 import com.mlb.mlbportal.models.Match;
-import com.mlb.mlbportal.models.Stadium;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +21,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stadium_id")
-    private Stadium stadium;
-
     @OneToOne
     @JoinColumn(name = "match_id")
     private Match match;
@@ -33,8 +28,7 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<EventManager> eventManagers = new ArrayList<>();
 
-    public Event(Stadium stadium, Match match) {
-        this.stadium = stadium;
+    public Event(Match match) {
         this.match = match;
     }
 

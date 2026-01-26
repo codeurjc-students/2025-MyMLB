@@ -15,6 +15,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         return this.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 
-    @Query("SELECT e FROM Event e JOIN FETCH e.match m JOIN FETCH e.stadium s WHERE m.id = :matchId AND m.date > CURRENT_TIMESTAMP")
+    @Query("SELECT e FROM Event e JOIN FETCH e.match m WHERE m.id = :matchId AND m.date > CURRENT_TIMESTAMP")
     Optional<Event> findEventByMatchId(@Param("matchId") Long matchId);
 }

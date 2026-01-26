@@ -12,7 +12,7 @@ import java.util.List;
 public interface TicketMapper {
     @Mapping(target = "awayTeamName", source = "eventManager.event.match.awayTeam.name")
     @Mapping(target = "homeTeamName", source = "eventManager.event.match.homeTeam.name")
-    @Mapping(target = "stadiumName", source = "eventManager.event.stadium.name")
+    @Mapping(target = "stadiumName", source = "eventManager.event.match.stadium.name")
     @Mapping(target = "price", source = "eventManager.price")
     @Mapping(target = "matchDate", source = "eventManager.event.match.date")
     @Mapping(target = "sectorName", source = "eventManager.sector.name")

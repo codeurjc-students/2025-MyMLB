@@ -3,6 +3,7 @@ package com.mlb.mlbportal.services.utilities;
 import com.mlb.mlbportal.models.ticket.Ticket;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -10,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Slf4j
 public class PdfGeneratorService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
@@ -34,17 +36,16 @@ public class PdfGeneratorService {
                 document.add(new Paragraph("Match: " + ticket.getEventManager().getEvent().getMatch().getAwayTeam().getName() +
                         " @ " + ticket.getEventManager().getEvent().getMatch().getHomeTeam().getName(), bodyFont));
                 document.add(new Paragraph("Date: " + formattedDate, bodyFont));
-                document.add(new Paragraph("Stadium: " + ticket.getEventManager().getEvent().getStadium().getName(), bodyFont));
+                document.add(new Paragraph("Stadium: " + ticket.getEventManager().getEvent().getMatch().getStadium().getName(), bodyFont));
                 document.add(new Paragraph("Sector: " + ticket.getSeat().getSector().getName(), bodyFont));
                 document.add(new Paragraph("Seat: " + ticket.getSeat().getName(), bodyFont));
                 document.add(new Paragraph("Owner: " + ticket.getOwnerName(), bodyFont));
                 document.add(new Paragraph("\n\n"));
             }
-
             document.close();
         }
         catch (DocumentException e) {
-            e.printStackTrace();
+            log.error("Failed to create the pdf");
         }
         return out.toByteArray();
     }

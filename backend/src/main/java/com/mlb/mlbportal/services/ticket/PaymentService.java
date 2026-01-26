@@ -29,7 +29,7 @@ public class PaymentService {
      * Performs the Luhn algorithm to verify the checksum of the credit card number.
      */
     private boolean isValidLuhn(String cardNumber) {
-        if (cardNumber == null) {
+        if (cardNumber == null || cardNumber.trim().isEmpty()) {
             return false;
         }
         String cleanNumber = cardNumber.trim().replaceAll("\\s+", "");

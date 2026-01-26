@@ -14,7 +14,7 @@ import java.util.List;
 public interface EventMapper {
     @Mapping(target = "awayTeamName", source = "match.awayTeam.name")
     @Mapping(target = "homeTeamName", source = "match.homeTeam.name")
-    @Mapping(target = "stadiumName", source = "stadium.name")
+    @Mapping(target = "stadiumName", source = "match.stadium.name")
     @Mapping(target = "date", source = "match.date")
     @Mapping(target = "sectors", source = "eventManagers")
     EventResponseDTO toEventResponseDto(Event event);

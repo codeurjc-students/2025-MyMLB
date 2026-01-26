@@ -386,7 +386,6 @@ public class DataInitializerService {
 
             Event event = new Event();
             event.setMatch(match);
-            event.setStadium(stadium);
 
             List<Sector> eventSectors = this.createSectorsForStadium(stadium);
 

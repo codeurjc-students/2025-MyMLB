@@ -1,36 +1,50 @@
 package com.mlb.mlbportal.unit;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import com.mlb.mlbportal.models.Match;
-import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.repositories.MatchRepository;
-import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
+import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.PasswordResetToken;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.PasswordResetTokenRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.VALID_CODE;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
@@ -85,7 +99,7 @@ class EmailServiceTest {
         when(this.passwordRepository.findByUser(this.testUser)).thenReturn(Optional.empty());
 
         assertDoesNotThrow(() -> {
-           this.emailService.sendEmail(TEST_USER_EMAIL); 
+           this.emailService.sendEmail(TEST_USER_EMAIL);
         });
 
         verify(this.passwordRepository, times(1)).save(any(PasswordResetToken.class));
@@ -100,7 +114,7 @@ class EmailServiceTest {
         assertThatThrownBy(() -> this.emailService.sendEmail(UNKNOWN_EMAIL))
             .isInstanceOf(UserNotFoundException.class)
             .hasMessageContaining("There is no user registered with this email");
-        
+
         verify(this.passwordRepository, never()).save(any());
         verify(this.mailSender, never()).send(any(SimpleMailMessage.class));
     }
@@ -125,8 +139,8 @@ class EmailServiceTest {
         when(mockMatch.getAwayTeam()).thenReturn(awayTeam);
         when(homeTeam.getFavoritedByUsers()).thenReturn(homeFans);
         when(awayTeam.getFavoritedByUsers()).thenReturn(new HashSet<>());
-        when(mockMatch.getHomeTeam().getName()).thenReturn("Home Team");
-        when(mockMatch.getAwayTeam().getName()).thenReturn("Away Team");
+        when(mockMatch.getHomeTeam().getName()).thenReturn(TEST_TEAM1_NAME);
+        when(mockMatch.getAwayTeam().getName()).thenReturn(TEST_TEAM2_NAME);
 
         this.emailService.sendDynamicGameReminder(matchId);
         verify(this.mailSender, times(1)).send(any(SimpleMailMessage.class));
@@ -165,5 +179,37 @@ class EmailServiceTest {
     void testSendProfileChangeNotificationPassword() {
         this.emailService.sendProfileChangeNotification(USER1_USERNAME, USER1_EMAIL, USER1_EMAIL, true);
         verify(this.mailSender, times(1)).send(any(SimpleMailMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should answer to user successfully")
+    void testAnswerToUser() throws MessagingException {
+        String receiver = "user@example.com";
+        String subject = "Response";
+        String body = "Hello, try reseting your password";
+        MimeMessage mockMimeMessage = mock(MimeMessage.class);
+
+        when(this.mailSender.createMimeMessage()).thenReturn(mockMimeMessage);
+
+        this.emailService.answerToUser(receiver, subject, body);
+
+        verify(this.mailSender, times(1)).send(mockMimeMessage);
+    }
+
+    @Test
+    @DisplayName("Should send ticket purchase email with PDF attachment")
+    void testSendTicketPurchaseEmailWithAttachment() throws MessagingException {
+        String destinyEmail = "buyer@example.com";
+        String subject = "Game Tickets";
+        String body = "Hello, here are your tickets for the upcoming game";
+        byte[] pdfBytes = new byte[]{1, 2, 3};
+        String fileName = "Tickets.pdf";
+        MimeMessage mockMimeMessage = mock(MimeMessage.class);
+
+        when(this.mailSender.createMimeMessage()).thenReturn(mockMimeMessage);
+
+        this.emailService.sendTicketPurchaseEmail(destinyEmail, subject, body, pdfBytes, fileName);
+
+        verify(this.mailSender, times(1)).send(mockMimeMessage);
     }
 }

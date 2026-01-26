@@ -36,7 +36,7 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "user_fav_teams",
+        name = "T_USER_FAVORITE_TEAMS",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "team_id")
     )

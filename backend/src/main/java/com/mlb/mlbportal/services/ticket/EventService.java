@@ -89,7 +89,7 @@ public class EventService {
             throw new EventRequestMissMatchException("The number of sectors selected for the creation process does not match the number of new prices");
         }
         Match match = this.matchRepository.findById(request.matchId()).orElseThrow(MatchNotFoundException::new);
-        Event newEvent = new Event(match.getStadium(), match);
+        Event newEvent = new Event(match);
         for (int i = 0; i < sectors.size(); i++) {
             SectorCreateRequest sector = sectors.get(i);
             Double price = prices.get(i);

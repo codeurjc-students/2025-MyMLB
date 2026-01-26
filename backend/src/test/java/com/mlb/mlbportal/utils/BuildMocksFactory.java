@@ -13,6 +13,7 @@ import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
@@ -230,5 +231,9 @@ public class BuildMocksFactory {
 
     public static SupportMessage buildSupportMessage(SupportTicket ticket) {
         return SupportMessage.builder().supportTicket(ticket).senderEmail(USER1_EMAIL).body(SUPPORT_MESSAGE_BODY).isFromUser(true).build();
+    }
+
+    public static EventResponseDTO buildEventResponseDTO() {
+        return new EventResponseDTO(100L, TEST_TEAM1_NAME, TEST_TEAM2_NAME, STADIUM1_NAME, LocalDateTime.now(), List.of());
     }
 }
