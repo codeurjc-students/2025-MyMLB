@@ -9,19 +9,35 @@
 - [Algorithm or Advanced Query](#-algorithm-or-advanced-query)
 
 ## 🧠 Entities
-- User
+- UserEntity
 - Team
 - Stadium
 - Player
+- PositionPlayer
+- Pitcher
 - Match
+- Event
+- EventManager
+- Sector
+- Seat
 - Ticket
 - PasswordResetToken
+- SupportMessage
+- SupportTicket
+
+> [!IMPORTANT]
+> `Player` apart of being a current entity is also an `abstrac class`, from which the entities `PositionPlayer` and `Pitcher` inherit.
 
 > [!IMPORTANT]
 > The `PaswordResetToken` entity will be used to give the user an opportunity to create a new password (in case the user have forgotten the previous one, and clicks the "Forgot My Password" option).
 
+> [!IMPORTANT]
+> The entities `Ticket` and `SupportTicket` arec completely different. `Ticket` refers to the ticket a user uses to attend a match, while `SupportTicket` refers to an issue a user opens to contact the admins of the application.
+
+---
+
 ## 🪢 Relations between Entities
-### 🙍 User
+### 🙍 UserEntity
 <table>
   <thead>
     <th>Related with...</th>
@@ -30,7 +46,7 @@
   <tbody>
     <tr>
       <td>Team</td>
-      <td>1..N</td>
+      <td>N..N</td>
     </tr>
     <tr>
       <td>Ticket</td>
@@ -52,7 +68,7 @@
   <tbody>
     <tr>
       <td>User</td>
-      <td>N..1</td>
+      <td>N..N</td>
     </tr>
     <tr>
       <td>Player</td>
@@ -78,7 +94,7 @@
   <tbody>
     <tr>
       <td>Team</td>
-      <td>1..1</td>
+      <td>N..1</td>
     </tr>
   </tbody>
 </table>
@@ -98,6 +114,10 @@
       <td>Match</td>
       <td>1..N</td>
     </tr>
+    <tr>
+      <td>Sector</td>
+      <td>1..N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -113,11 +133,75 @@
       <td>N..1</td>
     </tr>
     <tr>
-      <td>Ticket</td>
-      <td>1..N</td>
+      <td>Stadium</td>
+      <td>N..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### Event
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Match</td>
+      <td>1..1</td>
     </tr>
     <tr>
+      <td>EventManager</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### EventManager
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  <tbody>
+    <tr>
+      <td>Event</td>
+      <td>N..1</td>
+    </tr>
+    <tr>
+      <td>Sector</td>
+      <td>N..1</td>
+    </tr>
+  </tbody>
+  </thead>
+</table>
+
+### Sector
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
       <td>Stadium</td>
+      <td>N..1</td>
+    </tr>
+    <tr>
+      <td>Seat</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### Seat
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sector</td>
       <td>N..1</td>
     </tr>
   </tbody>
@@ -131,12 +215,16 @@
   </thead>
   <tbody>
     <tr>
+      <td>EventManager</td>
+      <td>N..1</td>
+    </tr>
+    <tr>
       <td>User</td>
       <td>N..1</td>
     </tr>
     <tr>
-      <td>Match</td>
-      <td>N..1</td>
+      <td>Seat</td>
+      <td>1..1</td>
     </tr>
   </tbody>
 </table>
@@ -152,6 +240,34 @@
       <td>User</td>
       <td>1..1</td>
     </tr>
+</table>
+
+### SupportMessage
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SupportTicket</td>
+      <td>N..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### SupportTicket
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SupportMessage</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
 </table>
 
 Below is the relational diagram illustrating all the entities and their relationships within the application.
@@ -268,6 +384,8 @@ erDiagram
   TEAM }|--|{ USERENTITY : ""
 ```
 
+---
+
 ## 🔒 Type of Users and Browsing Permissions
 ### 🕵️‍♂️ Anonymous User
 - See the general information provided by the application.
@@ -292,11 +410,15 @@ erDiagram
 - User´s favourite teams statistics.
 - Ticket selling per team statistics.
 
+---
+
 ## 📷 Entities with Images
 - User
 - Team
 - Stadium
 - Player
+
+---
 
 ## 📊 Charts
 <table>
@@ -327,8 +449,12 @@ erDiagram
 > [!NOTE]
 > The information described above is subject to change. Both the chart types and topics may be updated as needed.
 
+---
+
 ### 📚 Library To Use
 Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
+
+---
 
 ## 🔍 Algorithm or Advanced Query
 This section will be reflected when updating the standings of every division in both leagues, as these will be updated automatically based on the following data:
