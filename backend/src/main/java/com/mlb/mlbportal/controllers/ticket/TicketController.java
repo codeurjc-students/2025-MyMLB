@@ -59,7 +59,7 @@ public class TicketController {
 
         Page<TicketDTO> newTickets = this.ticketService.purchaseTicket(principal.getName(), request, page, size);
         URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
+                .fromCurrentRequest()
                 .path("/{ticketId}")
                 .buildAndExpand(newTickets.getContent().getFirst().id())
                 .toUri();

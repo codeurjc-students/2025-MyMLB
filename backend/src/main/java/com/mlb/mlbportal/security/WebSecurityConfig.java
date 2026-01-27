@@ -107,7 +107,7 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
 
                     // Ticket Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/v1/events/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/events/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasRole("ADMIN")
@@ -127,8 +127,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/v3/api-docs*/**").permitAll()
                     .requestMatchers("/swagger-ui.html").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
-                
-                
+
                     // PUBLIC ENDPOINTS:
                     .anyRequest().permitAll());
 

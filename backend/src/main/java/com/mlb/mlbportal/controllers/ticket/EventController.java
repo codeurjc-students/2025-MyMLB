@@ -120,7 +120,7 @@ public class EventController {
     public ResponseEntity<EventResponseDTO> createEvent(@Valid @RequestBody EventCreateRequest request) {
         EventResponseDTO response = this.eventService.createEvent(request);
         URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
+                .fromCurrentRequest()
                 .path("/{eventId}")
                 .buildAndExpand(response.id())
                 .toUri();

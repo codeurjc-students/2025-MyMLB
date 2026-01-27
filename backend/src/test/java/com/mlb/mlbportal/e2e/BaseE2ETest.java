@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.repositories.ticket.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -54,6 +55,21 @@ public abstract class BaseE2ETest {
     private PitcherRepository pitcherRepository;
 
     @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private SectorRepository sectorRepository;
+
+    @Autowired
+    private EventManagerRepository eventManagerRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
     protected PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -63,10 +79,15 @@ public abstract class BaseE2ETest {
         RestAssured.port = port;
     }
 
-    protected void cleanDatabase() {      
+    protected void cleanDatabase() {
+        this.ticketRepository.deleteAll();
+        this.seatRepository.deleteAll();
+        this.eventManagerRepository.deleteAll();
+        this.eventRepository.deleteAll();
         this.positionPlayerRepository.deleteAll(); 
         this.pitcherRepository.deleteAll(); 
         this.matchRepository.deleteAll();
+        this.sectorRepository.deleteAll();
         this.teamRepository.deleteAll();
         this.stadiumRepository.deleteAll();  
         this.userRepository.deleteAll();
