@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record MatchDTO(
+    Long id,
+
     @NotNull(message= "The home team is required")
     TeamSummary homeTeam,
 

@@ -11,6 +11,7 @@ import com.mlb.mlbportal.models.ticket.EventManager;
 import com.mlb.mlbportal.models.ticket.Sector;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
 import com.mlb.mlbportal.repositories.ticket.EventRepository;
 import com.mlb.mlbportal.repositories.ticket.SeatRepository;
@@ -53,6 +54,9 @@ public class EventServiceIntegrationTest {
     private StadiumRepository stadiumRepository;
 
     @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
     @SuppressWarnings("unused")
     private SeatMapper seatMapper;
 
@@ -68,12 +72,13 @@ public class EventServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        this.eventRepository.deleteAll();
-        this.eventManagerRepository.deleteAll();
         this.seatRepository.deleteAll();
+        this.eventManagerRepository.deleteAll();
+        this.eventRepository.deleteAll();
         this.sectorRepository.deleteAll();
-        this.stadiumRepository.deleteAll();
         this.matchRepository.deleteAll();
+        this.teamRepository.deleteAll();
+        this.stadiumRepository.deleteAll();
 
         this.testStadium = BuildMocksFactory.setUpStadiums().getFirst();
         this.stadiumRepository.save(this.testStadium);

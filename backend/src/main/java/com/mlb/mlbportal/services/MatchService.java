@@ -4,6 +4,7 @@ import java.time.*;
 import java.util.List;
 import java.util.Set;
 
+import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -139,5 +140,10 @@ public class MatchService {
                     notificationTime.atZone(ZoneId.systemDefault()).toInstant()
             );
         }
+    }
+
+    @Transactional(readOnly = true)
+    public MatchDTO getMatchById(Long id) {
+        return this.matchMapper.toMatchDTO(this.matchRepository.findById(id).orElseThrow(MatchNotFoundException::new));
     }
 }

@@ -79,4 +79,9 @@ public class MatchController {
 		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));
 	}
+
+	@GetMapping(value = "/{matchId}")
+	public ResponseEntity<MatchDTO> getMatchById(@PathVariable("matchId")Long matchId) {
+		return ResponseEntity.ok(this.matchService.getMatchById(matchId));
+	}
 }

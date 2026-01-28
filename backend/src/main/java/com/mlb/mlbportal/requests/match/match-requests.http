@@ -17,3 +17,7 @@ Content-Type: application/json
 ### Get Away Matches of a certain team
 GET https://localhost:8443/api/v1/matches/Boston Red Sox?location=any&page=0&size=10
 Content-Type: application/json
+
+### Get match by id
+GET https://localhost:8443/api/v1/matches/1
+Content-Type: application/json

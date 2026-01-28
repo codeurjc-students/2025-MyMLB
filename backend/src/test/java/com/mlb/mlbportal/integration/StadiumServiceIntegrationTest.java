@@ -79,7 +79,7 @@ class StadiumServiceIntegrationTest {
     void testGetAvailableStadiums() {
         Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
         this.stadiumRepository.save(stadium);
-        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList(), null);
         Page<StadiumInitDTO> result = this.stadiumService.getAllAvailableStadiums(0, 10);
 
         assertThat(result.getContent()).hasSize(1).containsExactly(dto);

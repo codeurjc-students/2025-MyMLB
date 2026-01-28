@@ -109,12 +109,16 @@ class MlbImportServiceTest {
         TeamSummary homeSummary = new TeamSummary(mockTeams.get(0).getName(), mockTeams.get(0).getAbbreviation(), null, null);
         TeamSummary awaySummary = new TeamSummary(mockTeams.get(1).getName(), mockTeams.get(1).getAbbreviation(), null, null);
 
+        Match savedMatchMock = new Match();
+        savedMatchMock.setId(100L);
+
         when(this.teamLookupService.getTeamSummary(1)).thenReturn(homeSummary);
         when(this.teamLookupService.getTeamSummary(2)).thenReturn(awaySummary);
         when(this.teamRepository.findByName(mockTeams.get(0).getName())).thenReturn(Optional.of(mockTeams.get(0)));
         when(this.teamRepository.findByName(mockTeams.get(1).getName())).thenReturn(Optional.of(mockTeams.get(1)));
         when(this.stadiumRepository.findByName(expectedStadiumName)).thenReturn(Optional.of(this.mockStadiums.getFirst()));
         when(this.stadiumRepository.findByNameOrThrow(expectedStadiumName)).thenReturn(this.mockStadiums.getFirst());
+        when(this.matchRepository.save(any(Match.class))).thenReturn(savedMatchMock);
 
         List<MatchDTO> matches = this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 1));
 

@@ -281,6 +281,10 @@ public class DataInitializerService {
                     stadium.getPictures().addAll(dto.pictures());
                 }
 
+                if (dto.pictureMap() != null) {
+                    stadium.setPictureMap(dto.pictureMap());
+                }
+
                 if (team != null) {
                     team.setStadium(stadium);
                 }
@@ -375,7 +379,7 @@ public class DataInitializerService {
     private void setUpEventsForTodayMatches() {
         List<Match> todayMatches = this.matchRepository.findAll().stream()
                 .filter(m -> m.getDate().toLocalDate().isEqual(LocalDate.now()))
-                .filter(m -> m.getStatus() == MatchStatus.SCHEDULED)
+                //.filter(m -> m.getStatus() == MatchStatus.SCHEDULED)
                 .toList();
 
         List<Event> eventsToSave = new ArrayList<>();

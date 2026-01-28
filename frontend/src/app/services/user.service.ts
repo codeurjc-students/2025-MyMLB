@@ -5,6 +5,7 @@ import { EditProfileRequest, Profile, User } from '../models/user.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
 import { TeamSummary } from '../models/team.model';
 import { Pictures } from '../models/pictures.model';
+import { Ticket } from '../models/ticket/ticket.model';
 
 @Injectable({
 	providedIn: "root"
@@ -58,5 +59,9 @@ export class UserService {
 
 	public removeFavTeam(team: TeamSummary): Observable<AuthResponse> {
 		return this.http.delete<AuthResponse>(`${this.apiUrl}/favorites/teams/${team.name}`, { withCredentials: true });
+	}
+
+	public getPurchasedTickets(): Observable<Ticket[]> {
+		return this.http.get<Ticket[]>(`${this.apiUrl}/tickets`, { withCredentials: true });
 	}
 }

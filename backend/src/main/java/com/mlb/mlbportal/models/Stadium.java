@@ -38,6 +38,8 @@ public class Stadium {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<PictureInfo> pictures = new ArrayList<>();
 
+    private PictureInfo pictureMap;
+
     @OneToOne(mappedBy = "stadium")
     private Team team;
 

@@ -16,6 +16,7 @@ public interface EventMapper {
     @Mapping(target = "homeTeamName", source = "match.homeTeam.name")
     @Mapping(target = "stadiumName", source = "match.stadium.name")
     @Mapping(target = "date", source = "match.date")
+    @Mapping(target = "pictureMap", source = "match.stadium.pictureMap")
     @Mapping(target = "sectors", source = "eventManagers")
     EventResponseDTO toEventResponseDto(Event event);
 

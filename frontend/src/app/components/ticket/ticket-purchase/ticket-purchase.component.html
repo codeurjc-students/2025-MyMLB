@@ -1,0 +1,136 @@
+<div class="max-w-6xl mx-auto p-4 md:p-10 animate-fadeIn">
+  <div class="bg-white dark:bg-gray-900 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden border border-white/10 relative">
+
+    <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+
+    <div class="flex flex-col lg:flex-row">
+
+      <div class="lg:w-1/3 bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 md:p-12 text-white flex flex-col justify-between relative">
+        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-center gap-3 mb-12">
+            <div class="w-10 h-10 bg-white/20 rounded-xl backdrop-blur-md flex items-center justify-center font-black italic shadow-lg">M</div>
+            <h3 class="text-2xl font-black tracking-tighter italic">MLB PORTAL</h3>
+          </div>
+
+          <div class="space-y-8">
+            <div>
+              <p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-70">Event Details</p>
+              <p class="text-2xl font-bold leading-tight">
+                {{ event.awayTeamName }}
+                <span class="text-indigo-300 font-light block text-lg">at {{ event.homeTeamName }}</span>
+              </p>
+            </div>
+
+            <div>
+              <p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-3 opacity-70">Selected Seats</p>
+              <div class="flex flex-wrap gap-2">
+                @for (seat of seats; track seat.id) {
+                  <span class="bg-black/20 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-mono backdrop-blur-sm shadow-inner">
+                    <span class="text-indigo-300 mr-1">#</span>{{ seat.name }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-16 pt-8 border-t border-white/10 relative z-10">
+          <p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Total to pay</p>
+          <p class="text-6xl font-black tracking-tighter">{{ totalPrice | currency }}</p>
+        </div>
+      </div>
+
+      <div class="lg:w-2/3 p-8 md:p-16 bg-white dark:bg-gray-800">
+        <header class="mb-12">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-8 h-[2px] bg-indigo-600"></span>
+            <span class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Secure Checkout</span>
+          </div>
+          <h4 class="text-4xl md:text-5xl font-black text-gray-800 dark:text-white tracking-tight">Payment Details</h4>
+        </header>
+
+        <form [formGroup]="paymentForm" (ngSubmit)="purchase()" class="space-y-8">
+
+          <div class="group">
+            <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Cardholder Name</label>
+            <div class="relative">
+              <input type="text" formControlName="ownerName"
+                     [class.border-red-500]="invalidField('ownerName')"
+                     class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent focus:bg-white transition-all duration-300"
+                     placeholder="Ex: Alex Jonson">
+              @if (invalidField('ownerName')) {
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 animate-bounce">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="group">
+            <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Card Number</label>
+            <div class="relative">
+              <input type="text" formControlName="cardNumber" maxlength="19"
+                     [class.border-red-500]="invalidField('cardNumber')"
+                     class="text-inputs w-full font-mono tracking-[0.15em] bg-gray-50 dark:bg-gray-900/50 border-transparent focus:bg-white transition-all duration-300"
+                     placeholder="0000 0000 0000 0000">
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-30">
+                <div class="w-8 h-5 bg-gray-400 rounded-sm"></div>
+                <div class="w-8 h-5 bg-gray-400 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="group">
+              <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Expiry Date</label>
+              <input type="date" formControlName="expirationDate"
+                     [class.border-red-500]="invalidField('expirationDate')"
+                     class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent transition-all duration-300">
+            </div>
+
+            <div class="group">
+              <label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">CVV</label>
+              <input type="password" formControlName="cvv" maxlength="4"
+                     [class.border-red-500]="invalidField('cvv')"
+                     class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent transition-all duration-300"
+                     placeholder="***">
+            </div>
+          </div>
+
+          @if (errorMessage) {
+            <div class="bg-red-500/5 border border-red-500/20 p-5 rounded-2xl flex items-center gap-4 text-red-600 dark:text-red-400 animate-shake">
+              <div class="w-10 h-10 bg-red-500/10 rounded-full flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-black"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              </div>
+              <span class="text-sm font-bold tracking-tight">{{ errorMessage }}</span>
+            </div>
+          }
+
+          <button type="submit" [disabled]="loading"
+                  class="app-button w-full mt-10 py-6 group shadow-[0_15px_30px_rgba(79,70,229,0.3)] hover:shadow-[0_20px_40px_rgba(79,70,229,0.4)] transition-all active:scale-[0.98]">
+            <span class="app-button-bright"></span>
+            <span class="app-button-texts flex items-center justify-center gap-4 uppercase font-black tracking-[0.25em] text-sm">
+              @if (loading) {
+                <div class="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Processing...
+              }
+			  @else {
+                Confirm Payment &bull; {{ totalPrice | currency }}
+              }
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  @if (error) {
+    <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+  }
+
+  @if (success) {
+	<app-success-modal [title]="successMessage" (continue)="success = false"></app-success-modal>
+  }
+</div>

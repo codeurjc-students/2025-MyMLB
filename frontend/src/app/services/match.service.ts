@@ -6,6 +6,7 @@ import { TeamSummary } from '../models/team.model';
 export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
 
 export type ShowMatch = {
+	id: number,
 	homeTeam: TeamSummary;
 	awayTeam: TeamSummary;
 	homeScore: number;

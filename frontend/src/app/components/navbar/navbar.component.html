@@ -25,7 +25,7 @@
 			}
 
 			@if (roles.includes("USER")) {
-				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]" (click)="redirect('coming-soon')">My Tickets</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/my-tickets'), itemsHover()]" (click)="redirect('tickets')">My Tickets</a></li>
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/favorite-teams'), itemsHover()]" (click)="redirect('fav-teams')">Fav Teams</a></li>
 			}
 

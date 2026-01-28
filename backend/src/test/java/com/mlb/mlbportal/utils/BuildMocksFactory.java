@@ -120,7 +120,7 @@ public class BuildMocksFactory {
         return matches.stream().map(m -> {
             TeamSummary home = new TeamSummary(m.getHomeTeam().getName(), m.getHomeTeam().getAbbreviation(), m.getHomeTeam().getLeague(), m.getHomeTeam().getDivision());
             TeamSummary away = new TeamSummary(m.getAwayTeam().getName(), m.getAwayTeam().getAbbreviation(), m.getAwayTeam().getLeague(), m.getAwayTeam().getDivision());
-            return new MatchDTO(home, away, m.getHomeScore(), m.getAwayScore(), m.getDate(), m.getStatus(), m.getStadium().getName());
+            return new MatchDTO(m.getId(), home, away, m.getHomeScore(), m.getAwayScore(), m.getDate(), m.getStatus(), m.getStadium().getName());
         }).toList();
     }
 
@@ -144,9 +144,9 @@ public class BuildMocksFactory {
 
     public static List<StadiumInitDTO> buildStadiumInitDTOMocks() {
         List<Team> teams = setUpTeamMocks();
-        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName(), Collections.emptyList());
-        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName(), Collections.emptyList());
-        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName(), Collections.emptyList());
+        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName(), Collections.emptyList(), null);
+        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName(), Collections.emptyList(), null);
+        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName(), Collections.emptyList(), null);
 
         return Arrays.asList(dto1, dto2, dto3);
     }
@@ -160,9 +160,9 @@ public class BuildMocksFactory {
     }
 
     public static List<StadiumInitDTO> buildStadiumInitDTOMocks(List<Team> teams) {
-        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName(), Collections.emptyList());
-        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName(), Collections.emptyList());
-        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName(), Collections.emptyList());
+        StadiumInitDTO dto1 = new StadiumInitDTO(STADIUM1_NAME, STADIUM1_YEAR, teams.get(0).getName(), Collections.emptyList(), null);
+        StadiumInitDTO dto2 = new StadiumInitDTO(STADIUM2_NAME, STADIUM2_YEAR, teams.get(1).getName(), Collections.emptyList(), null);
+        StadiumInitDTO dto3 = new StadiumInitDTO(STADIUM3_NAME, STADIUM3_YEAR, teams.get(2).getName(), Collections.emptyList(), null);
 
         return Arrays.asList(dto1, dto2, dto3);
     }
@@ -234,6 +234,6 @@ public class BuildMocksFactory {
     }
 
     public static EventResponseDTO buildEventResponseDTO() {
-        return new EventResponseDTO(100L, TEST_TEAM1_NAME, TEST_TEAM2_NAME, STADIUM1_NAME, LocalDateTime.now(), List.of());
+        return new EventResponseDTO(100L, TEST_TEAM1_NAME, TEST_TEAM2_NAME, STADIUM1_NAME, LocalDateTime.now(), null, List.of());
     }
 }

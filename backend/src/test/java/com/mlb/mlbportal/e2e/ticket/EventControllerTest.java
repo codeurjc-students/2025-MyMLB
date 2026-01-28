@@ -7,6 +7,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+
+import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,6 +71,9 @@ class EventControllerTest extends BaseE2ETest {
     @Autowired
     private SeatRepository seatRepository;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
     private Long savedEventId;
     private Long savedSectorId;
 
@@ -76,31 +81,34 @@ class EventControllerTest extends BaseE2ETest {
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-
         Team home = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, 10, 5, TEST_TEAM1_CITY, "Info1", Collections.emptyList(), League.AL, Division.EAST);
         Team away = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, 8, 7, TEST_TEAM2_CITY, "Info2", Collections.emptyList(), League.NL, Division.WEST);
 
         Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, home);
-        this.stadiumRepository.save(stadium);
+        stadium = this.stadiumRepository.saveAndFlush(stadium);
+
+        home.setStadium(stadium);
+        this.teamRepository.saveAndFlush(home);
+        this.teamRepository.saveAndFlush(away);
 
         Match match = new Match(away, home, 0, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
         match.setStadium(stadium);
-        this.matchRepository.save(match);
+        match = this.matchRepository.saveAndFlush(match);
 
         Event event = new Event(match);
-        event = this.eventRepository.save(event);
+        event = this.eventRepository.saveAndFlush(event);
         this.savedEventId = event.getId();
 
         Sector sector = new Sector("Grandstand", 100, stadium);
-        sector = this.sectorRepository.save(sector);
+        sector = this.sectorRepository.saveAndFlush(sector);
         this.savedSectorId = sector.getId();
 
         EventManager manager = new EventManager(event, sector, 50.0);
         manager.setAvailability(10);
-        this.eventManagerRepository.save(manager);
+        this.eventManagerRepository.saveAndFlush(manager);
 
         Seat seat = new Seat("A1", sector, false);
-        this.seatRepository.save(seat);
+        this.seatRepository.saveAndFlush(seat);
     }
 
     @Test
@@ -152,7 +160,12 @@ class EventControllerTest extends BaseE2ETest {
         Team t1 = saveTestTeam("NewHome", "NH", 0, 0, "C", "I", List.of(), League.AL, Division.EAST);
         Team t2 = saveTestTeam("NewAway", "NA", 0, 0, "C", "I", List.of(), League.AL, Division.EAST);
 
-        Stadium stadium = this.stadiumRepository.save(new Stadium("New Stadium", 2024, t1));
+        Stadium stadium = new Stadium("New Stadium", 2024, t1);
+        stadium = this.stadiumRepository.save(stadium);
+
+        t1.setStadium(stadium);
+        this.teamRepository.save(t1);
+
         this.sectorRepository.save(new Sector("Bleachers", 50, stadium));
 
         Match newMatch = new Match(t2, t1, 0, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);

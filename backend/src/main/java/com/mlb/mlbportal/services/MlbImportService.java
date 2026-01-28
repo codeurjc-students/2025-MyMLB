@@ -58,18 +58,25 @@ public class MlbImportService {
     }
 
     private MatchDTO saveMatch(MatchDTO dto) {
-        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name())
-                .orElseThrow(TeamNotFoundException::new);
-        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())
-                .orElseThrow(TeamNotFoundException::new);
+        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name()).orElseThrow(TeamNotFoundException::new);
+        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name()).orElseThrow(TeamNotFoundException::new);
 
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());
 
         Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
-
         match.setStadium(stadium);
-        this.matchRepository.save(match);
-        return dto;
+
+        Match savedMatch = this.matchRepository.save(match);
+        return new MatchDTO(
+                savedMatch.getId(),
+                dto.homeTeam(),
+                dto.awayTeam(),
+                dto.homeScore(),
+                dto.awayScore(),
+                dto.date(),
+                dto.status(),
+                dto.stadiumName()
+        );
     }
 
     @SuppressWarnings("unused")
@@ -79,6 +86,7 @@ public class MlbImportService {
         if (!cachedMatches.isEmpty()) {
             return cachedMatches.stream()
                     .map(m -> new MatchDTO(
+                            m.getId(),
                             new TeamSummary(
                                 m.getHomeTeam().getName(),
                                 m.getHomeTeam().getAbbreviation(),
@@ -116,7 +124,7 @@ public class MlbImportService {
         LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
         MatchStatus status = convertStatus(game.status().detailedState());
         String stadiumName = game.venue().name();
-        return new MatchDTO(home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
+        return new MatchDTO(null, home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
                 Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);
     }
 

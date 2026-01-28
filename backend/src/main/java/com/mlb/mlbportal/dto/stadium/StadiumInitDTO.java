@@ -8,5 +8,6 @@ public record StadiumInitDTO(
     String name,
     int openingDate,
     String teamName,
-    List<PictureInfo> pictures
+    List<PictureInfo> pictures,
+    PictureInfo pictureMap
 ) {}
