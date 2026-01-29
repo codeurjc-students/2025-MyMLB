@@ -89,14 +89,18 @@
             }
 
             <div class="pt-6 border-t border-gray-100">
-              <div class="flex justify-between items-end mb-6">
-                <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Estimated Total</span>
-                <span class="text-4xl font-black text-indigo-600">{{ totalPrice | currency }}</span>
-              </div>
-              <button (click)="confirm = true" [disabled]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
-                      class="app-button w-full py-4 uppercase font-black tracking-widest">
-                Proceed to Payment
-              </button>
+				<div class="flex justify-between items-end mb-6">
+						<span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Estimated Total</span>
+						<span class="text-4xl font-black text-indigo-600">{{ totalPrice | currency }}</span>
+				</div>
+				<button (click)="confirm = true"
+					[disabled]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
+					[class.opacity-50]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
+					[class.cursor-not-allowed]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
+					[class.grayscale]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
+					class="app-button w-full py-4 uppercase font-black tracking-widest transition-all duration-300">
+					Proceed to Payment
+				</button>
             </div>
           </div>
         </div>
@@ -111,7 +115,8 @@
 		  [eventManagerId]="selectedSectorId"
           [tickets]="ticketAmount"
           [seats]="selectedSeats"
-          [totalPrice]="totalPrice">
+          [totalPrice]="totalPrice"
+		  (goBack)="confirm = false">
       </app-ticket-purchase>
     </div>
   }

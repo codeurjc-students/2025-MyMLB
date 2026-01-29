@@ -255,7 +255,7 @@ public class DataInitializerService {
 
         this.mlbImportService.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
-                LocalDate.of(2026, Month.APRIL, 1)
+                LocalDate.of(2026, Month.OCTOBER, 1)
         );
         this.teamRepository.saveAll(allTeams);
     }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Seat } from '../../../models/ticket/seat.model';
 import { TicketService } from '../../../services/ticket/ticket.service';
@@ -22,6 +22,7 @@ export class TicketPurchaseComponent implements OnInit {
 	@Input() tickets!: number;
 	@Input() seats!: Seat[];
 	@Input() totalPrice!: number;
+	@Output() goBack = new EventEmitter<void>();
 
 	private ticketService = inject(TicketService);
 	private fb = inject(FormBuilder);
@@ -93,5 +94,9 @@ export class TicketPurchaseComponent implements OnInit {
 	public openSuccessPage() {
 		this.showSuccesModal = false;
 		this.successfullPurchase = true;
+	}
+
+	public previousPage() {
+		this.goBack.emit();
 	}
 }

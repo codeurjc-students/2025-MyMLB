@@ -141,9 +141,4 @@ public class MatchService {
             );
         }
     }
-
-    @Transactional(readOnly = true)
-    public MatchDTO getMatchById(Long id) {
-        return this.matchMapper.toMatchDTO(this.matchRepository.findById(id).orElseThrow(MatchNotFoundException::new));
-    }
 }

@@ -55,13 +55,15 @@ public class MatchController {
 	})
 	@GetMapping(value = "/{teamName}", produces = "application/json")
 	public ResponseEntity<Page<MatchDTO>> getMatchesOfATeam(@PathVariable("teamName") String teamName,
-			@RequestParam String location, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+															@RequestParam String location, @RequestParam(defaultValue = "0") int page,
+															@RequestParam(defaultValue = "10") int size) {
 		if ("home".equalsIgnoreCase(location)) {
 			return ResponseEntity.ok(this.matchService.getHomeMatches(teamName, page, size));
-		} else if ("away".equalsIgnoreCase(location)) {
+		} 
+		else if ("away".equalsIgnoreCase(location)) {
 			return ResponseEntity.ok(this.matchService.getAwayMatches(teamName, page, size));
-		} else {
+		} 
+		else {
 			return ResponseEntity.badRequest().build();
 		}
 	}
@@ -74,14 +76,9 @@ public class MatchController {
 	})
 	@GetMapping(value = "/team/{teamName}", produces = "application/json")
 	public ResponseEntity<List<MatchDTO>> getMatchesOfTeamByMonth(@PathVariable String teamName,
-			@RequestParam int year, @RequestParam int month) {
+																																@RequestParam int year, @RequestParam int month) {
 		LocalDate start = LocalDate.of(year, month, 1);
 		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));
-	}
-
-	@GetMapping(value = "/{matchId}")
-	public ResponseEntity<MatchDTO> getMatchById(@PathVariable("matchId")Long matchId) {
-		return ResponseEntity.ok(this.matchService.getMatchById(matchId));
 	}
 }

@@ -10,46 +10,58 @@
 					<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 20px 20px;"></div>
 
 					<div class="relative z-10">
-					<div class="flex items-center gap-3 mb-12">
-						<div class="w-10 h-10 bg-white/20 rounded-xl backdrop-blur-md flex items-center justify-center font-black italic shadow-lg">M</div>
-						<h3 class="text-2xl font-black tracking-tighter italic">MLB PORTAL</h3>
-					</div>
+						<div class="flex items-center gap-4 mb-12">
+							<div class="w-12 h-12 bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center overflow-hidden">
+								<img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain">
+							</div>
 
-					<div class="space-y-8">
-						<div>
-						<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-70">Event Details</p>
-						<p class="text-2xl font-bold leading-tight">
-							{{ event.awayTeamName }}
-							<span class="text-indigo-300 font-light block text-lg">at {{ event.homeTeamName }}</span>
-						</p>
+							<div class="flex flex-col">
+								<h3 class="text-2xl font-black tracking-tighter italic leading-none">MLB PORTAL</h3>
+								<span class="text-[8px] uppercase tracking-[0.3em] text-indigo-300 font-bold">Official Ticketing</span>
+							</div>
 						</div>
 
-						<div>
-						<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-3 opacity-70">Selected Seats</p>
-						<div class="flex flex-wrap gap-2">
-							@for (seat of seats; track seat.id) {
-							<span class="bg-black/20 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-mono backdrop-blur-sm shadow-inner">
-								<span class="text-indigo-300 mr-1">#</span>{{ seat.name }}
-							</span>
-							}
+						<div class="space-y-8">
+							<div>
+								<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-70">Event Details</p>
+								<p class="text-2xl font-bold leading-tight">
+									{{ event.awayTeamName }}
+									<span class="text-indigo-300 font-light block text-lg">at {{ event.homeTeamName }}</span>
+								</p>
+							</div>
+
+							<div>
+								<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-3 opacity-70">Selected Seats</p>
+								<div class="flex flex-wrap gap-2">
+									@for (seat of seats; track seat.id) {
+										<span class="bg-black/20 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-mono backdrop-blur-sm shadow-inner">
+											<span class="text-indigo-300 mr-1">#</span>{{ seat.name }}
+										</span>
+									}
+								</div>
+							</div>
 						</div>
-						</div>
-					</div>
 					</div>
 
 					<div class="mt-16 pt-8 border-t border-white/10 relative z-10">
-					<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Total to pay</p>
-					<p class="text-6xl font-black tracking-tighter">{{ totalPrice | currency }}</p>
+						<p class="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Total to pay</p>
+						<p class="text-6xl font-black tracking-tighter">{{ totalPrice | currency }}</p>
 					</div>
 				</div>
 
 				<div class="lg:w-2/3 p-8 md:p-16 bg-white dark:bg-gray-800">
+					<button (click)="previousPage()" class="mb-8 flex items-center gap-2 text-gray-400 cursor-pointer hover:text-indigo-600 transition-colors group">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+						</svg>
+						<span class="text-xs font-black uppercase tracking-[0.2em]">Go back</span>
+					</button>
 					<header class="mb-12">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="w-8 h-[2px] bg-indigo-600"></span>
-						<span class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Secure Checkout</span>
-					</div>
-					<h4 class="text-4xl md:text-5xl font-black text-gray-800 dark:text-white tracking-tight">Payment Details</h4>
+						<div class="flex items-center gap-2 mb-2">
+							<span class="w-8 h-[2px] bg-indigo-600"></span>
+							<span class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Secure Checkout</span>
+						</div>
+						<h4 class="text-4xl md:text-5xl font-black text-gray-800 dark:text-white tracking-tight">Payment Details</h4>
 					</header>
 
 					<form [formGroup]="paymentForm" (ngSubmit)="purchase()" class="space-y-8">
@@ -109,8 +121,7 @@
 							</div>
 						}
 
-						<button type="submit" [disabled]="loading"
-								class="app-button w-full mt-10 py-6 group shadow-[0_15px_30px_rgba(79,70,229,0.3)] hover:shadow-[0_20px_40px_rgba(79,70,229,0.4)] transition-all active:scale-[0.98]">
+						<button type="submit" [disabled]="loading" class="app-button w-full mt-10 group">
 							<span class="app-button-bright"></span>
 							<span class="app-button-texts flex items-center justify-center gap-4 uppercase font-black tracking-[0.25em] text-sm">
 							Confirm Payment &bull; {{ totalPrice | currency }}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { TeamInfo } from '../../models/team.model';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { PositionPlayer } from '../../models/position-player.model';
@@ -9,6 +9,9 @@ import { BackgroundColorService } from '../../services/background-color.service'
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
 import { CalendarComponent } from "./calendar/calendar.component";
 import { Pictures } from '../../models/pictures.model';
+import { MatchService, ShowMatch } from '../../services/match.service';
+import { PaginatedSelectorService } from '../../services/utilities/paginated-selector.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-team',
@@ -18,11 +21,16 @@ import { Pictures } from '../../models/pictures.model';
 	templateUrl: './team.component.html',
 })
 export class TeamComponent implements OnInit {
+	private matchService = inject(MatchService);
+	public paginationHandlerService = inject(PaginatedSelectorService);
+	private router = inject(Router);
+
 	public team: TeamInfo | null = null;
 	public positionPlayers: PositionPlayer[] = [];
 	public pitchers: Pitcher[] = [];
 	public championships: number[] = [];
 	public teamRank: number = 0;
+	public homeMatches: ShowMatch[] = [];
 
 	@ViewChild('carousel') carousel!: ElementRef;
 
@@ -34,6 +42,8 @@ export class TeamComponent implements OnInit {
 	public selectedPlayer: Pitcher | PositionPlayer | null = null;
 
 	public showCalendar = false;
+
+	public readonly PAGE_SIZE = 5;
 
 	constructor(
 		private selectedTeamService: SelectedTeamService,
@@ -58,6 +68,10 @@ export class TeamComponent implements OnInit {
 					.subscribe((rank) => {
 						this.teamRank = rank;
 					});
+			}
+
+			if (this.team) {
+				this.resetMatches();
 			}
 		});
 	}
@@ -115,5 +129,29 @@ export class TeamComponent implements OnInit {
 
 	public openCalendar() {
 		this.showCalendar = true;
+	}
+
+	private resetMatches() {
+		this.paginationHandlerService.clearAll();
+		this.loadNextMatches();
+	}
+
+	public loadNextMatches() {
+		const fetch = (page: number, size: number) => {
+			return this.matchService.getMatchesOfATeam(this.team?.teamStats.name, 'home', page, size);
+		}
+		this.paginationHandlerService.loadNextPage(this.PAGE_SIZE, fetch);
+	}
+
+	public showLess() {
+		this.resetMatches();
+	}
+
+	public goToPurchaseTickets(matchId: number) {
+		this.router.navigate(['tickets'], {
+			queryParams: {
+				matchId: matchId
+			}
+		});
 	}
 }
