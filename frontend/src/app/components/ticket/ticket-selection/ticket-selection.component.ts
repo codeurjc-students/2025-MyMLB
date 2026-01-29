@@ -93,7 +93,6 @@ export class TicketSelectionComponent implements OnInit {
 	public onSectorChange() {
 		this.selectedSectorId = Number(this.selectedSectorId);
 		this.totalPrice = this.calculateTotalPrice();
-		console.log(this.totalPrice);
 		this.selectedSeats = [];
 		if (this.selectedSectorId !== 0) {
 			this.loadAvailableSeats();
@@ -104,12 +103,10 @@ export class TicketSelectionComponent implements OnInit {
 	}
 
 	private calculateTotalPrice() {
-		console.log("TICKETS: " + this.ticketAmount);
 		if (!this.ticketAmount || !this.selectedSectorId || this.selectedSectorId === 0) {
 			return 0;
 		}
 		const selectedSector = this.availableSectors.find(sector => sector.id === this.selectedSectorId);
-		console.log("PRECIO: " + selectedSector?.price);
 		return selectedSector ? selectedSector.price * this.ticketAmount : 0;
 	}
 

@@ -102,10 +102,13 @@
         </div>
       </div>
     </div>
-  } @else {
+  }
+  <!-- Load the page to enters the card's data -->
+  @else {
     <div class="animate-fadeIn">
       <app-ticket-purchase
           [event]="event"
+		  [eventManagerId]="selectedSectorId"
           [tickets]="ticketAmount"
           [seats]="selectedSeats"
           [totalPrice]="totalPrice">

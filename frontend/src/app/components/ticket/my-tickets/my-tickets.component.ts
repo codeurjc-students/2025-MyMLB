@@ -17,7 +17,9 @@ export class MyTicketsComponent implements OnInit {
 	public error = false;
 	public errorMessage = '';
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.fetchTickets();
+	}
 
 	private fetchTickets() {
 		this.userService.getPurchasedTickets().subscribe({

@@ -7,15 +7,18 @@ import { PurchaseRequest } from '../../../models/ticket/purchase-request.model';
 import { EventResponse } from '../../../models/ticket/event-response.model';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
+import { SuccessfullPurchaseComponent } from "../successfull-purchase/successfull-purchase.component";
 
 @Component({
 	selector: 'app-ticket-purchase',
-	imports: [CommonModule, ReactiveFormsModule, ErrorModalComponent, SuccessModalComponent],
+	imports: [CommonModule, ReactiveFormsModule, ErrorModalComponent, SuccessModalComponent, LoadingModalComponent, SuccessfullPurchaseComponent],
 	standalone: true,
 	templateUrl: './ticket-purchase.component.html',
 })
 export class TicketPurchaseComponent implements OnInit {
 	@Input() event!: EventResponse;
+	@Input() eventManagerId!: number;
 	@Input() tickets!: number;
 	@Input() seats!: Seat[];
 	@Input() totalPrice!: number;
@@ -28,7 +31,8 @@ export class TicketPurchaseComponent implements OnInit {
 	public paymentForm!: FormGroup;
 	public loading = false;
 	public error = false;
-	public success = false;
+	public showSuccesModal = false;
+	public successfullPurchase = false;
 
 	public errorMessage = '';
 	public successMessage = '';
@@ -54,7 +58,7 @@ export class TicketPurchaseComponent implements OnInit {
 	private prepareRequest() {
 		const value = this.paymentForm.value;
 		return {
-			eventManagerId: this.event.id,
+			eventManagerId: this.eventManagerId,
 			ticketAmount: this.tickets,
 			seats: this.seats,
 			ownerName: value.ownerName,
@@ -75,7 +79,7 @@ export class TicketPurchaseComponent implements OnInit {
 		this.ticketService.purchaseTicket(request).subscribe({
 			next: (_) => {
 				this.loading = false;
-				this.success = true;
+				this.showSuccesModal = true;
 				this.successMessage = 'Thank you for your purchase';
 			},
 			error: (_) => {
@@ -84,5 +88,10 @@ export class TicketPurchaseComponent implements OnInit {
 				this.errorMessage = 'An error occur during the payment';
 			}
 		});
+	}
+
+	public openSuccessPage() {
+		this.showSuccesModal = false;
+		this.successfullPurchase = true;
 	}
 }
