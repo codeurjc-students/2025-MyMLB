@@ -30,6 +30,11 @@ import lombok.AllArgsConstructor;
 public class MatchController {
 	private final MatchService matchService;
 
+	@GetMapping(value = "/{matchId}", produces = "application/json")
+	public ResponseEntity<MatchDTO> getMatchById(@PathVariable("matchId")Long matchId) {
+		return ResponseEntity.ok(this.matchService.getMatchById(matchId));
+	}
+
 	@Operation(summary = "Get the matches of the day (paginated)", description = "Returns a paginated list of matches scheduled for today. Always 10 matches per page.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successfully retrieved the matches", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MatchDTO.class))),
@@ -53,7 +58,7 @@ public class MatchController {
 			@ApiResponse(responseCode = "404", description = "Team not found or no matches available", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
 	})
-	@GetMapping(value = "/{teamName}", produces = "application/json")
+	@GetMapping(value = "/teamName/{teamName}", produces = "application/json")
 	public ResponseEntity<Page<MatchDTO>> getMatchesOfATeam(@PathVariable("teamName") String teamName,
 															@RequestParam String location, @RequestParam(defaultValue = "0") int page,
 															@RequestParam(defaultValue = "10") int size) {

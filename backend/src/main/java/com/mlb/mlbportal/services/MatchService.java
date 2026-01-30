@@ -38,6 +38,11 @@ public class MatchService {
     private final TaskScheduler taskScheduler;
     private final EmailService emailService;
 
+    @Transactional(readOnly = true)
+    public MatchDTO getMatchById(Long id) {
+        return this.matchMapper.toMatchDTO(this.matchRepository.findById(id).orElseThrow(MatchNotFoundException::new));
+    }
+
     @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
         LocalDate today = LocalDate.now(this.clock);

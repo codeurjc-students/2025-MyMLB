@@ -5,6 +5,8 @@ import { EventResponse } from '../../models/ticket/event-response.model';
 import { PaginatedResponse } from '../../models/pagination.model';
 import { Seat } from '../../models/ticket/seat.model';
 import { EventManager } from '../../models/ticket/event-manager.model';
+import { EventCreateRequest } from '../../models/ticket/event-create-request-model';
+import { EventEditRequest } from '../../models/ticket/event-edit-request.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -23,5 +25,17 @@ export class EventService {
 
 	public getAvailableSeats(eventId: number, sectorId: number): Observable<PaginatedResponse<Seat>> {
 		return this.httpMock.get<PaginatedResponse<Seat>>(`${this.apiUrl}/${eventId}/sector/${sectorId}`);
+	}
+
+	public createEvent(request: EventCreateRequest): Observable<EventResponse> {
+		return this.httpMock.post<EventResponse>(this.apiUrl, request);
+	}
+
+	public editEvent(request: EventEditRequest): Observable<EventResponse> {
+		return this.httpMock.put<EventResponse>(this.apiUrl, request);
+	}
+
+	public deleteEvent(eventId: number): Observable<EventResponse> {
+		return this.httpMock.delete<EventResponse>(`${this.apiUrl}/${eventId}`);
 	}
 }

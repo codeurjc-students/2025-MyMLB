@@ -77,7 +77,7 @@ public class EventService {
     @Transactional(readOnly = true)
     public EventResponseDTO getEventByMatchId(Long matchId) {
         this.matchRepository.findById(matchId).orElseThrow(MatchNotFoundException::new);
-        Event event = this.eventRepository.findEventByMatchId(matchId).orElseThrow(EventNotFoundException::new);
+        Event event = this.eventRepository.findEventByMatchId(matchId).orElse(null);
         return this.eventMapper.toEventResponseDto(event);
     }
 

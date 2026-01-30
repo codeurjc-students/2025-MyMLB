@@ -12,6 +12,8 @@ import { Pictures } from '../../models/pictures.model';
 import { MatchService, ShowMatch } from '../../services/match.service';
 import { PaginatedSelectorService } from '../../services/utilities/paginated-selector.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { EventService } from '../../services/ticket/event.service';
 
 @Component({
 	selector: 'app-team',
@@ -23,6 +25,8 @@ import { Router } from '@angular/router';
 export class TeamComponent implements OnInit {
 	private matchService = inject(MatchService);
 	public paginationHandlerService = inject(PaginatedSelectorService);
+	private authService = inject(AuthService);
+	private eventService = inject(EventService);
 	private router = inject(Router);
 
 	public team: TeamInfo | null = null;
@@ -44,6 +48,13 @@ export class TeamComponent implements OnInit {
 	public showCalendar = false;
 
 	public readonly PAGE_SIZE = 5;
+
+	public eventMap = new Map<number, boolean>();
+	public isAdmin = false;
+	public success = false;
+	public error = false;
+	public successMessage = '';
+	public errorMessage = '';
 
 	constructor(
 		private selectedTeamService: SelectedTeamService,
@@ -72,6 +83,15 @@ export class TeamComponent implements OnInit {
 
 			if (this.team) {
 				this.resetMatches();
+			}
+		});
+
+		this.authService.getActiveUser().subscribe((response) => {
+			this.isAdmin = response.roles.includes('ADMIN');
+		});
+		this.paginationHandlerService.items$.subscribe((matches) => {
+			if (matches && matches.length > 0) {
+				this.checkEventOfAMatch(matches);
 			}
 		});
 	}
@@ -151,6 +171,50 @@ export class TeamComponent implements OnInit {
 		this.router.navigate(['tickets'], {
 			queryParams: {
 				matchId: matchId
+			}
+		});
+	}
+
+	private checkEventOfAMatch(matches: ShowMatch[]) {
+		matches.forEach(match => {
+			this.eventService.getEventByMatchId(match.id).subscribe({
+				next: (response) => {
+					this.eventMap.set(match.id, response !== null);
+				},
+				error: (_) => {
+					this.error = true;
+					this.errorMessage = 'Error while fetching the event of the match: ' + match.id;
+				}
+			})
+		});
+	}
+
+	public createEvent(matchId: number) {
+		this.router.navigate(['create-event'], {
+			queryParams: {
+				matchId: matchId
+			}
+		});
+	}
+
+	public editEvent(matchId: number) {
+		this.router.navigate(['edit-event'], {
+			queryParams: {
+				matchId: matchId
+			}
+		});
+	}
+
+	public deleteEvent(matchId: number) {
+		this.eventService.deleteEvent(matchId).subscribe({
+			next: (_) => {
+				this.eventMap.set(matchId, false);
+				this.success = true;
+				this.successMessage = 'Event Successfully Deleted';
+			},
+			error: (_) => {
+				this.error = true;
+				this.errorMessage = 'An error occur deleting the event';
 			}
 		});
 	}

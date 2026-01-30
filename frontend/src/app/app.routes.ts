@@ -67,5 +67,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/support/inbox/inbox.component').then((m) => m.InboxComponent)
 	},
+	{
+		path: 'create-event',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/ticket/create-event/create-event.component').then((m) => m.CreateEventComponent)
+	},
 	{ path: '**', redirectTo: 'error' },
 ];
