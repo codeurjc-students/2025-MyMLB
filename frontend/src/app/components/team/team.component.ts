@@ -14,6 +14,7 @@ import { PaginatedSelectorService } from '../../services/utilities/paginated-sel
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/ticket/event.service';
+import { EventResponse } from '../../models/ticket/event-response.model';
 
 @Component({
 	selector: 'app-team',
@@ -49,7 +50,7 @@ export class TeamComponent implements OnInit {
 
 	public readonly PAGE_SIZE = 5;
 
-	public eventMap = new Map<number, boolean>();
+	public eventMap = new Map<number, EventResponse | null>();
 	public isAdmin = false;
 	public success = false;
 	public error = false;
@@ -179,7 +180,7 @@ export class TeamComponent implements OnInit {
 		matches.forEach(match => {
 			this.eventService.getEventByMatchId(match.id).subscribe({
 				next: (response) => {
-					this.eventMap.set(match.id, response !== null);
+					this.eventMap.set(match.id, response);
 				},
 				error: (_) => {
 					this.error = true;
@@ -200,7 +201,7 @@ export class TeamComponent implements OnInit {
 	public editEvent(matchId: number) {
 		this.router.navigate(['edit-event'], {
 			queryParams: {
-				matchId: matchId
+				eventId: this.eventMap.get(matchId)
 			}
 		});
 	}
@@ -208,7 +209,7 @@ export class TeamComponent implements OnInit {
 	public deleteEvent(matchId: number) {
 		this.eventService.deleteEvent(matchId).subscribe({
 			next: (_) => {
-				this.eventMap.set(matchId, false);
+				this.eventMap.set(matchId, null);
 				this.success = true;
 				this.successMessage = 'Event Successfully Deleted';
 			},

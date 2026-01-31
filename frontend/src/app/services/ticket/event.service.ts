@@ -15,6 +15,10 @@ export class EventService {
 	private httpMock = inject(HttpClient);
 	private apiUrl = 'https://localhost:8443/api/v1/events';
 
+	public getEventById(eventId: number): Observable<EventResponse> {
+		return this.httpMock.get<EventResponse>(`${this.apiUrl}/${eventId}`);
+	}
+
 	public getEventByMatchId(matchId: number): Observable<EventResponse> {
 		return this.httpMock.get<EventResponse>(`${this.apiUrl}/match/${matchId}`);
 	}

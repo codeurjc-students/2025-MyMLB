@@ -73,5 +73,11 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./components/ticket/create-event/create-event.component').then((m) => m.CreateEventComponent)
 	},
+	{
+		path: 'edit-event',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/ticket/edit-event/edit-event.component').then((m) => m.EditEventComponent)
+	},
 	{ path: '**', redirectTo: 'error' },
 ];
