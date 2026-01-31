@@ -11,10 +11,10 @@ import com.mlb.mlbportal.models.Stadium;
 
 @Repository
 public interface StadiumRepository extends JpaRepository<Stadium, Long> {
-    public Optional<Stadium> findByName(String name);
-    public default Stadium findByNameOrThrow(String name) {
+    Optional<Stadium> findByName(String name);
+    default Stadium findByNameOrThrow(String name) {
         return this.findByName(name).orElseThrow(StadiumNotFoundException::new);
     }
-    public List<Stadium> findByNameContainingIgnoreCase(String input);
-    public List<Stadium> findByTeamIsNull();
+    List<Stadium> findByNameContainingIgnoreCase(String input);
+    List<Stadium> findByTeamIsNull();
 }

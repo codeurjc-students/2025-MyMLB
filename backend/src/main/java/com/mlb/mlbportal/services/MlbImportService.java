@@ -124,6 +124,9 @@ public class MlbImportService {
         LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
         MatchStatus status = convertStatus(game.status().detailedState());
         String stadiumName = game.venue().name();
+        if (stadiumName.equals("Rate Field")) {
+            stadiumName = "Guaranteed Rate Field";
+        }
         return new MatchDTO(null, home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
                 Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);
     }

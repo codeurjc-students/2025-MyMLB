@@ -26,8 +26,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867247/toronto-map_ljtcuo.webp",
+      "publicId": "toronto-map_ljtcuo"
     }
   },
 
@@ -90,8 +90,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867726/boston-map_u4reae.webp",
+      "publicId": "boston-map_u4reae"
     }
   },
 
@@ -122,8 +122,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867866/tampa-map_x7rgbv.webp",
+      "publicId": "tampa-map_x7rgbv"
     }
   },
 
@@ -154,8 +154,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867972/baltimore-map_ibyubu.webp",
+      "publicId": "baltimore-map_ibyubu"
     }
   },
 
@@ -186,8 +186,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868099/cleveland-map_dj5y5b.webp",
+      "publicId": "cleveland-map_dj5y5b"
     }
   },
 
@@ -218,8 +218,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868210/detroit-map_vi7oh3.webp",
+      "publicId": "detroit-map_vi7oh3"
     }
   },
 
@@ -250,8 +250,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868338/kansas-map_ac8lwv.webp",
+      "publicId": "kansas-map_ac8lwv"
     }
   },
 
@@ -282,8 +282,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868469/minnesota-map_ypmfpf.webp",
+      "publicId": "minnesota-map_ypmfpf"
     }
   },
 
@@ -314,8 +314,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868563/chicago-white-map_hlpltp.webp",
+      "publicId": "chicago-white-map_hlpltp"
     }
   },
 
@@ -346,8 +346,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868715/mariners-map_gqhn5k.webp",
+      "publicId": "mariners-map_gqhn5k"
     }
   },
 
@@ -378,8 +378,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868808/houstonn_rkbbfw.webp",
+      "publicId": "houstonn_rkbbfw"
     }
   },
 
@@ -410,8 +410,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869133/texas-map_c3ifwg.webp",
+      "publicId": "texas-map_c3ifwg"
     }
   },
 
@@ -419,7 +419,11 @@
     "name": "Sutter Health Park",
     "openingDate": "2000",
     "teamName": "Athletics",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869369/athletics-map_qhwnqs.webp",
+      "publicId": "athletics-map_qhwnqs"
+    }
   },
 
   {
@@ -449,8 +453,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869501/angels-map_vtf8t3.webp",
+      "publicId": "angels-map_vtf8t3"
     }
   },
 
@@ -460,8 +464,8 @@
     "teamName": "Philadelphia Phillies",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879700/phillies-map_ei8qqn.png",
+      "publicId": "phillies-map_ei8qqn"
     }
   },
   {
@@ -470,8 +474,8 @@
     "teamName": "New York Mets",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879924/mets-map_c8dmxi.png",
+      "publicId": "mets-map_c8dmxi"
     }
   },
   {
@@ -480,18 +484,18 @@
     "teamName": "Atlanta Braves",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879824/braves-map_uupa5v.png",
+      "publicId": "braves-map_uupa5v"
     }
   },
   {
-    "name": "LoanDepot Park",
+    "name": "loanDepot park",
     "openingDate": "2012",
     "teamName": "Miami Marlins",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769880100/miami-map_kfl706.png",
+      "publicId": "miami-map_kfl706"
     }
   },
   {
@@ -500,8 +504,8 @@
     "teamName": "Washington Nationals",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769880193/wash-map_zjd8qw.png",
+      "publicId": "wash-map_zjd8qw"
     }
   },
   {
@@ -510,8 +514,8 @@
     "teamName": "Milwaukee Brewers",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884531/brewers-map_jx83x5.png",
+      "publicId": "brewers-map_jx83x5"
     }
   },
   {
@@ -520,8 +524,8 @@
     "teamName": "Chicago Cubs",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884766/cubs-map_mxzof8.png",
+      "publicId": "cubs-map_mxzof8"
     }
   },
   {
@@ -530,8 +534,8 @@
     "teamName": "Cincinnati Reds",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884847/reds-map_dcojdx.png",
+      "publicId": "reds-map_dcojdx"
     }
   },
   {
@@ -540,8 +544,8 @@
     "teamName": "St. Louis Cardinals",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885044/cardinals_zxrpgt.png",
+      "publicId": "cardinals_zxrpgt"
     }
   },
 
@@ -551,8 +555,8 @@
     "teamName": "Pittsburgh Pirates",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885139/pirates-map_hyih6v.png",
+      "publicId": "pirates-map_hyih6v"
     }
   },
 
@@ -583,8 +587,8 @@
       }
     ],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885285/dodgers-map_csxido.png",
+      "publicId": "dodgers-map_csxido"
     }
   },
 
@@ -594,8 +598,8 @@
     "teamName": "San Diego Padres",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885363/padres-map_ukggtf.png",
+      "publicId": "padres-map_ukggtf"
     }
   },
 
@@ -605,8 +609,8 @@
     "teamName": "San Francisco Giants",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885463/giants-map_vh4wui.png",
+      "publicId": "giants-map_vh4wui"
     }
   },
 
@@ -616,8 +620,8 @@
     "teamName": "Arizona Diamondbacks",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885574/arizona-map_xyfovy.png",
+      "publicId": "arizona-map_xyfovy"
     }
   },
 
@@ -627,8 +631,8 @@
     "teamName": "Colorado Rockies",
     "pictures": [],
     "pictureMap": {
-      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
-      "publicId": "image-Photoroom_yjafs3"
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885665/rockies-map_sylntl.png",
+      "publicId": "rockies-map_sylntl"
     }
   }
 ]

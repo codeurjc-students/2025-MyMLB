@@ -8,16 +8,19 @@ import { FormsModule } from '@angular/forms';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { ActivatedRoute } from '@angular/router';
 import { TicketPurchaseComponent } from "../ticket-purchase/ticket-purchase.component";
+import { BackgroundColorService } from '../../../services/background-color.service';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
 
 @Component({
 	selector: 'app-ticket-selection',
-	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent, NgxImageZoomModule],
 	standalone: true,
 	templateUrl: './ticket-selection.component.html',
 })
 export class TicketSelectionComponent implements OnInit {
 	private eventService = inject(EventService);
 	private route = inject(ActivatedRoute);
+	public backgroundColorService = inject(BackgroundColorService);
 
 	private matchId!: number;
 
@@ -37,6 +40,7 @@ export class TicketSelectionComponent implements OnInit {
 	public successMessage = '';
 
 	public totalPrice: number = 0;
+	public isPictureOpen = false;
 
 	ngOnInit() {
 		this.route.queryParams.subscribe(param => {
@@ -124,5 +128,9 @@ export class TicketSelectionComponent implements OnInit {
 
 	public isAlreadySelected(seatId: number) {
 		return this.selectedSeats.some(seat => seat.id === seatId);
+	}
+
+	public openStadiumMap() {
+		this.isPictureOpen = !this.isPictureOpen;
 	}
 }

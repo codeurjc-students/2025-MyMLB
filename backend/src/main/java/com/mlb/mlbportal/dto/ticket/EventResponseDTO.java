@@ -9,6 +9,7 @@ public record EventResponseDTO(
         Long id,
         String awayTeamName,
         String homeTeamName,
+        String homeTeamAbbreviation,
         String stadiumName,
         LocalDateTime date,
         PictureInfo pictureMap,

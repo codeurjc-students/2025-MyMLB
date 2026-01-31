@@ -19,7 +19,6 @@ export class EditEventComponent implements OnInit {
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 
-	private matchId!: number;
 	private eventId!: number;
 
 	public eventInfo: EventResponse | null = null;

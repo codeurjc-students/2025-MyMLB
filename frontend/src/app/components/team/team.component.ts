@@ -15,11 +15,13 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/ticket/event.service';
 import { EventResponse } from '../../models/ticket/event-response.model';
+import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 
 @Component({
 	selector: 'app-team',
 	standalone: true,
-	imports: [CommonModule, StatsPanelComponent, CalendarComponent],
+	imports: [CommonModule, StatsPanelComponent, CalendarComponent, SuccessModalComponent, ErrorModalComponent],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './team.component.html',
 })
@@ -201,22 +203,29 @@ export class TeamComponent implements OnInit {
 	public editEvent(matchId: number) {
 		this.router.navigate(['edit-event'], {
 			queryParams: {
-				eventId: this.eventMap.get(matchId)
+				eventId: this.eventMap.get(matchId)?.id
 			}
 		});
 	}
 
 	public deleteEvent(matchId: number) {
-		this.eventService.deleteEvent(matchId).subscribe({
-			next: (_) => {
-				this.eventMap.set(matchId, null);
-				this.success = true;
-				this.successMessage = 'Event Successfully Deleted';
-			},
-			error: (_) => {
-				this.error = true;
-				this.errorMessage = 'An error occur deleting the event';
-			}
-		});
+		const eventId = this.eventMap.get(matchId)?.id;
+		if (eventId) {
+			this.eventService.deleteEvent(eventId).subscribe({
+				next: (_) => {
+					this.eventMap.set(matchId, null);
+					this.success = true;
+					this.successMessage = 'Event Successfully Deleted';
+				},
+				error: (_) => {
+					this.error = true;
+					this.errorMessage = 'An error occur deleting the event';
+				}
+			});
+		}
+		else {
+			this.error = true;
+			this.errorMessage = 'The event does not exists';
+		}
 	}
 }

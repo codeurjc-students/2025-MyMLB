@@ -14,6 +14,7 @@ import java.util.List;
 public interface EventMapper {
     @Mapping(target = "awayTeamName", source = "match.awayTeam.name")
     @Mapping(target = "homeTeamName", source = "match.homeTeam.name")
+    @Mapping(target = "homeTeamAbbreviation", source = "match.homeTeam.abbreviation")
     @Mapping(target = "stadiumName", source = "match.stadium.name")
     @Mapping(target = "date", source = "match.date")
     @Mapping(target = "pictureMap", source = "match.stadium.pictureMap")

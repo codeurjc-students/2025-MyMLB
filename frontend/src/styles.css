@@ -46,6 +46,10 @@ html {
 	@apply w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm;
 }
 
+.app-modal-background {
+	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
+}
+
 /* Authentication Forms Styles */
 
 .auth-panel {
