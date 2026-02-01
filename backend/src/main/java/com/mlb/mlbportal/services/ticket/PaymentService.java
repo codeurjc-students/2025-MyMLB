@@ -4,7 +4,6 @@ import com.mlb.mlbportal.dto.ticket.PurchaseRequest;
 import com.mlb.mlbportal.handler.PaymentException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Service

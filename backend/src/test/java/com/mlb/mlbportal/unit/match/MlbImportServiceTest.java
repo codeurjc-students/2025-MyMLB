@@ -148,6 +148,8 @@ class MlbImportServiceTest {
     @DisplayName("Should throw TeamNotFoundException when team is missing in repository during saving")
     void testGetOfficialMatchesTeamNotFoundThrowsException() {
         ScheduleResponse scheduleResponse = this.buildResponse();
+        LocalDate startDate = LocalDate.of(2026, 3, 1);
+        LocalDate endDate = LocalDate.of(2026, 3, 1);
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
         when(this.teamLookupService.getTeamSummary(1)).thenReturn(new TeamSummary(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, null, null));
@@ -155,9 +157,10 @@ class MlbImportServiceTest {
         when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.get(0)));
         when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(this.mockTeams.get(1)));
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(new Stadium()));
+
         when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.getFirst())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 1)))
+        assertThatThrownBy(() -> this.mlbImportService.getOfficialMatches(startDate, endDate))
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessage("Team Not Found");
     }

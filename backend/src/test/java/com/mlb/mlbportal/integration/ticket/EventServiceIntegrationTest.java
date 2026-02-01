@@ -3,6 +3,7 @@ package com.mlb.mlbportal.integration.ticket;
 import com.mlb.mlbportal.dto.ticket.EditEventRequest;
 import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
 import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
+import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.mappers.ticket.SeatMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class EventServiceIntegrationTest {
+class EventServiceIntegrationTest {
     @Autowired
     private EventRepository eventRepository;
 
@@ -135,6 +136,8 @@ public class EventServiceIntegrationTest {
     @DisplayName("Should delete the event from the database")
     void testDeleteEvent() {
         this.eventService.deleteEvent(this.testEvent.getId());
-        assertThatThrownBy(() -> this.eventRepository.findEventByIdOrElseThrow(this.testEvent.getId()));
+        assertThatThrownBy(() -> this.eventRepository.findEventByIdOrElseThrow(this.testEvent.getId()))
+                .isInstanceOf(EventNotFoundException.class)
+                .hasMessageContaining("Event " + this.testEvent.getId() + " Not Found");
     }
 }
