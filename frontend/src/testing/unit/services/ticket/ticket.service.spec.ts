@@ -25,7 +25,7 @@ describe('Ticket Service Tests', () => {
 
 	it('should purchase a ticket', () => {
 		const mockSeat = MockFactory.buildMockSeat(1, 'S-1');
-		const mockRequest = MockFactory.buildPurchaseRequest(managerId, 1, [mockSeat], 'Tes Owner', '4539148912345674', '123', new Date(2028, 12, 1));
+		const mockRequest = MockFactory.buildPurchaseRequest(managerId, 1, [mockSeat], 'Tes Owner', '4539148912345674', '123', '2028-12');
 		const mockTicket = MockFactory.buildTicketMock(ticketId, 'Boston Red Sox', 'New York Yankees', 'Yankee Stadium', 100, new Date(), 'New Sector', 'S-1');
 		const mockResponse = MockFactory.buildPaginatedResponse(mockTicket);
 

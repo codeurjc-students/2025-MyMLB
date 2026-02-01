@@ -12,9 +12,11 @@ import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
 import com.mlb.mlbportal.dto.user.EditProfileRequest;
 import com.mlb.mlbportal.dto.user.ProfileDTO;
 import com.mlb.mlbportal.handler.notFound.UserNotFoundException;
+import com.mlb.mlbportal.mappers.ticket.TicketMapper;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +79,9 @@ class UserServiceTest {
 
     @Mock
     private TeamMapper teamMapper;
+
+    @Mock
+    private TicketMapper ticketMapper;
 
     @Mock
     private PaginationHandlerService paginationHandlerService;
@@ -313,6 +318,29 @@ class UserServiceTest {
 
         assertThat(result.username()).isEqualTo(TEST_USER_USERNAME);
         assertThat(result.roles()).contains("USER");
+    }
+
+    @Test
+    @DisplayName("Should retrieve all purchased tickets of the user")
+    void testGetPurchasedTickets() {
+        TicketDTO mockTicket = new TicketDTO(9L, TEST_TEAM1_NAME, TEST_TEAM2_NAME, STADIUM1_NAME, 100, LocalDateTime.now().plusDays(3), "Front Sector", "F-10");
+        when(this.userRepository.findByUsernameOrThrow(USER1_USERNAME)).thenReturn(this.user1);
+        when(this.ticketMapper.toListTicketDTO(this.user1.getTickets())).thenReturn(List.of(mockTicket));
+
+        List<TicketDTO> result = this.userService.getPurchasedTickets(USER1_USERNAME);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst()).isEqualTo(mockTicket);
+    }
+
+    @Test
+    @DisplayName("Should throw UserNotFoundException when user does not exists")
+    void testInvalidGetPurchasedTickets() {
+        when(this.userRepository.findByUsernameOrThrow(UNKNOWN_USER)).thenThrow(new UserNotFoundException("User Not Found"));
+
+        assertThatThrownBy(() -> this.userService.getPurchasedTickets(UNKNOWN_USER))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User Not Found");
     }
 
     @Test

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
@@ -126,61 +126,61 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TeamSummary } from '../models/team.model';
+import { PaginatedResponse } from '../models/pagination.model';
 &nbsp;
 export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
 &nbsp;
 export type ShowMatch = {
+	id: number,
 	homeTeam: TeamSummary;
 	awayTeam: TeamSummary;
 	homeScore: number;
 	awayScore: number;
 	date: string;
 	status: MatchStatus;
-};
-&nbsp;
-export type PaginatedMatches = {
-	content: ShowMatch[];
-	page: {
-		size: number;
-		number: number;
-		totalElements: number;
-		totalPages: number;
-	};
+	stadiumName: string;
 };
 &nbsp;
 @Injectable({
 	providedIn: 'root',
 })
 export class MatchService {
+	private http = inject(HttpClient);
 	private apiUrl = 'https://localhost:8443/api/v1/matches';
 &nbsp;
-	constructor(private http: HttpClient) {}
+	public getMatchById(matchId: number): Observable&lt;ShowMatch&gt; {
+		return this.http.get&lt;ShowMatch&gt;(`${this.apiUrl}/${matchId}`);
+	}
 &nbsp;
-	public getMatchesOfTheDay(page: number, size: number): Observable&lt;PaginatedMatches&gt; {
-		return this.http.get&lt;PaginatedMatches&gt;(`${this.apiUrl}/today?page=${page}&amp;size=${size}`);
+	public getMatchesOfTheDay(page: number, size: number): Observable&lt;PaginatedResponse&lt;ShowMatch&gt;&gt; {
+		return this.http.get&lt;PaginatedResponse&lt;ShowMatch&gt;&gt;(`${this.apiUrl}/today?page=${page}&amp;size=${size}`);
+	}
+&nbsp;
+	public <span class="fstat-no" title="function not covered" >getMatchesOfATeam(</span>teamName: string | undefined, type: 'home' | 'away', page: number, size: number): Observable&lt;PaginatedResponse&lt;ShowMatch&gt;&gt; {
+<span class="cstat-no" title="statement not covered" >		return this.http.get&lt;PaginatedResponse&lt;ShowMatch&gt;&gt;(`${this.apiUrl}/teamName/${teamName}?location=${type}&amp;page=${page}&amp;size=${size}`);</span>
 	}
 &nbsp;
 	public getMatchesOfTeamByMonth(teamName: string, year: number, month: number): Observable&lt;ShowMatch[]&gt; {
@@ -193,7 +193,7 @@ export class MatchService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-23T20:32:53.082Z
+                at 2026-02-01T22:03:55.272Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

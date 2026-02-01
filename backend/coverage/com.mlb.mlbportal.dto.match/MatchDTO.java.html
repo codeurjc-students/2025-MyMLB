@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 <span class="fc" id="L14">public record MatchDTO(</span>
+    Long id,
+
     @NotNull(message= &quot;The home team is required&quot;)
     TeamSummary homeTeam,
 
@@ -30,6 +32,9 @@ import jakarta.validation.constraints.NotNull;
     LocalDateTime date,
 
     @NotNull(message= &quot;The status of the game is required&quot;)
-    MatchStatus status
+    MatchStatus status,
+
+    @NotNull(message = &quot;The stadium is required&quot;)
+    String stadiumName
 ) {}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers.ticket</a> &gt; <span class="el_source">EventController.java</span></div><h1>EventController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers.ticket;
+
+import java.net.URI;
+
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.mlb.mlbportal.dto.ticket.EditEventRequest;
+import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
+import com.mlb.mlbportal.dto.ticket.EventManagerDTO;
+import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
+import com.mlb.mlbportal.dto.ticket.SeatDTO;
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
+import com.mlb.mlbportal.services.ticket.EventService;
+import com.mlb.mlbportal.services.ticket.TicketService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@Tag(name = &quot;Events&quot;, description = &quot;Operations for managing match events, including seating, pricing, and sector configurations&quot;)
+@RestController
+@RequestMapping(&quot;/api/v1/events&quot;)
+@RequiredArgsConstructor
+public class EventController {
+    private final EventService eventService;
+    private final TicketService ticketService;
+
+    @Operation(summary = &quot;Return all active events&quot;, description = &quot;Retrieve all active events&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the events&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;EventResponseDTO&gt;&gt; getAllEvents(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
+<span class="fc" id="L51">        return ResponseEntity.ok(this.eventService.getAllEvents(page, size));</span>
+    }
+
+    @Operation(summary = &quot;Return a certain event&quot;, description = &quot;Return the event whose ID is provided&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{eventId}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;EventResponseDTO&gt; getEvent(@PathVariable(&quot;eventId&quot;)Long eventId) {
+<span class="fc" id="L62">        return ResponseEntity.ok(this.eventService.getEvent(eventId));</span>
+    }
+
+    @Operation(summary = &quot;Return available sectors of an event&quot;, description = &quot;Retrieve all the available sectors of the given event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the sectors&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventManagerDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{eventId}/sectors&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;EventManagerDTO&gt;&gt; getAvailableSectors(@PathVariable(&quot;eventId&quot;)Long eventId,@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
+<span class="fc" id="L73">        return ResponseEntity.ok(this.eventService.getAvailableSectors(eventId, page, size));</span>
+    }
+
+    @Operation(summary = &quot;Return available seats of an event&quot;, description = &quot;Retrieve all the available seats of a given sector and event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the seats&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SeatDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event or Sector Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{eventId}/sector/{sectorId}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;SeatDTO&gt;&gt; getAvailableSeats(@PathVariable(&quot;eventId&quot;)Long eventId,
+                                                           @PathVariable(&quot;sectorId&quot;)Long sectorId,
+                                                           @RequestParam(defaultValue = &quot;0&quot;) int page,
+                                                           @RequestParam(defaultValue = &quot;10&quot;) int size) {
+<span class="fc" id="L87">        return ResponseEntity.ok(this.eventService.getAvailableSeats(sectorId, eventId, page, size));</span>
+    }
+
+    @Operation(summary = &quot;Return the event of a certain match&quot;, description = &quot;Returns the event belonging to the match whose ID is provided&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Match Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/match/{matchId}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;EventResponseDTO&gt; getEventByMatchId(@PathVariable(&quot;matchId&quot;)Long matchId) {
+<span class="fc" id="L98">        return ResponseEntity.ok(this.eventService.getEventByMatchId(matchId));</span>
+    }
+
+    @Operation(summary = &quot;Get all sold tickets of an event&quot;, description = &quot;Retrieves all sold tickets of a certain event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the tickets&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TicketDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{eventId}/tickets&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;TicketDTO&gt;&gt; getTicketsOfEvent(@PathVariable(&quot;eventId&quot;)Long eventId, @RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
+<span class="fc" id="L109">        return ResponseEntity.ok(this.ticketService.getTicketsOfEvent(eventId, page, size));</span>
+    }
+
+    @Operation(summary = &quot;Creates an Event&quot;, description = &quot;Allows the admins to create an event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successfully created the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;The number of sectors selected for the creation process does not match the number of new prices&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Match Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;EventResponseDTO&gt; createEvent(@Valid @RequestBody EventCreateRequest request) {
+<span class="fc" id="L121">        EventResponseDTO response = this.eventService.createEvent(request);</span>
+        URI location = ServletUriComponentsBuilder
+<span class="fc" id="L123">                .fromCurrentRequest()</span>
+<span class="fc" id="L124">                .path(&quot;/{eventId}&quot;)</span>
+<span class="fc" id="L125">                .buildAndExpand(response.id())</span>
+<span class="fc" id="L126">                .toUri();</span>
+<span class="fc" id="L127">        return ResponseEntity.created(location).body(response);</span>
+    }
+
+    @Operation(summary = &quot;Edit an Event&quot;, description = &quot;Allows the admins to edit the prices of the sectors within a given event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully modified the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;The number of sectors selected for editing does not match the number of new prices&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event or Sector Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @PutMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;EventResponseDTO&gt; editEvent(@Valid @RequestBody EditEventRequest request) {
+<span class="fc" id="L139">        return ResponseEntity.ok(this.eventService.editEvent(request));</span>
+    }
+
+    @Operation(summary = &quot;Delete an Event&quot;, description = &quot;Allows the admins to delete the given event&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully deleted the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @DeleteMapping(value = &quot;/{eventId}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;EventResponseDTO&gt; deleteEvent(@PathVariable(&quot;eventId&quot;)Long eventId) {
+<span class="fc" id="L150">        return ResponseEntity.ok(this.eventService.deleteEvent(eventId));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

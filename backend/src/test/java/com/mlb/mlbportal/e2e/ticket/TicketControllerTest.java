@@ -1,7 +1,7 @@
 package com.mlb.mlbportal.e2e.ticket;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
 
@@ -131,7 +131,7 @@ class TicketControllerTest extends BaseE2ETest {
     @DisplayName("GET /api/v1/tickets/{id} should return ticket details")
     void testGetTicketById() {
         SeatDTO seatDto = new SeatDTO(this.savedSeatId, this.savedSeatName);
-        PurchaseRequest request = new PurchaseRequest(this.savedEventManagerId, 1, List.of(seatDto), USER1_USERNAME, "4539148912345674", "123", LocalDate.now().plusYears(1));
+        PurchaseRequest request = new PurchaseRequest(this.savedEventManagerId, 1, List.of(seatDto), USER1_USERNAME, "4539148912345674", "123",  YearMonth.now().plusYears(1));
         String url = TICKET_PATH + "/" + this.ticket.getId();
 
         given()
@@ -156,7 +156,7 @@ class TicketControllerTest extends BaseE2ETest {
                 USER1_USERNAME,
                 "4539148912345674",
                 "123",
-                LocalDate.now().plusYears(2)
+                YearMonth.now().plusYears(2)
         );
 
         given()

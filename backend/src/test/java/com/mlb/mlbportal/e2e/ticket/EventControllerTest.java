@@ -91,7 +91,7 @@ class EventControllerTest extends BaseE2ETest {
         this.teamRepository.saveAndFlush(home);
         this.teamRepository.saveAndFlush(away);
 
-        Match match = new Match(away, home, 0, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
+        Match match = new Match(away, home, 0, 0, LocalDateTime.now().plusDays(1), MatchStatus.SCHEDULED);
         match.setStadium(stadium);
         match = this.matchRepository.saveAndFlush(match);
 
@@ -140,6 +140,35 @@ class EventControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/events/match/{matchId} should return event by match ID")
+    void testGetEventByMatchId() {
+        Long matchId = eventRepository.findById(savedEventId).get().getMatch().getId();
+
+        String url = EVENT_PATH + "/match/" + matchId;
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("id", is(savedEventId.intValue()))
+                .body("homeTeamName", is(TEST_TEAM1_NAME));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/events/{eventId}/tickets should return sold tickets")
+    void testGetTicketsOfEvent() {
+        String url = EVENT_PATH + "/" + savedEventId + "/tickets";
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(0));
+    }
+
+    @Test
     @DisplayName("GET /api/v1/events/{id}/sectors should return available sectors")
     void testGetAvailableSectors() {
         String url = EVENT_PATH + "/" + savedEventId + "/sectors";
@@ -152,6 +181,20 @@ class EventControllerTest extends BaseE2ETest {
                 .body("content.size()", is(1))
                 .body("content[0].sectorName", is("Grandstand"))
                 .body("content[0].price", is(50.0f));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/events/{eventId}/sector/{sectorId} should return available seats")
+    void testGetAvailableSeats() {
+        String url = EVENT_PATH + "/" + savedEventId + "/sector/" + savedSectorId;
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(1))
+                .body("content[0].name", is("A1"));
     }
 
     @Test

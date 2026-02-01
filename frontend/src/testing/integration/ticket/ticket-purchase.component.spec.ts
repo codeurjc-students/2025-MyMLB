@@ -25,7 +25,7 @@ describe('Ticket Purchase Component Integration Test', () => {
 	}
 	const mockEvent = MockFactory.buildEventResponse(eventId, 'Boston Red Sox', 'New York Yankees', 'NYY', 'Yankee Stadium', new Date(), mockPicture, [mockEventManager]);
 	const mockSeat = MockFactory.buildMockSeat(1, 'S-1');
-	const mockRequest = MockFactory.buildPurchaseRequest(managerId, 1, [mockSeat], 'Test Owner', '4539148912345674', '123', new Date(2028, 12, 1));
+	const mockRequest = MockFactory.buildPurchaseRequest(managerId, 1, [mockSeat], 'Test Owner', '4539148912345674', '123', '2028-12');
 	const mockTicket = MockFactory.buildTicketMock(ticketId, 'Boston Red Sox', 'New York Yankees', 'Yankee Stadium', 100, new Date(), 'New Sector', 'S-1');
 
 	beforeEach(() => {
@@ -55,7 +55,7 @@ describe('Ticket Purchase Component Integration Test', () => {
 			ownerName: 'Test Owner',
 			cardNumber: '4539148912345674',
 			cvv: '123',
-			expirationDate: new Date(2028, 12, 1)
+			expirationDate: '2028-12'
 		});
 
 		component.purchase();

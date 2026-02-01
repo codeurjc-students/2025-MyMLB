@@ -7,5 +7,5 @@ export type PurchaseRequest = {
 	ownerName: string,
 	cardNumber: string,
 	cvv: string,
-	expirationDate: Date
+	expirationDate: string
 }

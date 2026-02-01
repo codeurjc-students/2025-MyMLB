@@ -1,6 +1,8 @@
 /* This css file is for common styles through the application */
 
 @import 'tailwindcss';
+@import "flatpickr/dist/flatpickr.min.css";
+@import "flatpickr/dist/plugins/monthSelect/style.css";
 @plugin "@midudev/tailwind-animations";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -283,3 +285,5 @@ html {
 .spin-infinite {
   animation: spinInfinite 1s linear infinite;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

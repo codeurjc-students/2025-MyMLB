@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers.ticket</a> &gt; <span class="el_source">TicketMapperImpl.java</span></div><h1>TicketMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers.ticket;
+
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Seat;
+import com.mlb.mlbportal.models.ticket.Sector;
+import com.mlb.mlbportal.models.ticket.Ticket;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-02-01T23:01:29+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+)
+@Component
+<span class="fc" id="L25">public class TicketMapperImpl implements TicketMapper {</span>
+
+    @Override
+    public TicketDTO toTicketDTO(Ticket ticket) {
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        if ( ticket == null ) {</span>
+<span class="nc" id="L30">            return null;</span>
+        }
+
+<span class="fc" id="L33">        String awayTeamName = null;</span>
+<span class="fc" id="L34">        String homeTeamName = null;</span>
+<span class="fc" id="L35">        String stadiumName = null;</span>
+<span class="fc" id="L36">        double price = 0.0d;</span>
+<span class="fc" id="L37">        LocalDateTime matchDate = null;</span>
+<span class="fc" id="L38">        String sectorName = null;</span>
+<span class="fc" id="L39">        String seatName = null;</span>
+<span class="fc" id="L40">        Long id = null;</span>
+
+<span class="fc" id="L42">        awayTeamName = ticketEventManagerEventMatchAwayTeamName( ticket );</span>
+<span class="fc" id="L43">        homeTeamName = ticketEventManagerEventMatchHomeTeamName( ticket );</span>
+<span class="fc" id="L44">        stadiumName = ticketEventManagerEventMatchStadiumName( ticket );</span>
+<span class="fc" id="L45">        price = ticketEventManagerPrice( ticket );</span>
+<span class="fc" id="L46">        matchDate = ticketEventManagerEventMatchDate( ticket );</span>
+<span class="fc" id="L47">        sectorName = ticketEventManagerSectorName( ticket );</span>
+<span class="fc" id="L48">        seatName = ticketSeatName( ticket );</span>
+<span class="fc" id="L49">        id = ticket.getId();</span>
+
+<span class="fc" id="L51">        TicketDTO ticketDTO = new TicketDTO( id, awayTeamName, homeTeamName, stadiumName, price, matchDate, sectorName, seatName );</span>
+
+<span class="fc" id="L53">        return ticketDTO;</span>
+    }
+
+    @Override
+    public List&lt;TicketDTO&gt; toListTicketDTO(Collection&lt;Ticket&gt; list) {
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L59">            return null;</span>
+        }
+
+<span class="nc" id="L62">        List&lt;TicketDTO&gt; list1 = new ArrayList&lt;TicketDTO&gt;( list.size() );</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        for ( Ticket ticket : list ) {</span>
+<span class="nc" id="L64">            list1.add( toTicketDTO( ticket ) );</span>
+<span class="nc" id="L65">        }</span>
+
+<span class="nc" id="L67">        return list1;</span>
+    }
+
+    private String ticketEventManagerEventMatchAwayTeamName(Ticket ticket) {
+<span class="fc" id="L71">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L73">            return null;</span>
+        }
+<span class="fc" id="L75">        Event event = eventManager.getEvent();</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if ( event == null ) {</span>
+<span class="nc" id="L77">            return null;</span>
+        }
+<span class="fc" id="L79">        Match match = event.getMatch();</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L81">            return null;</span>
+        }
+<span class="fc" id="L83">        Team awayTeam = match.getAwayTeam();</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if ( awayTeam == null ) {</span>
+<span class="nc" id="L85">            return null;</span>
+        }
+<span class="fc" id="L87">        return awayTeam.getName();</span>
+    }
+
+    private String ticketEventManagerEventMatchHomeTeamName(Ticket ticket) {
+<span class="fc" id="L91">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L93">            return null;</span>
+        }
+<span class="fc" id="L95">        Event event = eventManager.getEvent();</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if ( event == null ) {</span>
+<span class="nc" id="L97">            return null;</span>
+        }
+<span class="fc" id="L99">        Match match = event.getMatch();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L101">            return null;</span>
+        }
+<span class="fc" id="L103">        Team homeTeam = match.getHomeTeam();</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if ( homeTeam == null ) {</span>
+<span class="nc" id="L105">            return null;</span>
+        }
+<span class="fc" id="L107">        return homeTeam.getName();</span>
+    }
+
+    private String ticketEventManagerEventMatchStadiumName(Ticket ticket) {
+<span class="fc" id="L111">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L113">            return null;</span>
+        }
+<span class="fc" id="L115">        Event event = eventManager.getEvent();</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if ( event == null ) {</span>
+<span class="nc" id="L117">            return null;</span>
+        }
+<span class="fc" id="L119">        Match match = event.getMatch();</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L121">            return null;</span>
+        }
+<span class="fc" id="L123">        Stadium stadium = match.getStadium();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if ( stadium == null ) {</span>
+<span class="nc" id="L125">            return null;</span>
+        }
+<span class="fc" id="L127">        return stadium.getName();</span>
+    }
+
+    private double ticketEventManagerPrice(Ticket ticket) {
+<span class="fc" id="L131">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L133">            return 0.0d;</span>
+        }
+<span class="fc" id="L135">        return eventManager.getPrice();</span>
+    }
+
+    private LocalDateTime ticketEventManagerEventMatchDate(Ticket ticket) {
+<span class="fc" id="L139">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L141">            return null;</span>
+        }
+<span class="fc" id="L143">        Event event = eventManager.getEvent();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if ( event == null ) {</span>
+<span class="nc" id="L145">            return null;</span>
+        }
+<span class="fc" id="L147">        Match match = event.getMatch();</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L149">            return null;</span>
+        }
+<span class="fc" id="L151">        return match.getDate();</span>
+    }
+
+    private String ticketEventManagerSectorName(Ticket ticket) {
+<span class="fc" id="L155">        EventManager eventManager = ticket.getEventManager();</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">        if ( eventManager == null ) {</span>
+<span class="nc" id="L157">            return null;</span>
+        }
+<span class="fc" id="L159">        Sector sector = eventManager.getSector();</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if ( sector == null ) {</span>
+<span class="nc" id="L161">            return null;</span>
+        }
+<span class="fc" id="L163">        return sector.getName();</span>
+    }
+
+    private String ticketSeatName(Ticket ticket) {
+<span class="fc" id="L167">        Seat seat = ticket.getSeat();</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if ( seat == null ) {</span>
+<span class="nc" id="L169">            return null;</span>
+        }
+<span class="fc" id="L171">        return seat.getName();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

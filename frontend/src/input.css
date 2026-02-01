@@ -1,3 +1,5 @@
 @import "flowbite/src/themes/default";
+@import "flatpickr/dist/flatpickr.min.css";
+@import "flatpickr/dist/plugins/monthSelect/style.css";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";

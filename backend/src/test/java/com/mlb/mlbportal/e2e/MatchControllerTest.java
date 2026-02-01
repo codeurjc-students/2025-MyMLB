@@ -5,9 +5,12 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+
+import com.mlb.mlbportal.repositories.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -37,6 +40,11 @@ import io.restassured.http.ContentType;
 class MatchControllerTest extends BaseE2ETest {
     private Team team1, team2;
 
+    @Autowired
+    private MatchRepository matchRepository;
+
+    private Long matchId;
+
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
@@ -50,6 +58,22 @@ class MatchControllerTest extends BaseE2ETest {
 
         saveTestMatches(this.team1, this.team2, 2, 3, LocalDateTime.now(), MatchStatus.FINISHED);
         saveTestMatches(this.team2, this.team1, 0, 10, LocalDateTime.now().minusHours(1), MatchStatus.FINISHED);
+
+        this.matchId = this.matchRepository.findAll().getFirst().getId();
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/matches/{matchId} should return the match successfully")
+    void testGetMatchById() {
+        String url = MATCHES_PATH + this.matchId;
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("id", is(this.matchId.intValue()));
     }
 
     @Test

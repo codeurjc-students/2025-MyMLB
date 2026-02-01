@@ -1,7 +1,7 @@
 package com.mlb.mlbportal.integration.ticket;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,7 +136,7 @@ class TicketServiceIntegrationTest {
                 USER1_USERNAME,
                 "49927398716",
                 "123",
-                LocalDate.now().plusYears(1)
+                YearMonth.now().plusYears(1)
         );
     }
 

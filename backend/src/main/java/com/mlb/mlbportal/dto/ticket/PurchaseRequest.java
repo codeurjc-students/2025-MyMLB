@@ -1,8 +1,9 @@
 package com.mlb.mlbportal.dto.ticket;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +32,7 @@ public record PurchaseRequest(
         @NotNull(message = "The cvv is required")
         String cvv,
 
+        @JsonFormat(pattern = "MM/yy")
         @NotNull(message = "The expiration date is required")
-        LocalDate expirationDate
+        YearMonth expirationDate
 ) {}

@@ -6,18 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.mlb.mlbportal.models.others.PictureInfo;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PreRemove;
+import com.mlb.mlbportal.models.ticket.Ticket;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,50 +29,58 @@ public class UserEntity {
 
     private PictureInfo picture;
 
-<span class="pc" id="L42">    private boolean enableNotifications = true;</span>
+<span class="pc" id="L32">    private boolean enableNotifications = true;</span>
 
     @OneToOne(mappedBy=&quot;user&quot;, cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
-<span class="pc" id="L47">    @ManyToMany(fetch = FetchType.LAZY)</span>
+<span class="pc" id="L37">    @ManyToMany(fetch = FetchType.LAZY)</span>
     @JoinTable(
-        name = &quot;user_fav_teams&quot;,
+        name = &quot;T_USER_FAVORITE_TEAMS&quot;,
         joinColumns = @JoinColumn(name = &quot;user_id&quot;),
         inverseJoinColumns = @JoinColumn(name = &quot;team_id&quot;)
     )
     private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();
 
-<span class="pc" id="L55">    @ElementCollection(fetch= FetchType.EAGER)</span>
+<span class="pc" id="L45">    @ElementCollection(fetch= FetchType.EAGER)</span>
     private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
+
+<span class="pc" id="L48">    @OneToMany(mappedBy = &quot;owner&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    private List&lt;Ticket&gt; tickets = new LinkedList&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
-<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
-<span class="fc" id="L61">            team.getFavoritedByUsers().remove(this);</span>
-<span class="fc" id="L62">        }</span>
-<span class="fc" id="L63">        this.favTeams.clear();</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
+<span class="fc" id="L54">            team.getFavoritedByUsers().remove(this);</span>
+<span class="fc" id="L55">        }</span>
+<span class="fc" id="L56">        this.favTeams.clear();</span>
+<span class="fc" id="L57">    }</span>
 
-<span class="fc" id="L66">    public UserEntity() {</span>
-<span class="fc" id="L67">        this.roles.add(&quot;GUEST&quot;);  </span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L59">    public UserEntity() {</span>
+<span class="fc" id="L60">        this.roles.add(&quot;GUEST&quot;);  </span>
+<span class="fc" id="L61">    }</span>
 
-<span class="fc" id="L70">    public UserEntity(String email, String username) {</span>
-<span class="fc" id="L71">        this.email = email;</span>
-<span class="fc" id="L72">        this.username = username;</span>
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L63">    public UserEntity(String email, String username) {</span>
+<span class="fc" id="L64">        this.email = email;</span>
+<span class="fc" id="L65">        this.username = username;</span>
+<span class="fc" id="L66">    }</span>
 
-<span class="fc" id="L75">    public UserEntity(String email, String username, String password) {</span>
-<span class="fc" id="L76">        this.email = email;</span>
-<span class="fc" id="L77">        this.username = username;</span>
-<span class="fc" id="L78">        this.password = password;</span>
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L68">    public UserEntity(String email, String username, String password) {</span>
+<span class="fc" id="L69">        this.email = email;</span>
+<span class="fc" id="L70">        this.username = username;</span>
+<span class="fc" id="L71">        this.password = password;</span>
+<span class="fc" id="L72">    }</span>
 
-<span class="nc" id="L81">    public UserEntity(String name, String email, String username, String password) {</span>
-<span class="nc" id="L82">        this.name = name;</span>
-<span class="nc" id="L83">        this.email = email;</span>
-<span class="nc" id="L84">        this.username = username;</span>
-<span class="nc" id="L85">        this.password = password;</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L74">    public UserEntity(String name, String email, String username, String password) {</span>
+<span class="nc" id="L75">        this.name = name;</span>
+<span class="nc" id="L76">        this.email = email;</span>
+<span class="nc" id="L77">        this.username = username;</span>
+<span class="nc" id="L78">        this.password = password;</span>
+<span class="nc" id="L79">    }</span>
+
+    public void addTicket(Ticket ticket) {
+<span class="fc" id="L82">        this.tickets.add(ticket);</span>
+<span class="fc" id="L83">        ticket.setOwner(this);</span>
+<span class="fc" id="L84">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

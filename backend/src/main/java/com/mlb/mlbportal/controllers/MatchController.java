@@ -30,6 +30,12 @@ import lombok.AllArgsConstructor;
 public class MatchController {
 	private final MatchService matchService;
 
+	@Operation(summary = "Get the match of the given id", description = "Retrieve the match whose ID is provided.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully retrieved the match", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = "404", description = "Match Not Found", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+	})
 	@GetMapping(value = "/{matchId}", produces = "application/json")
 	public ResponseEntity<MatchDTO> getMatchById(@PathVariable("matchId")Long matchId) {
 		return ResponseEntity.ok(this.matchService.getMatchById(matchId));

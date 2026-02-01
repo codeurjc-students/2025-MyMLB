@@ -1,6 +1,6 @@
 package com.mlb.mlbportal.unit.ticket;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -31,7 +31,7 @@ class PaymentServiceTest {
     void testProcessPaymentSuccess() {
         PurchaseRequest validRequest = new PurchaseRequest(
                 1L, 2, List.of(), USER1_USERNAME,
-                "49927398716", "123", LocalDate.now().plusYears(1)
+                "49927398716", "123",  YearMonth.now().plusYears(1)
         );
         assertThatCode(() -> this.paymentService.processPayment(validRequest)).doesNotThrowAnyException();
     }
@@ -42,7 +42,7 @@ class PaymentServiceTest {
     void testInvalidLuhn(String invalidNumber) {
         PurchaseRequest request = new PurchaseRequest(
                 1L, 1, List.of(), USER1_USERNAME,
-                invalidNumber, "123", LocalDate.now().plusYears(1)
+                invalidNumber, "123",  YearMonth.now().plusYears(1)
         );
         assertThatThrownBy(() -> this.paymentService.processPayment(request))
                 .isInstanceOf(PaymentException.class)
@@ -52,7 +52,7 @@ class PaymentServiceTest {
     @Test
     @DisplayName("Should throw PaymentException when card is expired")
     void testExpiredCard() {
-        LocalDate expiredDate = LocalDate.now().minusMonths(2);
+        YearMonth expiredDate =  YearMonth.now().minusMonths(2);
         PurchaseRequest request = new PurchaseRequest(
                 1L, 1, List.of(), USER1_USERNAME,
                 "49927398716", "123", expiredDate
@@ -68,7 +68,7 @@ class PaymentServiceTest {
     void testInvalidCvv(String invalidCvv) {
         PurchaseRequest request = new PurchaseRequest(
                 1L, 1, List.of(), USER1_USERNAME,
-                "49927398716", invalidCvv, LocalDate.now().plusYears(1)
+                "49927398716", invalidCvv,  YearMonth.now().plusYears(1)
         );
         assertThatThrownBy(() -> this.paymentService.processPayment(request))
                 .isInstanceOf(PaymentException.class)

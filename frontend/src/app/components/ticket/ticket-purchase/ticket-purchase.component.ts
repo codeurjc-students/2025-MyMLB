@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import flatpickr from 'flatpickr';
+import monthSelectPlugin from 'flatpickr/dist/plugins/monthSelect/index.js';
 import { Seat } from '../../../models/ticket/seat.model';
 import { TicketService } from '../../../services/ticket/ticket.service';
 import { PurchaseRequest } from '../../../models/ticket/purchase-request.model';
@@ -16,13 +18,15 @@ import { SuccessfullPurchaseComponent } from "../successfull-purchase/successful
 	standalone: true,
 	templateUrl: './ticket-purchase.component.html',
 })
-export class TicketPurchaseComponent implements OnInit {
+export class TicketPurchaseComponent implements OnInit, AfterViewInit {
 	@Input() event!: EventResponse;
 	@Input() eventManagerId!: number;
 	@Input() tickets!: number;
 	@Input() seats!: Seat[];
 	@Input() totalPrice!: number;
 	@Output() goBack = new EventEmitter<void>();
+
+	@ViewChild('datePicker') datePickerElement!: ElementRef;
 
 	private ticketService = inject(TicketService);
 	private fb = inject(FormBuilder);
@@ -40,6 +44,22 @@ export class TicketPurchaseComponent implements OnInit {
 
 	ngOnInit() {
 		this.initForm();
+	}
+
+	ngAfterViewInit() {
+		flatpickr(this.datePickerElement.nativeElement, {
+			disableMobile: true,
+			plugins: [
+				monthSelectPlugin({
+					shorthand: true,
+					dateFormat: "m/y",
+					altFormat: "F Y",
+				})
+			],
+			onChange: (_, dateStr) => {
+				this.paymentForm.get('expirationDate')?.setValue(dateStr);
+			}
+		});
 	}
 
 	private initForm() {
@@ -65,7 +85,7 @@ export class TicketPurchaseComponent implements OnInit {
 			ownerName: value.ownerName,
 			cardNumber: value.cardNumber,
 			cvv: value.cvv,
-			expirationDate: new Date(value.expirationDate)
+			expirationDate: value.expirationDate
 		} as PurchaseRequest;
 	}
 

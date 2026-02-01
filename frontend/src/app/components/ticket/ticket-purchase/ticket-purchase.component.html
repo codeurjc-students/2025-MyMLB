@@ -97,10 +97,20 @@
 
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 							<div class="group">
-							<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Expiry Date</label>
-							<input type="date" formControlName="expirationDate"
-									[class.border-red-500]="invalidField('expirationDate')"
-									class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent transition-all duration-300">
+								<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Expiry Date</label>
+								<div class="relative">
+									<input type="text"
+										#datePicker
+										formControlName="expirationDate"
+										[class.border-red-500]="invalidField('expirationDate')"
+										class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent transition-all duration-300 cursor-pointer"
+										placeholder="MM/YY">
+									<div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+										</svg>
+									</div>
+								</div>
 							</div>
 
 							<div class="group">
@@ -149,3 +159,31 @@
 @else {
 	<app-successfull-purchase></app-successfull-purchase>
 }
+
+<style>
+    :host ::ng-deep .flatpickr-monthSelect-month {
+        border-radius: 1rem !important;
+        margin: 4px;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    :host ::ng-deep .flatpickr-monthSelect-month.selected {
+        background: #4f46e5 !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+
+    :host ::ng-deep .flatpickr-monthSelect-month:hover {
+        background: rgba(79, 70, 229, 0.1) !important;
+    }
+
+    :host ::ng-deep .dark .flatpickr-monthSelect-month {
+        color: #9ca3af;
+    }
+
+    :host ::ng-deep .dark .flatpickr-monthSelect-month:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: white;
+    }
+</style>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { EventService } from '../../../services/ticket/event.service';
 import { EventResponse } from '../../../models/ticket/event-response.model';
 import { Seat } from '../../../models/ticket/seat.model';
@@ -10,10 +10,11 @@ import { ActivatedRoute } from '@angular/router';
 import { TicketPurchaseComponent } from "../ticket-purchase/ticket-purchase.component";
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
 	selector: 'app-ticket-selection',
-	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent, NgxImageZoomModule],
+	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent, NgxImageZoomModule, EscapeCloseDirective],
 	standalone: true,
 	templateUrl: './ticket-selection.component.html',
 })
@@ -41,6 +42,7 @@ export class TicketSelectionComponent implements OnInit {
 
 	public totalPrice: number = 0;
 	public isPictureOpen = false;
+	public isMapLoading = false;
 
 	ngOnInit() {
 		this.route.queryParams.subscribe(param => {
@@ -130,7 +132,11 @@ export class TicketSelectionComponent implements OnInit {
 		return this.selectedSeats.some(seat => seat.id === seatId);
 	}
 
-	public openStadiumMap() {
+	public openStadiumMap = () => {
 		this.isPictureOpen = !this.isPictureOpen;
+	}
+
+	public closeStadiumMap = () => {
+		this.isPictureOpen = false;
 	}
 }

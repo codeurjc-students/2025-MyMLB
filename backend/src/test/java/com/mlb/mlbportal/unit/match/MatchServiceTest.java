@@ -83,6 +83,7 @@ class MatchServiceTest {
     private List<Team> teams;
     private List<Match> matches;
     private List<MatchDTO> mockMatchDTOs;
+    private Long matchId;
 
     private final LocalDateTime fixedNow = LocalDateTime.of(2025, 10, 23, 15, 0);
 
@@ -91,7 +92,19 @@ class MatchServiceTest {
     void setUp() {
         this.teams = BuildMocksFactory.setUpTeamMocks();
         this.matches = BuildMocksFactory.setUpMatches(this.teams, fixedNow);
+        this.matchId = this.matches.getFirst().getId();
         this.mockMatchDTOs = BuildMocksFactory.buildMatchDTOMocks(this.matches);
+    }
+
+    @Test
+    @DisplayName("Should return the match of the given id")
+    void testGetMatchById() {
+        when(this.matchRepository.findById(this.matchId)).thenReturn(Optional.of(this.matches.getFirst()));
+        when(this.matchMapper.toMatchDTO(this.matches.getFirst())).thenReturn(this.mockMatchDTOs.getFirst());
+
+        MatchDTO result = this.matchService.getMatchById(this.matchId);
+
+        assertThat(result.id()).isEqualTo(this.matchId);
     }
 
     @Test

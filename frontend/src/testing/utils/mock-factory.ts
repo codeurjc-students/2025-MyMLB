@@ -362,7 +362,7 @@ export class MockFactory {
 		} as EventEditRequest
 	}
 
-	static buildPurchaseRequest(eventManagerId: number, ticketAmount: number, seats: Seat[], ownerName: string, cardNumber: string, cvv: string, expirationDate: Date) {
+	static buildPurchaseRequest(eventManagerId: number, ticketAmount: number, seats: Seat[], ownerName: string, cardNumber: string, cvv: string, expirationDate: string) {
 		return {
 			eventManagerId,
 			ticketAmount,

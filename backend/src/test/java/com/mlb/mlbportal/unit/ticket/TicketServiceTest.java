@@ -1,7 +1,7 @@
 package com.mlb.mlbportal.unit.ticket;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +112,7 @@ class TicketServiceTest {
         SeatDTO seatDto = new SeatDTO(10L, "A-1");
         this.validRequest = new PurchaseRequest(
                 1L, 1, List.of(seatDto), USER1_USERNAME,
-                "49927398716", "123", LocalDate.now().plusYears(1)
+                "49927398716", "123", YearMonth.now().plusYears(1)
         );
     }
 
@@ -204,7 +204,7 @@ class TicketServiceTest {
     void testPurchaseTicketMismatch() {
         PurchaseRequest mismatchRequest = new PurchaseRequest(
                 1L, 2, List.of(new SeatDTO(1L, "A-1")), USER1_USERNAME,
-                "49927398716", "123", LocalDate.now().plusYears(1)
+                "49927398716", "123", YearMonth.now().plusYears(1)
         );
 
         assertThatThrownBy(() -> this.ticketService.purchaseTicket(USER1_USERNAME, mismatchRequest, 0, 10))

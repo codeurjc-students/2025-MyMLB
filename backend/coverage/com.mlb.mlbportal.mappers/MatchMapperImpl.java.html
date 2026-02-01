@@ -3,93 +3,59 @@
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-01-23T22:02:39+0100&quot;,
+    date = &quot;2026-02-01T23:01:29+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
-<span class="fc" id="L20">public class MatchMapperImpl implements MatchMapper {</span>
+<span class="fc" id="L19">public class MatchMapperImpl implements MatchMapper {</span>
 
     @Autowired
     private TeamMapper teamMapper;
 
     @Override
     public MatchDTO toMatchDTO(Match match) {
-<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if ( match == null ) {</span>
-<span class="nc" id="L28">            return null;</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">        if ( match == null ) {</span>
+<span class="nc" id="L27">            return null;</span>
         }
 
-<span class="fc" id="L31">        TeamSummary homeTeam = null;</span>
-<span class="fc" id="L32">        TeamSummary awayTeam = null;</span>
-<span class="fc" id="L33">        int homeScore = 0;</span>
-<span class="fc" id="L34">        int awayScore = 0;</span>
-<span class="fc" id="L35">        LocalDateTime date = null;</span>
-<span class="fc" id="L36">        MatchStatus status = null;</span>
+<span class="fc" id="L30">        TeamSummary homeTeam = null;</span>
+<span class="fc" id="L31">        TeamSummary awayTeam = null;</span>
+<span class="fc" id="L32">        String stadiumName = null;</span>
+<span class="fc" id="L33">        Long id = null;</span>
+<span class="fc" id="L34">        int homeScore = 0;</span>
+<span class="fc" id="L35">        int awayScore = 0;</span>
+<span class="fc" id="L36">        LocalDateTime date = null;</span>
+<span class="fc" id="L37">        MatchStatus status = null;</span>
 
-<span class="fc" id="L38">        homeTeam = teamMapper.toTeamSummaryDTO( match.getHomeTeam() );</span>
-<span class="fc" id="L39">        awayTeam = teamMapper.toTeamSummaryDTO( match.getAwayTeam() );</span>
-<span class="fc" id="L40">        homeScore = match.getHomeScore();</span>
-<span class="fc" id="L41">        awayScore = match.getAwayScore();</span>
-<span class="fc" id="L42">        date = match.getDate();</span>
-<span class="fc" id="L43">        status = match.getStatus();</span>
+<span class="fc" id="L39">        homeTeam = teamMapper.toTeamSummaryDTO( match.getHomeTeam() );</span>
+<span class="fc" id="L40">        awayTeam = teamMapper.toTeamSummaryDTO( match.getAwayTeam() );</span>
+<span class="fc" id="L41">        stadiumName = matchStadiumName( match );</span>
+<span class="fc" id="L42">        id = match.getId();</span>
+<span class="fc" id="L43">        homeScore = match.getHomeScore();</span>
+<span class="fc" id="L44">        awayScore = match.getAwayScore();</span>
+<span class="fc" id="L45">        date = match.getDate();</span>
+<span class="fc" id="L46">        status = match.getStatus();</span>
 
-<span class="fc" id="L45">        MatchDTO matchDTO = new MatchDTO( homeTeam, awayTeam, homeScore, awayScore, date, status );</span>
+<span class="fc" id="L48">        MatchDTO matchDTO = new MatchDTO( id, homeTeam, awayTeam, homeScore, awayScore, date, status, stadiumName );</span>
 
-<span class="fc" id="L47">        return matchDTO;</span>
+<span class="fc" id="L50">        return matchDTO;</span>
     }
 
-    @Override
-    public List&lt;MatchDTO&gt; toMatchDTOList(List&lt;Match&gt; matchList) {
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        if ( matchList == null ) {</span>
-<span class="nc" id="L53">            return null;</span>
+    private String matchStadiumName(Match match) {
+<span class="fc" id="L54">        Stadium stadium = match.getStadium();</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if ( stadium == null ) {</span>
+<span class="fc" id="L56">            return null;</span>
         }
-
-<span class="nc" id="L56">        List&lt;MatchDTO&gt; list = new ArrayList&lt;MatchDTO&gt;( matchList.size() );</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        for ( Match match : matchList ) {</span>
-<span class="nc" id="L58">            list.add( toMatchDTO( match ) );</span>
-<span class="nc" id="L59">        }</span>
-
-<span class="nc" id="L61">        return list;</span>
-    }
-
-    @Override
-    public List&lt;Match&gt; toMatchList(List&lt;MatchDTO&gt; matches) {
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        if ( matches == null ) {</span>
-<span class="nc" id="L67">            return null;</span>
-        }
-
-<span class="nc" id="L70">        List&lt;Match&gt; list = new ArrayList&lt;Match&gt;( matches.size() );</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        for ( MatchDTO matchDTO : matches ) {</span>
-<span class="nc" id="L72">            list.add( matchDTOToMatch( matchDTO ) );</span>
-<span class="nc" id="L73">        }</span>
-
-<span class="nc" id="L75">        return list;</span>
-    }
-
-    protected Match matchDTOToMatch(MatchDTO matchDTO) {
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if ( matchDTO == null ) {</span>
-<span class="nc" id="L80">            return null;</span>
-        }
-
-<span class="nc" id="L83">        Match match = new Match();</span>
-
-<span class="nc" id="L85">        match.setHomeTeam( teamMapper.toTeamFromTeamSummary( matchDTO.homeTeam() ) );</span>
-<span class="nc" id="L86">        match.setAwayTeam( teamMapper.toTeamFromTeamSummary( matchDTO.awayTeam() ) );</span>
-<span class="nc" id="L87">        match.setHomeScore( matchDTO.homeScore() );</span>
-<span class="nc" id="L88">        match.setAwayScore( matchDTO.awayScore() );</span>
-<span class="nc" id="L89">        match.setDate( matchDTO.date() );</span>
-<span class="nc" id="L90">        match.setStatus( matchDTO.status() );</span>
-
-<span class="nc" id="L92">        return match;</span>
+<span class="nc" id="L58">        return stadium.getName();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

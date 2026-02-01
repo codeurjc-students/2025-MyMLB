@@ -5,6 +5,7 @@ import com.mlb.mlbportal.handler.PaymentException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Service
 public class PaymentService {
@@ -54,13 +55,10 @@ public class PaymentService {
     /**
      * Checks if the provided date is strictly before the current month.
      */
-    private boolean isExpired(LocalDate date) {
-        try {
-            LocalDate expiry = date.plusMonths(1);
-            return expiry.isBefore(LocalDate.now());
-        }
-        catch (Exception e) {
+    private boolean isExpired(YearMonth date) {
+        if (date == null) {
             return true;
         }
+        return date.isBefore(YearMonth.now());
     }
 }

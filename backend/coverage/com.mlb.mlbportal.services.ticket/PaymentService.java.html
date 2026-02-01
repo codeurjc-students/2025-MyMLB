@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.ticket</a> &gt; <span class="el_source">PaymentService.java</span></div><h1>PaymentService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.ticket;
+
+import com.mlb.mlbportal.dto.ticket.PurchaseRequest;
+import com.mlb.mlbportal.handler.PaymentException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.YearMonth;
+
+@Service
+<span class="fc" id="L11">public class PaymentService {</span>
+
+    /**
+     * Validates card credentials including Luhn check, expiration, and CVV format.
+     * @throws PaymentException if any validation fails.
+     */
+    public void processPayment(PurchaseRequest cardData) {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (!this.isValidLuhn(cardData.cardNumber())) {</span>
+<span class="fc" id="L19">            throw new PaymentException(&quot;Cardnumber not valid&quot;);</span>
+        }
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (this.isExpired(cardData.expirationDate())) {</span>
+<span class="fc" id="L22">            throw new PaymentException(&quot;The card has expired&quot;);</span>
+        }
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (!cardData.cvv().matches(&quot;\\d{3,4}&quot;)) {</span>
+<span class="fc" id="L25">            throw new PaymentException(&quot;Invalid CVV&quot;);</span>
+        }
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Performs the Luhn algorithm to verify the checksum of the credit card number.
+     */
+    private boolean isValidLuhn(String cardNumber) {
+<span class="pc bpc" id="L33" title="1 of 4 branches missed.">        if (cardNumber == null || cardNumber.trim().isEmpty()) {</span>
+<span class="fc" id="L34">            return false;</span>
+        }
+<span class="fc" id="L36">        String cleanNumber = cardNumber.trim().replaceAll(&quot;\\s+&quot;, &quot;&quot;);</span>
+<span class="fc" id="L37">        int sum = 0;</span>
+<span class="fc" id="L38">        boolean shouldDouble = false;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (int i = cleanNumber.length() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L40">            int n = Character.getNumericValue(cleanNumber.charAt(i));</span>
+
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">            if (n &lt; 0 || n &gt; 9) {</span>
+<span class="fc" id="L43">                return false;</span>
+            }
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (shouldDouble) {</span>
+<span class="fc" id="L46">                n *= 2;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (n &gt; 9) n -= 9;</span>
+            }
+<span class="fc" id="L49">            sum += n;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            shouldDouble = !shouldDouble;</span>
+        }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        return (sum % 10 == 0);</span>
+    }
+
+    /**
+     * Checks if the provided date is strictly before the current month.
+     */
+    private boolean isExpired(YearMonth date) {
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (date == null) {</span>
+<span class="nc" id="L60">            return true;</span>
+        }
+<span class="fc" id="L62">        return date.isBefore(YearMonth.now());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
