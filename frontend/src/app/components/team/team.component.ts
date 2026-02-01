@@ -26,11 +26,14 @@ import { ErrorModalComponent } from "../modal/error-modal/error-modal.component"
 	templateUrl: './team.component.html',
 })
 export class TeamComponent implements OnInit {
+	private teamService = inject(TeamService);
+	private selectedTeamService = inject(SelectedTeamService);
 	private matchService = inject(MatchService);
 	public paginationHandlerService = inject(PaginatedSelectorService);
 	private authService = inject(AuthService);
 	private eventService = inject(EventService);
 	private router = inject(Router);
+	public backgroundService = inject(BackgroundColorService);
 
 	public team: TeamInfo | null = null;
 	public positionPlayers: PositionPlayer[] = [];
@@ -58,12 +61,6 @@ export class TeamComponent implements OnInit {
 	public error = false;
 	public successMessage = '';
 	public errorMessage = '';
-
-	constructor(
-		private selectedTeamService: SelectedTeamService,
-		private teamService: TeamService,
-		public backgroundService: BackgroundColorService
-	) {}
 
 	ngOnInit() {
 		this.selectedTeamService.selectedTeam$.subscribe((selectedTeam) => {

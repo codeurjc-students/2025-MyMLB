@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatchesOfTheDayComponent } from '../../app/components/match/matches-of-the-day/matches-of-the-day.component';
-import { MatchService, PaginatedMatches } from '../../app/services/match.service';
+import { MatchService, ShowMatch } from '../../app/services/match.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { PaginatedResponse } from '../../app/models/pagination.model';
 
 describe('Matches Of The Day Component Integration Test', () => {
 	let fixture: ComponentFixture<MatchesOfTheDayComponent>;
@@ -11,28 +12,29 @@ describe('Matches Of The Day Component Integration Test', () => {
 
 	const baseUrl = 'https://localhost:8443/api/v1/matches/today';
 
-	const generateMockMatches = (count: number): PaginatedMatches => ({
-		content: Array.from({ length: count }, (_, i) => ({
-			homeTeam: { name: `Team ${i}`, abbreviation: `T${i}`, league: 'AL', division: 'East' },
-			awayTeam: {
-				name: `Opponent ${i}`,
-				abbreviation: `O${i}`,
-				league: 'AL',
-				division: 'East',
-			},
-			homeScore: i,
-			awayScore: i + 1,
-			date: `2025-10-22 19:${String(i).padStart(2, '0')}`,
-			status: 'FINISHED',
-			stadiumName: 'Yankee Stadium'
-		})),
-		page: {
-			size: 10,
-			number: count === 10 ? 0 : 1,
-			totalElements: 15,
-			totalPages: 2,
-		},
-	});
+	const generateMockMatches = (count: number): PaginatedResponse<ShowMatch> => ({
+        content: Array.from({ length: count }, (_, i) => ({
+            id: i,
+            homeTeam: { name: `Team ${i}`, abbreviation: `T${i}`, league: 'AL', division: 'East' },
+            awayTeam: {
+                name: `Opponent ${i}`,
+                abbreviation: `O${i}`,
+                league: 'AL',
+                division: 'East',
+            },
+            homeScore: i,
+            awayScore: i + 1,
+            date: `2025-10-22 19:${String(i).padStart(2, '0')}`,
+            status: 'FINISHED',
+            stadiumName: 'Yankee Stadium'
+        })),
+        page: {
+            size: 10,
+            number: count === 10 ? 0 : 1,
+            totalElements: 15,
+            totalPages: 2,
+        },
+    });
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({

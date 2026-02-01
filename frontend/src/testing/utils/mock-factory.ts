@@ -8,6 +8,14 @@ import { UserRole } from '../../app/models/auth/user-role.model';
 import { ShowMatch } from '../../app/services/match.service';
 import { Pictures } from '../../app/models/pictures.model';
 import { PaginatedResponse, PaginatedSearchs } from '../../app/models/pagination.model';
+import { EventResponse } from '../../app/models/ticket/event-response.model';
+import { EventManager } from '../../app/models/ticket/event-manager.model';
+import { Seat } from '../../app/models/ticket/seat.model';
+import { SectorCreateRequest } from '../../app/models/ticket/sector-create-request.model';
+import { EventCreateRequest } from '../../app/models/ticket/event-create-request-model';
+import { EventEditRequest } from '../../app/models/ticket/event-edit-request.model';
+import { PurchaseRequest } from '../../app/models/ticket/purchase-request.model';
+import { Ticket } from '../../app/models/ticket/ticket.model';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {
@@ -248,8 +256,9 @@ export class MockFactory {
 		} as TeamInfo;
 	};
 
-	static buildShowMatchMock = (awayTeam: TeamSummary, homeTeam: TeamSummary, awayScore: number, homeScore: number, date: string, status: string) => {
+	static buildShowMatchMock = (id: number, awayTeam: TeamSummary, homeTeam: TeamSummary, awayScore: number, homeScore: number, date: string, status: string) => {
 		return {
+			id,
 			awayTeam: awayTeam,
 			homeTeam: homeTeam,
 			awayScore: awayScore,
@@ -298,4 +307,83 @@ export class MockFactory {
 			}
 		}
 	};
+
+	static buildEventResponse(id: number, awayTeamName: string, homeTeamName: string, homeTeamAbbreviation: string, stadiumName: string, date: Date, pictureMap: Pictures, sectors: EventManager[]) {
+		return {
+			id,
+			awayTeamName,
+			homeTeamName,
+			homeTeamAbbreviation,
+			stadiumName,
+			date,
+			pictureMap,
+			sectors
+		} as EventResponse
+	}
+
+	static buildEventManager(id: number, sectorId: number, sectorName: string, price: number, availability: number, totalCapacity: number) {
+		return {
+			id,
+			sectorId,
+			sectorName,
+			price,
+			availability,
+			totalCapacity
+		} as EventManager
+	}
+
+	static buildMockSeat(id: number, name: string) {
+		return {
+			id,
+			name
+		} as Seat
+	}
+
+	static buildEventCreateRequest(matchId: number, prices: number[], sectors: SectorCreateRequest[]) {
+		return {
+			matchId,
+			prices,
+			sectors
+		} as EventCreateRequest
+	}
+
+	static buildSectorCreateRequest(name: string, totalCapacity: number) {
+		return {
+			name,
+			totalCapacity
+		} as SectorCreateRequest
+	}
+
+	static buildEditEventRequest(eventId: number, sectorIds: number[], prices: number[]) {
+		return {
+			eventId,
+			sectorIds,
+			prices
+		} as EventEditRequest
+	}
+
+	static buildPurchaseRequest(eventManagerId: number, ticketAmount: number, seats: Seat[], ownerName: string, cardNumber: string, cvv: string, expirationDate: Date) {
+		return {
+			eventManagerId,
+			ticketAmount,
+			seats,
+			ownerName,
+			cardNumber,
+			cvv,
+			expirationDate
+		} as PurchaseRequest
+	}
+
+	static buildTicketMock(id: number, awayTeamName: string, homeTeamName: string, stadiumName: string, price: number, matchDate: Date, sectorName: string, seatName: string) {
+		return {
+			id,
+			awayTeamName,
+			homeTeamName,
+			stadiumName,
+			price,
+			matchDate,
+			sectorName,
+			seatName
+		} as Ticket
+	}
 }

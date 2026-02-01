@@ -1,106 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { MatchService, PaginatedMatches, ShowMatch } from '../../../app/services/match.service';
+import { MatchService, ShowMatch } from '../../../app/services/match.service';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { MockFactory } from '../../utils/mock-factory';
 
 describe('Match Service Tests', () => {
 	let service: MatchService;
 	let httpMock: HttpTestingController;
 	const apiUrl = 'https://localhost:8443/api/v1/matches';
 
-	const mockResponse: PaginatedMatches = {
-		content: [
-			{
-				homeTeam: {
-					name: 'Yankees',
-					abbreviation: 'NYY',
-					league: 'AL',
-					division: 'East',
-				},
-				awayTeam: {
-					name: 'Red Sox',
-					abbreviation: 'BOS',
-					league: 'AL',
-					division: 'East',
-				},
-				homeScore: 5,
-				awayScore: 3,
-				date: '2025-10-22 19:05',
-				status: 'FINISHED',
-				stadiumName: 'Yankee Stadium'
-			},
-		],
-		page: {
-			size: 10,
-			number: 0,
-			totalElements: 1,
-			totalPages: 1,
-		},
-	};
+	const match1Id = 1;
+	const match2Id = 2;
 
-	const mockHomeMatches: ShowMatch[] = [
-		{
-			homeTeam: {
-				name: 'New York Yankees',
-				abbreviation: 'NYY',
-				league: 'AL',
-				division: 'EAST',
-			},
-			awayTeam: {
-				name: 'Boston Red Sox',
-				abbreviation: 'BOS',
-				league: 'AL',
-				division: 'EAST',
-			},
-			homeScore: 5,
-			awayScore: 3,
-			date: '2025-10-22 19:05',
-			status: 'FINISHED',
-			stadiumName: 'Yankee Stadium'
-		},
-
-		{
-			homeTeam: {
-				name: 'New York Yankees',
-				abbreviation: 'NYY',
-				league: 'AL',
-				division: 'East',
-			},
-			awayTeam: {
-				name: 'Los Angeles Dodgers',
-				abbreviation: 'LAD',
-				league: 'NL',
-				division: 'WEST',
-			},
-			homeScore: 0,
-			awayScore: 0,
-			date: '2025-11-22 19:05',
-			status: 'SCHEDULED',
-			stadiumName: 'Yankee Stadium'
-		},
-	];
-
-	const mockAwayMatches: ShowMatch[] = [
-		{
-			homeTeam: {
-				name: 'New York Yankees',
-				abbreviation: 'NYY',
-				league: 'AL',
-				division: 'EAST',
-			},
-			awayTeam: {
-				name: 'Boston Red Sox',
-				abbreviation: 'BOS',
-				league: 'AL',
-				division: 'EAST',
-			},
-			homeScore: 5,
-			awayScore: 3,
-			date: '2025-10-22 19:05',
-			status: 'FINISHED',
-			stadiumName: 'Yankee Stadium'
-		}
-	];
+	const mockHomeTeam = MockFactory.buildTeamSummaryMock('New York Yankees', 'NYY', 'AL', 'EAST');
+	const mockAwayTeam = MockFactory.buildTeamSummaryMock('Boston Red Sox', 'BOS', 'AL', 'EAST');
+	const mockAuxTeam = MockFactory.buildTeamSummaryMock('Los Angeles Dodgers', 'LAD', 'NL', 'WEST');
+	const mockMatch = MockFactory.buildShowMatchMock(match1Id, mockAwayTeam, mockHomeTeam, 2, 3, '2026-05-15', 'SCHEDULED');
+	const auxMatch = MockFactory.buildShowMatchMock(match2Id, mockAuxTeam, mockHomeTeam, 2, 3, '2026-06-15', 'SCHEDULED');
+	const mockResponse = MockFactory.buildPaginatedResponse(mockMatch);
+	const mockHomeMatches: ShowMatch[] = [mockMatch, auxMatch];
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -114,12 +32,22 @@ describe('Match Service Tests', () => {
 		httpMock.verify();
 	});
 
+	it('should return the match of the given id', () => {
+		service.getMatchById(match1Id).subscribe((response) => {
+			expect(response).toEqual(mockMatch);
+		});
+
+		const request = httpMock.expectOne(`${apiUrl}/${match1Id}`);
+		expect(request.request.method).toBe('GET');
+		request.flush(mockMatch);
+	});
+
 	it('should fetch matches of the day paginated', () => {
 		service.getMatchesOfTheDay(0, 10).subscribe((data) => {
 			expect(data).toEqual(mockResponse);
 			expect(data.content.length).toBe(1);
 			expect(data.content[0].homeTeam.abbreviation).toBe('NYY');
-			expect(data.content[0].status).toBe('FINISHED');
+			expect(data.content[0].status).toBe('SCHEDULED');
 		});
 
 		const req = httpMock.expectOne(`${apiUrl}/today?page=0&size=10`);

@@ -18,6 +18,7 @@ describe('Calendar Component Tests', () => {
 	const awayTeam: TeamSummary = MockFactory.buildTeamSummaryMock('Team2', 'T2', 'AL', 'EAST');
 
 	const mockMatch: ShowMatch = MockFactory.buildShowMatchMock(
+		1,
 		awayTeam,
 		homeTeam,
 		2,

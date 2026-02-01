@@ -7,6 +7,10 @@ import { MockFactory } from '../../utils/mock-factory';
 import { of } from 'rxjs';
 import { TeamInfo } from '../../../app/models/team.model';
 import { provideHttpClient } from '@angular/common/http';
+import { EventService } from '../../../app/services/ticket/event.service';
+import { Router } from '@angular/router';
+import { MatchService } from '../../../app/services/match.service';
+import { AuthService } from '../../../app/services/auth.service';
 
 describe('Team Component Integration Tests', () => {
 	let component: TeamComponent;
@@ -80,6 +84,25 @@ describe('Team Component Integration Tests', () => {
 						getBackgroundColor: (abbr: string) => `bg-${abbr?.toLowerCase()}`,
 					},
 				},
+				{
+					provide: AuthService,
+					useValue: {
+						getActiveUser: () => of({ roles: ['ADMIN'] })
+					},
+				},
+				{
+					provide: EventService,
+					useValue: {
+						getEventByMatchId: () => of(null),
+						deleteEvent: () => of({})
+					},
+				},
+				{
+					provide: MatchService,
+					useValue: {
+						getMatchesOfATeam: () => of([])
+					},
+				},
 			],
 		});
 
@@ -119,4 +142,27 @@ describe('Team Component Integration Tests', () => {
 		component.ngOnDestroy();
 		expect(clearSpy).toHaveBeenCalled();
 	});
+
+	it('should navigate to create event page with matchId', () => {
+        const routerSpy = spyOn(TestBed.inject(Router), 'navigate');
+        const matchId = 123;
+
+        component.createEvent(matchId);
+
+        expect(routerSpy).toHaveBeenCalledWith(['create-event'], {
+            queryParams: { matchId: matchId }
+        });
+    });
+
+    it('should navigate to edit event page with eventId from the map', () => {
+        const routerSpy = spyOn(TestBed.inject(Router), 'navigate');
+        const matchId = 1;
+        component.eventMap.set(matchId, { id: 500 } as any);
+
+        component.editEvent(matchId);
+
+        expect(routerSpy).toHaveBeenCalledWith(['edit-event'], {
+            queryParams: { eventId: 500 }
+        });
+    });
 });
