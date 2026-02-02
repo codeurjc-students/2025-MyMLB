@@ -2,6 +2,7 @@ package com.mlb.mlbportal.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "matches")
+@Table(name = "T_Matches")
 public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -29,7 +30,12 @@ public class Match {
 
     private int awayScore;
 
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     private LocalDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = "stadium_id")
+    private Stadium stadium;
 
     @Enumerated(EnumType.STRING)
     private MatchStatus status;

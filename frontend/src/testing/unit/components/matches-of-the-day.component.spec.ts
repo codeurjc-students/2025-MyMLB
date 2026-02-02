@@ -1,31 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatchesOfTheDayComponent } from '../../../app/components/match/matches-of-the-day/matches-of-the-day.component';
-import { MatchService, PaginatedMatches } from '../../../app/services/match.service';
+import { MatchService } from '../../../app/services/match.service';
 import { of, throwError } from 'rxjs';
+import { MockFactory } from '../../utils/mock-factory';
 
 describe('Matches Of The Day Component Tests', () => {
 	let component: MatchesOfTheDayComponent;
 	let fixture: ComponentFixture<MatchesOfTheDayComponent>;
 	let matchServiceSpy: jasmine.SpyObj<MatchService>;
 
-	const mockMatch: PaginatedMatches = {
-		content: [
-			{
-				homeTeam: { name: 'Yankees', abbreviation: 'NYY', league: 'AL', division: 'East' },
-				awayTeam: { name: 'Red Sox', abbreviation: 'BOS', league: 'AL', division: 'East' },
-				homeScore: 5,
-				awayScore: 3,
-				date: '2025-10-22 19:05',
-				status: 'FINISHED',
-			},
-		],
-		page: {
-			size: 10,
-			number: 0,
-			totalElements: 1,
-			totalPages: 2,
-		},
-	};
+	const mockHomeTeam = MockFactory.buildTeamSummaryMock('New York Yankees', 'NYY', 'AL', 'EAST');
+	const mockAwayTeam = MockFactory.buildTeamSummaryMock('Boston Red Sox', 'BOS', 'AL', 'EAST');
+	const mockMatch = MockFactory.buildShowMatchMock(1, mockAwayTeam, mockHomeTeam, 2, 3, '2026-05-15', 'IN PROGRESS');
+	const mockResponse = MockFactory.buildPaginatedResponse(mockMatch);
 
 	beforeEach(() => {
 		matchServiceSpy = jasmine.createSpyObj('MatchService', ['getMatchesOfTheDay']);
@@ -39,19 +26,19 @@ describe('Matches Of The Day Component Tests', () => {
 	});
 
 	it('should load matches on init', () => {
-		matchServiceSpy.getMatchesOfTheDay.and.returnValue(of(mockMatch));
+		matchServiceSpy.getMatchesOfTheDay.and.returnValue(of(mockResponse));
 
 		component.ngOnInit();
 
 		expect(matchServiceSpy.getMatchesOfTheDay).toHaveBeenCalledWith(0, 10);
 		expect(component.matches.length).toBe(1);
-		expect(component.currentPage).toBe(0);
-		expect(component.hasMore).toBeTrue();
+		expect(component.currentPage).toBe(2);
+		expect(component.hasMore).toBeFalse();
 		expect(component.errorMessage).toBe('');
 	});
 
 	it('should load next page if hasMore is true', () => {
-		matchServiceSpy.getMatchesOfTheDay.and.returnValue(of(mockMatch));
+		matchServiceSpy.getMatchesOfTheDay.and.returnValue(of(mockResponse));
 		component.currentPage = 0;
 		component.hasMore = true;
 

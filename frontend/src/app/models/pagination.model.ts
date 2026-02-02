@@ -1,7 +1,7 @@
 import { PitcherGlobal } from './pitcher.model';
 import { PositionPlayerGlobal } from './position-player.model';
 import { Stadium } from './stadium.model';
-import { TeamInfo, TeamSummary } from './team.model';
+import { TeamInfo } from './team.model';
 
 export type PaginatedSearchs = {
 	content: (TeamInfo | Stadium | PositionPlayerGlobal | PitcherGlobal)[];

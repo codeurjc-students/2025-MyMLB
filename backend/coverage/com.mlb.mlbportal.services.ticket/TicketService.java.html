@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.ticket</a> &gt; <span class="el_source">TicketService.java</span></div><h1>TicketService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.ticket;
+
+import java.time.LocalDateTime;
+import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mlb.mlbportal.dto.ticket.PurchaseRequest;
+import com.mlb.mlbportal.dto.ticket.SeatDTO;
+import com.mlb.mlbportal.dto.ticket.TicketDTO;
+import com.mlb.mlbportal.handler.badRequest.SeatSelectionMismatchException;
+import com.mlb.mlbportal.handler.conflict.InsufficientStockException;
+import com.mlb.mlbportal.handler.notFound.TicketNotFoundException;
+import com.mlb.mlbportal.mappers.ticket.TicketMapper;
+import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Ticket;
+import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
+import com.mlb.mlbportal.repositories.ticket.EventRepository;
+import com.mlb.mlbportal.repositories.ticket.SeatRepository;
+import com.mlb.mlbportal.repositories.ticket.TicketRepository;
+import com.mlb.mlbportal.services.EmailService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
+import com.mlb.mlbportal.services.utilities.PdfGeneratorService;
+
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L37">@Slf4j</span>
+public class TicketService {
+    private final EventManagerRepository eventManagerRepository;
+    private final EventRepository eventRepository;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final SeatRepository seatRepository;
+    private final TicketMapper ticketMapper;
+    private final PaginationHandlerService paginationHandlerService;
+    private final PaymentService paymentService;
+    private final EmailService emailService;
+    private final PdfGeneratorService pdfGeneratorService;
+
+    @Transactional(readOnly = true)
+    public TicketDTO getTicket(Long ticketId) {
+<span class="fc" id="L52">        Ticket ticket = this.ticketRepository.findById(ticketId).orElseThrow(() -&gt; new TicketNotFoundException(ticketId));</span>
+<span class="fc" id="L53">        return this.ticketMapper.toTicketDTO(ticket);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;TicketDTO&gt; getTicketsOfEvent(Long eventId, int page, int size) {
+<span class="fc" id="L58">        this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
+<span class="fc" id="L59">        List&lt;Ticket&gt; query = this.ticketRepository.findTicketByEvent(eventId);</span>
+<span class="fc" id="L60">        return this.paginationHandlerService.paginateAndMap(query, page, size, this.ticketMapper::toTicketDTO);</span>
+    }
+
+    @Transactional
+    public Page&lt;TicketDTO&gt; purchaseTicket(String username, PurchaseRequest request, int page, int size) {
+<span class="fc" id="L65">        this.validateRequest(request);</span>
+
+<span class="fc" id="L67">        this.updateStocks(request);</span>
+
+<span class="fc" id="L69">        EventManager eventManager = this.fetchEventManagerWithLock(request.eventManagerId());</span>
+<span class="fc" id="L70">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+
+<span class="fc" id="L72">        this.paymentService.processPayment(request);</span>
+
+<span class="fc" id="L74">        List&lt;Ticket&gt; tickets = this.createTickets(user, request.ownerName(),eventManager, request.seats());</span>
+
+<span class="fc" id="L76">        this.userRepository.save(user);</span>
+<span class="fc" id="L77">        this.sendEmailWithPdf(user, tickets);</span>
+
+<span class="fc" id="L79">        return this.paginationHandlerService.paginateAndMap(tickets, page, size, this.ticketMapper::toTicketDTO);</span>
+    }
+
+    /**
+     * Verifies that the number of selected seats matches the requested ticket amount.
+     */
+    private void validateRequest(PurchaseRequest request) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (request.seats().size() != request.ticketAmount()) {</span>
+<span class="fc" id="L87">            throw new SeatSelectionMismatchException();</span>
+        }
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * Atomically updates event stock and marks individual seats as occupied.
+     */
+    private void updateStocks(PurchaseRequest request) {
+<span class="fc" id="L95">        int stockUpdated = this.eventManagerRepository.updateStockAvailability(request.eventManagerId(), request.ticketAmount());</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (stockUpdated == 0) {</span>
+<span class="fc" id="L97">            throw new InsufficientStockException();</span>
+        }
+<span class="fc" id="L99">        List&lt;Long&gt; seatIds = request.seats().stream().map(SeatDTO::id).toList();</span>
+<span class="fc" id="L100">        int seatsMarked = this.seatRepository.markSeatAsOccupied(seatIds);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (seatsMarked != seatIds.size()) {</span>
+<span class="fc" id="L102">            throw new ConcurrentModificationException(&quot;One or more selected seats are no longer available&quot;);</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * Retrieves the EventManager using a pessimistic lock to prevent race conditions during purchase.
+     */
+    private EventManager fetchEventManagerWithLock(Long id) {
+<span class="fc" id="L110">        return this.eventManagerRepository.findByIdWithBlock(id).orElseThrow(ConcurrentModificationException::new);</span>
+    }
+
+    /**
+     * Creates the tickets, linking them to the user, event manager, and specific seats.
+     */
+    private List&lt;Ticket&gt; createTickets(UserEntity user, String ownerName, EventManager eventManager, List&lt;SeatDTO&gt; seatDtos) {
+<span class="fc" id="L117">        List&lt;Ticket&gt; tickets = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L118">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        for (SeatDTO seatDto : seatDtos) {</span>
+<span class="fc" id="L120">            Ticket ticket = new Ticket();</span>
+<span class="fc" id="L121">            ticket.setEventManager(eventManager);</span>
+<span class="fc" id="L122">            ticket.setOwner(user);</span>
+<span class="fc" id="L123">            ticket.setOwnerName(ownerName);</span>
+<span class="fc" id="L124">            ticket.setPurchaseDate(now);</span>
+<span class="fc" id="L125">            ticket.setSeat(this.seatRepository.getReferenceById(seatDto.id()));</span>
+<span class="fc" id="L126">            user.addTicket(ticket);</span>
+<span class="fc" id="L127">            tickets.add(ticket);</span>
+<span class="fc" id="L128">        }</span>
+<span class="fc" id="L129">        return tickets;</span>
+    }
+
+    /**
+     * Generates a PDF document and triggers an asynchronous email delivery to the purchaser.
+     */
+    private void sendEmailWithPdf(UserEntity user, List&lt;Ticket&gt; tickets) {
+        try {
+<span class="fc" id="L137">            byte[] pdfContent = this.pdfGeneratorService.generateTicketsPdf(tickets);</span>
+<span class="fc" id="L138">            String subject = &quot;Game Tickets&quot;;</span>
+<span class="fc" id="L139">            String body = &quot;&quot;&quot;</span>
+                    Hello %s, \n
+                    
+                    Below you may find the ticket(s) you have purchased. \n
+                    
+                    Thank you for your purchase and see you at the ballpark!
+<span class="fc" id="L145">                    &quot;&quot;&quot;.formatted(user.getUsername());</span>
+
+<span class="fc" id="L147">            this.emailService.sendTicketPurchaseEmail(</span>
+<span class="fc" id="L148">                    user.getEmail(),</span>
+                    subject,
+                    body,
+                    pdfContent,
+                    &quot;Tickets.pdf&quot;
+            );
+        }
+<span class="fc" id="L155">        catch (MessagingException e) {</span>
+<span class="fc" id="L156">            log.error(&quot;Failed to send the purchase confirmation email to the user: {}&quot;, user.getUsername());</span>
+<span class="fc" id="L157">        }</span>
+<span class="fc" id="L158">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

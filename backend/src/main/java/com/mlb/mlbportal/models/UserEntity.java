@@ -6,18 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.mlb.mlbportal.models.others.PictureInfo;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PreRemove;
+import com.mlb.mlbportal.models.ticket.Ticket;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,7 +36,7 @@ public class UserEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "user_fav_teams",
+        name = "T_USER_FAVORITE_TEAMS",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "team_id")
     )
@@ -54,6 +44,9 @@ public class UserEntity {
 
     @ElementCollection(fetch= FetchType.EAGER)
     private List<String> roles = new LinkedList<>();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets = new LinkedList<>();
 
     @PreRemove
     public void preRemove() {
@@ -83,5 +76,10 @@ public class UserEntity {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+
+    public void addTicket(Ticket ticket) {
+        this.tickets.add(ticket);
+        ticket.setOwner(this);
     }
 }

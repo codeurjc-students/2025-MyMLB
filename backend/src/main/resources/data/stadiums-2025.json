@@ -24,7 +24,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590274/pic5_cp8yez.webp",
         "publicId": "pic5_cp8yez"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867247/toronto-map_ljtcuo.webp",
+      "publicId": "toronto-map_ljtcuo"
+    }
   },
 
   {
@@ -52,7 +56,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763587820/pic5_ob8rs7.webp",
         "publicId": "pic5_ob8rs7"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769633996/image-Photoroom_yjafs3.png",
+      "publicId": "image-Photoroom_yjafs3"
+    }
   },
 
   {
@@ -80,7 +88,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763590576/pic5_pf5xge.webp",
         "publicId": "pic5_pf5xge"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867726/boston-map_u4reae.webp",
+      "publicId": "boston-map_u4reae"
+    }
   },
 
   {
@@ -108,7 +120,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763595369/pic5_ijzckn.webp",
         "publicId": "pic5_ijzckn"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867866/tampa-map_x7rgbv.webp",
+      "publicId": "tampa-map_x7rgbv"
+    }
   },
 
   {
@@ -136,7 +152,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589221/pic5_qh7rbo.webp",
         "publicId": "pic5_qh7rbo"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769867972/baltimore-map_ibyubu.webp",
+      "publicId": "baltimore-map_ibyubu"
+    }
   },
 
   {
@@ -164,7 +184,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763635483/pic5_lhqfol.webp",
         "publicId": "pic5_lhqfol"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868099/cleveland-map_dj5y5b.webp",
+      "publicId": "cleveland-map_dj5y5b"
+    }
   },
 
   {
@@ -192,7 +216,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763636864/pic5_ancfp9.webp",
         "publicId": "pic5_ancfp9"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868210/detroit-map_vi7oh3.webp",
+      "publicId": "detroit-map_vi7oh3"
+    }
   },
 
   {
@@ -220,7 +248,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637169/pic5_yrgzg0.webp",
         "publicId": "pic5_yrgzg0"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868338/kansas-map_ac8lwv.webp",
+      "publicId": "kansas-map_ac8lwv"
+    }
   },
 
   {
@@ -248,7 +280,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763637712/pic5_cnyemd.webp",
         "publicId": "pic5_cnyemd"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868469/minnesota-map_ypmfpf.webp",
+      "publicId": "minnesota-map_ypmfpf"
+    }
   },
 
   {
@@ -276,7 +312,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638147/pic5_bh6r7a.webp",
         "publicId": "pic5_bh6r7a"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868563/chicago-white-map_hlpltp.webp",
+      "publicId": "chicago-white-map_hlpltp"
+    }
   },
 
   {
@@ -304,7 +344,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763638577/pic5_bzhcnd.webp",
         "publicId": "pic5_bzhcnd"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868715/mariners-map_gqhn5k.webp",
+      "publicId": "mariners-map_gqhn5k"
+    }
   },
 
   {
@@ -332,7 +376,11 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639062/pic5_byoudb.webp",
         "publicId": "pic5_byoudb"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769868808/houstonn_rkbbfw.webp",
+      "publicId": "houstonn_rkbbfw"
+    }
   },
 
   {
@@ -360,14 +408,22 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763639436/pic5_j2nzrg.webp",
         "publicId": "pic5_j2nzrg"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869133/texas-map_c3ifwg.webp",
+      "publicId": "texas-map_c3ifwg"
+    }
   },
 
   {
     "name": "Sutter Health Park",
     "openingDate": "2000",
     "teamName": "Athletics",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869369/athletics-map_qhwnqs.webp",
+      "publicId": "athletics-map_qhwnqs"
+    }
   },
 
   {
@@ -395,69 +451,113 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763640093/pic5_d47m2z.webp",
         "publicId": "pic5_d47m2z"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769869501/angels-map_vtf8t3.webp",
+      "publicId": "angels-map_vtf8t3"
+    }
   },
 
   {
     "name": "Citizens Bank Park",
     "openingDate": "2004",
     "teamName": "Philadelphia Phillies",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879700/phillies-map_ei8qqn.png",
+      "publicId": "phillies-map_ei8qqn"
+    }
   },
   {
     "name": "Citi Field",
     "openingDate": "2009",
     "teamName": "New York Mets",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879924/mets-map_c8dmxi.png",
+      "publicId": "mets-map_c8dmxi"
+    }
   },
   {
     "name": "Truist Park",
     "openingDate": "2017",
     "teamName": "Atlanta Braves",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769879824/braves-map_uupa5v.png",
+      "publicId": "braves-map_uupa5v"
+    }
   },
   {
-    "name": "LoanDepot Park",
+    "name": "loanDepot park",
     "openingDate": "2012",
     "teamName": "Miami Marlins",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769880100/miami-map_kfl706.png",
+      "publicId": "miami-map_kfl706"
+    }
   },
   {
     "name": "Nationals Park",
     "openingDate": "2008",
     "teamName": "Washington Nationals",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769880193/wash-map_zjd8qw.png",
+      "publicId": "wash-map_zjd8qw"
+    }
   },
   {
     "name": "American Family Field",
     "openingDate": "2001",
     "teamName": "Milwaukee Brewers",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884531/brewers-map_jx83x5.png",
+      "publicId": "brewers-map_jx83x5"
+    }
   },
   {
     "name": "Wrigley Field",
     "openingDate": "1914",
     "teamName": "Chicago Cubs",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884766/cubs-map_mxzof8.png",
+      "publicId": "cubs-map_mxzof8"
+    }
   },
   {
     "name": "Great American Ball Park",
     "openingDate": "2003",
     "teamName": "Cincinnati Reds",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769884847/reds-map_dcojdx.png",
+      "publicId": "reds-map_dcojdx"
+    }
   },
   {
     "name": "Busch Stadium",
     "openingDate": "2006",
     "teamName": "St. Louis Cardinals",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885044/cardinals_zxrpgt.png",
+      "publicId": "cardinals_zxrpgt"
+    }
   },
 
   {
     "name": "PNC Park",
     "openingDate": "2001",
     "teamName": "Pittsburgh Pirates",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885139/pirates-map_hyih6v.png",
+      "publicId": "pirates-map_hyih6v"
+    }
   },
 
   {
@@ -485,34 +585,54 @@
         "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1763589741/pic5_ckztq6.webp",
         "publicId": "pic5_ckztq6"
       }
-    ]
+    ],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885285/dodgers-map_csxido.png",
+      "publicId": "dodgers-map_csxido"
+    }
   },
 
   {
     "name": "Petco Park",
     "openingDate": "2004",
     "teamName": "San Diego Padres",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885363/padres-map_ukggtf.png",
+      "publicId": "padres-map_ukggtf"
+    }
   },
 
   {
     "name": "Oracle Park",
     "openingDate": "2000",
     "teamName": "San Francisco Giants",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885463/giants-map_vh4wui.png",
+      "publicId": "giants-map_vh4wui"
+    }
   },
 
   {
     "name": "Chase Field",
     "openingDate": "1998",
     "teamName": "Arizona Diamondbacks",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885574/arizona-map_xyfovy.png",
+      "publicId": "arizona-map_xyfovy"
+    }
   },
 
   {
     "name": "Coors Field",
     "openingDate": "1995",
     "teamName": "Colorado Rockies",
-    "pictures": []
+    "pictures": [],
+    "pictureMap": {
+      "url": "https://res.cloudinary.com/dexuwucsw/image/upload/v1769885665/rockies-map_sylntl.png",
+      "publicId": "rockies-map_sylntl"
+    }
   }
 ]

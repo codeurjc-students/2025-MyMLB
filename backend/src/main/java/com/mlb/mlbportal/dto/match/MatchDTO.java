@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record MatchDTO(
+    Long id,
+
     @NotNull(message= "The home team is required")
     TeamSummary homeTeam,
 
@@ -30,5 +32,8 @@ public record MatchDTO(
     LocalDateTime date,
 
     @NotNull(message= "The status of the game is required")
-    MatchStatus status
+    MatchStatus status,
+
+    @NotNull(message = "The stadium is required")
+    String stadiumName
 ) {}

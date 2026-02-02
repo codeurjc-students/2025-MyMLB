@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +34,7 @@ public class MlbImportService {
     private final TeamLookupService teamLookupService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
+    private final StadiumRepository stadiumRepository;
 
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
     @Retry(name = "mlbApi")
@@ -49,21 +52,31 @@ public class MlbImportService {
                 .flatMap(d -> d.games().stream())
                 .map(this::toMatchDTO)
                 .filter(this::isMlbTeamMatch)
+                .filter(dto -> this.stadiumRepository.findByName(dto.stadiumName()).isPresent())
                 .map(this::saveMatch)
                 .toList();
     }
 
     private MatchDTO saveMatch(MatchDTO dto) {
-        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name())
-                .orElseThrow(TeamNotFoundException::new);
-        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())
-                .orElseThrow(TeamNotFoundException::new);
+        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name()).orElseThrow(TeamNotFoundException::new);
+        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name()).orElseThrow(TeamNotFoundException::new);
 
-        Match match = new Match(awayEntity, homeEntity,
-                dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());
 
-        this.matchRepository.save(match);
-        return dto;
+        Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
+        match.setStadium(stadium);
+
+        Match savedMatch = this.matchRepository.save(match);
+        return new MatchDTO(
+                savedMatch.getId(),
+                dto.homeTeam(),
+                dto.awayTeam(),
+                dto.homeScore(),
+                dto.awayScore(),
+                dto.date(),
+                dto.status(),
+                dto.stadiumName()
+        );
     }
 
     @SuppressWarnings("unused")
@@ -73,6 +86,7 @@ public class MlbImportService {
         if (!cachedMatches.isEmpty()) {
             return cachedMatches.stream()
                     .map(m -> new MatchDTO(
+                            m.getId(),
                             new TeamSummary(
                                 m.getHomeTeam().getName(),
                                 m.getHomeTeam().getAbbreviation(),
@@ -88,7 +102,8 @@ public class MlbImportService {
                             m.getHomeScore(),
                             m.getAwayScore(),
                             m.getDate(),
-                            m.getStatus()
+                            m.getStatus(),
+                            m.getStadium().getName()
                     ))
                     .toList();
         }
@@ -108,8 +123,12 @@ public class MlbImportService {
         TeamSummary away = teamLookupService.getTeamSummary(awayId);
         LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
         MatchStatus status = convertStatus(game.status().detailedState());
-        return new MatchDTO(home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
-                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status);
+        String stadiumName = game.venue().name();
+        if (stadiumName.equals("Rate Field")) {
+            stadiumName = "Guaranteed Rate Field";
+        }
+        return new MatchDTO(null, home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
+                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);
     }
 
     private MatchStatus convertStatus(String apiStatus) {

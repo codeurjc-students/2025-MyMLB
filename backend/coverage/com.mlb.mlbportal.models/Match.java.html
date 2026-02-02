@@ -2,6 +2,7 @@
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = &quot;matches&quot;)
+@Table(name = &quot;T_Matches&quot;)
 public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -29,18 +30,23 @@ public class Match {
 
     private int awayScore;
 
+    @JsonFormat(pattern = &quot;MM/dd/yyyy HH:mm&quot;)
     private LocalDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;stadium_id&quot;)
+    private Stadium stadium;
 
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-<span class="fc" id="L37">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
-<span class="fc" id="L38">        this.homeTeam = homeTeam;</span>
-<span class="fc" id="L39">        this.awayTeam = awayTeam;</span>
-<span class="fc" id="L40">        this.homeScore = homeScore;</span>
-<span class="fc" id="L41">        this.awayScore = awayScore;</span>
-<span class="fc" id="L42">        this.date = date;</span>
-<span class="fc" id="L43">        this.status = status;</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L43">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
+<span class="fc" id="L44">        this.homeTeam = homeTeam;</span>
+<span class="fc" id="L45">        this.awayTeam = awayTeam;</span>
+<span class="fc" id="L46">        this.homeScore = homeScore;</span>
+<span class="fc" id="L47">        this.awayScore = awayScore;</span>
+<span class="fc" id="L48">        this.date = date;</span>
+<span class="fc" id="L49">        this.status = status;</span>
+<span class="fc" id="L50">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

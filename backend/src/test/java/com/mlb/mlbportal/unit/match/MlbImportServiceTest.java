@@ -31,16 +31,24 @@ import com.mlb.mlbportal.dto.mlbapi.Status;
 import com.mlb.mlbportal.dto.mlbapi.TeamData;
 import com.mlb.mlbportal.dto.mlbapi.TeamSide;
 import com.mlb.mlbportal.dto.mlbapi.Teams;
+import com.mlb.mlbportal.dto.mlbapi.Venue;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MlbImportService;
 import com.mlb.mlbportal.services.TeamLookupService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 
 @ExtendWith(MockitoExtension.class)
 class MlbImportServiceTest {
@@ -57,10 +65,15 @@ class MlbImportServiceTest {
     @Mock
     private TeamRepository teamRepository;
 
+    @Mock
+    private StadiumRepository stadiumRepository;
+
     @InjectMocks
     private MlbImportService mlbImportService;
 
     private List<Team> mockTeams;
+
+    private List<Stadium> mockStadiums;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -69,6 +82,7 @@ class MlbImportServiceTest {
         field.setAccessible(true);
         field.set(this.mlbImportService, this.restTemplate);
         this.mockTeams = BuildMocksFactory.setUpTeamMocks();
+        this.mockStadiums = BuildMocksFactory.setUpStadiums();
     }
 
     @Test
@@ -82,73 +96,73 @@ class MlbImportServiceTest {
 
         Teams teams = new Teams(homeSide, awaySide);
         Status status = new Status("Final");
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams);
+
+        String expectedStadiumName = this.mockStadiums.getFirst().getName();
+        Venue venue = new Venue(1, expectedStadiumName);
+
+        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
         ScheduleResponse scheduleResponse = new ScheduleResponse(List.of(dateEntry));
 
-        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class)))
-                .thenReturn(scheduleResponse);
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
 
-        when(this.teamLookupService.getTeamSummary(1))
-                .thenReturn(
-                        new TeamSummary(this.mockTeams.get(0).getName(), this.mockTeams.get(0).getAbbreviation(), null,
-                                null));
-        when(this.teamLookupService.getTeamSummary(2))
-                .thenReturn(
-                        new TeamSummary(this.mockTeams.get(1).getName(), this.mockTeams.get(1).getAbbreviation(), null,
-                                null));
+        TeamSummary homeSummary = new TeamSummary(mockTeams.get(0).getName(), mockTeams.get(0).getAbbreviation(), null, null);
+        TeamSummary awaySummary = new TeamSummary(mockTeams.get(1).getName(), mockTeams.get(1).getAbbreviation(), null, null);
 
-        when(this.teamRepository.findByName(mockTeams.get(0).getName()))
-                .thenReturn(Optional.of(mockTeams.get(0)));
-        when(this.teamRepository.findByName(mockTeams.get(1).getName()))
-                .thenReturn(Optional.of(mockTeams.get(1)));
+        Match savedMatchMock = new Match();
+        savedMatchMock.setId(100L);
 
-        List<MatchDTO> matches = this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1),
-                LocalDate.of(2026, 3, 1));
+        when(this.teamLookupService.getTeamSummary(1)).thenReturn(homeSummary);
+        when(this.teamLookupService.getTeamSummary(2)).thenReturn(awaySummary);
+        when(this.teamRepository.findByName(mockTeams.get(0).getName())).thenReturn(Optional.of(mockTeams.get(0)));
+        when(this.teamRepository.findByName(mockTeams.get(1).getName())).thenReturn(Optional.of(mockTeams.get(1)));
+        when(this.stadiumRepository.findByName(expectedStadiumName)).thenReturn(Optional.of(this.mockStadiums.getFirst()));
+        when(this.stadiumRepository.findByNameOrThrow(expectedStadiumName)).thenReturn(this.mockStadiums.getFirst());
+        when(this.matchRepository.save(any(Match.class))).thenReturn(savedMatchMock);
+
+        List<MatchDTO> matches = this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 1));
 
         assertThat(matches).hasSize(1);
-        assertThat(matches.get(0).status()).isEqualTo(MatchStatus.FINISHED);
-
-        verify(this.matchRepository, times(1)).save(any());
+        assertThat(matches.getFirst().status()).isEqualTo(MatchStatus.FINISHED);
+        verify(this.matchRepository, times(1)).save(any(Match.class));
     }
 
-    private ScheduleResponse buildResponse(String statusText, Integer homeScore, Integer awayScore) {
-        TeamData homeTeamData = new TeamData(1, "Home Team", "HT");
-        TeamData awayTeamData = new TeamData(2, "Away Team", "AT");
+    private ScheduleResponse buildResponse() {
+        TeamData homeTeamData = new TeamData(1, TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION);
+        TeamData awayTeamData = new TeamData(2, TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION);
 
-        TeamSide homeSide = new TeamSide(homeTeamData, homeScore);
-        TeamSide awaySide = new TeamSide(awayTeamData, awayScore);
+        TeamSide homeSide = new TeamSide(homeTeamData, 2);
+        TeamSide awaySide = new TeamSide(awayTeamData, 1);
 
         Teams teams = new Teams(homeSide, awaySide);
-        Status status = new Status(statusText);
+        Status status = new Status("Final");
+        Venue venue = new Venue(1, STADIUM1_NAME);
 
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams);
+        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
 
         return new ScheduleResponse(List.of(dateEntry));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
-    @DisplayName("Should throw TeamNotFoundException when team is missing in repository")
+    @DisplayName("Should throw TeamNotFoundException when team is missing in repository during saving")
     void testGetOfficialMatchesTeamNotFoundThrowsException() {
-        ScheduleResponse scheduleResponse = this.buildResponse("Final", 2, 1);
-        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class)))
-                .thenReturn(scheduleResponse);
+        ScheduleResponse scheduleResponse = this.buildResponse();
+        LocalDate startDate = LocalDate.of(2026, 3, 1);
+        LocalDate endDate = LocalDate.of(2026, 3, 1);
 
-        when(this.teamLookupService.getTeamSummary(1)).thenReturn(
-                new TeamSummary(this.mockTeams.get(0).getName(), this.mockTeams.get(0).getAbbreviation(), null, null));
-        when(this.teamLookupService.getTeamSummary(2)).thenReturn(
-                new TeamSummary(this.mockTeams.get(1).getName(), this.mockTeams.get(1).getAbbreviation(), null, null));
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
+        when(this.teamLookupService.getTeamSummary(1)).thenReturn(new TeamSummary(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, null, null));
+        when(this.teamLookupService.getTeamSummary(2)).thenReturn(new TeamSummary(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, null, null));
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.get(0)));
+        when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(this.mockTeams.get(1)));
+        when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(new Stadium()));
 
-        when(this.teamRepository.findByName(this.mockTeams.get(0).getName()))
-                .thenReturn(Optional.of(this.mockTeams.get(0)), Optional.empty());
-        when(this.teamRepository.findByName(this.mockTeams.get(1).getName()))
-                .thenReturn(Optional.of(this.mockTeams.get(1)));
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.getFirst())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(
-                () -> this.mlbImportService.getOfficialMatches(LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 1)))
-                .isInstanceOf(TeamNotFoundException.class);
+        assertThatThrownBy(() -> this.mlbImportService.getOfficialMatches(startDate, endDate))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessage("Team Not Found");
     }
 
     @Test
@@ -164,6 +178,7 @@ class MlbImportServiceTest {
                 5,
                 LocalDate.of(2026, 3, 1).atStartOfDay(),
                 MatchStatus.FINISHED);
+        cachedMatch.setStadium(this.mockStadiums.getFirst());
 
         when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of(cachedMatch));
 
@@ -180,9 +195,9 @@ class MlbImportServiceTest {
         );
 
         assertThat(matches).hasSize(1);
-        assertThat(matches.get(0).homeTeam().name()).isEqualTo(homeTeam.getName());
-        assertThat(matches.get(0).awayTeam().name()).isEqualTo(awayTeam.getName());
-        assertThat(matches.get(0).status()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(matches.getFirst().homeTeam().name()).isEqualTo(homeTeam.getName());
+        assertThat(matches.getFirst().awayTeam().name()).isEqualTo(awayTeam.getName());
+        assertThat(matches.getFirst().status()).isEqualTo(MatchStatus.FINISHED);
     }
 
     @Test

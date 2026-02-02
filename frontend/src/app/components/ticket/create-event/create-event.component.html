@@ -1,0 +1,243 @@
+<div class="min-h-screen app-background p-4 md:p-8 animate-fadeIn">
+	<div class="max-w-4xl mx-auto">
+		@if (matchInfo) {
+			<div
+				class="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth"
+			>
+				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+					<div class="flex items-center gap-6">
+						<h2
+							class="text-2xl md:text-3xl font-black text-gray-800 dark:text-white tracking-tight"
+						>
+							{{ matchInfo.awayTeam.name }}
+							<span class="text-indigo-500 mx-2 text-xl font-light">VS</span>
+							{{ matchInfo.homeTeam.name }}
+						</h2>
+					</div>
+					<div class="text-center md:text-right">
+						<p
+							class="text-md font-bold text-indigo-600 dark:text-sky-400 flex items-center justify-center md:justify-end gap-2"
+						>
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+							</svg>
+							{{ matchInfo.stadiumName }}
+						</p>
+						<p class="text-gray-500 dark:text-gray-400 text-sm font-medium italic">
+							{{ matchInfo.date | date: 'fullDate' }}
+						</p>
+					</div>
+				</div>
+			</div>
+		}
+		@else {
+			<div
+				class="max-w-4xl mx-auto mb-8 animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-3xl"></div>
+		}
+
+		<div
+			class="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth"
+			style="animation-delay: 0.1s"
+		>
+			<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+				<h2
+					class="text-3xl font-black text-gray-800 dark:text-white tracking-tight uppercase"
+				>
+					Create New <span class="text-indigo-600 dark:text-sky-400">Event</span>
+				</h2>
+				<div class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl">
+					<span class="text-sm font-bold text-indigo-600 dark:text-indigo-400 italic"
+						>Match ID: #{{ matchInfo?.id }}</span
+					>
+				</div>
+			</div>
+		</div>
+
+		<div
+			class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+		>
+			<div class="mb-10">
+				<label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">
+					How many sectors will this event have?
+				</label>
+				<div class="relative flex items-center">
+					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+						</svg>
+					</div>
+					<input
+						type="number"
+						[(ngModel)]="numSectors"
+						min="1"
+						max="99"
+						(change)="resetInputs()"
+						class="text-inputs w-32 pl-12 pr-4 text-center font-bold text-lg"
+						placeholder="0"
+					/>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+				<div class="space-y-4">
+					<label
+						class="block text-xs font-bold text-indigo-600 dark:text-sky-400 uppercase tracking-widest ml-1"
+					>
+						Sector Names ({{ sectorNames.length }}/{{ numSectors }})
+					</label>
+					<input
+						type="text"
+						#nameInput
+						(keyup.enter)="addSectorName(nameInput.value); nameInput.value = ''"
+						[disabled]="sectorNames.length >= numSectors"
+						class="text-inputs w-full"
+						[placeholder]="
+							sectorNames.length >= numSectors ? 'Limit reached' : 'Type & Enter...'
+						"
+					/>
+
+					<div
+						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700"
+					>
+						@for (name of sectorNames; let i = $index; track i) {
+							<span
+								class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold animate-fadeIn"
+							>
+								{{ name }}
+								<button
+									(click)="removeSectorName(i)"
+									class="hover:text-red-300 transition-colors"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-4 w-4"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path d="M6 18L18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</span>
+						}
+					</div>
+				</div>
+
+				<div class="space-y-4">
+					<label
+						class="block text-xs font-bold text-indigo-600 dark:text-sky-400 uppercase tracking-widest ml-1"
+					>
+						Prices ({{ sectorPrices.length }}/{{ numSectors }})
+					</label>
+					<input
+						type="number"
+						#priceInput
+						(keyup.enter)="addSectorPrice(priceInput.valueAsNumber); priceInput.value = ''"
+						[disabled]="sectorPrices.length >= numSectors"
+						class="text-inputs w-full"
+						[placeholder]="sectorPrices.length >= numSectors ? 'Limit reached' : '$ 0.00'"
+					/>
+
+					<div
+						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700"
+					>
+						@for (price of sectorPrices; let i = $index; track i) {
+							<span
+								class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold animate-fadeIn"
+							>
+								{{ price | currency }}
+								<button
+									(click)="removeSectorPrice(i)"
+									class="hover:text-red-300 transition-colors"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path d="M6 18L18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</span>
+						}
+					</div>
+				</div>
+
+				<div class="space-y-4">
+					<label
+						class="block text-xs font-bold text-indigo-600 dark:text-sky-400 uppercase tracking-widest ml-1"
+					>
+						Capacities ({{ sectorCapacities.length }}/{{ numSectors }})
+					</label>
+					<input
+						type="number"
+						#capInput
+						(keyup.enter)="addSectorCapacity(capInput.valueAsNumber); capInput.value = ''"
+						[disabled]="sectorCapacities.length >= numSectors"
+						class="text-inputs w-full"
+						[placeholder]="sectorCapacities.length >= numSectors ? 'Limit reached' : 'e.g 100'"/>
+
+					<div
+						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+						@for (cap of sectorCapacities; let i = $index; track i) {
+							<span
+								class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-bold animate-fadeIn">
+								{{ cap }} seats
+								<button
+									(click)="removeSectorCapacities(i)"
+									class="hover:text-red-300 transition-colors">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path d="M6 18L18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</span>
+						}
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-700">
+				<div class="flex flex-col md:flex-row items-center justify-between gap-6">
+					<div class="text-sm text-gray-500 dark:text-gray-400 italic">
+						@if (isValid()) {
+							<span class="flex items-center gap-2 text-emerald-500 font-bold">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+								Ready to generate event with {{ numSectors }} sectors
+							</span>
+						} @else {
+							* Please complete all tags for the {{ numSectors }} defined sectors.
+						}
+					</div>
+
+					<button
+						(click)="createEvent()"
+						[disabled]="!isValid()"
+						[class.opacity-50]="!isValid()"
+						[class.cursor-not-allowed]="!isValid()"
+						[class.grayscale]="!isValid()"
+						class="app-button px-12 py-4 uppercase font-black tracking-widest transition-all duration-300"
+					>
+						<span class="app-button-bright"></span>
+						<span class="app-button-texts">Generate Event</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@if (success) {
+		<app-success-modal [message]="successMessage" (continue)="goToMenu()"></app-success-modal>
+	}
+
+	@if (error) {
+		<app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+	}
+</div>

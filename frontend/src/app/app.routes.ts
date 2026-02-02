@@ -32,6 +32,18 @@ export const routes: Routes = [
 			import('./components/team/fav-team/fav-team.component').then((m) => m.FavTeamComponent)
 	},
 	{
+		path: 'tickets',
+		canActivate: [AuthGuard],
+		loadComponent: () =>
+			import('./components/ticket/ticket-selection/ticket-selection.component').then((m) => m.TicketSelectionComponent)
+	},
+	{
+		path: 'my-tickets',
+		canActivate: [AuthGuard],
+		loadComponent: () =>
+			import('./components/ticket/my-tickets/my-tickets.component').then((m) => m.MyTicketsComponent)
+	},
+	{
 		path: 'edit-menu',
 		canActivate: [AdminGuard],
 		loadComponent: () =>
@@ -54,6 +66,18 @@ export const routes: Routes = [
 		canActivate: [AdminGuard],
 		loadComponent: () =>
 			import('./components/support/inbox/inbox.component').then((m) => m.InboxComponent)
+	},
+	{
+		path: 'create-event',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/ticket/create-event/create-event.component').then((m) => m.CreateEventComponent)
+	},
+	{
+		path: 'edit-event',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/ticket/edit-event/edit-event.component').then((m) => m.EditEventComponent)
 	},
 	{ path: '**', redirectTo: 'error' },
 ];

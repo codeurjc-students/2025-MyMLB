@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SeatMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers.ticket</a> &gt; <span class="el_source">SeatMapperImpl.java</span></div><h1>SeatMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers.ticket;
+
+import com.mlb.mlbportal.dto.ticket.SeatDTO;
+import com.mlb.mlbportal.models.ticket.Seat;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-02-01T23:01:29+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+)
+@Component
+<span class="fc" id="L14">public class SeatMapperImpl implements SeatMapper {</span>
+
+    @Override
+    public SeatDTO toSeatDTO(Seat seat) {
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if ( seat == null ) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="fc" id="L22">        Long id = null;</span>
+<span class="fc" id="L23">        String name = null;</span>
+
+<span class="fc" id="L25">        id = seat.getId();</span>
+<span class="fc" id="L26">        name = seat.getName();</span>
+
+<span class="fc" id="L28">        SeatDTO seatDTO = new SeatDTO( id, name );</span>
+
+<span class="fc" id="L30">        return seatDTO;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

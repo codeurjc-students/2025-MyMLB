@@ -30,6 +30,17 @@ import lombok.AllArgsConstructor;
 public class MatchController {
 	private final MatchService matchService;
 
+	@Operation(summary = "Get the match of the given id", description = "Retrieve the match whose ID is provided.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Successfully retrieved the match", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = "404", description = "Match Not Found", content = @Content(mediaType = "application/json")),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+	})
+	@GetMapping(value = "/{matchId}", produces = "application/json")
+	public ResponseEntity<MatchDTO> getMatchById(@PathVariable("matchId")Long matchId) {
+		return ResponseEntity.ok(this.matchService.getMatchById(matchId));
+	}
+
 	@Operation(summary = "Get the matches of the day (paginated)", description = "Returns a paginated list of matches scheduled for today. Always 10 matches per page.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Successfully retrieved the matches", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MatchDTO.class))),
@@ -53,15 +64,17 @@ public class MatchController {
 			@ApiResponse(responseCode = "404", description = "Team not found or no matches available", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
 	})
-	@GetMapping(value = "/{teamName}", produces = "application/json")
+	@GetMapping(value = "/teamName/{teamName}", produces = "application/json")
 	public ResponseEntity<Page<MatchDTO>> getMatchesOfATeam(@PathVariable("teamName") String teamName,
-			@RequestParam String location, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+															@RequestParam String location, @RequestParam(defaultValue = "0") int page,
+															@RequestParam(defaultValue = "10") int size) {
 		if ("home".equalsIgnoreCase(location)) {
 			return ResponseEntity.ok(this.matchService.getHomeMatches(teamName, page, size));
-		} else if ("away".equalsIgnoreCase(location)) {
+		} 
+		else if ("away".equalsIgnoreCase(location)) {
 			return ResponseEntity.ok(this.matchService.getAwayMatches(teamName, page, size));
-		} else {
+		} 
+		else {
 			return ResponseEntity.badRequest().build();
 		}
 	}
@@ -74,7 +87,7 @@ public class MatchController {
 	})
 	@GetMapping(value = "/team/{teamName}", produces = "application/json")
 	public ResponseEntity<List<MatchDTO>> getMatchesOfTeamByMonth(@PathVariable String teamName,
-			@RequestParam int year, @RequestParam int month) {
+																																@RequestParam int year, @RequestParam int month) {
 		LocalDate start = LocalDate.of(year, month, 1);
 		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));

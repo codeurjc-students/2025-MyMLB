@@ -1,0 +1,200 @@
+<div class="min-h-screen app-background p-4 md:p-8 animate-fadeIn">
+    @if (!confirm) {
+        <div class="animate-fadeIn">
+            @if (event) {
+                <div class="max-w-7xl mx-auto mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-6">
+                            <h2 class="text-3xl md:text-4xl font-black text-gray-800 dark:text-white tracking-tight">
+                                {{ event.awayTeamName }}
+                                <span class="text-indigo-500 mx-2 text-2xl font-light">VS</span>
+                                {{ event.homeTeamName }}
+                            </h2>
+                        </div>
+                        <div class="text-center md:text-right">
+                            <p class="text-lg font-bold text-indigo-600 dark:text-sky-400 flex items-center justify-center md:justify-end gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {{ event.stadiumName }}
+                            </p>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium tracking-wide italic">
+                                {{ event.date | date: 'fullDate' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-7 xl:col-span-8 group">
+                        <div class="relative rounded-3xl overflow-hidden shadow-lg bg-white dark:bg-gray-400 border border-gray-200 dark:border-gray-700 p-6 h-[380px] lg:h-[420px] transition-all duration-500 hover:shadow-2xl">
+                            <div class="absolute top-4 left-4 z-10">
+                                <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                                    Stadium Map
+                                </span>
+                            </div>
+
+                            <div class="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <button (click)="openStadiumMap()" class="bg-indigo-600 hover:bg-indigo-700 cursor-pointer backdrop-blur-md p-2 rounded-xl transition-all border border-white/30 shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                    </svg>
+                                </button>
+                            </div>
+
+							@if (isMapLoading) {
+								<div class="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center mx-auto mb-4">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+										class="w-8 h-8 text-blue-600 dark:text-blue-400 spin-infinite">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+									</svg>
+									<p class="mt-4 text-sm font-medium text-gray-500 dark:text-gray-400 animate-pulse">
+										Loading Stadium Map...
+									</p>
+								</div>
+							}
+
+                            <lib-ngx-image-zoom
+                                [thumbImage]="event.pictureMap.url"
+                                [fullImage]="event.pictureMap.url"
+                                [magnification]="1.5"
+                                [enableLens]="true"
+                                [lensHeight]="180"
+                                [lensWidth]="180"
+                                [circularLens]="true"
+                                class="w-full h-full group-hover:scale-105 cursor-zoom-in"
+								(onLoadingFinished)="isMapLoading = false"
+                                (click)="openStadiumMap()">
+                            </lib-ngx-image-zoom>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-8 flex items-center gap-3">
+                                <span class="w-2 h-8 bg-indigo-600 rounded-full"></span>
+                                Ticket Selection
+                            </h3>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Ticket Amount</label>
+                                <input type="number" [(ngModel)]="ticketAmount" min="1" max="10" placeholder="Choose the amount of tickets you wish to purchase" (change)="onTicketAmountChange()" class="text-inputs w-full" />
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Choose Sector</label>
+                                <select [(ngModel)]="selectedSectorId" (change)="onSectorChange()" class="text-inputs w-full appearance-none">
+                                    <option [value]="0" disabled>Select a sector...</option>
+                                    @for (sector of availableSectors; track sector.id) {
+                                        <option [value]="sector.id">{{ sector.sectorName }} — {{ sector.price | currency }}</option>
+                                    }
+                                </select>
+                            </div>
+
+                            @if (selectedSectorId !== 0) {
+                                <div class="mb-10 animate-fadeIn">
+                                    <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 ml-1 uppercase tracking-wider">
+                                        Select seats ({{ selectedSeats.length }}/{{ ticketAmount }})
+                                    </label>
+                                    <select class="text-inputs w-full mb-4" #seatSelect (change)="addSeats(availableSeats[seatSelect.selectedIndex - 1]); seatSelect.value = ''" [disabled]="selectedSeats.length >= ticketAmount">
+                                        <option value="" disabled selected>{{ selectedSeats.length >= ticketAmount ? 'Limit reached' : 'Click to add a seat...' }}</option>
+                                        @for (seat of availableSeats; track seat.id) {
+                                            <option [ngValue]="seat" [disabled]="isAlreadySelected(seat.id)">Seat {{ seat.name }}</option>
+                                        }
+                                    </select>
+                                    <div class="flex flex-wrap gap-2 min-h-[48px] p-2 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200">
+                                        @for (seat of selectedSeats; track seat.id) {
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold">
+                                                Seat {{ seat.name }}
+                                                <button (click)="addSeats(seat)">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="pt-6 border-t border-gray-100">
+                                <div class="flex justify-between items-end mb-6">
+                                    <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Estimated Total</span>
+                                    <span class="text-4xl font-black text-indigo-600">{{ totalPrice | currency }}</span>
+                                </div>
+                                <button (click)="confirm = true"
+                                    [disabled]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount"
+                                    class="app-button w-full py-4 uppercase font-black tracking-widest transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale">
+                                    Proceed to Payment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (isPictureOpen) {
+                    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md animate-fadeIn p-4 md:p-10" [appEscapeClose]="closeStadiumMap" (click)="closeStadiumMap()">
+                        <button class="absolute cursor-pointer top-6 right-6 text-black hover:scale-110 transition-all p-2 z-[110] bg-white/80 rounded-full shadow-lg" (click)="openStadiumMap()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <div class="bg-white p-2 md:p-4 rounded-2xl shadow-2xl max-w-5xl max-h-[90vh] flex items-center justify-center animate-zoomIn" (click)="$event.stopPropagation()">
+                            <img [src]="event.pictureMap.url" class="max-w-full max-h-[80vh] object-contain rounded-lg" />
+                        </div>
+                    </div>
+                }
+
+            }
+			@else {
+                <div class="max-w-7xl mx-auto mb-8 animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-3xl"></div>
+                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-8 bg-gray-100 dark:bg-gray-800 h-[400px] rounded-3xl animate-pulse"></div>
+                    <div class="lg:col-span-4 bg-gray-100 dark:bg-gray-800 h-[400px] rounded-3xl animate-pulse"></div>
+                </div>
+            }
+        </div>
+    }
+	@else {
+        <div class="animate-fadeIn">
+            <app-ticket-purchase
+                [event]="event!"
+                [eventManagerId]="selectedSectorId"
+                [tickets]="ticketAmount"
+                [seats]="selectedSeats"
+                [totalPrice]="totalPrice"
+                (goBack)="confirm = false"
+            ></app-ticket-purchase>
+        </div>
+    }
+
+    @if (error) {
+        <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+    }
+</div>
+
+<style>
+    :host ::ng-deep .ngxImageZoomContainer {
+        width: fit-content !important;
+        height: fit-content !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        display: block !important;
+    }
+
+    :host ::ng-deep .ngxImageZoomThumbnail {
+        display: block !important;
+        max-width: 100% !important;
+        max-height: 380px !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    :host ::ng-deep .ngxImageZoomLens {
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        cursor: crosshair !important;
+    }
+</style>

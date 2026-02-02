@@ -98,7 +98,7 @@ class StadiumServiceTest {
     void testGetAvailableStadiums() {
         Stadium stadium = new Stadium(NEW_STADIUM, NEW_STADIUM_YEAR, null);
         List<Stadium> availableStadiums = List.of(stadium);
-        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList());
+        StadiumInitDTO dto = new StadiumInitDTO(NEW_STADIUM, NEW_STADIUM_YEAR, null, Collections.emptyList(), null);
         Page<StadiumInitDTO> mockPage = new PageImpl<>(List.of(dto), PageRequest.of(0, 10), 1);
 
         when(this.stadiumRepository.findByTeamIsNull()).thenReturn(availableStadiums);

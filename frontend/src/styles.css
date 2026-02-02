@@ -1,6 +1,8 @@
 /* This css file is for common styles through the application */
 
 @import 'tailwindcss';
+@import "flatpickr/dist/flatpickr.min.css";
+@import "flatpickr/dist/plugins/monthSelect/style.css";
 @plugin "@midudev/tailwind-animations";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -44,6 +46,10 @@ html {
 
 .team-logo-container {
 	@apply w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm;
+}
+
+.app-modal-background {
+	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
 }
 
 /* Authentication Forms Styles */
@@ -279,3 +285,5 @@ html {
 .spin-infinite {
   animation: spinInfinite 1s linear infinite;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

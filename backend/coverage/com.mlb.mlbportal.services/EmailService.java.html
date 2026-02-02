@@ -10,6 +10,7 @@ import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -28,7 +29,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class EmailService {
-<span class="fc" id="L31">    private static final Random RANDOM = new Random();</span>
+<span class="fc" id="L32">    private static final Random RANDOM = new Random();</span>
 
     private final JavaMailSender mailSender;
     private final PasswordResetTokenRepository passwordRepository;
@@ -37,35 +38,36 @@ public class EmailService {
 
     @Transactional(readOnly = true)
     public Optional&lt;PasswordResetToken&gt; getCode(String code) {
-<span class="fc" id="L40">        return this.passwordRepository.findByCode(code);</span>
+<span class="fc" id="L41">        return this.passwordRepository.findByCode(code);</span>
     }
 
     @Transactional
     public void deleteToken(PasswordResetToken token) {
-<span class="fc" id="L45">        this.passwordRepository.delete(token);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L46">        this.passwordRepository.delete(token);</span>
+<span class="fc" id="L47">    }</span>
 
     private void sendEmailHelper(String destinyEmail, String subject, String body) {
-<span class="fc" id="L49">        SimpleMailMessage message = new SimpleMailMessage();</span>
-<span class="fc" id="L50">        message.setTo(destinyEmail);</span>
-<span class="fc" id="L51">        message.setSubject(subject);</span>
-<span class="fc" id="L52">        message.setText(body);</span>
-<span class="fc" id="L53">        this.mailSender.send(message);</span>
-<span class="fc" id="L54">    }</span>
+<span class="fc" id="L50">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L51">        message.setTo(destinyEmail);</span>
+<span class="fc" id="L52">        message.setSubject(subject);</span>
+<span class="fc" id="L53">        message.setText(body);</span>
+<span class="fc" id="L54">        this.mailSender.send(message);</span>
+<span class="fc" id="L55">    }</span>
 
+    @Async
     @Transactional
     public void sendEmail(String destinyEmail) {
-<span class="fc" id="L58">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
+<span class="fc" id="L60">        UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -&gt; new UserNotFoundException(&quot;There is no user registered with this email&quot;));</span>
         
-<span class="fc" id="L60">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
+<span class="fc" id="L62">        this.passwordRepository.findByUser(user).ifPresent(this.passwordRepository::delete);</span>
         
-<span class="fc" id="L62">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
+<span class="fc" id="L64">        String code = String.format(&quot;%04d&quot;, RANDOM.nextInt(10000));</span>
         
-<span class="fc" id="L64">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
-<span class="fc" id="L65">        this.passwordRepository.save(resetToken);</span>
+<span class="fc" id="L66">        PasswordResetToken resetToken = new PasswordResetToken(code, user);</span>
+<span class="fc" id="L67">        this.passwordRepository.save(resetToken);</span>
 
-<span class="fc" id="L67">        String subject = &quot;Password Recovery&quot;;</span>
-<span class="fc" id="L68">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L69">        String subject = &quot;Password Recovery&quot;;</span>
+<span class="fc" id="L70">        String body = &quot;&quot;&quot;</span>
                 Hello %s,
 
                 You have requested to generate a new password for your account.
@@ -76,17 +78,18 @@ public class EmailService {
                 This code will expire in 15 minutes.
 
                 If you do not authorize this procedure, ignore this email.
-<span class="fc" id="L79">                &quot;&quot;&quot;.formatted(</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
+<span class="fc" id="L81">                &quot;&quot;&quot;.formatted(</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">                    user.getName() != null ? user.getName() : user.getUsername(),</span>
                     code
                 );
-<span class="fc" id="L83">        this.sendEmailHelper(destinyEmail, subject, body);</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L85">        this.sendEmailHelper(destinyEmail, subject, body);</span>
+<span class="fc" id="L86">    }</span>
 
+    @Async
     public void sendProfileChangeNotification(String username, String oldEmail, String newEmail, boolean passwordChange) {
-<span class="fc" id="L87">        String subject = &quot;Profile Update Confirmation&quot;;</span>
+<span class="fc" id="L90">        String subject = &quot;Profile Update Confirmation&quot;;</span>
 
-<span class="fc" id="L89">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L92">        String body = &quot;&quot;&quot;</span>
             Hello %s,
            
             We would like to inform you that %s
@@ -98,74 +101,91 @@ public class EmailService {
             Kind regards,
             
             The MLB Portal Team
-<span class="fc" id="L101">    &quot;&quot;&quot;.formatted(username, this.getKeyWords(newEmail, passwordChange));</span>
+<span class="fc" id="L104">    &quot;&quot;&quot;.formatted(username, this.getKeyWords(newEmail, passwordChange));</span>
 
-<span class="fc" id="L103">        this.sendEmailHelper(oldEmail, subject, body);</span>
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L106">        this.sendEmailHelper(oldEmail, subject, body);</span>
+<span class="fc" id="L107">    }</span>
 
     private String getKeyWords(String newEmail, boolean passwordChange) {
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (passwordChange) {</span>
-<span class="fc" id="L108">            return &quot;your password have been successfully updated and your new credentials have been saved.&quot;;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (passwordChange) {</span>
+<span class="fc" id="L111">            return &quot;your password have been successfully updated and your new credentials have been saved.&quot;;</span>
         }
         else {
-<span class="nc" id="L111">            return &quot;your email have been successfully updated to &quot; + newEmail + &quot; and your credentials have been saved.&quot;;</span>
+<span class="nc" id="L114">            return &quot;your email have been successfully updated to &quot; + newEmail + &quot; and your credentials have been saved.&quot;;</span>
         }
     }
 
+    @Async
     @Transactional(readOnly = true)
     public void sendDynamicGameReminder(Long matchId) {
-<span class="fc" id="L117">        Match match = this.matchRepository.findById(matchId).orElse(null);</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (match == null) return;</span>
+<span class="fc" id="L121">        Match match = this.matchRepository.findById(matchId).orElse(null);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (match == null) return;</span>
 
-<span class="fc" id="L120">        Set&lt;UserEntity&gt; currentFans = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L124">        Set&lt;UserEntity&gt; currentFans = new HashSet&lt;&gt;();</span>
 
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (match.getHomeTeam() != null) {</span>
-<span class="fc" id="L123">            currentFans.addAll(match.getHomeTeam().getFavoritedByUsers());</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (match.getHomeTeam() != null) {</span>
+<span class="fc" id="L127">            currentFans.addAll(match.getHomeTeam().getFavoritedByUsers());</span>
         }
-<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (match.getAwayTeam() != null) {</span>
-<span class="fc" id="L126">            currentFans.addAll(match.getAwayTeam().getFavoritedByUsers());</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (match.getAwayTeam() != null) {</span>
+<span class="fc" id="L130">            currentFans.addAll(match.getAwayTeam().getFavoritedByUsers());</span>
         }
 
-<span class="fc" id="L129">        Set&lt;UserEntity&gt; filteredUsers = currentFans.stream().filter(UserEntity::isEnableNotifications).collect(Collectors.toSet());</span>
+<span class="fc" id="L133">        Set&lt;UserEntity&gt; filteredUsers = currentFans.stream().filter(UserEntity::isEnableNotifications).collect(Collectors.toSet());</span>
 
-<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (!filteredUsers.isEmpty()) {</span>
-<span class="fc" id="L132">            this.sendGameReminder(filteredUsers, match);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (!filteredUsers.isEmpty()) {</span>
+<span class="fc" id="L136">            this.sendGameReminder(filteredUsers, match);</span>
         }
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L138">    }</span>
 
     @Async
     protected void sendGameReminder(Set&lt;UserEntity&gt; users, Match match) {
-<span class="pc bpc" id="L138" title="2 of 4 branches missed.">        if (users == null || users.isEmpty()) {</span>
-<span class="nc" id="L139">            return;</span>
+<span class="pc bpc" id="L142" title="2 of 4 branches missed.">        if (users == null || users.isEmpty()) {</span>
+<span class="nc" id="L143">            return;</span>
         }
 
-<span class="fc" id="L142">        String subject = &quot;Match Starting Soon!&quot;;</span>
-<span class="fc" id="L143">        String body = &quot;&quot;&quot;</span>
+<span class="fc" id="L146">        String subject = &quot;Match Starting Soon!&quot;;</span>
+<span class="fc" id="L147">        String body = &quot;&quot;&quot;</span>
         Hello,
         
         The match %s vs %s will begin in 10 minutes.
         
         Good luck to your favorite teams!
-<span class="fc" id="L149">        &quot;&quot;&quot;.formatted(match.getAwayTeam().getName(), match.getHomeTeam().getName());</span>
+<span class="fc" id="L153">        &quot;&quot;&quot;.formatted(match.getAwayTeam().getName(), match.getHomeTeam().getName());</span>
 
-<span class="fc" id="L151">        String[] emails = users.stream().map(UserEntity::getEmail).toArray(String[]::new);</span>
+<span class="fc" id="L155">        String[] emails = users.stream().map(UserEntity::getEmail).toArray(String[]::new);</span>
 
-<span class="fc" id="L153">        SimpleMailMessage message = new SimpleMailMessage();</span>
-<span class="fc" id="L154">        message.setBcc(emails);</span>
-<span class="fc" id="L155">        message.setSubject(subject);</span>
-<span class="fc" id="L156">        message.setText(body);</span>
+<span class="fc" id="L157">        SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="fc" id="L158">        message.setBcc(emails);</span>
+<span class="fc" id="L159">        message.setSubject(subject);</span>
+<span class="fc" id="L160">        message.setText(body);</span>
 
-<span class="fc" id="L158">        this.mailSender.send(message);</span>
-<span class="fc" id="L159">    }</span>
+<span class="fc" id="L162">        this.mailSender.send(message);</span>
+<span class="fc" id="L163">    }</span>
 
+    @Async
     public void answerToUser(String receiver, String subject, String body) throws MessagingException {
-<span class="nc" id="L162">        MimeMessage message = this.mailSender.createMimeMessage();</span>
-<span class="nc" id="L163">        MimeMessageHelper helper = new MimeMessageHelper(message, false);</span>
-<span class="nc" id="L164">        helper.setTo(receiver);</span>
-<span class="nc" id="L165">        helper.setSubject(subject);</span>
-<span class="nc" id="L166">        helper.setText(body);</span>
-<span class="nc" id="L167">        helper.setFrom(&quot;mlbportal29@gmail.com&quot;);</span>
-<span class="nc" id="L168">        this.mailSender.send(message);</span>
-<span class="nc" id="L169">    }</span>
+<span class="fc" id="L167">        MimeMessage message = this.mailSender.createMimeMessage();</span>
+<span class="fc" id="L168">        MimeMessageHelper helper = new MimeMessageHelper(message, false);</span>
+<span class="fc" id="L169">        helper.setTo(receiver);</span>
+<span class="fc" id="L170">        helper.setSubject(subject);</span>
+<span class="fc" id="L171">        helper.setText(body);</span>
+<span class="fc" id="L172">        helper.setFrom(&quot;mlbportal29@gmail.com&quot;);</span>
+<span class="fc" id="L173">        this.mailSender.send(message);</span>
+<span class="fc" id="L174">    }</span>
+
+    @Async
+    public void sendTicketPurchaseEmail(String destinyEmail, String subject, String body, byte[] pdfBytes, String fileName) throws MessagingException {
+<span class="fc" id="L178">        MimeMessage message = this.mailSender.createMimeMessage();</span>
+<span class="fc" id="L179">        MimeMessageHelper helper = new MimeMessageHelper(message, true, &quot;UTF-8&quot;);</span>
+
+<span class="fc" id="L181">        helper.setTo(destinyEmail);</span>
+<span class="fc" id="L182">        helper.setSubject(subject);</span>
+<span class="fc" id="L183">        helper.setText(body, true);</span>
+<span class="fc" id="L184">        helper.setFrom(&quot;mlbportal29@gmail.com&quot;);</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (pdfBytes != null) {</span>
+<span class="fc" id="L186">            helper.addAttachment(fileName, new ByteArrayResource(pdfBytes));</span>
+        }
+<span class="fc" id="L188">        this.mailSender.send(message);</span>
+<span class="fc" id="L189">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

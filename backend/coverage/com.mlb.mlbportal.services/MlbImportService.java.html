@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.repositories.StadiumRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,92 +34,109 @@ public class MlbImportService {
     private final TeamLookupService teamLookupService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
+    private final StadiumRepository stadiumRepository;
 
     @CircuitBreaker(name = &quot;mlbApi&quot;, fallbackMethod = &quot;fallbackMatches&quot;)
     @Retry(name = &quot;mlbApi&quot;)
     public List&lt;MatchDTO&gt; getOfficialMatches(LocalDate start, LocalDate end) {
-<span class="fc" id="L39">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot; +</span>
+<span class="fc" id="L42">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot; +</span>
                      &quot;&amp;startDate=&quot; + start + &quot;&amp;endDate=&quot; + end;
 
-<span class="fc" id="L42">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
+<span class="fc" id="L45">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
 
-<span class="pc bpc" id="L44" title="2 of 4 branches missed.">        if (response == null || response.dates() == null) {</span>
-<span class="nc" id="L45">            return List.of();</span>
+<span class="pc bpc" id="L47" title="2 of 4 branches missed.">        if (response == null || response.dates() == null) {</span>
+<span class="nc" id="L48">            return List.of();</span>
         }
 
-<span class="fc" id="L48">        return response.dates().stream()</span>
-<span class="fc" id="L49">                .flatMap(d -&gt; d.games().stream())</span>
-<span class="fc" id="L50">                .map(this::toMatchDTO)</span>
-<span class="fc" id="L51">                .filter(this::isMlbTeamMatch)</span>
-<span class="fc" id="L52">                .map(this::saveMatch)</span>
-<span class="fc" id="L53">                .toList();</span>
+<span class="fc" id="L51">        return response.dates().stream()</span>
+<span class="fc" id="L52">                .flatMap(d -&gt; d.games().stream())</span>
+<span class="fc" id="L53">                .map(this::toMatchDTO)</span>
+<span class="fc" id="L54">                .filter(this::isMlbTeamMatch)</span>
+<span class="fc" id="L55">                .filter(dto -&gt; this.stadiumRepository.findByName(dto.stadiumName()).isPresent())</span>
+<span class="fc" id="L56">                .map(this::saveMatch)</span>
+<span class="fc" id="L57">                .toList();</span>
     }
 
     private MatchDTO saveMatch(MatchDTO dto) {
-<span class="fc" id="L57">        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name())</span>
-<span class="fc" id="L58">                .orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc" id="L59">        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name())</span>
-<span class="fc" id="L60">                .orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L61">        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name()).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L62">        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name()).orElseThrow(TeamNotFoundException::new);</span>
 
-<span class="fc" id="L62">        Match match = new Match(awayEntity, homeEntity,</span>
-<span class="fc" id="L63">                dto.awayScore(), dto.homeScore(), dto.date(), dto.status());</span>
+<span class="fc" id="L64">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());</span>
 
-<span class="fc" id="L65">        this.matchRepository.save(match);</span>
-<span class="fc" id="L66">        return dto;</span>
+<span class="fc" id="L66">        Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());</span>
+<span class="fc" id="L67">        match.setStadium(stadium);</span>
+
+<span class="fc" id="L69">        Match savedMatch = this.matchRepository.save(match);</span>
+<span class="fc" id="L70">        return new MatchDTO(</span>
+<span class="fc" id="L71">                savedMatch.getId(),</span>
+<span class="fc" id="L72">                dto.homeTeam(),</span>
+<span class="fc" id="L73">                dto.awayTeam(),</span>
+<span class="fc" id="L74">                dto.homeScore(),</span>
+<span class="fc" id="L75">                dto.awayScore(),</span>
+<span class="fc" id="L76">                dto.date(),</span>
+<span class="fc" id="L77">                dto.status(),</span>
+<span class="fc" id="L78">                dto.stadiumName()</span>
+        );
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     private List&lt;MatchDTO&gt; fallbackMatches(LocalDate start, LocalDate end, Throwable t) throws ServiceUnavailableException {
-<span class="fc" id="L71">        List&lt;Match&gt; cachedMatches = this.matchRepository.findByDateBetween(start.atStartOfDay(), end.atTime(23,59));</span>
+<span class="fc" id="L84">        List&lt;Match&gt; cachedMatches = this.matchRepository.findByDateBetween(start.atStartOfDay(), end.atTime(23,59));</span>
 
-<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (!cachedMatches.isEmpty()) {</span>
-<span class="fc" id="L74">            return cachedMatches.stream()</span>
-<span class="fc" id="L75">                    .map(m -&gt; new MatchDTO(</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (!cachedMatches.isEmpty()) {</span>
+<span class="fc" id="L87">            return cachedMatches.stream()</span>
+<span class="fc" id="L88">                    .map(m -&gt; new MatchDTO(</span>
+<span class="fc" id="L89">                            m.getId(),</span>
                             new TeamSummary(
-<span class="fc" id="L77">                                m.getHomeTeam().getName(),</span>
-<span class="fc" id="L78">                                m.getHomeTeam().getAbbreviation(),</span>
-<span class="fc" id="L79">                                m.getHomeTeam().getLeague(),</span>
-<span class="fc" id="L80">                                m.getHomeTeam().getDivision()</span>
+<span class="fc" id="L91">                                m.getHomeTeam().getName(),</span>
+<span class="fc" id="L92">                                m.getHomeTeam().getAbbreviation(),</span>
+<span class="fc" id="L93">                                m.getHomeTeam().getLeague(),</span>
+<span class="fc" id="L94">                                m.getHomeTeam().getDivision()</span>
                             ),
                             new TeamSummary(
-<span class="fc" id="L83">                                m.getAwayTeam().getName(),</span>
-<span class="fc" id="L84">                                m.getAwayTeam().getAbbreviation(),</span>
-<span class="fc" id="L85">                                m.getAwayTeam().getLeague(),</span>
-<span class="fc" id="L86">                                m.getAwayTeam().getDivision()</span>
+<span class="fc" id="L97">                                m.getAwayTeam().getName(),</span>
+<span class="fc" id="L98">                                m.getAwayTeam().getAbbreviation(),</span>
+<span class="fc" id="L99">                                m.getAwayTeam().getLeague(),</span>
+<span class="fc" id="L100">                                m.getAwayTeam().getDivision()</span>
                             ),
-<span class="fc" id="L88">                            m.getHomeScore(),</span>
-<span class="fc" id="L89">                            m.getAwayScore(),</span>
-<span class="fc" id="L90">                            m.getDate(),</span>
-<span class="fc" id="L91">                            m.getStatus()</span>
+<span class="fc" id="L102">                            m.getHomeScore(),</span>
+<span class="fc" id="L103">                            m.getAwayScore(),</span>
+<span class="fc" id="L104">                            m.getDate(),</span>
+<span class="fc" id="L105">                            m.getStatus(),</span>
+<span class="fc" id="L106">                            m.getStadium().getName()</span>
                     ))
-<span class="fc" id="L93">                    .toList();</span>
+<span class="fc" id="L108">                    .toList();</span>
         }
-<span class="fc" id="L95">        throw new ServiceUnavailableException(&quot;MLB API not available and without cached data&quot;);</span>
+<span class="fc" id="L110">        throw new ServiceUnavailableException(&quot;MLB API not available and without cached data&quot;);</span>
     }
 
     private boolean isMlbTeamMatch(MatchDTO dto) {
-<span class="fc" id="L99">        boolean homeExists = this.teamRepository.findByName(dto.homeTeam().name()).isPresent();</span>
-<span class="fc" id="L100">        boolean awayExists = this.teamRepository.findByName(dto.awayTeam().name()).isPresent();</span>
-<span class="pc bpc" id="L101" title="2 of 4 branches missed.">        return homeExists &amp;&amp; awayExists;</span>
+<span class="fc" id="L114">        boolean homeExists = this.teamRepository.findByName(dto.homeTeam().name()).isPresent();</span>
+<span class="fc" id="L115">        boolean awayExists = this.teamRepository.findByName(dto.awayTeam().name()).isPresent();</span>
+<span class="pc bpc" id="L116" title="2 of 4 branches missed.">        return homeExists &amp;&amp; awayExists;</span>
     }
 
     private MatchDTO toMatchDTO(GameEntry game) {
-<span class="fc" id="L105">        int homeId = game.teams().home().team().id();</span>
-<span class="fc" id="L106">        int awayId = game.teams().away().team().id();</span>
-<span class="fc" id="L107">        TeamSummary home = teamLookupService.getTeamSummary(homeId);</span>
-<span class="fc" id="L108">        TeamSummary away = teamLookupService.getTeamSummary(awayId);</span>
-<span class="fc" id="L109">        LocalDateTime date = LocalDateTime.parse(game.gameDate().replace(&quot;Z&quot;, &quot;&quot;));</span>
-<span class="fc" id="L110">        MatchStatus status = convertStatus(game.status().detailedState());</span>
-<span class="fc" id="L111">        return new MatchDTO(home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),</span>
-<span class="fc" id="L112">                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status);</span>
+<span class="fc" id="L120">        int homeId = game.teams().home().team().id();</span>
+<span class="fc" id="L121">        int awayId = game.teams().away().team().id();</span>
+<span class="fc" id="L122">        TeamSummary home = teamLookupService.getTeamSummary(homeId);</span>
+<span class="fc" id="L123">        TeamSummary away = teamLookupService.getTeamSummary(awayId);</span>
+<span class="fc" id="L124">        LocalDateTime date = LocalDateTime.parse(game.gameDate().replace(&quot;Z&quot;, &quot;&quot;));</span>
+<span class="fc" id="L125">        MatchStatus status = convertStatus(game.status().detailedState());</span>
+<span class="fc" id="L126">        String stadiumName = game.venue().name();</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (stadiumName.equals(&quot;Rate Field&quot;)) {</span>
+<span class="nc" id="L128">            stadiumName = &quot;Guaranteed Rate Field&quot;;</span>
+        }
+<span class="fc" id="L130">        return new MatchDTO(null, home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),</span>
+<span class="fc" id="L131">                Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);</span>
     }
 
     private MatchStatus convertStatus(String apiStatus) {
-<span class="pc bpc" id="L116" title="3 of 4 branches missed.">        return switch (apiStatus) {</span>
-<span class="nc" id="L117">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
-<span class="nc" id="L118">            case &quot;In Progress&quot; -&gt; MatchStatus.IN_PROGRESS;</span>
-<span class="fc" id="L119">            case &quot;Final&quot; -&gt; MatchStatus.FINISHED;</span>
-<span class="nc" id="L120">            default -&gt; MatchStatus.SCHEDULED;</span>
+<span class="pc bpc" id="L135" title="3 of 4 branches missed.">        return switch (apiStatus) {</span>
+<span class="nc" id="L136">            case &quot;Scheduled&quot; -&gt; MatchStatus.SCHEDULED;</span>
+<span class="nc" id="L137">            case &quot;In Progress&quot; -&gt; MatchStatus.IN_PROGRESS;</span>
+<span class="fc" id="L138">            case &quot;Final&quot; -&gt; MatchStatus.FINISHED;</span>
+<span class="nc" id="L139">            default -&gt; MatchStatus.SCHEDULED;</span>
         };
     }
 }

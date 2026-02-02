@@ -4,6 +4,7 @@ import java.time.*;
 import java.util.List;
 import java.util.Set;
 
+import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,6 +37,11 @@ public class MatchService {
     private final PaginationHandlerService paginationHandlerService;
     private final TaskScheduler taskScheduler;
     private final EmailService emailService;
+
+    @Transactional(readOnly = true)
+    public MatchDTO getMatchById(Long id) {
+        return this.matchMapper.toMatchDTO(this.matchRepository.findById(id).orElseThrow(MatchNotFoundException::new));
+    }
 
     @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {

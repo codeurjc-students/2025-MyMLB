@@ -17,6 +17,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Seat;
+import com.mlb.mlbportal.models.ticket.Sector;
+import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
+import com.mlb.mlbportal.repositories.ticket.EventRepository;
+import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,6 +63,10 @@ public class DataInitializerService {
 
     private final MlbImportService mlbImportService;
 
+    private final EventRepository eventRepository;
+    private final EventManagerRepository eventManagerRepository;
+    private final SectorRepository sectorRepository;
+
     private static final Random RANDOM = new Random();
 
     @Value("${init.user1.password}")
@@ -71,6 +82,7 @@ public class DataInitializerService {
         this.setUpStadiums();
         this.setUpMatches();
         this.setUpPlayers();
+        this.setUpEventsForTodayMatches();
     }
 
     private void createAdmins() {
@@ -93,31 +105,31 @@ public class DataInitializerService {
             TeamInitDTO[] teamDtos = mapper.readValue(input, TeamInitDTO[].class);
 
             List<Team> teams = Arrays.stream(teamDtos)
-                .map(dto -> {
-                    League league = League.valueOf(dto.league().toUpperCase());
-                    Division division = Division.valueOf(dto.division().toUpperCase());
+                    .map(dto -> {
+                        League league = League.valueOf(dto.league().toUpperCase());
+                        Division division = Division.valueOf(dto.division().toUpperCase());
 
-                    Team team = new Team(
-                        dto.name(),
-                        dto.abbreviation(),
-                        dto.wins(),
-                        dto.losses(),
-                        dto.city(),
-                        dto.generalInfo(),
-                        dto.championships() != null ? dto.championships() : new ArrayList<>()
-                    );
-                    team.setLeague(league);
-                    team.setDivision(division);
+                        Team team = new Team(
+                                dto.name(),
+                                dto.abbreviation(),
+                                dto.wins(),
+                                dto.losses(),
+                                dto.city(),
+                                dto.generalInfo(),
+                                dto.championships() != null ? dto.championships() : new ArrayList<>()
+                        );
+                        team.setLeague(league);
+                        team.setDivision(division);
 
-                    int totalGames = dto.wins() + dto.losses();
-                    team.setTotalGames(totalGames);
-                    team.setPct((double) dto.wins() / totalGames);
-                    team.setGamesBehind(0);
-                    team.setLastTen("0-0");
-                    team.setTeamLogo(dto.abbreviation() + ".png");
+                        int totalGames = dto.wins() + dto.losses();
+                        team.setTotalGames(totalGames);
+                        team.setPct((double) dto.wins() / totalGames);
+                        team.setGamesBehind(0);
+                        team.setLastTen("0-0");
+                        team.setTeamLogo(dto.abbreviation() + ".png");
 
-                    return team;
-                }).collect(Collectors.toCollection(ArrayList::new ));
+                        return team;
+                    }).collect(Collectors.toCollection(ArrayList::new ));
 
             this.teamRepository.saveAll(teams);
         } catch (IOException e) {
@@ -177,14 +189,16 @@ public class DataInitializerService {
         LocalDateTime matchDate = generateRandomMatchDate(baseDate, day);
         MatchStatus status = determineMatchStatus(matchDate);
 
-        return new Match(
-            home,
-            away,
-            RANDOM.nextInt(10),
-            RANDOM.nextInt(10),
-            matchDate,
-            status
+        Match match = new Match(
+                away,
+                home,
+                RANDOM.nextInt(10),
+                RANDOM.nextInt(10),
+                matchDate,
+                status
         );
+        match.setStadium(home.getStadium());
+        return match;
     }
 
     private LocalDateTime generateRandomMatchDate(LocalDateTime baseDate, int day) {
@@ -240,10 +254,10 @@ public class DataInitializerService {
         this.matchRepository.saveAll(matches);
 
         this.mlbImportService.getOfficialMatches(
-            LocalDate.of(2026, Month.MARCH, 1), 
-            LocalDate.of(2026, Month.APRIL, 1)
+                LocalDate.of(2026, Month.MARCH, 1),
+                LocalDate.of(2026, Month.MAY, 1)
         );
-        this.teamRepository.saveAll(allTeams); 
+        this.teamRepository.saveAll(allTeams);
     }
 
     private void setUpStadiums() {
@@ -257,14 +271,18 @@ public class DataInitializerService {
 
             for (StadiumInitDTO dto : stadiumDtos) {
                 Team team = allTeams.stream()
-                    .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
-                    .findFirst()
-                    .orElse(null);
+                        .filter(t -> t.getName().equalsIgnoreCase(dto.teamName()))
+                        .findFirst()
+                        .orElse(null);
 
                 Stadium stadium = new Stadium(dto.name(), dto.openingDate(), team);
 
                 if (dto.pictures() != null) {
                     stadium.getPictures().addAll(dto.pictures());
+                }
+
+                if (dto.pictureMap() != null) {
+                    stadium.setPictureMap(dto.pictureMap());
                 }
 
                 if (team != null) {
@@ -290,7 +308,7 @@ public class DataInitializerService {
             List<Team> allTeams = teamRepository.findAll();
 
             Map<String, Team> teamMap = allTeams.stream()
-                .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
+                    .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
 
             Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
             Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
@@ -308,13 +326,13 @@ public class DataInitializerService {
 
                 if ("Pitcher".equalsIgnoreCase(type)) {
                     Pitcher pitcher = new Pitcher(
-                        name,
-                        playerNumber,
-                        team,
-                        PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
-                        ((Number) raw.get("games")).intValue(),
-                        ((Number) raw.get("wins")).intValue(),
-                        ((Number) raw.get("losses")).intValue()
+                            name,
+                            playerNumber,
+                            team,
+                            PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
+                            ((Number) raw.get("games")).intValue(),
+                            ((Number) raw.get("wins")).intValue(),
+                            ((Number) raw.get("losses")).intValue()
                     );
                     pitcher.setInningsPitched(((Number) raw.get("inningsPitched")).intValue());
                     pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
@@ -327,13 +345,13 @@ public class DataInitializerService {
                     pitcher.setPicture(picture);
                 } else {
                     PositionPlayer player = new PositionPlayer(
-                        name,
-                        playerNumber,
-                        team,
-                        PlayerPositions.fromLabel((String) raw.get("position")),
-                        ((Number) raw.get("atBats")).intValue(),
-                        ((Number) raw.get("walks")).intValue(),
-                        ((Number) raw.get("hits")).intValue()
+                            name,
+                            playerNumber,
+                            team,
+                            PlayerPositions.fromLabel((String) raw.get("position")),
+                            ((Number) raw.get("atBats")).intValue(),
+                            ((Number) raw.get("walks")).intValue(),
+                            ((Number) raw.get("hits")).intValue()
                     );
                     player.setDoubles(((Number) raw.get("doubles")).intValue());
                     player.setTriples(((Number) raw.get("triples")).intValue());
@@ -355,6 +373,60 @@ public class DataInitializerService {
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading players data", e);
+        }
+    }
+
+    private void setUpEventsForTodayMatches() {
+        List<Match> todayMatches = this.matchRepository.findAll().stream()
+                .filter(m -> m.getDate().toLocalDate().isEqual(LocalDate.now()))
+                //.filter(m -> m.getStatus() == MatchStatus.SCHEDULED)
+                .toList();
+
+        List<Event> eventsToSave = new ArrayList<>();
+
+        for (Match match : todayMatches) {
+            Stadium stadium = match.getStadium();
+            if (stadium == null) continue;
+
+            Event event = new Event();
+            event.setMatch(match);
+
+            List<Sector> eventSectors = this.createSectorsForStadium(stadium);
+
+            for (Sector sector : eventSectors) {
+                double basePrice = sector.getName().contains("VIP") ? 150.0 : 35.0;
+                double finalPrice = basePrice + RANDOM.nextInt(20);
+
+                EventManager em = new EventManager(event, sector, finalPrice);
+                event.addEventManager(em);
+            }
+            eventsToSave.add(event);
+        }
+        this.eventRepository.saveAll(eventsToSave);
+    }
+
+    private List<Sector> createSectorsForStadium(Stadium stadium) {
+        List<Sector> sectors = Arrays.asList(
+                new Sector(0, "Grada Norte", stadium, new ArrayList<>(), 100),
+                new Sector(0, "Grada Sur", stadium, new ArrayList<>(), 100),
+                new Sector(0, "Preferencia", stadium, new ArrayList<>(), 50),
+                new Sector(0, "Palco VIP", stadium, new ArrayList<>(), 20)
+        );
+        for (Sector sector : sectors) {
+            this.createSeatsForSector(sector);
+        }
+        return this.sectorRepository.saveAll(sectors);
+    }
+
+    private void createSeatsForSector(Sector sector) {
+        int capacity = sector.getTotalCapacity();
+        String prefix = sector.getName().substring(0, 1).toUpperCase();
+
+        for (int i = 1; i <= capacity; i++) {
+            Seat seat = new Seat();
+            seat.setName(prefix + "-" + i);
+            seat.setOccupied(false);
+            sector.addSeat(seat);
         }
     }
 }

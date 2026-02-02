@@ -1,0 +1,110 @@
+<div class="min-h-screen app-background p-4 md:p-8 animate-fadeIn">
+	<div class="max-w-4xl mx-auto">
+		@if (eventInfo) {
+			<div
+				class="max-w-7xl mx-auto mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth">
+				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+					<div class="flex items-center gap-6">
+						<h2
+							class="text-2xl md:text-3xl font-black text-gray-800 dark:text-white tracking-tight"
+						>
+							{{ eventInfo.awayTeamName }}
+							<span class="text-indigo-500 mx-2 text-xl font-light">VS</span>
+							{{ eventInfo.homeTeamName }}
+						</h2>
+					</div>
+					<div class="text-center md:text-right">
+						<p
+							class="text-md font-bold text-indigo-600 dark:text-sky-400 flex items-center justify-center md:justify-end gap-2"
+						>
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+							</svg>
+							{{ eventInfo.stadiumName }}
+						</p>
+						<p class="text-gray-500 dark:text-gray-400 text-sm font-medium italic">
+							{{ eventInfo.date | date: 'fullDate' }}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth" style="animation-delay: 0.1s">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h2 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight uppercase">
+                        Edit <span class="text-indigo-600 dark:text-sky-400">Prices</span>
+                    </h2>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                @for (sector of eventInfo.sectors; track sector.id) {
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-2xl transition-all duration-300 group">
+
+                        <div class="flex-1">
+                            <h3 class="text-xl font-black text-indigo-600 dark:text-sky-400 uppercase tracking-tight mb-1">
+                                {{ sector.sectorName }}
+                            </h3>
+                            <div class="flex items-center gap-4">
+                                <span class="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    {{ sector.availability }} / {{ sector.totalCapacity }}
+                                </span>
+                                <div class="h-1.5 w-24 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500" [style.width.%]="(sector.availability / sector.totalCapacity) * 100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-auto flex flex-col items-center md:items-end">
+                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1 mr-1">Price ($)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 font-bold">$</span>
+                                <input
+                                    type="number"
+                                    [(ngModel)]="sector.price"
+                                    class="text-inputs w-full md:w-40 pl-8 pr-4 py-3 text-center font-black text-lg border-2 border-transparent focus:border-indigo-500 transition-all"
+                                    placeholder="0.00"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="mt-12 flex justify-center pb-12">
+                <button
+                    (click)="editEvent()"
+                    class="app-button px-16 py-4 uppercase font-black tracking-widest transition-all duration-300 group"
+                >
+                    <span class="app-button-bright"></span>
+                    <span class="app-button-texts flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        Save Changes
+                    </span>
+                </button>
+            </div>
+
+        }
+		@else {
+            <div class="max-w-4xl mx-auto mb-8 animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-3xl"></div>
+            <div class="space-y-4">
+                <div class="h-24 bg-gray-200 dark:bg-gray-700 rounded-3xl animate-pulse"></div>
+                <div class="h-24 bg-gray-200 dark:bg-gray-700 rounded-3xl animate-pulse"></div>
+            </div>
+		}
+	</div>
+
+	@if (success) {
+		<app-success-modal [message]="successMessage" (continue)="goToMenu()"></app-success-modal>
+	}
+
+	@if (error) {
+		<app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+	}
+</div>

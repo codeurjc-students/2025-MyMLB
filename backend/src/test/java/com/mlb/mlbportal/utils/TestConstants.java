@@ -37,7 +37,6 @@ public final class TestConstants {
     public static final String STANDINGS_PATH = "/api/v1/teams/standings";
     public static final String TEAM_INFO_PATH = "/api/v1/teams/";
 
-    public static final String MATCHES_OF_DAY_PATH = "/api/v1/matches/today";
     public static final String MATCHES_PATH = "/api/v1/matches/";
 
     public static final String ALL_STADIUMS_PATH = "/api/v1/stadiums";
@@ -45,20 +44,20 @@ public final class TestConstants {
 
     public static final String ALL_PLAYERS_PATH = "/api/v1/players";
     public static final String ALL_POSITION_PLAYERS_PATH = "/api/v1/players/position-players";
-    public static final String ALL_PITCHERS_PATH = "/api/v1/players/pitchers";
 
     public static final String SUPPORT_PATH = "/api/v1/support";
     public static final String ADMIN_SUPPORT_PATH = "/api/v1/admin/support/tickets";
 
+    public static final String EVENT_PATH = "/api/v1/events";
+    public static final String TICKET_PATH = "/api/v1/tickets";
+
     public static final String SUCCESS = "SUCCESS";
-    public static final String FAILURE = "FAILURE";
 
     public static final String VALID_CODE = "1234";
     public static final String INVALID_CODE = "5678";
     public static final String NEW_PASSWORD = "newPassword";
     public static final String NEW_PASSWORD_ENCODED = "newPasswordEncoded";
     public static final String UNKNOWN_EMAIL = "unknown@gmail.com";
-    public static final String INVALID_EMAIL = "email";
 
     public static final String TEST_TEAM1_NAME = "City1 Team1";
     public static final String TEST_TEAM1_ABBREVIATION = "T1";
@@ -85,7 +84,6 @@ public final class TestConstants {
     public static final String TEST_TEAM3_INFO = "Information3";
     
     public static final String UNKNOWN_TEAM = "AnyTeam";
-    public static final String UNKNOWN_TEAM_ABBREVIATION = "AT";
 
     public static final String STADIUM1_NAME = "Stadium1";
     public static final int STADIUM1_YEAR = 1985;

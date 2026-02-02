@@ -1,15 +1,14 @@
 package com.mlb.mlbportal.controllers.support;
 
-import com.mlb.mlbportal.dto.support.CreateTicketRequest;
-import com.mlb.mlbportal.dto.user.ShowUser;
-import com.mlb.mlbportal.security.jwt.AuthResponse;
-import com.mlb.mlbportal.services.SupportService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mlb.mlbportal.dto.support.CreateTicketRequest;
+import com.mlb.mlbportal.security.jwt.AuthResponse;
+import com.mlb.mlbportal.services.SupportService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "UserSupport", description = "Allows the user to contact the admins of the applications regarding any issue they might have")
 @RestController

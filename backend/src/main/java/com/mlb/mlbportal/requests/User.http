@@ -10,6 +10,10 @@ Accept: application/json
 GET https://localhost:8443/api/v1/users/favorites/teams
 Accept: application/json
 
+### Get Purchased Tickets of a User
+GET https://localhost:8443/api/v1/users/tickets
+Accept: application/json
+
 ### Add a Favorite Team
 POST https://localhost:8443/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json

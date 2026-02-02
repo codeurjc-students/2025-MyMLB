@@ -11,11 +11,11 @@ import com.mlb.mlbportal.models.Stadium;
 
 @Repository
 public interface StadiumRepository extends JpaRepository&lt;Stadium, Long&gt; {
-    public Optional&lt;Stadium&gt; findByName(String name);
-    public default Stadium findByNameOrThrow(String name) {
+    Optional&lt;Stadium&gt; findByName(String name);
+    default Stadium findByNameOrThrow(String name) {
 <span class="fc" id="L16">        return this.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
     }
-    public List&lt;Stadium&gt; findByNameContainingIgnoreCase(String input);
-    public List&lt;Stadium&gt; findByTeamIsNull();
+    List&lt;Stadium&gt; findByNameContainingIgnoreCase(String input);
+    List&lt;Stadium&gt; findByTeamIsNull();
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

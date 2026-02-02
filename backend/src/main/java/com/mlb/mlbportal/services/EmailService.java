@@ -10,6 +10,7 @@ import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -53,6 +54,7 @@ public class EmailService {
         this.mailSender.send(message);
     }
 
+    @Async
     @Transactional
     public void sendEmail(String destinyEmail) {
         UserEntity user = this.userRepository.findByEmail(destinyEmail).orElseThrow(() -> new UserNotFoundException("There is no user registered with this email"));
@@ -83,6 +85,7 @@ public class EmailService {
         this.sendEmailHelper(destinyEmail, subject, body);
     }
 
+    @Async
     public void sendProfileChangeNotification(String username, String oldEmail, String newEmail, boolean passwordChange) {
         String subject = "Profile Update Confirmation";
 
@@ -112,6 +115,7 @@ public class EmailService {
         }
     }
 
+    @Async
     @Transactional(readOnly = true)
     public void sendDynamicGameReminder(Long matchId) {
         Match match = this.matchRepository.findById(matchId).orElse(null);
@@ -158,6 +162,7 @@ public class EmailService {
         this.mailSender.send(message);
     }
 
+    @Async
     public void answerToUser(String receiver, String subject, String body) throws MessagingException {
         MimeMessage message = this.mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, false);
@@ -165,6 +170,21 @@ public class EmailService {
         helper.setSubject(subject);
         helper.setText(body);
         helper.setFrom("mlbportal29@gmail.com");
+        this.mailSender.send(message);
+    }
+
+    @Async
+    public void sendTicketPurchaseEmail(String destinyEmail, String subject, String body, byte[] pdfBytes, String fileName) throws MessagingException {
+        MimeMessage message = this.mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(destinyEmail);
+        helper.setSubject(subject);
+        helper.setText(body, true);
+        helper.setFrom("mlbportal29@gmail.com");
+        if (pdfBytes != null) {
+            helper.addAttachment(fileName, new ByteArrayResource(pdfBytes));
+        }
         this.mailSender.send(message);
     }
 }

@@ -30,6 +30,17 @@ import lombok.AllArgsConstructor;
 public class MatchController {
 	private final MatchService matchService;
 
+	@Operation(summary = &quot;Get the match of the given id&quot;, description = &quot;Retrieve the match whose ID is provided.&quot;)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the match&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
+			@ApiResponse(responseCode = &quot;404&quot;, description = &quot;Match Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+	})
+	@GetMapping(value = &quot;/{matchId}&quot;, produces = &quot;application/json&quot;)
+	public ResponseEntity&lt;MatchDTO&gt; getMatchById(@PathVariable(&quot;matchId&quot;)Long matchId) {
+<span class="fc" id="L41">		return ResponseEntity.ok(this.matchService.getMatchById(matchId));</span>
+	}
+
 	@Operation(summary = &quot;Get the matches of the day (paginated)&quot;, description = &quot;Returns a paginated list of matches scheduled for today. Always 10 matches per page.&quot;)
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the matches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MatchDTO.class))),
@@ -41,9 +52,9 @@ public class MatchController {
 			@RequestParam(defaultValue = &quot;0&quot;) int page,
 			@RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="nc bnc" id="L44" title="All 2 branches missed.">		String username = (principal != null) ? principal.getName() : null;</span>
-<span class="nc" id="L45">		Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
-<span class="nc" id="L46">		return ResponseEntity.ok(matches);</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		String username = (principal != null) ? principal.getName() : null;</span>
+<span class="nc" id="L56">		Page&lt;MatchDTO&gt; matches = this.matchService.getMatchesOfTheDay(username, page, size);</span>
+<span class="nc" id="L57">		return ResponseEntity.ok(matches);</span>
 	}
 
 	@Operation(summary = &quot;Get matches of a team (home/away)&quot;, description = &quot;Returns a paginated list of matches for the specified team, filtered by location (home or away).&quot;)
@@ -53,16 +64,18 @@ public class MatchController {
 			@ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found or no matches available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
 			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
 	})
-	@GetMapping(value = &quot;/{teamName}&quot;, produces = &quot;application/json&quot;)
+	@GetMapping(value = &quot;/teamName/{teamName}&quot;, produces = &quot;application/json&quot;)
 	public ResponseEntity&lt;Page&lt;MatchDTO&gt;&gt; getMatchesOfATeam(@PathVariable(&quot;teamName&quot;) String teamName,
-			@RequestParam String location, @RequestParam(defaultValue = &quot;0&quot;) int page,
-			@RequestParam(defaultValue = &quot;10&quot;) int size) {
-<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (&quot;home&quot;.equalsIgnoreCase(location)) {</span>
-<span class="fc" id="L61">			return ResponseEntity.ok(this.matchService.getHomeMatches(teamName, page, size));</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">		} else if (&quot;away&quot;.equalsIgnoreCase(location)) {</span>
-<span class="fc" id="L63">			return ResponseEntity.ok(this.matchService.getAwayMatches(teamName, page, size));</span>
-		} else {
-<span class="fc" id="L65">			return ResponseEntity.badRequest().build();</span>
+															@RequestParam String location, @RequestParam(defaultValue = &quot;0&quot;) int page,
+															@RequestParam(defaultValue = &quot;10&quot;) int size) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">		if (&quot;home&quot;.equalsIgnoreCase(location)) {</span>
+<span class="fc" id="L72">			return ResponseEntity.ok(this.matchService.getHomeMatches(teamName, page, size));</span>
+		} 
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		else if (&quot;away&quot;.equalsIgnoreCase(location)) {</span>
+<span class="fc" id="L75">			return ResponseEntity.ok(this.matchService.getAwayMatches(teamName, page, size));</span>
+		} 
+		else {
+<span class="nc" id="L78">			return ResponseEntity.badRequest().build();</span>
 		}
 	}
 
@@ -74,10 +87,10 @@ public class MatchController {
 	})
 	@GetMapping(value = &quot;/team/{teamName}&quot;, produces = &quot;application/json&quot;)
 	public ResponseEntity&lt;List&lt;MatchDTO&gt;&gt; getMatchesOfTeamByMonth(@PathVariable String teamName,
-			@RequestParam int year, @RequestParam int month) {
-<span class="fc" id="L78">		LocalDate start = LocalDate.of(year, month, 1);</span>
-<span class="fc" id="L79">		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());</span>
-<span class="fc" id="L80">		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));</span>
+																																@RequestParam int year, @RequestParam int month) {
+<span class="fc" id="L91">		LocalDate start = LocalDate.of(year, month, 1);</span>
+<span class="fc" id="L92">		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());</span>
+<span class="fc" id="L93">		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

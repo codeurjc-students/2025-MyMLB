@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                     // User Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/tickets").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.PATCH, "/api/v1/users").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/users/picture").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/users/picture").hasAnyRole("USER", "ADMIN")
@@ -105,6 +106,15 @@ public class WebSecurityConfig {
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
 
+                    // Ticket Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/events/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/events/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasRole("ADMIN")
+
+                    .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/tickets/**").hasAnyRole("USER", "ADMIN")
+
                     // Search Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/searchs/**").hasRole("ADMIN")
 
@@ -117,8 +127,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/v3/api-docs*/**").permitAll()
                     .requestMatchers("/swagger-ui.html").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
-                
-                
+
                     // PUBLIC ENDPOINTS:
                     .anyRequest().permitAll());
 
