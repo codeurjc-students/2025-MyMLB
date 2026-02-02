@@ -282,6 +282,7 @@ erDiagram
     int homeScore
     int awayScore
     LocalDateTime date
+    Stadium stadium
     MatchStatus status
   }
 
@@ -336,7 +337,29 @@ erDiagram
     String name
     int openingDate
     List_PictureInfo pictures
+    PictureInfo pictureMap
     Team team
+    List_Match matches
+    List_Sector sectors
+  }
+
+  SUPPORTMESSAGE {
+    UUID id
+    SupportTicket supportTicket
+    String senderEmail
+    String body
+    boolean isFromUser
+    LocalDateTime creationDate
+  }
+
+  SUPPORTTICKET {
+    UUID id
+    String subject
+    String userEmail
+    SupportTicketStatus status
+    LocalDateTime creationDate
+    List_SupportMessage messages
+    Long version
   }
 
   TEAM {
@@ -361,7 +384,44 @@ erDiagram
     List_PositionPlayer positionPlayers
     List_Pitcher pitchers
     Set_UserEntity favoritedByUsers
-    Team other
+  }
+
+  EVENT {
+    long id
+    Match match
+    List_EventManager eventManagers
+  }
+
+  EVENTMANAGER {
+    long id
+    Event event
+    Sector sector
+    double price
+    int availability
+  }
+
+  SEAT {
+    long id
+    String name
+    Sector sector
+    boolean isOccupied
+  }
+
+  SECTOR {
+    long id
+    String name
+    Stadium stadium
+    List_Seat seats
+    int totalCapacity
+  }
+
+  TICKET {
+    long id
+    EventManager eventManager
+    UserEntity owner
+    String ownerName
+    Seat seat
+    LocalDateTime purchaseDate
   }
 
   USERENTITY {
@@ -370,18 +430,31 @@ erDiagram
     String username
     String name
     String password
+    PictureInfo picture
+    boolean enableNotifications
     PasswordResetToken resetToken
     Set_Team favTeams
     List_String roles
+    List_Ticket tickets
   }
 
   MATCH }o--|| TEAM : ""
+  MATCH }o--|| STADIUM : ""
   PASSWORDRESETTOKEN ||--|| USERENTITY : ""
   PLAYER }o--|| TEAM : ""
   STADIUM ||--|| TEAM : ""
+  STADIUM ||--o{ SECTOR : ""
+  SUPPORTMESSAGE }o--|| SUPPORTTICKET : ""
   TEAM ||--o{ POSITIONPLAYER : ""
   TEAM ||--o{ PITCHER : ""
   TEAM }|--|{ USERENTITY : ""
+  EVENT ||--|| MATCH : ""
+  EVENT ||--o{ EVENTMANAGER : ""
+  EVENTMANAGER }o--|| SECTOR : ""
+  SEAT }o--|| SECTOR : ""
+  TICKET }o--|| EVENTMANAGER : ""
+  TICKET }o--|| USERENTITY : ""
+  TICKET ||--|| SEAT : ""
 ```
 
 ---
