@@ -166,7 +166,7 @@ class EventServiceTest {
     }
 
     @Test
-    @DisplayName("Should return DTO and call delete")
+    @DisplayName("Should delete the event and return it")
     void testDeleteEvent() {
         when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(testEvent);
         when(this.eventMapper.toEventResponseDto(testEvent)).thenReturn(BuildMocksFactory.buildEventResponseDTO());
@@ -182,14 +182,16 @@ class EventServiceTest {
         long invalidId = 2L;
         when(this.eventRepository.findEventByIdOrElseThrow(invalidId)).thenThrow(new EventNotFoundException(invalidId));
 
-        assertThatThrownBy(() -> {
-            switch (operation) {
-                case "GET" -> eventService.getEvent(invalidId);
-                case "EDIT" -> eventService.editEvent(new EditEventRequest(invalidId, List.of(1L), List.of(1.0)));
-                case "DELETE" -> eventService.deleteEvent(invalidId);
-            }
-        }).isInstanceOf(EventNotFoundException.class)
-                .hasMessageContaining("Event 2 Not Found");
+        Runnable action = switch (operation) {
+            case "GET" -> () -> eventService.getEvent(invalidId);
+            case "EDIT" -> () -> eventService.editEvent(new EditEventRequest(invalidId, List.of(1L), List.of(1.0)));
+            case "DELETE" -> () -> eventService.deleteEvent(invalidId);
+            default -> throw new IllegalArgumentException("Invalid operation");
+        };
+
+        assertThatThrownBy(action::run)
+                .isInstanceOf(EventNotFoundException.class)
+                .hasMessage("Event " + invalidId + " Not Found");
     }
 
     @ParameterizedTest(name = "Operation {0} should throw MatchNotFoundException")
@@ -199,13 +201,17 @@ class EventServiceTest {
         long invalidMatchId = 99L;
         when(this.matchRepository.findById(invalidMatchId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            if ("GET_BY_MATCH".equals(operation)) {
-                eventService.getEventByMatchId(invalidMatchId);
-            } else {
-                eventService.createEvent(new EventCreateRequest(invalidMatchId, List.of(), List.of()));
+        Runnable action = switch (operation) {
+            case "GET_BY_MATCH" -> () -> eventService.getEventByMatchId(invalidMatchId);
+            case "CREATE" -> {
+                EventCreateRequest req = new EventCreateRequest(invalidMatchId, List.of(), List.of());
+                yield () -> eventService.createEvent(req);
             }
-        }).isInstanceOf(MatchNotFoundException.class)
+            default -> throw new IllegalArgumentException("Unsupported operation");
+        };
+
+        assertThatThrownBy(action::run)
+                .isInstanceOf(MatchNotFoundException.class)
                 .hasMessageContaining("Match Not Found");
     }
 
