@@ -1,13 +1,19 @@
 package com.mlb.mlbportal.integration;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.models.Match;
@@ -19,15 +25,10 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -130,7 +131,7 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should update match status to Finished if 3 hours have passed")
     void testMatchesOfTheDayFinishedUpdate() {
-        Match match = new Match(this.team1, this.team2, 3, 2, this.now.minusHours(3), MatchStatus.IN_PROGRESS);
+        Match match = new Match(this.team1, this.team2, 3, 2, this.now.minusHours(3).minusMinutes(1), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
