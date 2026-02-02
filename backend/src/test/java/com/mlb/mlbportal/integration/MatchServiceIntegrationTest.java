@@ -3,6 +3,7 @@ package com.mlb.mlbportal.integration;
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,6 +46,11 @@ class MatchServiceIntegrationTest {
     @Autowired
     private MatchService matchService;
 
+    @Autowired
+    private Clock clock;
+
+    private LocalDateTime now;
+
     private Team team1, team2, team3;
 
     @BeforeEach
@@ -58,26 +64,28 @@ class MatchServiceIntegrationTest {
         this.team1 = this.teamRepository.save(teams.getFirst());
         this.team2 = this.teamRepository.save(teams.get(1));
         this.team3 = this.teamRepository.save(teams.get(2));
+
+        this.now = LocalDateTime.now(this.clock);
     }
 
     @Test
     @DisplayName("Should only return matches scheduled for today")
     void testMatchesOfTheDayOnlyToday() {
-        Match todayMatch = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
-        Match yesterdayMatch = new Match(this.team1, this.team2, 2, 2, LocalDateTime.now().minusDays(1), MatchStatus.SCHEDULED);
+        Match todayMatch = new Match(this.team1, this.team2, 1, 1, this.now.minusMinutes(5), MatchStatus.SCHEDULED);
+        Match yesterdayMatch = new Match(this.team1, this.team2, 2, 2, this.now.minusDays(1), MatchStatus.SCHEDULED);
         this.matchRepository.saveAll(List.of(todayMatch, yesterdayMatch));
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
         MatchDTO result = resultPage.getContent().getFirst();
 
-        assertThat(result.date().toLocalDate()).isEqualTo(LocalDateTime.now().toLocalDate());
+        assertThat(result.date().toLocalDate()).isEqualTo(this.now.toLocalDate());
     }
 
     @Test
     @DisplayName("Should prioritize matches with user's favorite teams")
     void testMatchesOfTheDayFavoriteTeamOrdering() {
-        Match match1 = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
-        Match match2 = new Match(this.team3, this.team1, 2, 2, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match1 = new Match(this.team1, this.team2, 1, 1, this.now.minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match2 = new Match(this.team3, this.team1, 2, 2, this.now.minusMinutes(5), MatchStatus.SCHEDULED);
         this.matchRepository.saveAll(List.of(match1, match2));
 
         UserEntity user = BuildMocksFactory.setUpUsers().getLast();
@@ -94,8 +102,8 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should not prioritize matches when username is null")
     void testMatchesOfTheDayWithoutUsername() {
-        Match match1 = new Match(this.team1, this.team2, 1, 1, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
-        Match match2 = new Match(this.team2, this.team3, 2, 2, LocalDateTime.now().minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match1 = new Match(this.team1, this.team2, 1, 1, this.now.minusMinutes(5), MatchStatus.SCHEDULED);
+        Match match2 = new Match(this.team2, this.team3, 2, 2, this.now.minusMinutes(5), MatchStatus.SCHEDULED);
         this.matchRepository.saveAll(List.of(match1, match2));
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
@@ -109,7 +117,7 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should update match status to InProgress if match time has passed")
     void testMatchesOfTheDayInProgressUpdate() {
-        Match match = new Match(this.team1, this.team2, 0, 0, LocalDateTime.now().minusMinutes(10), MatchStatus.SCHEDULED);
+        Match match = new Match(this.team1, this.team2, 0, 0, this.now.minusMinutes(10), MatchStatus.SCHEDULED);
         this.matchRepository.save(match);
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
@@ -122,7 +130,7 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should update match status to Finished if 3 hours have passed")
     void testMatchesOfTheDayFinishedUpdate() {
-        Match match = new Match(this.team1, this.team2, 3, 2, LocalDateTime.now().minusHours(3), MatchStatus.IN_PROGRESS);
+        Match match = new Match(this.team1, this.team2, 3, 2, this.now.minusHours(3), MatchStatus.IN_PROGRESS);
         this.matchRepository.save(match);
 
         Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
@@ -136,7 +144,7 @@ class MatchServiceIntegrationTest {
     @DisplayName("Should return the last 10 matches of a team in descending order")
     void testGetLast10Matches() {
         for (int i = 0; i < 12; i++) {
-            Match match = new Match(this.team1, this.team2, i, i + 1, LocalDateTime.now().minusDays(i), MatchStatus.FINISHED);
+            Match match = new Match(this.team1, this.team2, i, i + 1, this.now.minusDays(i), MatchStatus.FINISHED);
             this.matchRepository.save(match);
         }
 
@@ -149,7 +157,7 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should return home matches of a certain team")
     void testGetHomeMatchesOfATeam() {
-        Match homeMatch = new Match(this.team1, this.team3, 1, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
+        Match homeMatch = new Match(this.team1, this.team3, 1, 0, this.now, MatchStatus.SCHEDULED);
         this.matchRepository.save(homeMatch);
 
         Page<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM3_NAME, 0, 10);
@@ -161,16 +169,15 @@ class MatchServiceIntegrationTest {
     @Test
     @DisplayName("Should return matches of a team between given dates")
     void testGetMatchesOfTeamBetweenDates() {
-        Match matchInRange = new Match(this.team1, this.team2, 5, 3,
-                LocalDateTime.now().plusDays(2), MatchStatus.SCHEDULED);
-        Match matchOutOfRange = new Match(this.team1, this.team2, 2, 2,
-                LocalDateTime.now().plusMonths(2), MatchStatus.SCHEDULED);
+        LocalDateTime fixedTime = this.now;
+
+        Match matchInRange = new Match(this.team1, this.team2, 5, 3, fixedTime.plusDays(2), MatchStatus.SCHEDULED);
+        Match matchOutOfRange = new Match(this.team1, this.team2, 2, 2, fixedTime.plusMonths(2), MatchStatus.SCHEDULED);
 
         this.matchRepository.saveAll(List.of(matchInRange, matchOutOfRange));
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDate start = now.toLocalDate();
-        LocalDate end = now.toLocalDate().plusDays(7);
+        LocalDate start = fixedTime.toLocalDate();
+        LocalDate end = fixedTime.toLocalDate().plusDays(7);
 
         List<MatchDTO> result = this.matchService.getMatchesOfTeamBetweenDates(this.team1.getName(), start, end);
 
