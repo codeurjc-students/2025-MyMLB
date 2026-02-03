@@ -109,7 +109,6 @@ public class TeamService {
         }
 
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));
 
         Map<League, Map<Division, List<Team>>> grouped = teams.stream()
                 .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));
@@ -138,6 +137,14 @@ public class TeamService {
                     .put(division, sorted);
         }
         return standings;
+    }
+
+    @Transactional
+    public void updateRanking(Team awayTeam, Team homeTeam) {
+        TeamServiceOperations.enrichTeamStats(awayTeam, this.teamRepository, this.matchService);
+        TeamServiceOperations.enrichTeamStats(homeTeam, this.teamRepository, this.matchService);
+        this.teamRepository.save(awayTeam);
+        this.teamRepository.save(homeTeam);
     }
 
     @Transactional

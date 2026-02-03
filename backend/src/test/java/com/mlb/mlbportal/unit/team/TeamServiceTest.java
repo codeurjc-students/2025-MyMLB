@@ -215,6 +215,26 @@ class TeamServiceTest {
     }
 
     @Test
+    @DisplayName("Should update stats and save both teams when updating ranking")
+    void testUpdateRanking() {
+        team1.setWins(10);
+        team1.setLosses(5);
+        team2.setWins(8);
+        team2.setLosses(7);
+
+        when(this.teamRepository.findByLeagueAndDivision(any(), any())).thenReturn(Arrays.asList(team1, team2));
+
+        this.teamService.updateRanking(team1, team2);
+
+        assertThat(team1.getPct()).isEqualTo(0.666);
+        assertThat(team2.getPct()).isEqualTo(0.533);
+        assertThat(team2.getGamesBehind()).isEqualTo(2.0);
+
+        verify(this.teamRepository, times(2)).save(team1);
+        verify(this.teamRepository, times(2)).save(team2);
+    }
+
+    @Test
     @DisplayName("Should return the general info of a team with updated players and pitchers")
     void testGetTeamInfo() {
         when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(team1);

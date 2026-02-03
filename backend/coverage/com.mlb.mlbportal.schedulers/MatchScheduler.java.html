@@ -2,31 +2,49 @@
 
 import java.time.LocalDate;
 
+import com.mlb.mlbportal.services.MatchService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.mlb.mlbportal.services.MlbImportService;
 
 @Component
+@RequiredArgsConstructor
+<span class="fc" id="L15">@Slf4j</span>
 public class MatchScheduler {
-
     private final MlbImportService mlbImportService;
-
-<span class="nc" id="L15">    public MatchScheduler(MlbImportService mlbImportService) {</span>
-<span class="nc" id="L16">        this.mlbImportService = mlbImportService;</span>
-<span class="nc" id="L17">    }</span>
+    private final MatchService matchService;
 
     @Scheduled(cron = &quot;0 0 3 * * *&quot;)
     public void preloadMatches() {
-<span class="nc" id="L21">        LocalDate now = LocalDate.now();</span>
-<span class="nc" id="L22">        LocalDate currentStart = now.withDayOfMonth(1);</span>
-<span class="nc" id="L23">        LocalDate currentEnd = currentStart.withDayOfMonth(currentStart.lengthOfMonth());</span>
+<span class="nc" id="L22">        LocalDate now = LocalDate.now();</span>
+<span class="nc" id="L23">        LocalDate currentStart = now.withDayOfMonth(1);</span>
+<span class="nc" id="L24">        LocalDate currentEnd = currentStart.withDayOfMonth(currentStart.lengthOfMonth());</span>
 
-<span class="nc" id="L25">        LocalDate nextStart = currentStart.plusMonths(1);</span>
-<span class="nc" id="L26">        LocalDate nextEnd = nextStart.withDayOfMonth(nextStart.lengthOfMonth());</span>
+<span class="nc" id="L26">        LocalDate nextStart = currentStart.plusMonths(1);</span>
+<span class="nc" id="L27">        LocalDate nextEnd = nextStart.withDayOfMonth(nextStart.lengthOfMonth());</span>
 
-<span class="nc" id="L28">        this.mlbImportService.getOfficialMatches(currentStart, currentEnd);</span>
-<span class="nc" id="L29">        this.mlbImportService.getOfficialMatches(nextStart, nextEnd);</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L29">        this.mlbImportService.getOfficialMatches(currentStart, currentEnd);</span>
+<span class="nc" id="L30">        this.mlbImportService.getOfficialMatches(nextStart, nextEnd);</span>
+<span class="nc" id="L31">    }</span>
+
+    @Scheduled(cron = &quot;0 0 19-23 * * *&quot;)
+    @Scheduled(cron = &quot;0 0 0-4 * * *&quot;)
+    public void updateStandings() {
+<span class="nc" id="L36">        log.info(&quot;Starting synchronization of the matches status&quot;);</span>
+        try {
+<span class="nc" id="L38">            this.mlbImportService.verifyMatchStatus();</span>
+        }
+<span class="nc" id="L40">        catch (Exception ex) {</span>
+<span class="nc" id="L41">            log.error(&quot;An error occur while synchronizing the matches status: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L42">        }</span>
+<span class="nc" id="L43">    }</span>
+
+    @Scheduled(cron = &quot;0 */10 * * * *&quot;)
+    public void checkSendingEmailNotification() {
+<span class="nc" id="L47">        this.matchService.notificateMatchStart();</span>
+<span class="nc" id="L48">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,13 +1,18 @@
 package com.mlb.mlbportal.unit.match;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.naming.ServiceUnavailableException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.services.team.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +22,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,12 +51,16 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MlbImportServiceTest {
 
     @Mock
     private TeamLookupService teamLookupService;
+
+    @Mock
+    private TeamService teamService;
 
     @Mock
     private RestTemplate restTemplate;
@@ -68,10 +74,15 @@ class MlbImportServiceTest {
     @Mock
     private StadiumRepository stadiumRepository;
 
+    @Mock
+    private Clock clock;
+
     @InjectMocks
     private MlbImportService mlbImportService;
 
     private List<Team> mockTeams;
+
+    private List<TeamSummary> mockTeamSummaries;
 
     private List<Stadium> mockStadiums;
 
@@ -82,13 +93,14 @@ class MlbImportServiceTest {
         field.setAccessible(true);
         field.set(this.mlbImportService, this.restTemplate);
         this.mockTeams = BuildMocksFactory.setUpTeamMocks();
+        this.mockTeamSummaries = BuildMocksFactory.buildTeamSummaryMocks(this.mockTeams);
         this.mockStadiums = BuildMocksFactory.setUpStadiums();
     }
 
     @Test
     @DisplayName("Should save finished match when API returns valid data")
     void testGetOfficialMatchesFinishedMatchSaved() {
-        TeamData homeTeamData = new TeamData(1, mockTeams.get(0).getName(), mockTeams.get(0).getAbbreviation());
+        TeamData homeTeamData = new TeamData(1, mockTeams.getFirst().getName(), mockTeams.getFirst().getAbbreviation());
         TeamData awayTeamData = new TeamData(2, mockTeams.get(1).getName(), mockTeams.get(1).getAbbreviation());
 
         TeamSide homeSide = new TeamSide(homeTeamData, 5);
@@ -106,15 +118,15 @@ class MlbImportServiceTest {
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
 
-        TeamSummary homeSummary = new TeamSummary(mockTeams.get(0).getName(), mockTeams.get(0).getAbbreviation(), null, null);
-        TeamSummary awaySummary = new TeamSummary(mockTeams.get(1).getName(), mockTeams.get(1).getAbbreviation(), null, null);
+        TeamSummary homeSummary = this.mockTeamSummaries.getFirst();
+        TeamSummary awaySummary = this.mockTeamSummaries.get(1);
 
         Match savedMatchMock = new Match();
         savedMatchMock.setId(100L);
 
         when(this.teamLookupService.getTeamSummary(1)).thenReturn(homeSummary);
         when(this.teamLookupService.getTeamSummary(2)).thenReturn(awaySummary);
-        when(this.teamRepository.findByName(mockTeams.get(0).getName())).thenReturn(Optional.of(mockTeams.get(0)));
+        when(this.teamRepository.findByName(mockTeams.getFirst().getName())).thenReturn(Optional.of(mockTeams.getFirst()));
         when(this.teamRepository.findByName(mockTeams.get(1).getName())).thenReturn(Optional.of(mockTeams.get(1)));
         when(this.stadiumRepository.findByName(expectedStadiumName)).thenReturn(Optional.of(this.mockStadiums.getFirst()));
         when(this.stadiumRepository.findByNameOrThrow(expectedStadiumName)).thenReturn(this.mockStadiums.getFirst());
@@ -152,9 +164,9 @@ class MlbImportServiceTest {
         LocalDate endDate = LocalDate.of(2026, 3, 1);
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
-        when(this.teamLookupService.getTeamSummary(1)).thenReturn(new TeamSummary(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, null, null));
-        when(this.teamLookupService.getTeamSummary(2)).thenReturn(new TeamSummary(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, null, null));
-        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.get(0)));
+        when(this.teamLookupService.getTeamSummary(1)).thenReturn(this.mockTeamSummaries.getFirst());
+        when(this.teamLookupService.getTeamSummary(2)).thenReturn(this.mockTeamSummaries.get(1));
+        when(this.teamRepository.findByName(TEST_TEAM1_NAME)).thenReturn(Optional.of(this.mockTeams.getFirst()));
         when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(this.mockTeams.get(1)));
         when(this.stadiumRepository.findByName(STADIUM1_NAME)).thenReturn(Optional.of(new Stadium()));
 
@@ -198,6 +210,78 @@ class MlbImportServiceTest {
         assertThat(matches.getFirst().homeTeam().name()).isEqualTo(homeTeam.getName());
         assertThat(matches.getFirst().awayTeam().name()).isEqualTo(awayTeam.getName());
         assertThat(matches.getFirst().status()).isEqualTo(MatchStatus.FINISHED);
+    }
+
+    @Test
+    @DisplayName("Should update match scores and status on API response")
+    void testVerifyMatchStatusUpdatesScoresAndStatus() {
+        LocalDate today = LocalDate.of(2026, 3, 1);
+
+        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
+        when(this.clock.instant()).thenReturn(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Match existingMatch = new Match();
+        existingMatch.setId(1L);
+        existingMatch.setStatus(MatchStatus.SCHEDULED);
+        existingMatch.setHomeTeam(this.mockTeams.getFirst());
+        existingMatch.setAwayTeam(this.mockTeams.get(1));
+        existingMatch.setHomeScore(0);
+        existingMatch.setAwayScore(0);
+
+        ScheduleResponse response = this.buildResponse();
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(response);
+        when(this.teamLookupService.getTeamSummary(1)).thenReturn(this.mockTeamSummaries.getFirst());
+        when(this.teamLookupService.getTeamSummary(2)).thenReturn(this.mockTeamSummaries.get(1));
+        when(this.matchRepository.findById(any())).thenReturn(Optional.of(existingMatch));
+
+        this.mlbImportService.verifyMatchStatus();
+
+        assertThat(existingMatch.getStatus()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(existingMatch.getHomeScore()).isEqualTo(2);
+        assertThat(existingMatch.getAwayScore()).isEqualTo(1);
+
+        verify(this.teamService, times(1)).updateRanking(any(Team.class), any(Team.class));
+        verify(this.matchRepository, times(1)).save(existingMatch);
+        verify(this.teamRepository, times(2)).save(any(Team.class));
+    }
+
+    @Test
+    @DisplayName("Should throw NoSuchElementException when no games are scheduled for today")
+    void testVerifyMatchStatusNoGamesScheduled() {
+        LocalDate today = LocalDate.of(2026, 3, 1);
+
+        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
+        when(this.clock.instant()).thenReturn(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        ScheduleResponse emptyResponse = new ScheduleResponse(null);
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(emptyResponse);
+
+        assertThatThrownBy(() -> this.mlbImportService.verifyMatchStatus())
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("No games scheduled for today");
+    }
+
+    @Test
+    @DisplayName("Should not update ranking if status has not yet changed to FINISHED")
+    void testVerifyMatchStatusNoStatusChange() {
+        LocalDate today = LocalDate.of(2026, 3, 1);
+
+        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
+        when(this.clock.instant()).thenReturn(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Match existingMatch = new Match();
+        existingMatch.setStatus(MatchStatus.FINISHED);
+        existingMatch.setHomeScore(2);
+        existingMatch.setAwayScore(1);
+
+        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(this.buildResponse());
+        when(this.teamLookupService.getTeamSummary(anyInt())).thenReturn(this.mockTeamSummaries.getFirst());
+        when(this.matchRepository.findById(any())).thenReturn(Optional.of(existingMatch));
+
+        this.mlbImportService.verifyMatchStatus();
+
+        verify(this.teamService, never()).updateRanking(any(), any());
+        verify(this.matchRepository, never()).save(any());
     }
 
     @Test

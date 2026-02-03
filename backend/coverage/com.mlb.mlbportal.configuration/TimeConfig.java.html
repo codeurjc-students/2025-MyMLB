@@ -5,12 +5,14 @@ import java.time.ZoneId;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
-<span class="fc" id="L10">public class TimeConfig {</span>
+@Profile(&quot;!test&quot;)
+<span class="nc" id="L12">public class TimeConfig {</span>
     @Bean
     public Clock clock() {
-<span class="fc" id="L13">        return Clock.system(ZoneId.of(&quot;Europe/Madrid&quot;));</span>
+<span class="nc" id="L15">        return Clock.system(ZoneId.of(&quot;Europe/Madrid&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -142,6 +142,14 @@ public class Team {
         this.lastTen = "0-0";
     }
 
+    public void updateWins() {
+        this.setWins(this.getWins() + 1);
+    }
+
+    public void updateLosses() {
+        this.setLosses(this.getLosses() + 1);
+    }
+
     public void addPositionPlayer(PositionPlayer player) {
         this.positionPlayers.add(player);
         player.setTeam(this);

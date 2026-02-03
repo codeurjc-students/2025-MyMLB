@@ -104,6 +104,10 @@ class TeamServiceIntegrationTest {
         LocalDateTime now = LocalDateTime.now();
 
         this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.FINISHED));
+
+        // Prepare the PCT for the test Teams
+        this.teamService.updateRanking(team1, team2);
+        this.teamService.updateRanking(team2, team3);
     }
 
     @Test
@@ -163,6 +167,29 @@ class TeamServiceIntegrationTest {
         assertThat(standings.get(League.NL).get(Division.CENTRAL))
                 .extracting(TeamDTO::abbreviation)
                 .containsExactly(TEST_TEAM3_ABBREVIATION);
+    }
+
+    @Test
+    @DisplayName("Should update the ranking of the teams involve in a match")
+    void testUpdateRanking() {
+        this.team1.setWins(10);
+        this.team1.setLosses(5);
+
+        this.team2.setWins(8);
+        this.team2.setLosses(7);
+
+        this.teamService.updateRanking(this.team1, this.team2);
+
+        Team storedTeam1 = this.teamRepository.findByNameOrThrow(this.team1.getName());
+        Team storedTeam2 = this.teamRepository.findByNameOrThrow(this.team2.getName());
+
+        assertThat(storedTeam1.getWins()).isEqualTo(10);
+        assertThat(storedTeam1.getTotalGames()).isEqualTo(15);
+
+        assertThat(storedTeam2.getWins()).isEqualTo(8);
+        assertThat(storedTeam2.getTotalGames()).isEqualTo(15);
+
+        assertThat(storedTeam1.getPct()).isEqualTo(0.666);
     }
 
     @Test

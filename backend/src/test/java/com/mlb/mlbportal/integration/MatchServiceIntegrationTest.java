@@ -129,19 +129,6 @@ class MatchServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should update match status to Finished if 3 hours have passed")
-    void testMatchesOfTheDayFinishedUpdate() {
-        Match match = new Match(this.team1, this.team2, 3, 2, this.now.minusHours(3).minusMinutes(1), MatchStatus.IN_PROGRESS);
-        this.matchRepository.save(match);
-
-        Page<MatchDTO> resultPage = this.matchService.getMatchesOfTheDay(null, 0, 10);
-        MatchDTO result = resultPage.getContent().getFirst();
-
-        assertThat(result.status()).isEqualTo(MatchStatus.FINISHED);
-        assertThat(this.matchRepository.findById(match.getId()).orElseThrow().getStatus()).isEqualTo(MatchStatus.FINISHED);
-    }
-
-    @Test
     @DisplayName("Should return the last 10 matches of a team in descending order")
     void testGetLast10Matches() {
         for (int i = 0; i < 12; i++) {

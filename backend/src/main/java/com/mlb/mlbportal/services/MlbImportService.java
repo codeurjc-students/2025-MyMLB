@@ -1,15 +1,22 @@
 package com.mlb.mlbportal.services;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.dto.mlbapi.DateEntry;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.repositories.StadiumRepository;
+import com.mlb.mlbportal.services.team.TeamService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
@@ -32,9 +39,11 @@ import lombok.AllArgsConstructor;
 public class MlbImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TeamLookupService teamLookupService;
+    private final TeamService teamService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
+    private final Clock clock;
 
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
     @Retry(name = "mlbApi")
@@ -55,6 +64,66 @@ public class MlbImportService {
                 .filter(dto -> this.stadiumRepository.findByName(dto.stadiumName()).isPresent())
                 .map(this::saveMatch)
                 .toList();
+    }
+
+    @Async
+    @Transactional
+    @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackMatches")
+    @Retry(name = "verifyMatchStatus")
+    public void verifyMatchStatus() {
+        LocalDate today = LocalDate.now(this.clock);
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+        String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" +
+                "&startDate=" + startOfDay + "&endDate=" + endOfDay;
+
+        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
+
+        if (response == null || response.dates() == null) {
+            throw new NoSuchElementException("No games scheduled for today");
+        }
+
+        for (DateEntry dateEntry : response.dates()) {
+            for (GameEntry gameEntry : dateEntry.games()) {
+                MatchDTO apiMatch = this.toMatchDTO(gameEntry);
+                this.matchRepository.findById(apiMatch.id()).ifPresent(match -> {
+                    MatchStatus oldStatus = match.getStatus();
+                    MatchStatus newStatus = apiMatch.status();
+                    match.setHomeScore(apiMatch.homeScore());
+                    match.setAwayScore(apiMatch.awayScore());
+
+                    if (!oldStatus.equals(newStatus)) {
+                        match.setStatus(newStatus);
+                        this.matchRepository.save(match);
+                        if (!oldStatus.equals(MatchStatus.FINISHED) && newStatus.equals(MatchStatus.FINISHED)) {
+                            this.updateStatus(match);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void updateStatus(Match match) {
+        Team awayTeam = match.getAwayTeam();
+        Team homeTeam = match.getHomeTeam();
+        if (this.isHomeTeamWinner(match)) {
+            homeTeam.updateWins();
+            awayTeam.updateLosses();
+        }
+        else {
+            awayTeam.updateWins();
+            homeTeam.updateLosses();
+        }
+        this.teamRepository.save(awayTeam);
+        this.teamRepository.save(homeTeam);
+        this.teamService.updateRanking(awayTeam, homeTeam);
+    }
+
+    private boolean isHomeTeamWinner(Match match) {
+        int awayScore = match.getAwayScore();
+        int homeScore = match.getHomeScore();
+        return homeScore > awayScore;
     }
 
     private MatchDTO saveMatch(MatchDTO dto) {
@@ -119,10 +188,10 @@ public class MlbImportService {
     private MatchDTO toMatchDTO(GameEntry game) {
         int homeId = game.teams().home().team().id();
         int awayId = game.teams().away().team().id();
-        TeamSummary home = teamLookupService.getTeamSummary(homeId);
-        TeamSummary away = teamLookupService.getTeamSummary(awayId);
+        TeamSummary home = this.teamLookupService.getTeamSummary(homeId);
+        TeamSummary away = this.teamLookupService.getTeamSummary(awayId);
         LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
-        MatchStatus status = convertStatus(game.status().detailedState());
+        MatchStatus status = this.convertStatus(game.status().detailedState());
         String stadiumName = game.venue().name();
         if (stadiumName.equals("Rate Field")) {
             stadiumName = "Guaranteed Rate Field";
@@ -133,7 +202,6 @@ public class MlbImportService {
 
     private MatchStatus convertStatus(String apiStatus) {
         return switch (apiStatus) {
-            case "Scheduled" -> MatchStatus.SCHEDULED;
             case "In Progress" -> MatchStatus.IN_PROGRESS;
             case "Final" -> MatchStatus.FINISHED;
             default -> MatchStatus.SCHEDULED;
