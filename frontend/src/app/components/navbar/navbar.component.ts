@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
-import { filter } from 'rxjs';
+import { combineLatest, filter, startWith } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { UserService } from '../../services/user.service';
@@ -40,35 +40,42 @@ export class NavbarComponent implements OnInit {
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
-			if (user) {
-				this.roles = user.roles;
-				this.username = user.username;
-			} else {
-				this.roles = ['GUEST'];
-				this.username = '';
+			this.roles = user?.roles || ['GUEST'];
+			this.username = user?.username || '';
+			this.cdr.detectChanges();
+		});
+
+		combineLatest([
+			this.router.events.pipe(
+				filter(event => event instanceof NavigationEnd),
+				startWith(new NavigationEnd(0, this.router.url, this.router.url))
+			),
+			this.selectTeamService.selectedTeam$
+		]).subscribe(([event, team]) => {
+			const url = (event as NavigationEnd).urlAfterRedirects;
+			this.currentRoute = url;
+			this.isMenuOpen = false;
+
+			if (url.includes('/team') && team?.teamStats?.abbreviation) {
+				this.selectedTeamAbbr = team.teamStats.abbreviation;
+				this.navBarStyleClass = this.navBarBackgroundColor(this.selectedTeamAbbr);
+			}
+			else {
+				this.selectedTeamAbbr = '';
+				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
 			}
 			this.cdr.detectChanges();
 		});
 
-		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-			this.currentRoute = event.urlAfterRedirects;
-			this.isMenuOpen = false;
-			if (!this.currentRoute.includes('/team')) {
-				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
-				this.selectedTeamAbbr = '';
-			}
+		this.userService.profilePicture$.subscribe(url => {
+			this.profilePicture = url;
+			this.cdr.detectChanges();
 		});
 
-		this.currentRoute = this.router.url;
-
-		this.selectTeamService.selectedTeam$.subscribe((team) => {
-			this.selectedTeamAbbr = team?.teamStats.abbreviation;
-			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
+		this.supportService.opentTickets$.subscribe(amount => {
+			this.currentOpenTickets = amount;
+			this.cdr.detectChanges();
 		});
-
-		this.userService.profilePicture$.subscribe((url) => this.profilePicture = url);
-
-		this.supportService.opentTickets$.subscribe(ammount => this.currentOpenTickets = ammount);
 	}
 
 	ngOnDestroy() {
