@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { TeamInfo } from '../../../app/models/team.model';
 import { provideHttpClient } from '@angular/common/http';
 import { EventService } from '../../../app/services/ticket/event.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatchService } from '../../../app/services/match.service';
 import { AuthService } from '../../../app/services/auth.service';
 
@@ -17,7 +17,7 @@ describe('Team Component Integration Tests', () => {
 	let fixture: ComponentFixture<TeamComponent>;
 
 	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
-		MockFactory.buildTeamMocks('Yankees', 'NYY', 'AL', 'East', 162, 100, 62, 0.617, 0, '7-3'),
+		MockFactory.buildTeamMocks('New York Yankees', 'NYY', 'AL', 'East', 162, 100, 62, 0.617, 0, '7-3'),
 		'New York',
 		'Founded in 1901',
 		[1903, 1923, 1996, 2009],
@@ -62,6 +62,13 @@ describe('Team Component Integration Tests', () => {
 	);
 
 	beforeEach(() => {
+		const mockActivatedRoute = {
+            snapshot: {
+                paramMap: {
+                    get: (key: string) => 'New York Yankees'
+                }
+            }
+        };
 		TestBed.configureTestingModule({
 			imports: [TeamComponent],
 			providers: [
@@ -103,6 +110,13 @@ describe('Team Component Integration Tests', () => {
 						getMatchesOfATeam: () => of([])
 					},
 				},
+				{ provide: ActivatedRoute, useValue: mockActivatedRoute },
+                {
+                    provide: SelectedTeamService,
+                    useValue: {
+                        selectedTeam$: of(mockTeamInfo),
+                    },
+                },
 			],
 		});
 

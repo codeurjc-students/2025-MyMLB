@@ -32,7 +32,7 @@ class MatchSchedulerTest {
     private MatchScheduler matchScheduler;
 
     @Test
-    @DisplayName("Should calculate current and next month ranges correctly and call preload")
+    @DisplayName("Should calculate current and next month ranges correctly")
     void testPreloadMatches() {
         ArgumentCaptor<LocalDate> startCaptor = ArgumentCaptor.forClass(LocalDate.class);
         ArgumentCaptor<LocalDate> endCaptor = ArgumentCaptor.forClass(LocalDate.class);
@@ -54,7 +54,7 @@ class MatchSchedulerTest {
     }
 
     @Test
-    @DisplayName("Should call verifyMatchStatus and not propagate exceptions")
+    @DisplayName("Should call verifyMatchStatus")
     void testUpdateStandings() {
         this.matchScheduler.updateStandings();
         verify(this.mlbImportService, times(1)).verifyMatchStatus();
@@ -67,7 +67,7 @@ class MatchSchedulerTest {
     }
 
     @Test
-    @DisplayName("Should call notification service for emails")
+    @DisplayName("Should call the email notification method")
     void testCheckSendingEmailNotification() {
         this.matchScheduler.checkSendingEmailNotification();
         verify(this.matchService, times(1)).notificateMatchStart();

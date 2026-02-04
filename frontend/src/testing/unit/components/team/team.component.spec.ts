@@ -10,7 +10,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { MatchService, ShowMatch } from '../../../../app/services/match.service';
 import { EventService } from '../../../../app/services/ticket/event.service';
 import { AuthService } from '../../../../app/services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
 import { Pictures } from '../../../../app/models/pictures.model';
 
@@ -21,10 +21,11 @@ describe('Team Component Tests', () => {
     let eventServiceSpy: jasmine.SpyObj<EventService>;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
     let routerSpy: jasmine.SpyObj<Router>;
+	let routeSpy: any;
     let paginationService: PaginatedSelectorService<ShowMatch>;
 
     const mockTeamStats = MockFactory.buildTeamMocks(
-        'Yankees', 'NYY', 'AL', 'EAST', 162, 100, 62, 0.617, 0, '7-3'
+        'New York Yankees', 'NYY', 'AL', 'EAST', 162, 100, 62, 0.617, 0, '7-3'
     );
 
     const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009, [{ url: 'http://fake-url/image.png', publicId: 'image' }]);
@@ -60,6 +61,14 @@ describe('Team Component Tests', () => {
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
         paginationService = new PaginatedSelectorService<ShowMatch>();
 
+		const paramMapSpy = jasmine.createSpyObj('paramMap', ['get']);
+		paramMapSpy.get.and.returnValue('New York Yankees');
+		routeSpy = {
+			snapshot: {
+				paramMap: paramMapSpy
+			}
+		}
+
         authServiceSpy.getActiveUser.and.returnValue(of({ username: 'testUser', roles: ['ADMIN'] }));
         eventServiceSpy.getEventByMatchId.and.returnValue(of(mockEvent));
 
@@ -74,6 +83,7 @@ describe('Team Component Tests', () => {
                 { provide: EventService, useValue: eventServiceSpy },
                 { provide: AuthService, useValue: authServiceSpy },
                 { provide: Router, useValue: routerSpy },
+				{ provide: ActivatedRoute, useValue: routeSpy },
                 { provide: PaginatedSelectorService, useValue: paginationService }
             ],
         });
