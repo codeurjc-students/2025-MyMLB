@@ -39,6 +39,10 @@ export class AuthService {
 		return this.http.get<UserRole>(`${this.apiUrl}/me`, { withCredentials: true });
 	}
 
+	public setCurrentUser(user: UserRole): void {
+		this.currentUserSubject.next(user);
+	}
+
 	public get currentUser(): UserRole {
 		return this.currentUserSubject.value;
 	}

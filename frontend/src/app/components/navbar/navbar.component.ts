@@ -1,5 +1,5 @@
 import { AuthService } from './../../services/auth.service';
-import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
@@ -26,6 +26,7 @@ export class NavbarComponent implements OnInit {
 	private selectTeamService = inject(SelectedTeamService);
 	private supportService = inject(SupportService);
 	private router = inject(Router);
+	private cdr = inject(ChangeDetectorRef);
 
 	private selectedTeamAbbr: string | undefined = '';
 	public roles: string[] = ['GUEST'];
@@ -46,6 +47,7 @@ export class NavbarComponent implements OnInit {
 				this.roles = ['GUEST'];
 				this.username = '';
 			}
+			this.cdr.detectChanges();
 		});
 
 		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {

@@ -1,5 +1,4 @@
 import {
-	APP_INITIALIZER,
 	ApplicationConfig,
 	inject,
 	provideAppInitializer,
@@ -16,6 +15,7 @@ import { DateAdapter, provideCalendar } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { RefreshInterceptor } from './interceptors/refresh.interceptor';
 import { environment } from '../environments/environment';
+import { AuthService } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -24,12 +24,26 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes),
 		provideHttpClient(
 			withInterceptors([
-				...(!environment.disableInterceptors ? [ErrorInterceptor, RefreshInterceptor] : [])
-			])
+				...(!environment.disableInterceptors ? [ErrorInterceptor, RefreshInterceptor] : []),
+			]),
 		),
 		provideCalendar({
 			provide: DateAdapter,
 			useFactory: adapterFactory,
-		})
+		}),
+		provideAppInitializer(() => {
+            const authService = inject(AuthService);
+            return new Promise((resolve) => {
+                authService.getActiveUser().subscribe({
+                    next: (user) => {
+                        authService.setCurrentUser(user);
+                        resolve(true);
+                    },
+                    error: () => {
+                        resolve(true);
+                    }
+                });
+            });
+        })
 	],
 };
