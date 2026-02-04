@@ -134,7 +134,7 @@ public class DataInitializerService {
 <span class="fc" id="L134">            this.teamRepository.saveAll(teams);</span>
 <span class="nc" id="L135">        } catch (IOException e) {</span>
 <span class="nc" id="L136">            throw new UncheckedIOException(&quot;Error loading team data from JSON&quot;, e);</span>
-<span class="fc" id="L137">        }</span>
+        }
 <span class="fc" id="L138">    }</span>
 
     private List&lt;Match&gt; generateBalancedMatches(List&lt;Team&gt; teams) {
@@ -165,7 +165,7 @@ public class DataInitializerService {
 
 <span class="fc" id="L166">            Match match = createMatch(teamA, opponent, baseDate, day);</span>
 <span class="fc" id="L167">            matches.add(match);</span>
-<span class="fc" id="L168">        }</span>
+        }
 <span class="fc" id="L169">    }</span>
 
     private Team findOpponent(Team teamA, List&lt;Team&gt; available, Set&lt;String&gt; usedPairs) {
@@ -177,7 +177,7 @@ public class DataInitializerService {
 <span class="fc" id="L177">                usedPairs.add(key1);</span>
 <span class="fc" id="L178">                return candidate;</span>
             }
-<span class="fc" id="L180">        }</span>
+        }
 <span class="fc" id="L181">        return null;</span>
     }
 
@@ -190,12 +190,12 @@ public class DataInitializerService {
 <span class="fc" id="L190">        MatchStatus status = determineMatchStatus(matchDate);</span>
 
 <span class="fc" id="L192">        Match match = new Match(</span>
-                away,
-                home,
+<span class="fc" id="L193">                away,</span>
+<span class="fc" id="L194">                home,</span>
 <span class="fc" id="L195">                RANDOM.nextInt(10),</span>
 <span class="fc" id="L196">                RANDOM.nextInt(10),</span>
-                matchDate,
-                status
+<span class="fc" id="L197">                matchDate,</span>
+<span class="fc" id="L198">                status</span>
         );
 <span class="fc" id="L200">        match.setStadium(home.getStadium());</span>
 <span class="fc" id="L201">        return match;</span>
@@ -227,21 +227,21 @@ public class DataInitializerService {
 <span class="nc" id="L227">        LocalDateTime matchDate = LocalDateTime.now().plusMinutes(15);</span>
 
 <span class="nc" id="L229">        Match testMatch = new Match(</span>
-                home,
-                away,
-                0,
-                0,
-                matchDate,
-                MatchStatus.SCHEDULED
+<span class="nc" id="L230">                home,</span>
+<span class="nc" id="L231">                away,</span>
+<span class="nc" id="L232">                0,</span>
+<span class="nc" id="L233">                0,</span>
+<span class="nc" id="L234">                matchDate,</span>
+<span class="nc" id="L235">                MatchStatus.SCHEDULED</span>
         );
 
 <span class="nc" id="L238">        Match match2 = new Match(</span>
-                aux1,
-                aux2,
-                0,
-                0,
-                matchDate,
-                MatchStatus.SCHEDULED
+<span class="nc" id="L239">                aux1,</span>
+<span class="nc" id="L240">                aux2,</span>
+<span class="nc" id="L241">                0,</span>
+<span class="nc" id="L242">                0,</span>
+<span class="nc" id="L243">                matchDate,</span>
+<span class="nc" id="L244">                MatchStatus.SCHEDULED</span>
         );
 <span class="nc" id="L246">        matches.add(testMatch);</span>
 <span class="nc" id="L247">        matches.add(match2);</span>
@@ -296,7 +296,7 @@ public class DataInitializerService {
 
 <span class="nc" id="L297">        } catch (IOException e) {</span>
 <span class="nc" id="L298">            throw new UncheckedIOException(&quot;Error loading stadium data from JSON&quot;, e);</span>
-<span class="fc" id="L299">        }</span>
+        }
 <span class="fc" id="L300">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
@@ -326,9 +326,9 @@ public class DataInitializerService {
 
 <span class="nc bnc" id="L327" title="All 2 branches missed.">                if (&quot;Pitcher&quot;.equalsIgnoreCase(type)) {</span>
 <span class="nc" id="L328">                    Pitcher pitcher = new Pitcher(</span>
-                            name,
-                            playerNumber,
-                            team,
+<span class="nc" id="L329">                            name,</span>
+<span class="nc" id="L330">                            playerNumber,</span>
+<span class="nc" id="L331">                            team,</span>
 <span class="nc" id="L332">                            PitcherPositions.valueOf(((String) raw.get(&quot;position&quot;)).toUpperCase()),</span>
 <span class="nc" id="L333">                            ((Number) raw.get(&quot;games&quot;)).intValue(),</span>
 <span class="nc" id="L334">                            ((Number) raw.get(&quot;wins&quot;)).intValue(),</span>
@@ -345,9 +345,9 @@ public class DataInitializerService {
 <span class="nc" id="L345">                    pitcher.setPicture(picture);</span>
 <span class="nc" id="L346">                } else {</span>
 <span class="nc" id="L347">                    PositionPlayer player = new PositionPlayer(</span>
-                            name,
-                            playerNumber,
-                            team,
+<span class="nc" id="L348">                            name,</span>
+<span class="nc" id="L349">                            playerNumber,</span>
+<span class="nc" id="L350">                            team,</span>
 <span class="nc" id="L351">                            PlayerPositions.fromLabel((String) raw.get(&quot;position&quot;)),</span>
 <span class="nc" id="L352">                            ((Number) raw.get(&quot;atBats&quot;)).intValue(),</span>
 <span class="nc" id="L353">                            ((Number) raw.get(&quot;walks&quot;)).intValue(),</span>
@@ -360,7 +360,7 @@ public class DataInitializerService {
 <span class="nc" id="L360">                    positionPlayersByTeam.computeIfAbsent(team, t -&gt; new ArrayList&lt;&gt;()).add(player);</span>
 <span class="nc" id="L361">                    player.setPicture(picture);</span>
                 }
-<span class="nc" id="L363">            }</span>
+            }
 
 <span class="fc bfc" id="L365" title="All 2 branches covered.">            for (Team team : allTeams) {</span>
 <span class="fc" id="L366">                List&lt;PositionPlayer&gt; positionPlayers = positionPlayersByTeam.getOrDefault(team, new ArrayList&lt;&gt;());</span>
@@ -368,12 +368,12 @@ public class DataInitializerService {
 
 <span class="fc" id="L369">                team.setPositionPlayers(positionPlayers);</span>
 <span class="fc" id="L370">                team.setPitchers(pitchers);</span>
-<span class="fc" id="L371">            }</span>
+            }
 <span class="fc" id="L372">            teamRepository.saveAll(allTeams);</span>
 
 <span class="nc" id="L374">        } catch (IOException e) {</span>
 <span class="nc" id="L375">            throw new UncheckedIOException(&quot;Error loading players data&quot;, e);</span>
-<span class="fc" id="L376">        }</span>
+        }
 <span class="fc" id="L377">    }</span>
 
     private void setUpEventsForTodayMatches() {
@@ -399,22 +399,22 @@ public class DataInitializerService {
 
 <span class="nc" id="L400">                EventManager em = new EventManager(event, sector, finalPrice);</span>
 <span class="nc" id="L401">                event.addEventManager(em);</span>
-<span class="nc" id="L402">            }</span>
+            }
 <span class="nc" id="L403">            eventsToSave.add(event);</span>
-<span class="nc" id="L404">        }</span>
+        }
 <span class="nc" id="L405">        this.eventRepository.saveAll(eventsToSave);</span>
 <span class="nc" id="L406">    }</span>
 
     private List&lt;Sector&gt; createSectorsForStadium(Stadium stadium) {
 <span class="nc" id="L409">        List&lt;Sector&gt; sectors = Arrays.asList(</span>
-                new Sector(0, &quot;Grada Norte&quot;, stadium, new ArrayList&lt;&gt;(), 100),
-                new Sector(0, &quot;Grada Sur&quot;, stadium, new ArrayList&lt;&gt;(), 100),
-                new Sector(0, &quot;Preferencia&quot;, stadium, new ArrayList&lt;&gt;(), 50),
-                new Sector(0, &quot;Palco VIP&quot;, stadium, new ArrayList&lt;&gt;(), 20)
+<span class="nc" id="L410">                new Sector(0, &quot;Grada Norte&quot;, stadium, new ArrayList&lt;&gt;(), 100),</span>
+<span class="nc" id="L411">                new Sector(0, &quot;Grada Sur&quot;, stadium, new ArrayList&lt;&gt;(), 100),</span>
+<span class="nc" id="L412">                new Sector(0, &quot;Preferencia&quot;, stadium, new ArrayList&lt;&gt;(), 50),</span>
+<span class="nc" id="L413">                new Sector(0, &quot;Palco VIP&quot;, stadium, new ArrayList&lt;&gt;(), 20)</span>
         );
 <span class="nc bnc" id="L415" title="All 2 branches missed.">        for (Sector sector : sectors) {</span>
 <span class="nc" id="L416">            this.createSeatsForSector(sector);</span>
-<span class="nc" id="L417">        }</span>
+        }
 <span class="nc" id="L418">        return this.sectorRepository.saveAll(sectors);</span>
     }
 

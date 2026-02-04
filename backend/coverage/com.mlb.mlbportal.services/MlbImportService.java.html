@@ -49,7 +49,7 @@ public class MlbImportService {
     @Retry(name = &quot;mlbApi&quot;)
     public List&lt;MatchDTO&gt; getOfficialMatches(LocalDate start, LocalDate end) {
 <span class="fc" id="L51">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot; +</span>
-                     &quot;&amp;startDate=&quot; + start + &quot;&amp;endDate=&quot; + end;
+<span class="fc" id="L52">                     &quot;&amp;startDate=&quot; + start + &quot;&amp;endDate=&quot; + end;</span>
 
 <span class="fc" id="L54">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
 
@@ -75,7 +75,7 @@ public class MlbImportService {
 <span class="fc" id="L75">        LocalDateTime startOfDay = today.atStartOfDay();</span>
 <span class="fc" id="L76">        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);</span>
 <span class="fc" id="L77">        String url = &quot;https://statsapi.mlb.com/api/v1/schedule?sportId=1&quot; +</span>
-                &quot;&amp;startDate=&quot; + startOfDay + &quot;&amp;endDate=&quot; + endOfDay;
+<span class="fc" id="L78">                &quot;&amp;startDate=&quot; + startOfDay + &quot;&amp;endDate=&quot; + endOfDay;</span>
 
 <span class="fc" id="L80">        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);</span>
 
@@ -100,8 +100,8 @@ public class MlbImportService {
                         }
                     }
 <span class="fc" id="L102">                });</span>
-<span class="fc" id="L103">            }</span>
-<span class="fc" id="L104">        }</span>
+            }
+        }
 <span class="fc" id="L105">    }</span>
 
     private void updateStatus(Match match) {
@@ -110,7 +110,7 @@ public class MlbImportService {
 <span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (this.isHomeTeamWinner(match)) {</span>
 <span class="fc" id="L111">            homeTeam.updateWins();</span>
 <span class="fc" id="L112">            awayTeam.updateLosses();</span>
-        }
+<span class="fc" id="L113">        }</span>
         else {
 <span class="nc" id="L115">            awayTeam.updateWins();</span>
 <span class="nc" id="L116">            homeTeam.updateLosses();</span>
@@ -156,13 +156,13 @@ public class MlbImportService {
 <span class="fc" id="L156">            return cachedMatches.stream()</span>
 <span class="fc" id="L157">                    .map(m -&gt; new MatchDTO(</span>
 <span class="fc" id="L158">                            m.getId(),</span>
-                            new TeamSummary(
+<span class="fc" id="L159">                            new TeamSummary(</span>
 <span class="fc" id="L160">                                m.getHomeTeam().getName(),</span>
 <span class="fc" id="L161">                                m.getHomeTeam().getAbbreviation(),</span>
 <span class="fc" id="L162">                                m.getHomeTeam().getLeague(),</span>
 <span class="fc" id="L163">                                m.getHomeTeam().getDivision()</span>
                             ),
-                            new TeamSummary(
+<span class="fc" id="L165">                            new TeamSummary(</span>
 <span class="fc" id="L166">                                m.getAwayTeam().getName(),</span>
 <span class="fc" id="L167">                                m.getAwayTeam().getAbbreviation(),</span>
 <span class="fc" id="L168">                                m.getAwayTeam().getLeague(),</span>
@@ -173,7 +173,7 @@ public class MlbImportService {
 <span class="fc" id="L173">                            m.getDate(),</span>
 <span class="fc" id="L174">                            m.getStatus(),</span>
 <span class="fc" id="L175">                            m.getStadium().getName()</span>
-                    ))
+<span class="fc" id="L176">                    ))</span>
 <span class="fc" id="L177">                    .toList();</span>
         }
 <span class="fc" id="L179">        throw new ServiceUnavailableException(&quot;MLB API not available and without cached data&quot;);</span>

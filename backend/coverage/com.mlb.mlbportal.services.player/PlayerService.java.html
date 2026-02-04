@@ -312,7 +312,7 @@ public class PlayerService {
 <span class="fc" id="L312">                team.removePitcher(p);</span>
 <span class="fc" id="L313">                yield dto;</span>
             }
-<span class="pc" id="L315">            default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
+<span class="nc" id="L315">            default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
         };
 <span class="fc" id="L317">        this.playerRepository.delete(player);</span>
 <span class="fc" id="L318">        return result;</span>

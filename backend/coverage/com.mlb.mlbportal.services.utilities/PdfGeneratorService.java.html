@@ -41,12 +41,12 @@ import java.util.List;
 <span class="fc" id="L41">                document.add(new Paragraph(&quot;Seat: &quot; + ticket.getSeat().getName(), bodyFont));</span>
 <span class="fc" id="L42">                document.add(new Paragraph(&quot;Owner: &quot; + ticket.getOwnerName(), bodyFont));</span>
 <span class="fc" id="L43">                document.add(new Paragraph(&quot;\n\n&quot;));</span>
-<span class="fc" id="L44">            }</span>
+            }
 <span class="fc" id="L45">            document.close();</span>
-        }
+<span class="fc" id="L46">        }</span>
 <span class="nc" id="L47">        catch (DocumentException e) {</span>
 <span class="nc" id="L48">            log.error(&quot;Failed to create the pdf&quot;);</span>
-<span class="fc" id="L49">        }</span>
+        }
 <span class="fc" id="L50">        return out.toByteArray();</span>
     }
 }

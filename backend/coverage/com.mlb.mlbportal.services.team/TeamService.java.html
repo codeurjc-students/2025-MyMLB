@@ -96,8 +96,8 @@ public class TeamService {
 <span class="fc bfc" id="L96" title="All 2 branches covered.">                if (!ordered.contains(pair)) {</span>
 <span class="fc" id="L97">                    ordered.add(pair);</span>
                 }
-<span class="fc" id="L99">            }</span>
-<span class="fc" id="L100">        }</span>
+            }
+        }
 <span class="fc" id="L101">        return ordered;</span>
     }
 
@@ -135,7 +135,7 @@ public class TeamService {
 
 <span class="fc" id="L136">            standings.computeIfAbsent(league, l -&gt; new LinkedHashMap&lt;&gt;())</span>
 <span class="fc" id="L137">                    .put(division, sorted);</span>
-<span class="fc" id="L138">        }</span>
+        }
 <span class="fc" id="L139">        return standings;</span>
     }
 

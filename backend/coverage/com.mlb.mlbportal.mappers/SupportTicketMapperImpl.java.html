@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-02-04T00:06:36+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2026-02-04T16:35:35+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L20">public class SupportTicketMapperImpl implements SupportTicketMapper {</span>
@@ -51,7 +51,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L51">        List&lt;SupportTicketDTO&gt; list1 = new ArrayList&lt;SupportTicketDTO&gt;( list.size() );</span>
 <span class="fc bfc" id="L52" title="All 2 branches covered.">        for ( SupportTicket supportTicket : list ) {</span>
 <span class="fc" id="L53">            list1.add( toSupportThreadDTO( supportTicket ) );</span>
-<span class="fc" id="L54">        }</span>
+        }
 
 <span class="fc" id="L56">        return list1;</span>
     }

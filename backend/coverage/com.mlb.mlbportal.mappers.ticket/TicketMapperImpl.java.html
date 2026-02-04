@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-02-04T00:06:36+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2026-02-04T16:35:35+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L25">public class TicketMapperImpl implements TicketMapper {</span>
@@ -62,7 +62,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L62">        List&lt;TicketDTO&gt; list1 = new ArrayList&lt;TicketDTO&gt;( list.size() );</span>
 <span class="nc bnc" id="L63" title="All 2 branches missed.">        for ( Ticket ticket : list ) {</span>
 <span class="nc" id="L64">            list1.add( toTicketDTO( ticket ) );</span>
-<span class="nc" id="L65">        }</span>
+        }
 
 <span class="nc" id="L67">        return list1;</span>
     }
