@@ -1,5 +1,17 @@
 package com.mlb.mlbportal.integration.ticket;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import com.mlb.mlbportal.dto.ticket.EditEventRequest;
 import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
 import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
@@ -21,17 +33,8 @@ import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.services.ticket.EventService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -75,6 +78,7 @@ class EventServiceIntegrationTest {
     private Team awayTeam;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         this.seatRepository.deleteAll();
         this.eventManagerRepository.deleteAll();

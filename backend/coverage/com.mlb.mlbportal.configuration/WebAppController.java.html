@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 <span class="nc" id="L8">public class WebAppController {</span>
 
-    @RequestMapping(&quot;/{path:[^\\.]*}&quot;)
+    @RequestMapping(value = { &quot;{path:[^\\.]*}&quot;, &quot;/**/{path:[^\\.]*}&quot; })
     public String forward(@PathVariable(&quot;path&quot;) String unused) {
 <span class="nc" id="L12">        return &quot;forward:/index.html&quot;;</span>
     }
