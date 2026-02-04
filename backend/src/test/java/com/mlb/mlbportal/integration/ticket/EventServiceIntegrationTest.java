@@ -7,6 +7,7 @@ import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.mappers.ticket.SeatMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.ticket.Event;
 import com.mlb.mlbportal.models.ticket.EventManager;
 import com.mlb.mlbportal.models.ticket.Sector;
@@ -70,6 +71,8 @@ class EventServiceIntegrationTest {
 
     private Event testEvent;
     private Stadium testStadium;
+    private Team homeTeam;
+    private Team awayTeam;
 
     @BeforeEach
     void setUp() {
@@ -84,8 +87,16 @@ class EventServiceIntegrationTest {
         this.testStadium = BuildMocksFactory.setUpStadiums().getFirst();
         this.stadiumRepository.save(this.testStadium);
 
+        List<Team> teams = BuildMocksFactory.setUpTeamMocks();
+        this.homeTeam = teams.getFirst();
+        this.awayTeam = teams.get(1);
+        this.teamRepository.save(this.homeTeam);
+        this.teamRepository.save(this.awayTeam);
+
         Match testMatch = new Match();
         testMatch.setStadium(testStadium);
+        testMatch.setHomeTeam(this.homeTeam);
+        testMatch.setAwayTeam(this.awayTeam);
         testMatch = this.matchRepository.save(testMatch);
 
         this.testEvent = new Event(testMatch);
@@ -97,6 +108,8 @@ class EventServiceIntegrationTest {
     void testCreateEvent() {
         Match anotherMatch = new Match();
         anotherMatch.setStadium(this.testStadium);
+        anotherMatch.setHomeTeam(this.homeTeam);
+        anotherMatch.setAwayTeam(this.awayTeam);
         anotherMatch = this.matchRepository.save(anotherMatch);
 
         SectorCreateRequest sectorReq = new SectorCreateRequest("Bleachers", 50);
