@@ -370,6 +370,12 @@ When a ticket is created, the admins will receive an email notification and can 
 
 For more technical information regarding this feature: `concurrency issues`, such as two admins responding to the same ticket, are managed correctly.
 
+<p align="center">
+  <img src="images/features/admin/Inbox.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/common/ContactModal.png" width="40%" />
+</p>
+
 ### Tickets and Events Management
 The main feature of this version is that registered users can now purchase tickets for any match they wish. They can access the purchase page directly from the team's page by scrolling to the `Upcoming Home Matches` section or by clicking the `Calendar` button and selecting a home match. This will redirect the user to the purchase page, which is divided into two sections: the left displays a map of the home team's stadium, which can be opened in full size by clicking on it, and the area below the mouse cursor is zoomed in, and the right one that is for the user to enters the amount of wanted tickets, the sector, and the seats.
 
@@ -385,6 +391,24 @@ Apart from this, the admin users can create, edit and delete an event directly f
 > It is considered that match has an event if the said match has tickets on sale.
 
 To create an event the admins must enter the amount of sectors it will have, their respective names and prices. In order to modify an event, they must edit the prices of the sectors they wish to modify (since this is the only editable field).
+
+<p align="center">
+  <img src="images/features/user/TicketSelection.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/StadiumMap.png" width="40%" />
+</p>
+
+<p align="center">
+  <img src="images/features/user/TicketPurrchase.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/StadiumMap.png" width="40%" />
+</p>
+
+<p align="center">
+  <img src="images/features/admin/CreateEvent.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/admin/EditEvent.png" width="40%" />
+</p>
 
 For the next and final version of the application will include the remaining functionalities that belong to the `Statistics` section for the admins.
 
