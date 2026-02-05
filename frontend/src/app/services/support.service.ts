@@ -21,7 +21,7 @@ export class SupportService {
 
 	public updateCurrentOpenTickets(): void {
 		this.getOpenTickets().subscribe({
-			next: (openTickets) => this.openTicketsSubject.next(openTickets.length),
+			next: (openTickets) => this.openTicketsSubject.next(openTickets ? openTickets.length : 0),
 			error: (_) => this.openTicketsSubject.next(0)
 		});
 	}

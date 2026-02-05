@@ -11,6 +11,7 @@ import { provideRouter } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { PollingService } from '../../app/services/utilities/polling.service';
 
 describe('Navigation Bar Integration Tests', () => {
     let fixture: ComponentFixture<NavbarComponent>;
@@ -31,6 +32,7 @@ describe('Navigation Bar Integration Tests', () => {
 
     const mockUserService = { profilePicture$: of('') };
     const mockSupportService = { opentTickets$: of(0) };
+	const mockPollingService = jasmine.createSpyObj('PollingService', ['initPolling', 'stopPolling']);
 
     const currentUserSubject = new BehaviorSubject<UserRole>({ username: '', roles: ['GUEST'] });
 
@@ -49,6 +51,7 @@ describe('Navigation Bar Integration Tests', () => {
                 { provide: SelectedTeamService, useValue: mockSelectedTeamService },
                 { provide: UserService, useValue: mockUserService },
                 { provide: SupportService, useValue: mockSupportService },
+                { provide: PollingService, useValue: mockPollingService },
                 ThemeService,
                 provideRouter([]),
 				provideHttpClient(),
@@ -58,6 +61,8 @@ describe('Navigation Bar Integration Tests', () => {
 
         fixture = TestBed.createComponent(NavbarComponent);
         component = fixture.componentInstance;
+		mockPollingService.initPolling.calls.reset();
+        mockPollingService.stopPolling.calls.reset();
         fixture.detectChanges();
     });
 
@@ -71,6 +76,16 @@ describe('Navigation Bar Integration Tests', () => {
         const compiled = fixture.nativeElement as HTMLElement;
         expect(compiled.textContent).toContain('Edit Info');
     });
+
+	it('should start polling if it is Admin user and stop it otherwise', () => {
+		currentUserSubject.next({ username: 'admin', roles: ['ADMIN'] });
+		fixture.detectChanges();
+		expect(mockPollingService.initPolling).toHaveBeenCalled();
+
+		currentUserSubject.next({ username: 'user', roles: ['USER'] });
+		fixture.detectChanges();
+		expect(mockPollingService.stopPolling).toHaveBeenCalled();
+	});
 
     it('should update roles and UI when a regular USER is emitted', () => {
         currentUserSubject.next({ username: 'testUser', roles: ['GUEST', 'USER'] });

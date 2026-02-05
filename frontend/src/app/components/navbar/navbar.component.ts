@@ -1,13 +1,14 @@
 import { AuthService } from './../../services/auth.service';
-import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
-import { combineLatest, filter, startWith } from 'rxjs';
+import { combineLatest, filter, startWith, Subscription } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { UserService } from '../../services/user.service';
 import { SupportService } from '../../services/support.service';
+import { PollingService } from '../../services/utilities/polling.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -16,7 +17,7 @@ import { SupportService } from '../../services/support.service';
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './navbar.component.html',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter<void> = new EventEmitter();
 
@@ -25,6 +26,7 @@ export class NavbarComponent implements OnInit {
 	private backgroundService = inject(BackgroundColorService);
 	private selectTeamService = inject(SelectedTeamService);
 	private supportService = inject(SupportService);
+	private pollingService = inject(PollingService);
 	private router = inject(Router);
 	private cdr = inject(ChangeDetectorRef);
 
@@ -42,6 +44,12 @@ export class NavbarComponent implements OnInit {
 		this.authService.currentUser$.subscribe(user => {
 			this.roles = user?.roles || ['GUEST'];
 			this.username = user?.username || '';
+			if (this.roles.includes('ADMIN')) {
+				this.pollingService.initPolling();
+			}
+			else {
+				this.pollingService.stopPolling();
+			}
 			this.cdr.detectChanges();
 		});
 
@@ -80,6 +88,7 @@ export class NavbarComponent implements OnInit {
 
 	ngOnDestroy() {
 		this.selectTeamService.clearSelectedTeam();
+		this.pollingService.stopPolling();
 	}
 
 	public toggleMenu(): void {

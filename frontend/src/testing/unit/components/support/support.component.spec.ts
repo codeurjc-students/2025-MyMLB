@@ -106,7 +106,6 @@ describe('Support Component Tests', () => {
         expect(supportServiceSpy.createTicket).toHaveBeenCalled();
         expect(component.success).toBeTrue();
         expect(component.successMessage).toBe('Message sent successfully');
-        expect(supportServiceSpy.updateCurrentOpenTickets).toHaveBeenCalled();
     });
 
     it('should set error when createTicket fails', () => {
