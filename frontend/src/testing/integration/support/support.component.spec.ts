@@ -46,8 +46,6 @@ describe('Support Component Integration Test', () => {
     });
 
     it('should create ticket successfully and update open tickets', () => {
-        spyOn(component['supportService'], 'updateCurrentOpenTickets');
-
         component.supportForm.setValue({
             email: 'test@example.com',
             subject: 'Test Subject',
@@ -68,6 +66,5 @@ describe('Support Component Integration Test', () => {
 
         expect(component.success).toBeTrue();
         expect(component.successMessage).toBe('Message sent successfully');
-        expect(component['supportService'].updateCurrentOpenTickets).toHaveBeenCalled();
     });
 });

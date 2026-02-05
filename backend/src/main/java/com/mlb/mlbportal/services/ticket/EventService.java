@@ -16,7 +16,6 @@ import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
 import com.mlb.mlbportal.dto.ticket.SeatDTO;
 import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
 import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
-import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
 import com.mlb.mlbportal.handler.notFound.SectorNotFoundException;
 import com.mlb.mlbportal.mappers.ticket.EventMapper;

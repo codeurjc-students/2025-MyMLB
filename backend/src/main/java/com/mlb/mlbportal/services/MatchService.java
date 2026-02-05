@@ -83,11 +83,6 @@ public class MatchService {
 
         if (match.getStatus() == MatchStatus.SCHEDULED && !now.isBefore(matchTime)) {
             match.setStatus(MatchStatus.IN_PROGRESS);
-            return;
-        }
-
-        if (match.getStatus() == MatchStatus.IN_PROGRESS && now.isAfter(matchTime.plusHours(3))) {
-            match.setStatus(MatchStatus.FINISHED);
         }
     }
 
@@ -133,13 +128,10 @@ public class MatchService {
 
         for (Match match : todaysMatches) {
             LocalDateTime notificationTime = match.getDate().minusMinutes(10);
-
             if (notificationTime.isBefore(now)) {
                 continue;
             }
-
             Long matchId = match.getId();
-
             this.taskScheduler.schedule(
                     () -> this.emailService.sendDynamicGameReminder(matchId),
                     notificationTime.atZone(ZoneId.systemDefault()).toInstant()

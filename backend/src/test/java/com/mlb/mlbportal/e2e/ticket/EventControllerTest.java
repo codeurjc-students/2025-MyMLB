@@ -77,21 +77,24 @@ class EventControllerTest extends BaseE2ETest {
     private Long savedEventId;
     private Long savedSectorId;
 
+    private Team homeTeam;
+    private Team awayTeam;
+
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        Team home = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, 10, 5, TEST_TEAM1_CITY, "Info1", Collections.emptyList(), League.AL, Division.EAST);
-        Team away = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, 8, 7, TEST_TEAM2_CITY, "Info2", Collections.emptyList(), League.NL, Division.WEST);
+        this.homeTeam = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, 10, 5, TEST_TEAM1_CITY, "Info1", Collections.emptyList(), League.AL, Division.EAST);
+        this.awayTeam = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, 8, 7, TEST_TEAM2_CITY, "Info2", Collections.emptyList(), League.NL, Division.WEST);
 
-        Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, home);
+        Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, this.homeTeam);
         stadium = this.stadiumRepository.saveAndFlush(stadium);
 
-        home.setStadium(stadium);
-        this.teamRepository.saveAndFlush(home);
-        this.teamRepository.saveAndFlush(away);
+        this.homeTeam.setStadium(stadium);
+        this.teamRepository.saveAndFlush(this.homeTeam);
+        this.teamRepository.saveAndFlush(this.awayTeam);
 
-        Match match = new Match(away, home, 0, 0, LocalDateTime.now().plusDays(1), MatchStatus.SCHEDULED);
+        Match match = new Match(this.awayTeam, this.homeTeam, 0, 0, LocalDateTime.now().plusDays(1), MatchStatus.SCHEDULED);
         match.setStadium(stadium);
         match = this.matchRepository.saveAndFlush(match);
 
@@ -200,18 +203,12 @@ class EventControllerTest extends BaseE2ETest {
     @Test
     @DisplayName("POST /api/v1/events should create a new event")
     void testCreateEvent() {
-        Team t1 = saveTestTeam("NewHome", "NH", 0, 0, "C", "I", List.of(), League.AL, Division.EAST);
-        Team t2 = saveTestTeam("NewAway", "NA", 0, 0, "C", "I", List.of(), League.AL, Division.EAST);
-
-        Stadium stadium = new Stadium("New Stadium", 2024, t1);
+        Stadium stadium = new Stadium("New Stadium", 2024, this.homeTeam);
         stadium = this.stadiumRepository.save(stadium);
-
-        t1.setStadium(stadium);
-        this.teamRepository.save(t1);
 
         this.sectorRepository.save(new Sector("Bleachers", 50, stadium));
 
-        Match newMatch = new Match(t2, t1, 0, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
+        Match newMatch = new Match(this.awayTeam, this.homeTeam, 0, 0, LocalDateTime.now(), MatchStatus.SCHEDULED);
         newMatch.setStadium(stadium);
         newMatch = this.matchRepository.save(newMatch);
 
@@ -233,7 +230,7 @@ class EventControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(201)
                 .header("Location", containsString(headerLocation))
-                .body("homeTeamName", is("NewHome"));
+                .body("homeTeamName", is(this.homeTeam.getName()));
     }
 
     @Test

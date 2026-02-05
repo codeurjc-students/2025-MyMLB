@@ -97,7 +97,6 @@ export class Support implements OnInit {
 			next: (_) => {
 				this.success = true;
 				this.successMessage = 'Message sent successfully';
-				this.supportService.updateCurrentOpenTickets();
 			},
 			error: (_) => {
 				this.error = true;

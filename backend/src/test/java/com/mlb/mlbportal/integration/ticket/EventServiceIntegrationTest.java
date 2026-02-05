@@ -1,5 +1,17 @@
 package com.mlb.mlbportal.integration.ticket;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import com.mlb.mlbportal.dto.ticket.EditEventRequest;
 import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
 import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
@@ -7,6 +19,7 @@ import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.mappers.ticket.SeatMapper;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.ticket.Event;
 import com.mlb.mlbportal.models.ticket.EventManager;
 import com.mlb.mlbportal.models.ticket.Sector;
@@ -20,17 +33,8 @@ import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.services.ticket.EventService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -70,8 +74,11 @@ class EventServiceIntegrationTest {
 
     private Event testEvent;
     private Stadium testStadium;
+    private Team homeTeam;
+    private Team awayTeam;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         this.seatRepository.deleteAll();
         this.eventManagerRepository.deleteAll();
@@ -84,8 +91,16 @@ class EventServiceIntegrationTest {
         this.testStadium = BuildMocksFactory.setUpStadiums().getFirst();
         this.stadiumRepository.save(this.testStadium);
 
+        List<Team> teams = BuildMocksFactory.setUpTeamMocks();
+        this.homeTeam = teams.getFirst();
+        this.awayTeam = teams.get(1);
+        this.teamRepository.save(this.homeTeam);
+        this.teamRepository.save(this.awayTeam);
+
         Match testMatch = new Match();
         testMatch.setStadium(testStadium);
+        testMatch.setHomeTeam(this.homeTeam);
+        testMatch.setAwayTeam(this.awayTeam);
         testMatch = this.matchRepository.save(testMatch);
 
         this.testEvent = new Event(testMatch);
@@ -97,6 +112,8 @@ class EventServiceIntegrationTest {
     void testCreateEvent() {
         Match anotherMatch = new Match();
         anotherMatch.setStadium(this.testStadium);
+        anotherMatch.setHomeTeam(this.homeTeam);
+        anotherMatch.setAwayTeam(this.awayTeam);
         anotherMatch = this.matchRepository.save(anotherMatch);
 
         SectorCreateRequest sectorReq = new SectorCreateRequest("Bleachers", 50);

@@ -1,11 +1,6 @@
 package com.mlb.mlbportal.services.team;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -138,6 +133,15 @@ public class TeamService {
                     .put(division, sorted);
         }
         return standings;
+    }
+
+    @Transactional
+    public void updateRanking(Team awayTeam, Team homeTeam) {
+        Set<Team> teamsToUpdate = new HashSet<>();
+        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(awayTeam.getLeague(), awayTeam.getDivision()));
+        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(homeTeam.getLeague(), homeTeam.getDivision()));
+        teamsToUpdate.forEach(team -> TeamServiceOperations.enrichTeamStats(team, this.teamRepository, this.matchService));
+        this.teamRepository.saveAll(teamsToUpdate);
     }
 
     @Transactional

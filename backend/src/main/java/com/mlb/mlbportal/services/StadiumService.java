@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.models.Stadium;
@@ -73,9 +72,6 @@ public class StadiumService {
     @Transactional
     public void deletePicture(String stadiumName, String publicId) {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
-        if (stadium.getPictures().size() <= 1) {
-            throw new LastPictureDeletionException("Cannot delete the last picture of a stadium");
-        }
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
         this.stadiumRepository.save(stadium);
     }

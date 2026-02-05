@@ -25,8 +25,8 @@ public class Event {
     @JoinColumn(name = &quot;match_id&quot;)
     private Match match;
 
-<span class="fc" id="L28">    @OneToMany(mappedBy = &quot;event&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)</span>
-    private List&lt;EventManager&gt; eventManagers = new ArrayList&lt;&gt;();
+    @OneToMany(mappedBy = &quot;event&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+<span class="fc" id="L29">    private List&lt;EventManager&gt; eventManagers = new ArrayList&lt;&gt;();</span>
 
 <span class="fc" id="L31">    public Event(Match match) {</span>
 <span class="fc" id="L32">        this.match = match;</span>

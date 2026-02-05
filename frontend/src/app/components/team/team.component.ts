@@ -11,7 +11,7 @@ import { CalendarComponent } from "./calendar/calendar.component";
 import { Pictures } from '../../models/pictures.model';
 import { MatchService, ShowMatch } from '../../services/match.service';
 import { PaginatedSelectorService } from '../../services/utilities/paginated-selector.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/ticket/event.service';
 import { EventResponse } from '../../models/ticket/event-response.model';
@@ -33,6 +33,7 @@ export class TeamComponent implements OnInit {
 	private authService = inject(AuthService);
 	private eventService = inject(EventService);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 	public backgroundService = inject(BackgroundColorService);
 
 	public team: TeamInfo | null = null;
@@ -64,25 +65,26 @@ export class TeamComponent implements OnInit {
 
 	ngOnInit() {
 		this.selectedTeamService.selectedTeam$.subscribe((selectedTeam) => {
-			this.team = selectedTeam;
-			this.positionPlayers = selectedTeam?.positionPlayers ?? [];
-			this.pitchers = selectedTeam?.pitchers ?? [];
-			this.championships = selectedTeam?.championships ?? [];
-			this.stadiumImages = selectedTeam?.stadium.pictures ?? [];
-
-			this.currentIndex = 0;
-			this.restartAutoplay();
-
-			if (selectedTeam?.teamStats?.abbreviation) {
-				this.teamService
-					.getTeamDivisionRank(selectedTeam.teamStats.abbreviation)
-					.subscribe((rank) => {
+			if (selectedTeam) {
+				this.retrieveInformation(selectedTeam);
+				if (selectedTeam?.teamStats?.abbreviation) {
+					this.teamService.getTeamDivisionRank(selectedTeam.teamStats.abbreviation).subscribe((rank) => {
 						this.teamRank = rank;
 					});
-			}
+				}
 
-			if (this.team) {
-				this.resetMatches();
+				if (this.team) {
+					this.resetMatches();
+				}
+			}
+			else { // This is when the user refreshes the page, avoiding the Spring + Angular 404 error.
+				const urlTeamName = this.route.snapshot.paramMap.get('name');
+				if (urlTeamName) {
+					this.teamService.getTeamInfo(urlTeamName).subscribe({
+						next: (team) => this.selectedTeamService.setSelectedTeam(team),
+                    	error: (_) => this.router.navigate(['/error'])
+					});
+				}
 			}
 		});
 
@@ -94,6 +96,17 @@ export class TeamComponent implements OnInit {
 				this.checkEventOfAMatch(matches);
 			}
 		});
+	}
+
+	private retrieveInformation(selectedTeam: TeamInfo) {
+		this.team = selectedTeam;
+		this.positionPlayers = selectedTeam?.positionPlayers ?? [];
+		this.pitchers = selectedTeam?.pitchers ?? [];
+		this.championships = selectedTeam?.championships ?? [];
+		this.stadiumImages = selectedTeam?.stadium.pictures ?? [];
+
+		this.currentIndex = 0;
+		this.restartAutoplay();
 	}
 
 	ngOnDestroy() {

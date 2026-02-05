@@ -1,13 +1,14 @@
 import { AuthService } from './../../services/auth.service';
-import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
-import { filter } from 'rxjs';
+import { combineLatest, filter, startWith, Subscription } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { UserService } from '../../services/user.service';
 import { SupportService } from '../../services/support.service';
+import { PollingService } from '../../services/utilities/polling.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -16,7 +17,7 @@ import { SupportService } from '../../services/support.service';
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './navbar.component.html',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 	@Input() isDarkMode: boolean = false;
 	@Output() toggleDarkMode: EventEmitter<void> = new EventEmitter();
 
@@ -25,7 +26,9 @@ export class NavbarComponent implements OnInit {
 	private backgroundService = inject(BackgroundColorService);
 	private selectTeamService = inject(SelectedTeamService);
 	private supportService = inject(SupportService);
+	private pollingService = inject(PollingService);
 	private router = inject(Router);
+	private cdr = inject(ChangeDetectorRef);
 
 	private selectedTeamAbbr: string | undefined = '';
 	public roles: string[] = ['GUEST'];
@@ -39,38 +42,53 @@ export class NavbarComponent implements OnInit {
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
-			if (user) {
-				this.roles = user.roles;
-				this.username = user.username;
-			} else {
-				this.roles = ['GUEST'];
-				this.username = '';
+			this.roles = user?.roles || ['GUEST'];
+			this.username = user?.username || '';
+			if (this.roles.includes('ADMIN')) {
+				this.pollingService.initPolling();
 			}
+			else {
+				this.pollingService.stopPolling();
+			}
+			this.cdr.detectChanges();
 		});
 
-		this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-			this.currentRoute = event.urlAfterRedirects;
+		combineLatest([
+			this.router.events.pipe(
+				filter(event => event instanceof NavigationEnd),
+				startWith(new NavigationEnd(0, this.router.url, this.router.url))
+			),
+			this.selectTeamService.selectedTeam$
+		]).subscribe(([event, team]) => {
+			const url = (event as NavigationEnd).urlAfterRedirects;
+			this.currentRoute = url;
 			this.isMenuOpen = false;
-			if (!this.currentRoute.includes('/team')) {
-				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
-				this.selectedTeamAbbr = '';
+
+			if (url.includes('/team') && team?.teamStats?.abbreviation) {
+				this.selectedTeamAbbr = team.teamStats.abbreviation;
+				this.navBarStyleClass = this.navBarBackgroundColor(this.selectedTeamAbbr);
 			}
+			else {
+				this.selectedTeamAbbr = '';
+				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
+			}
+			this.cdr.detectChanges();
 		});
 
-		this.currentRoute = this.router.url;
-
-		this.selectTeamService.selectedTeam$.subscribe((team) => {
-			this.selectedTeamAbbr = team?.teamStats.abbreviation;
-			this.navBarStyleClass = this.navBarBackgroundColor(team?.teamStats.abbreviation);
+		this.userService.profilePicture$.subscribe(url => {
+			this.profilePicture = url;
+			this.cdr.detectChanges();
 		});
 
-		this.userService.profilePicture$.subscribe((url) => this.profilePicture = url);
-
-		this.supportService.opentTickets$.subscribe(ammount => this.currentOpenTickets = ammount);
+		this.supportService.opentTickets$.subscribe(amount => {
+			this.currentOpenTickets = amount;
+			this.cdr.detectChanges();
+		});
 	}
 
 	ngOnDestroy() {
 		this.selectTeamService.clearSelectedTeam();
+		this.pollingService.stopPolling();
 	}
 
 	public toggleMenu(): void {

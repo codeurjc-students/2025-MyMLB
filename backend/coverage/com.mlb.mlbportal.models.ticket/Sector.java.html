@@ -27,8 +27,8 @@ public class Sector {
     @JoinColumn(name = &quot;stadium_id&quot;)
     private Stadium stadium;
 
-<span class="fc" id="L30">    @OneToMany(mappedBy = &quot;sector&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)</span>
-    private List&lt;Seat&gt; seats = new LinkedList&lt;&gt;();
+    @OneToMany(mappedBy = &quot;sector&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+<span class="fc" id="L31">    private List&lt;Seat&gt; seats = new LinkedList&lt;&gt;();</span>
 
     private int totalCapacity;
 

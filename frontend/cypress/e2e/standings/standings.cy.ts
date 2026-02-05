@@ -10,6 +10,7 @@ describe('Standings Component E2E Tests', () => {
 		});
 
 		cy.visit('/standings');
+		cy.wait('@getStandings');
 	});
 
 	it('should display the title of the page and the leagues and divisions', () => {
@@ -38,7 +39,8 @@ describe('Standings Component E2E Tests', () => {
 			}).as('getTeam');
 		});
 
-		cy.get('table tbody tr img[alt=NYY]').click();
+		cy.get('table tbody tr').should('have.length.at.least', 1);
+		cy.get('table tbody tr img[alt="NYY"]').first().click();
 		cy.wait('@getTeam');
 		cy.url().should('include', '/team/New%20York%20Yankees');
 	});

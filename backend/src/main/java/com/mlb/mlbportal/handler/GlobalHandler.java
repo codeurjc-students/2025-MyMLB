@@ -84,12 +84,6 @@ public class GlobalHandler {
         return buildResponse(HttpStatus.CONFLICT, message, "Resource Already Exists");
     }
 
-    @ExceptionHandler(LastPictureDeletionException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, Object> handleLastPictureDeletion(LastPictureDeletionException ex) {
-        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "Cannot delete the last picture of a stadium");
-    }
-
     @ExceptionHandler(OptimisticEntityLockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> handleOptimisticLock(OptimisticEntityLockException ex) {

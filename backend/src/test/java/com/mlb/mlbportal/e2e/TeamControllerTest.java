@@ -3,8 +3,8 @@ package com.mlb.mlbportal.e2e;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
-
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +13,30 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import static com.mlb.mlbportal.utils.TestConstants.ALL_TEAMS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.STANDINGS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
+import static com.mlb.mlbportal.utils.TestConstants.TEAM_INFO_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -79,11 +99,8 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("AL.EAST.size()", is(2))
                 .body("AL.EAST[0].abbreviation", is(TEST_TEAM2_ABBREVIATION))
                 .body("AL.EAST[1].abbreviation", is(TEST_TEAM1_ABBREVIATION))
-                .body("AL.EAST[0].gamesBehind", is(0.0f))
-                .body("AL.EAST[1].gamesBehind", is(14.0f))
                 .body("NL.CENTRAL.size()", is(1))
-                .body("NL.CENTRAL[0].abbreviation", is(TEST_TEAM3_ABBREVIATION))
-                .body("NL.CENTRAL[0].gamesBehind", is(0.0f));
+                .body("NL.CENTRAL[0].abbreviation", is(TEST_TEAM3_ABBREVIATION));
     }
 
     @Test

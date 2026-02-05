@@ -124,7 +124,7 @@ public class StadiumController {
     @PostMapping
     public ResponseEntity&lt;StadiumDTO&gt; createStadium(@Valid @RequestBody CreateStadiumRequest request) {
 <span class="fc" id="L126">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
-        URI location = ServletUriComponentsBuilder
+<span class="fc" id="L127">        URI location = ServletUriComponentsBuilder</span>
 <span class="fc" id="L128">                .fromCurrentRequest()</span>
 <span class="fc" id="L129">                .path(&quot;/{name}&quot;)</span>
 <span class="fc" id="L130">                .buildAndExpand(newStadium.name())</span>

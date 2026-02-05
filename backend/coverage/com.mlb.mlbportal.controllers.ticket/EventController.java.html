@@ -119,7 +119,7 @@ public class EventController {
     @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; createEvent(@Valid @RequestBody EventCreateRequest request) {
 <span class="fc" id="L121">        EventResponseDTO response = this.eventService.createEvent(request);</span>
-        URI location = ServletUriComponentsBuilder
+<span class="fc" id="L122">        URI location = ServletUriComponentsBuilder</span>
 <span class="fc" id="L123">                .fromCurrentRequest()</span>
 <span class="fc" id="L124">                .path(&quot;/{eventId}&quot;)</span>
 <span class="fc" id="L125">                .buildAndExpand(response.id())</span>

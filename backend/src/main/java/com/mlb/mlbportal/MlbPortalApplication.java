@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
 @EnableSpringDataWebSupport(
     pageSerializationMode= EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO
 )
+@EnableScheduling
 @EnableAsync
 public class MlbPortalApplication {
     public static void main(String[] args) {

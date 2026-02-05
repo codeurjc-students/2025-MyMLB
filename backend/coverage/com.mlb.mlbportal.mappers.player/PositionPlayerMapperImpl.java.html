@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-02-01T23:01:29+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+    date = &quot;2026-02-04T16:35:34+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
 )
 @Component
 <span class="fc" id="L20">public class PositionPlayerMapperImpl implements PositionPlayerMapper {</span>
@@ -73,7 +73,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L73">        List&lt;PositionPlayerDTO&gt; list = new ArrayList&lt;PositionPlayerDTO&gt;( playerList.size() );</span>
 <span class="fc bfc" id="L74" title="All 2 branches covered.">        for ( PositionPlayer positionPlayer : playerList ) {</span>
 <span class="fc" id="L75">            list.add( toPositionPlayerDTO( positionPlayer ) );</span>
-<span class="fc" id="L76">        }</span>
+        }
 
 <span class="fc" id="L78">        return list;</span>
     }
@@ -130,7 +130,7 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L130">        List&lt;PositionPlayerSummaryDTO&gt; list = new ArrayList&lt;PositionPlayerSummaryDTO&gt;( playerList.size() );</span>
 <span class="nc bnc" id="L131" title="All 2 branches missed.">        for ( PositionPlayer positionPlayer : playerList ) {</span>
 <span class="nc" id="L132">            list.add( toPositionPlayerSummaryDTO( positionPlayer ) );</span>
-<span class="nc" id="L133">        }</span>
+        }
 
 <span class="nc" id="L135">        return list;</span>
     }

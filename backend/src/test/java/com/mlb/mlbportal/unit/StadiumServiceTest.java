@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
-import com.mlb.mlbportal.handler.conflict.LastPictureDeletionException;
 import com.mlb.mlbportal.handler.conflict.StadiumAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import com.mlb.mlbportal.mappers.StadiumMapper;
@@ -226,20 +225,6 @@ class StadiumServiceTest {
 
         verify(this.stadiumRepository).save(stadium);
         assertThat(stadium.getPictures()).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("Should throw LastPictureDeletionException when trying to delete the last picture")
-    void testDeleteLastPicture() {
-        Stadium stadium = this.deletePictureTestSetUp(false);
-
-        when(this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME)).thenReturn(stadium);
-
-        assertThatThrownBy(() -> this.stadiumService.deletePicture(STADIUM1_NAME, "fake123"))
-                .isInstanceOf(LastPictureDeletionException.class)
-                .hasMessageContaining("Cannot delete the last picture of a stadium");
-
-        verify(this.stadiumRepository, never()).save(stadium);
     }
 
     @Test
