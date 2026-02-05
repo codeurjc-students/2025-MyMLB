@@ -1,10 +1,10 @@
 package com.mlb.mlbportal.controllers;
 
 import java.security.Principal;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import com.mlb.mlbportal.dto.authentication.ForgotPasswordRequest;
@@ -45,7 +45,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserRole> getActiveUser(Principal principal) {
         if (principal == null) {
-            throw new AuthenticationCredentialsNotFoundException("User Not Authenticated");
+            return ResponseEntity.ok(new UserRole("", List.of("GUEST")));
         }
         return ResponseEntity.ok(this.userService.getUserRole(principal.getName()));
     }
