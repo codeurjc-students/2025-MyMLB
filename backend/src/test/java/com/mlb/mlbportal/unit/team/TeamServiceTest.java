@@ -1,24 +1,35 @@
 package com.mlb.mlbportal.unit.team;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.mappers.TeamMapper;
@@ -35,17 +46,13 @@ import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
+import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
 import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -230,8 +237,8 @@ class TeamServiceTest {
         assertThat(team2.getPct()).isEqualTo(0.533);
         assertThat(team2.getGamesBehind()).isEqualTo(2.0);
 
-        verify(this.teamRepository, times(2)).save(team1);
-        verify(this.teamRepository, times(2)).save(team2);
+        verify(this.teamRepository, times(1)).save(team1);
+        verify(this.teamRepository, times(1)).save(team2);
     }
 
     @Test

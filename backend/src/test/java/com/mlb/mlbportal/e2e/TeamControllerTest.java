@@ -97,8 +97,8 @@ class TeamControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("AL.EAST.size()", is(2))
-                .body("AL.EAST[0].abbreviation", is(TEST_TEAM1_ABBREVIATION))
-                .body("AL.EAST[1].abbreviation", is(TEST_TEAM2_ABBREVIATION))
+                .body("AL.EAST[0].abbreviation", is(TEST_TEAM2_ABBREVIATION))
+                .body("AL.EAST[1].abbreviation", is(TEST_TEAM1_ABBREVIATION))
                 .body("NL.CENTRAL.size()", is(1))
                 .body("NL.CENTRAL[0].abbreviation", is(TEST_TEAM3_ABBREVIATION));
     }

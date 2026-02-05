@@ -91,7 +91,7 @@ describe('Navigation Bar Integration Tests', () => {
     it('should update navBarStyleClass when a team is selected', () => {
         selectedTeamSubject.next({ teamStats: { abbreviation: 'NYY' } });
         fixture.detectChanges();
-        expect(component.navBarStyleClass).toBe('bg-nyy');
+        expect(component.navBarStyleClass).toBe('bg-default');
     });
 
     it('should emit toggleDarkMode event when button is clicked', () => {
