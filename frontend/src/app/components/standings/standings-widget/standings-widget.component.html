@@ -4,26 +4,26 @@
 			<div class="relative flex items-center justify-center">
 				<div class="absolute left-0 flex items-center">
 					@if (standings[currentIndex].league === 'AL') {
-					<div
-						class="w-14 h-14 bg-indigo-200 rounded-full flex items-center justify-center ml-1 shadow-md"
-					>
-						<img
-							src="assets/league-logos/AL.png"
-							alt="AL Logo"
-							class="w-10 h-10 object-contain"
-						/>
-					</div>
-
-					} @else {
-					<div
-						class="w-14 h-14 bg-indigo-200 rounded-full flex items-center justify-center ml-1 shadow-md"
-					>
-						<img
-							src="assets/league-logos/NL.png"
-							alt="NL Logo"
-							class="w-10 h-10 object-contain"
-						/>
-					</div>
+						<div
+							class="w-14 h-14 bg-indigo-200 rounded-full flex items-center justify-center ml-1 shadow-md"
+						>
+							<img
+								src="assets/league-logos/AL.png"
+								alt="AL Logo"
+								class="w-10 h-10 object-contain"
+							/>
+						</div>
+					}
+					@else {
+						<div
+							class="w-14 h-14 bg-indigo-200 rounded-full flex items-center justify-center ml-1 shadow-md"
+						>
+							<img
+								src="assets/league-logos/NL.png"
+								alt="NL Logo"
+								class="w-10 h-10 object-contain"
+							/>
+						</div>
 					}
 				</div>
 
@@ -68,62 +68,65 @@
 
 				<tbody class="divide-y divide-gray-300 dark:bg-slate-400">
 					@for (team of standings[currentIndex].teams; track team.abbreviation) {
-					<tr class="hover:bg-blue-100/40 even:bg-white transition-colors duration-200 dark:bg-slate-500 dark:even:bg-slate-400">
-						<td class="px-1 py-3 text-left justify-center">
-							<div class="flex items-center gap-2 w-full">
-								<div class="team-logo-container" [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
-									<img
-										src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
-										alt="{{ team.abbreviation }}"
-										class="w-9 h-9 object-contain cursor-pointer"
-										(click)="selectTeam(team.name)"
-									/>
+						<tr class="hover:bg-blue-100/40 even:bg-white transition-colors duration-200 dark:bg-slate-500 dark:even:bg-slate-400">
+							<td class="px-1 py-3 text-left justify-center">
+								<div class="flex items-center gap-2 w-full">
+									<div class="team-logo-container" [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
+										<img
+											src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
+											alt="{{ team.abbreviation }}"
+											class="w-9 h-9 object-contain cursor-pointer"
+											(click)="selectTeam(team.name)"
+										/>
+									</div>
+									<span [matTooltip]="team.name" matTooltipPosition="below" class="font-semibold dark:text-white text-left cursor-pointer" (click)="selectTeam(team.name)">
+										{{ team.abbreviation }}
+									</span>
 								</div>
-								<span class="font-semibold dark:text-white text-left cursor-pointer" (click)="selectTeam(team.name)">{{ team.abbreviation }}</span>
-							</div>
-						</td>
+							</td>
 
-						<td class="px-3 py-2 text-center text-gray-700 dark:text-white">
-							{{ team.totalGames }}
-						</td>
+							<td class="px-3 py-2 text-center text-gray-700 dark:text-white">
+								{{ team.totalGames }}
+							</td>
 
-						<td
-						class="px-3 py-2 text-center font-bold text-green-700"
-						[ngClass]="{
-							'dark:text-emerald-500': $even,
-							'dark:text-green-700': $odd
-						}">
-							{{ team.wins }}
-						</td>
-
-						<td class="px-3 py-2 text-center font-bold text-red-700">
-							{{ team.losses }}
-						</td>
-
-						<td
+							<td
 							class="px-3 py-2 text-center font-bold text-green-700"
 							[ngClass]="{
-								'dark:text-emerald-500': team.pct >= 0.5 && $even,
-								'dark:text-green-700': team.pct >= 0.5 && $odd,
-								'text-red-700': team.pct < 0.5
-							}"
-						>
-							{{ team.pct | number:'1.3-3'  }}
-						</td>
+								'dark:text-emerald-500': $even,
+								'dark:text-green-700': $odd
+							}">
+								{{ team.wins }}
+							</td>
+
+							<td class="px-3 py-2 text-center font-bold text-red-700">
+								{{ team.losses }}
+							</td>
+
+							<td
+								class="px-3 py-2 text-center font-bold text-green-700"
+								[ngClass]="{
+									'dark:text-emerald-500': team.pct >= 0.5 && $even,
+									'dark:text-green-700': team.pct >= 0.5 && $odd,
+									'text-red-700': team.pct < 0.5
+								}"
+							>
+								{{ team.pct | number:'1.3-3'  }}
+							</td>
 
 
-						@if (team.gamesBehind === 0) {
-						<td class="px-3 py-2 text-center text-gray-600 font-medium dark:text-white">–</td>
-						} @else {
-						<td class="px-3 py-2 text-center text-gray-700 font-medium dark:text-white">
-							{{ team.gamesBehind }}
-						</td>
-						}
+							@if (team.gamesBehind === 0) {
+								<td class="px-3 py-2 text-center text-gray-600 font-medium dark:text-white">–</td>
+							}
+							@else {
+								<td class="px-3 py-2 text-center text-gray-700 font-medium dark:text-white">
+									{{ team.gamesBehind }}
+								</td>
+							}
 
-						<td class="px-3 py-2 text-center font-semibold dark:text-white whitespace-nowrap">
-							{{ team.lastTen }}
-						</td>
-					</tr>
+							<td class="px-3 py-2 text-center font-semibold dark:text-white whitespace-nowrap">
+								{{ team.lastTen }}
+							</td>
+						</tr>
 					}
 				</tbody>
 			</table>

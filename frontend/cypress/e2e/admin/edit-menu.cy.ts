@@ -16,7 +16,7 @@ describe('Edit Menu E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getAdmin');
 
-		cy.contains('Edit Info').click();
+		cy.contains('Edit Menu').click();
 	});
 
 	it('should perform search and show team results', () => {

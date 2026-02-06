@@ -13,7 +13,7 @@ describe('Edit Player Component E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getAdmin');
 
-		cy.contains('Edit Info').click();
+		cy.contains('Edit Menu').click();
 
 		cy.intercept('GET', '/api/v1/searchs/player*', { fixture: 'player.json' }).as('searchPlayer');
 

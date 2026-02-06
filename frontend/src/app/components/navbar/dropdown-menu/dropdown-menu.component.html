@@ -1,5 +1,5 @@
 <div class="dropdown-container">
-	<ul class="max-h-48 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownTeamsButton">
+	<ul class="max-h-48 py-2 overflow-y-auto cursor-pointer text-gray-700 dark:text-gray-200" aria-labelledby="dropdownTeamsButton">
 		@for (team of teams; track team.abbreviation) {
 			@if (errorMessage) {
 				<p>{{ errorMessage }}</p>

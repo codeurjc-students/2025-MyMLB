@@ -10,6 +10,4 @@ import { MatchesOfTheDayComponent } from "../match/matches-of-the-day/matches-of
 	changeDetection: ChangeDetectionStrategy.Default,
  	imports: [StandingsWidgetComponent, CommonModule, MatchesOfTheDayComponent]
 })
-export class HomeComponent {
-	constructor() {}
-}
+export class HomeComponent {}

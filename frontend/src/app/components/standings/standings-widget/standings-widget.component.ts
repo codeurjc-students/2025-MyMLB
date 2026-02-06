@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TeamService, StandingsResponse } from '../../../services/team.service';
 import { StandingsData } from '../../../models/standings-data.model';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,7 @@ import { BackgroundColorService } from '../../../services/background-color.servi
 @Component({
     selector: 'app-standings',
     standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, MatTooltipModule],
 	changeDetection: ChangeDetectionStrategy.Default,
     templateUrl: './standings-widget.component.html',
 })

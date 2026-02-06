@@ -13,7 +13,7 @@ describe('Edit Team Component E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getAdmin');
 
-		cy.contains('Edit Info').click();
+		cy.contains('Edit Menu').click();
 
 		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'search-team.json' }).as('searchTeam');
 
