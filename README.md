@@ -399,9 +399,9 @@ To create an event the admins must enter the amount of sectors it will have, the
 </p>
 
 <p align="center">
-  <img src="images/features/user/TicketPurrchase.png" width="40%" />
+  <img src="images/features/user/TicketPurchase.png" width="40%" />
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="images/features/user/StadiumMap.png" width="40%" />
+  <img src="images/features/user/Ticket.png" width="40%" />
 </p>
 
 <p align="center">
