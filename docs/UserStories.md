@@ -8,6 +8,7 @@
   - [User Logout](#user-logout)
   - [Add Favorite Team](#add-favorite-team)
   - [Remove Favorite Team](#remove-favorite-team)
+  - [Edit Profile Settings](#edit-profile-settings)
   - [Update Team Information](#update-team-information)
   - [Edit Player Information](#edit-player-information)
   - [Edit Stadium Information](#edit-stadium-information)
@@ -16,15 +17,11 @@
   - [Delete Player](#delete-player)
 - [Intermediate Features](#-intermediate-features)
   - [Delete Account](#delete-account)
-  - [Edit Profile Settings](#edit-profile-settings)
   - [Ticket Purchase](#ticket-purchase)
-  - [Cancel Ticket Purchase](#cancel-ticket-purchase)
   - [Notifications via Email](#notifications-via-email)
   - [Contact Support via Email](#contact-support-via-email)
 - [Advanced Features](#-advanced-features)
-  - [Create and Edit a Game](#create-and-edit-a-game)
-  - [Update Game Score](#update-game-score)
-  - [User´s Favourite Teams Statistics](#users-favourite-teams-statistics)
+  - [User's Favourite Teams Statistics](#users-favourite-teams-statistics)
   - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
 
 ## 🟢 Basic Features
@@ -156,6 +153,33 @@
 - Verify if the list is correctly updated after the removal.
 
 ---
+
+### Edit Profile Settings
+**As a:** Registered User.
+
+**I want to:** Edit my account settings.
+
+**So that:** I personalize my personal settings.
+
+#### Acceptance Criteria
+- The user must be able to edit the following fields:
+  - Email.
+  - Password.
+  - Profile Picture.
+  - Enable/Dissable Notifications.
+- A confirmation message should appear before completing the operation.
+- A success message should be displayed after the operation completes successfully.
+
+#### Dependencies
+- The new password must be different from the current one.
+
+#### Tests
+- Verify that profile changes are saved correctly in the database.
+- Verify that any invalid input should thrown an error message.
+- Verify that after saving, the new settings is correctly shown to the user.
+
+---
+
 ### Update Team Information
 **As a:** Admin.
 
@@ -343,31 +367,7 @@
 - Verify that attempting to log in with deleted credentials returns an error message.
 
 ---
-### Edit Profile Settings
-**As a:** Registered User.
 
-**I want to:** Edit my account settings.
-
-**So that:** I personalize my personal settings.
-
-#### Acceptance Criteria
-- The user must be able to edit the following fields:
-  - Email.
-  - Password.
-  - Profile Picture.
-  - Enable/Dissable Notifications.
-- A confirmation message should appear before completing the operation.
-- A success message should be displayed after the operation completes successfully.
-
-#### Dependencies
-- The new password must be different from the current one.
-
-#### Tests
-- Verify that profile changes are saved correctly in the database.
-- Verify that any invalid input should thrown an error message.
-- Verify that after saving, the new settings is correctly shown to the user.
-
----
 ### Ticket Purchase
 **As a:** Registered User.
 
@@ -416,92 +416,36 @@
 #### Tests
 - Verify that emails are sent correctly when the notifications are enabled.
 - Verify that no emails are sent when the notifications are disabled.
-- Verify that the changes in the notifications preferences are correctly updated and stores.
+- Verify that the changes in the notifications preferences are correctly updated and stored.
 
 ---
 ### Contact Support via Email
-**As a:** Registered User.
+**As a:** Guest.
 
 **I want to:** Send a message to report a problem or asking for support.
 
-**So that:** I can get help regarding the issue from the application´s administrators.
+**So that:** I can get help regarding the issue from the application's administrators.
 
 #### Acceptance Criteria
 - The user can fill out a contact form with the following fields:
-  - User´s email.
+  - Email (if it is a guest user).
   - Subject.
   - Body.
-- The message must be sent to the application´s administrators via email.
-- A confirmation message must be displayed to the user after a successfull submission.  
+- The message must be sent to the admins via email.
+- A confirmation message must be displayed to the user after a successfull submission.
+- The messages must be displayed at the admin's inbox in the application.
 
 #### Tests
 - Verify that the contact form send the message correctly.
 - Verify that the confirmation message is correctly displays.
 - Verify that error messages appears when the required fields are empty or invalid.
+- Verify that the admin can reply to the user successfully.
+- Verify that the admin can close any support ticket successfully.
 
 ---
 ## 🔴 Advanced Features
 
-### Create and Edit a Game
-**As a:** Admin.
-
-**I want to:** Create and Edit a match.
-
-**So that:** A match is establish between two teams, and modify any information if needed.
-
-#### Acceptance Criteria
-- An admin-only section must be available for this operation.
-- The administrator must be able to create a game by selecting:
-  - Home Team.
-  - Away Team.
-  - Date and Time.
-  - Stadium.
-- A team cannot play again itself.
-- The stadium must be the one of the Home Team.
-- A success message must appear after the operation.
-
-#### Dependencies
-- A game must not overlap in schedule with another game at the same stadium.
-
-#### Tests
-- Verify that this section is only visible to admins.
-- Verify that a game can be created successfully.
-- Verify that a success message appears after a successfull operation.
-- Verify that an error message appears when attempting to create a game with invalid data.
-- Verify that a game cannot be created in a stadium that is already booked at the same time.
-- Verify that the stadium the game is being held, is the Home Team stadium.
-- Verify that the updated data is correctly stored.
-
----
-### Update Game Score
-**As a:** Admin.
-
-**I want to:** Update the score and inning of the game.
-
-**So that:** I can keep the game information up to date.
-
-#### Acceptance Criteria
-- An admin-only section must be available for this operation.
-- The administrator must be able to update the following fields:
-  - Runs scored by home and away teams.
-  - Current inning.
-  - Game status (Scheduled, In Progress, Finished).
-- Scores and innings must be positive integers.
-- The game status can only progress forwards (ej: Not going back from "In Progress" to "Scheduled").
-
-#### Dependencies
-- The game must exists.
-- The game must already started (the current date is the same or later than the scheduled date).  
-
-#### Tests
-- Verify that this section is only visible to admins.
-- Verify that the score and inning are correctly updated.
-- Verify that the score and inning are valid inputs.
-- Verify that an invalid input triggers an error message.
-- Verify that the transition of the status are valid (forwards).
-
----
-### User´s Favourite Teams Statistics
+### User's Favourite Teams Statistics
 **As a:** Admin.
 
 **I want to:** See the statistics about which teams are most frequently selected as "favourite" for the users.
