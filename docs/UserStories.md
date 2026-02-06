@@ -331,11 +331,11 @@
 #### Acceptance Criteria
 - The "delete account" option is available from the user account settings.
 - The user must confirm the action.
-- Once confirmed, all the account´s data will be permanently remove from the application.
+- Once confirmed, all the account's data will be permanently remove from the application.
 
 #### Dependencies
 - The user must be logged in to access its account settings.
-- All associated data (e.g., tickest) must be dettach from that account.
+- All associated data (e.g., tickets) must be dettach from that account.
 
 #### Tests
 - Verify that the delete option is only visible to registered user.
@@ -352,16 +352,15 @@
 
 #### Acceptance Criteria
 - The user must be able to edit the following fields:
-  - Username.
+  - Email.
   - Password.
   - Profile Picture.
-  - Favourite Team(s).
+  - Enable/Dissable Notifications.
 - A confirmation message should appear before completing the operation.
 - A success message should be displayed after the operation completes successfully.
 
 #### Dependencies
 - The new password must be different from the current one.
-- The list of favourite teams must comply the defined requirements.
 
 #### Tests
 - Verify that profile changes are saved correctly in the database.
@@ -374,51 +373,31 @@
 
 **I want to:** Purchase ticket(s).
 
-**So that:** I can attend matches played by my favourite teams.
+**So that:** I can attend matches played by my favorite teams.
 
 #### Acceptance Criteria
 - The user must complete the purchase form with valid inputs.
 - A success message should be displayed once the operation is successfully completed.
 - If any error occur, an error message should inform the user of the issue.
 - After the purchase, the ticket(s) must be registered under its respective user (ticket list).
-- After the purchase, the tickets should appear in "My Tickets", within the user´s account settings.
-- The system must handle any oncurrency problems that might occur during the purchase process.
+- After the purchase, the tickets should appear in "My Tickets".
+- The system must handle any concurrency problems that might occur during the purchase process.
 
 #### Dependencies
 - The number of tickets requested must be less or equal to the number of tickets available.
+- The number of selected seats must be equal to the number of selected tickets.
 
 #### Tests
 - Verify that the user can purchase a ticket with a valid input.
 - Verify that attempting to purchase more tickets than are available results in an error.
-- Verify that a success message appear afte the purchase.
-- Verify that the ticket(s) are saved in the user`s ticket list after the purchase.
+- Verify that the number of selected seats are equal to the number of selected tickets.
+- Verify that a success message appear after the purchase.
+- Verify that the ticket(s) are saved in the user's ticket list after the purchase.
 - Verify that the ticket(s) purchased appear in the "My Tickets" section after the purchase.
 - Verify that the total number of available tickets for the respective type is updated correctly in the database after the purchase.
 
 ---
-### Cancel Ticket Purchase
-**As a:** Registered User.
 
-**I want to:** Cancel my ticket purchase.
-
-**So that:** I can undo the operation if I change my mind.
-
-#### Acceptance Criteria
-- The cancellation option must be available to the user after selecting the ticket quantity.
-- Undoing the purchase of any ticket must not register any ticket under the respective user.
-- After the operation, a success message must be displayed.
-- The ammount of ticket of the selected type must restore accordingly.
-- The system must handle any oncurrency problems that might occur during the cancellation.
-
-#### Dependencies
-- The cancellation must happen before the purchase is confirmed.
-
-#### Tests
-- Verify that the ammount of tickets previously selected is never registered under the respective user.
-- Verify that the ammount of available tickets of the selected type is correctly restored.
-- Verify that after the operation is successfully completed, a success message is displayed.
-
----
 ### Notifications via Email
 **As a:** Registered User.
 
