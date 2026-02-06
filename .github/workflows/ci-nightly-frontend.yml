@@ -1,0 +1,86 @@
+name: Nightly Frontend
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Frontend Compile
+        run: npm run build -- --configuration production
+        working-directory: ./frontend
+
+  frontend-unit-tests:
+    name: Unit Tests Frontend
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+        working-directory: ./frontend
+
+  frontend-integration-tests:
+    name: Integration Tests Frontend
+    runs-on: ubuntu-latest
+    needs: frontend-unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./frontend
+      - name: Run Integration Tests
+        run: npm run test:integration
+        working-directory: ./frontend
+
+  frontend-e2e-tests:
+    name: E2E Tests Frontend
+    runs-on: ubuntu-latest
+    needs: frontend-integration-tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./frontend
+      - name: Serve Angular in background
+        run: npx ng serve -c=e2e --port 4200 --host 0.0.0.0 &
+        working-directory: ./frontend
+      - name: Wait for Angular to be ready
+        run: npx wait-on http://localhost:4200
+        working-directory: ./frontend
+      - name: Run Cypress E2E Tests
+        run: npx cypress run --config baseUrl=http://localhost:4200
+        working-directory: ./frontend

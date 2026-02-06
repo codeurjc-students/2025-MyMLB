@@ -358,6 +358,59 @@ For the next version, the application will include the option to purchase ticket
 ---
 
 ## 🟡 0.2 Version
+This second version of the application includes the intermediate features which involves the following ones:
+
+### Delete Account and Notification Management
+This version completes the profile section by introducing the `Delete Account` and `Notification` functionalities. The new notification service allows users with favorite teams to receive email reminders 10 minutes before kick-off. This feature can be managed directly from the user's profile settings.
+
+### Contact Support
+With this feature, users can now contact app admins about any issues they may be experiencing, and the administrators can respond. These issues are considered `support tickets`,  and users can open one directly from the footer. 
+
+When a ticket is created, the admins will receive an email notification and can access it in their inbox. This inbox is accessed via the `email icon` on the right side of the navigation bar.
+
+For more technical information regarding this feature: `concurrency issues`, such as two admins responding to the same ticket, are managed correctly.
+
+<p align="center">
+  <img src="images/features/admin/Inbox.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/common/ContactModal.png" width="40%" />
+</p>
+
+### Tickets and Events Management
+The main feature of this version is that registered users can now purchase tickets for any match they wish. They can access the purchase page directly from the team's page by scrolling to the `Upcoming Home Matches` section or by clicking the `Calendar` button and selecting a home match. This will redirect the user to the purchase page, which is divided into two sections: the left displays a map of the home team's stadium, which can be opened in full size by clicking on it, and the area below the mouse cursor is zoomed in, and the right one that is for the user to enters the amount of wanted tickets, the sector, and the seats.
+
+Next, the user must enter their credit card details to complete the transaction. They will receive a confirmation email with information about the purchased tickets in PDF format. They can also view all purchased tickets in the `My Tickets` section.
+
+For more technical information regarding this feature: `concurrency issues`, such as two users attempting to purchase the same seat simultaneously, are managed correctly.
+
+Apart from this, the admin users can create, edit and delete an event directly from the Team page whether the match has an event or not:
+- If the match doesn't have any event assgined --> Create Event Button.
+- If the match does have an event --> Edit and Delete Event Button.
+
+> [!NOTE]
+> It is considered that match has an event if the said match has tickets on sale.
+
+To create an event the admins must enter the amount of sectors it will have, their respective names and prices. In order to modify an event, they must edit the prices of the sectors they wish to modify (since this is the only editable field).
+
+<p align="center">
+  <img src="images/features/user/TicketSelection.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/StadiumMap.png" width="40%" />
+</p>
+
+<p align="center">
+  <img src="images/features/user/TicketPurchase.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/user/Ticket.png" width="40%" />
+</p>
+
+<p align="center">
+  <img src="images/features/admin/CreateEvent.png" width="40%" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="images/features/admin/EditEvent.png" width="40%" />
+</p>
+
+For the next and final version of the application will include the remaining functionalities that belong to the `Statistics` section for the admins.
 
 ---
 
