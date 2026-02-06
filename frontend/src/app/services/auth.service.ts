@@ -27,7 +27,6 @@ export class AuthService {
 			.pipe(
 				tap((user) => this.currentUserSubject.next(user)),
 				catchError((error) => {
-					console.warn('Failed to fetch active user status, defaulting to GUEST:', error);
 					this.currentUserSubject.next(this.defaultGuestUser);
 					return of(this.defaultGuestUser);
 				})

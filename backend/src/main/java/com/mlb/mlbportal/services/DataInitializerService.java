@@ -407,10 +407,10 @@ public class DataInitializerService {
 
     private List<Sector> createSectorsForStadium(Stadium stadium) {
         List<Sector> sectors = Arrays.asList(
-                new Sector(0, "Grada Norte", stadium, new ArrayList<>(), 100),
-                new Sector(0, "Grada Sur", stadium, new ArrayList<>(), 100),
-                new Sector(0, "Preferencia", stadium, new ArrayList<>(), 50),
-                new Sector(0, "Palco VIP", stadium, new ArrayList<>(), 20)
+                new Sector(0, "North Bleacher", stadium, new ArrayList<>(), 100),
+                new Sector(0, "South Bleacher", stadium, new ArrayList<>(), 100),
+                new Sector(0, "Preference", stadium, new ArrayList<>(), 50),
+                new Sector(0, "VIP", stadium, new ArrayList<>(), 20)
         );
         for (Sector sector : sectors) {
             this.createSeatsForSector(sector);
