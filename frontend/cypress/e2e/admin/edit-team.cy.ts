@@ -18,7 +18,6 @@ describe('Edit Team Component E2E Tests', () => {
 		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'search-team.json' }).as('searchTeam');
 
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('New York Yankees');
-		cy.contains('SEARCH').click();
 		cy.wait('@searchTeam');
 
 		cy.contains('EDIT').click();

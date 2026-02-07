@@ -19,7 +19,6 @@ describe('Edit Stadium E2E Tests', () => {
 
 		cy.get('select').first().select('stadium');
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankee Stadium');
-		cy.contains('SEARCH').click();
 		cy.wait('@searchStadium');
 
 		cy.contains('EDIT').click();
