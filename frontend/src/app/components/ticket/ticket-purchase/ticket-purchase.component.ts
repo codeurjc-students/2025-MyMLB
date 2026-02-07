@@ -91,6 +91,8 @@ export class TicketPurchaseComponent implements OnInit, AfterViewInit {
 
 	public purchase() {
 		if (this.paymentForm.invalid) {
+			this.error = true;
+			this.errorMessage = 'Please, fill all fields with the correct format';
 			return;
 		}
 
@@ -101,12 +103,12 @@ export class TicketPurchaseComponent implements OnInit, AfterViewInit {
 			next: (_) => {
 				this.loading = false;
 				this.showSuccesModal = true;
-				this.successMessage = 'Thank you for your purchase';
+				this.successMessage = 'Thank you for your purchase!';
 			},
-			error: (_) => {
+			error: (error) => {
 				this.loading = false;
 				this.error = true;
-				this.errorMessage = 'An error occur during the payment';
+				this.errorMessage = error.error.message;
 			}
 		});
 	}

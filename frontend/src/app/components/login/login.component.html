@@ -6,10 +6,12 @@
 				<h2 class="auth-main-title">Sign In</h2>
 				<form [formGroup]="loginForm" (ngSubmit)="login()" class="space-y-4">
 					<input
+						#username
 						formControlName="username"
 						type="text"
 						placeholder="Username"
 						class="text-inputs"
+						(keydown.ArrowDown)="password.focus()"
 					/>
 					@if (getUsername()?.invalid && getUsername()?.touched) {
 						<div class="text-red-600 text-sm">
@@ -21,10 +23,12 @@
 
 					<div class="relative w-full">
 						<input
+							#password
 							formControlName="password"
 							[type]="hidePassword ? 'password' : 'text'"
 							placeholder="Password"
 							class="text-inputs w-full pr-10"
+							(keydown.ArrowUp)="username.focus()"
 						/>
 
 						<button

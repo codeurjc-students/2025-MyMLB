@@ -15,10 +15,13 @@
 				<h2 class="auth-main-title">Sign Up</h2>
 				<form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-4">
 					<input
+						#email
 						formControlName="email"
 						type="email"
+						autofocus
 						placeholder="myEmail@gmail.com"
 						class="text-inputs"
+						(keydown.ArrowDown)="username.focus()"
 					/>
 					@if (getEmail()?.invalid && getEmail()?.touched) {
 						<div class="text-red-600 text-sm">
@@ -32,10 +35,13 @@
 					}
 
 					<input
+						#username
 						formControlName="username"
 						type="text"
 						placeholder="Username"
 						class="text-inputs"
+						(keydown.ArrowUp)="email.focus()"
+						(keydown.ArrowDown)="password.focus()"
 					/>
 					@if (getUsername()?.invalid && getUsername()?.touched) {
 						<div class="text-red-600 text-sm">
@@ -47,10 +53,12 @@
 
 					<div class="relative w-full">
 						<input
+							#password
 							formControlName="password"
 							[type]="hidePassword ? 'password' : 'text'"
 							placeholder="Password"
 							class="text-inputs w-full pr-10"
+							(keydown.ArrowUp)="username.focus()"
 						/>
 
 						<button

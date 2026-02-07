@@ -66,6 +66,6 @@ describe('Ticket Purchase Component Integration Test', () => {
 		request.flush(mockTicket);
 
 		expect(component.showSuccesModal).toBeTrue();
-		expect(component.successMessage).toBe('Thank you for your purchase');
+		expect(component.successMessage).toBe('Thank you for your purchase!');
 	});
 });

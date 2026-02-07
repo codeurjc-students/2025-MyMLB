@@ -14,7 +14,6 @@ export class EmailPhaseComponent {
 	@Output() emailSent = new EventEmitter<void>();
 	public emailForm: FormGroup;
 	public errorMessage = '';
-	public loading = false;
 
 	constructor(private fb: FormBuilder, private authService: AuthService) {
 		this.emailForm = fb.group({
@@ -32,16 +31,13 @@ export class EmailPhaseComponent {
 		}
 
 		this.errorMessage = '';
-		this.loading = true;
 
 		const request: ForgotPasswordRequest = { email: this.emailForm.value.email };
 		this.authService.forgotPassword(request).subscribe({
 			next: () => {
-				this.loading = false;
 				this.emailSent.emit();
 			},
 			error: (_) => {
-				this.loading = false;
 				this.errorMessage = 'Resource Not Found';
 			}
 		});

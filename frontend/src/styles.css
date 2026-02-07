@@ -29,7 +29,7 @@ html {
 }
 
 .app-button-texts {
-	@apply relative z-10 text-base lg:text-lg tracking-wide;
+	@apply relative z-10 text-base tracking-wide;
 }
 
 .app-page-titles {

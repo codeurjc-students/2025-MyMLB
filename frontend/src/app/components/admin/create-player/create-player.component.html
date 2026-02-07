@@ -40,12 +40,9 @@
                         placeholder="e.g., New York Yankees"
                         class="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
-                    <button
-                        type="button"
-                        (click)="showTeamsModal()"
-                        class="px-4 py-2 app-button hover:scale-[1.02]"
-                    >
-                        Select Team
+                    <button type="button" (click)="showTeamsModal()" class="px-4 py-2 app-button group tracking-widest">
+                        <span class="app-button-bright"></span>
+						<span class="app-button-texts">Select Team</span>
                     </button>
                 </div>
             </div>

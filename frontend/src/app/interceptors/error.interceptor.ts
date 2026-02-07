@@ -34,6 +34,9 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
 				message = 'User already exists.';
 				return throwError(() => error);
 			}
+			else if (code === 422) {
+				return throwError(() => error);
+			}
 			else if (code === 500) {
 				message = 'Something went wrong in the server, try again later';
 			}
