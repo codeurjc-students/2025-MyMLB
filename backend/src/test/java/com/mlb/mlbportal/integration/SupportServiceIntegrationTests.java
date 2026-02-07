@@ -1,16 +1,6 @@
 package com.mlb.mlbportal.integration;
 
-import static org.assertj.core.api.Assertions.*;
-
-import com.mlb.mlbportal.dto.support.ReplyRequest;
-import com.mlb.mlbportal.models.enums.SupportTicketStatus;
-import com.mlb.mlbportal.models.support.SupportTicket;
-import com.mlb.mlbportal.repositories.SupportMessageRepository;
-import com.mlb.mlbportal.repositories.SupportTicketRepository;
-import com.mlb.mlbportal.services.EmailService;
-import com.mlb.mlbportal.services.SupportService;
-import com.mlb.mlbportal.utils.BuildMocksFactory;
-import jakarta.mail.MessagingException;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +10,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import com.mlb.mlbportal.dto.support.ReplyRequest;
+import com.mlb.mlbportal.models.enums.SupportTicketStatus;
+import com.mlb.mlbportal.models.support.SupportTicket;
+import com.mlb.mlbportal.repositories.SupportMessageRepository;
+import com.mlb.mlbportal.repositories.SupportTicketRepository;
+import com.mlb.mlbportal.services.EmailService;
+import com.mlb.mlbportal.services.SupportService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+import static com.mlb.mlbportal.utils.TestConstants.ADMIN_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.SUPPORT_TICKET1_SUBJECT;
+
+import jakarta.mail.MessagingException;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -42,6 +43,7 @@ class SupportServiceIntegrationTests {
     private SupportTicket openTicket;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         this.supportMessageRepository.deleteAll();
         this.supportTicketRepository.deleteAll();

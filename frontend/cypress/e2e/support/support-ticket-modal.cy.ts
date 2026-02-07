@@ -12,16 +12,16 @@ describe('Support Ticket Modal E2E Tests', () => {
 
         cy.intercept('GET', TICKETS_API_URL, [
             {
-                id: 't1',
+                id: 1,
                 subject: 'Login Issue',
                 status: 'OPEN',
                 creationDate: new Date().toISOString()
             }
         ]).as('getTickets');
 
-        cy.intercept('GET', `${TICKETS_API_URL}/t1/conversation`, [
+        cy.intercept('GET', `${TICKETS_API_URL}/1/conversation`, [
             {
-                id: 'm1',
+                id: 1,
                 senderEmail: 'user@test.com',
                 body: 'Hello, I need help',
                 creationDate: new Date().toISOString()

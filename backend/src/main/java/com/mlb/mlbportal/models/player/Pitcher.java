@@ -2,8 +2,8 @@ package com.mlb.mlbportal.models.player;
 
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
-
 import com.mlb.mlbportal.models.others.PictureInfo;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

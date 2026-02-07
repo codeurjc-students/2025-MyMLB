@@ -1,7 +1,5 @@
 package com.mlb.mlbportal.utils;
 
-import java.util.UUID;
-
 public final class TestConstants {
 
     private TestConstants() {}
@@ -139,9 +137,9 @@ public final class TestConstants {
 
     public static final String UNKNOWN_PLAYER = "AnyPlayer";
 
-    public static final UUID SUPPORT_TICKET1_ID = UUID.randomUUID();
+    public static final Long SUPPORT_TICKET1_ID = 1L;
     public static final String SUPPORT_TICKET1_SUBJECT = "Subject of the issue";
-    public static final UUID SUPPORT_TICKET2_ID = UUID.randomUUID();
+    public static final Long SUPPORT_TICKET2_ID = 2L;
     public static final String SUPPORT_TICKET2_SUBJECT = "Subject of the second issue";
 
     public static final String ADMIN_EMAIL = "admin_email@gmail.com";

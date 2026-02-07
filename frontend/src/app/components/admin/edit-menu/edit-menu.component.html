@@ -11,6 +11,7 @@
 			<input
 				type="text"
 				[(ngModel)]="searchQuery"
+				(input)="dynamicSearch()"
 				placeholder="Search a Team, a Player or a Stadium to edit..."
 				class="flex-grow px-4 py-3 rounded-lg shadow-md text-lg bg-white dark:bg-slate-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
 			/>
@@ -20,7 +21,7 @@
 					[(ngModel)]="searchType"
 					(focus)="toggleSearchType(true)"
 					(blur)="toggleSearchType(false)"
-					(change)="toggleSearchType(false)"
+					(change)="dynamicSearch(); toggleSearchType(false)"
 					class="w-full md:min-w-[12rem] px-4 py-3 pr-10 rounded-lg shadow-md text-lg bg-white dark:bg-slate-800 dark:text-white
 					focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer appearance-none"
 				>
@@ -64,12 +65,6 @@
 					</svg>
 				</div>
 			}
-
-			<!-- Search Button -->
-			<button (click)="performSearch()" class="app-button group">
-				<span class="app-button-bright"></span>
-				<span class="app-button-texts">SEARCH</span>
-			</button>
 		</div>
 
 		<!-- Search Results -->

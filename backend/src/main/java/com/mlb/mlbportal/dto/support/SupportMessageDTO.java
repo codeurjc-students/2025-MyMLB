@@ -1,10 +1,9 @@
 package com.mlb.mlbportal.dto.support;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public record SupportMessageDTO(
-        UUID id,
+        Long id,
         String senderEmail,
         String body,
         boolean fromUser,

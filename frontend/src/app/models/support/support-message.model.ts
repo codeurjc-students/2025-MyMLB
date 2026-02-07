@@ -1,5 +1,5 @@
 export type SupportMessage = {
-	id: string,
+	id: number,
 	senderEmail: string,
 	body: string,
 	fromUser: string,

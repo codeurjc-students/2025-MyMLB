@@ -44,16 +44,6 @@ describe('Edit Menu Component Tests', () => {
 		[]
 	);
 
-	const mockTeamResponse: PaginatedSearchs = {
-		content: [mockTeamInfo],
-		page: {
-			size: 10,
-			number: 0,
-			totalElements: 1,
-			totalPages: 1,
-		},
-	};
-
 	beforeEach(() => {
 		searchServiceSpy = jasmine.createSpyObj('SearchService', ['search']);
 		backgroundServiceSpy = jasmine.createSpyObj('BackgroundColorService', [
@@ -66,24 +56,15 @@ describe('Edit Menu Component Tests', () => {
 				{ provide: SearchService, useValue: searchServiceSpy },
 				{ provide: BackgroundColorService, useValue: backgroundServiceSpy },
 			],
-		}).compileComponents();
+		});
 
 		fixture = TestBed.createComponent(EditMenuComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
-	it('should show error if searchQuery is empty', () => {
-		component.searchQuery = '';
-		component.performSearch();
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe(
-			'Please enter the team, stadium or player you want to edit'
-		);
-	});
-
-	it('should show error if searchType is player and playerType is null', () => {
-		component.searchQuery = 'John Doe';
+	it('should show error if searchType is player and the type of player is not provided', () => {
+		component.searchQuery = 'Jasson Dominguez';
 		component.searchType = 'player';
 		component.playerType = null;
 		component.performSearch();
@@ -91,7 +72,7 @@ describe('Edit Menu Component Tests', () => {
 		expect(component.errorMessage).toBe('Please select the type of player you want to edit');
 	});
 
-	it('should perform search and set results', () => {
+	it('should perform search', () => {
 		const mockResponse: PaginatedSearchs = MockFactory.buildPaginatedSearchsForTeam(mockTeamInfo);
 		searchServiceSpy.search.and.returnValue(of(mockResponse));
 

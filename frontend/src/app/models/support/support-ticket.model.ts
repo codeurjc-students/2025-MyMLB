@@ -1,5 +1,5 @@
 export type SupportTicket = {
-	id: string,
+	id: number,
 	subject: string,
 	status: 'OPEN' | 'ANSWERED' | 'CLOSED',
 	creationDate: Date

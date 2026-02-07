@@ -25,13 +25,13 @@ describe('Support Inbox E2E Tests', () => {
     it('should list tickets when there are open ones', () => {
 		const mockTickets = [
 			{
-				id: 't1',
+				id: 1,
 				subject: 'Login Issue',
 				status: 'OPEN',
 				creationDate: new Date().toISOString()
 			},
 			{
-				id: 't2',
+				id: 2,
 				subject: 'Payment Error',
 				status: 'OPEN',
 				creationDate: new Date().toISOString()

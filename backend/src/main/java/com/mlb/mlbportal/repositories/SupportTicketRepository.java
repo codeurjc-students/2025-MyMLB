@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface SupportTicketRepository extends JpaRepository<SupportTicket, UUID> {
+public interface SupportTicketRepository extends JpaRepository<SupportTicket, Long> {
     @Query("SELECT t FROM SupportTicket t WHERE t.status != com.mlb.mlbportal.models.enums.SupportTicketStatus.CLOSED")
     List<SupportTicket> findAllOpenTickets();
 }

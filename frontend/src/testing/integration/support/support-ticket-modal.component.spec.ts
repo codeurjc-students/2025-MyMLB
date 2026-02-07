@@ -14,7 +14,7 @@ describe('Support Ticket Modal Component Integration Test', () => {
 
     const mockMessages: SupportMessage[] = [
         {
-            id: '1',
+            id: 1,
             senderEmail: 'user@test.com',
             body: 'Hello',
             fromUser: 'USER',
@@ -36,7 +36,7 @@ describe('Support Ticket Modal Component Integration Test', () => {
         component = fixture.componentInstance;
         httpMock = TestBed.inject(HttpTestingController);
 
-        component.ticketId = '123';
+        component.ticketId = 123;
 
         fixture.detectChanges();
 

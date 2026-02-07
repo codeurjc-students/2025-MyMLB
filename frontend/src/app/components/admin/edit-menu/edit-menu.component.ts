@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from '../../../services/search.service';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
@@ -12,6 +12,8 @@ import { EditStadiumComponent } from "../edit-stadium/edit-stadium.component";
 import { EditTeamComponent } from "../edit-team/edit-team.component";
 import { EditPlayerComponent } from "../edit-player/edit-player.component";
 import { ValidationService } from '../../../services/utilities/validation.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-edit-menu',
@@ -21,10 +23,16 @@ import { ValidationService } from '../../../services/utilities/validation.servic
 	templateUrl: './edit-menu.component.html',
 })
 export class EditMenuComponent implements OnInit {
+	private searchService = inject(SearchService);
+	public backgroundService = inject(BackgroundColorService);
+	public validationService = inject(ValidationService);
+
 	public searchQuery: string = '';
 	public searchType: 'player' | 'team' | 'stadium' = 'team';
 	public playerType: 'position' | 'pitcher' | null = null;
 	public searchResults: (TeamInfo | Stadium | PositionPlayerGlobal | PitcherGlobal)[] = [];
+	private searchSubject = new Subject<string>();
+
 	public error: boolean = false;
 	public errorMessage = '';
 	public currentPage = 0;
@@ -37,14 +45,21 @@ export class EditMenuComponent implements OnInit {
 	public currentView: 'team' | 'stadium' | 'player' | null = null;
 	public selectedResult!: Team | Stadium | PositionPlayerGlobal | PitcherGlobal;
 
-	constructor(private searchService: SearchService, public backgroundService: BackgroundColorService, public validationService: ValidationService) {}
+	ngOnInit() {
+		this.searchSubject.pipe(debounceTime(200), distinctUntilChanged()).subscribe(() => {
+			this.performSearch(0);
+		});
+	}
 
-	ngOnInit(): void {}
+	public dynamicSearch() {
+		this.searchSubject.next(this.searchQuery);
+	}
 
 	public performSearch(page: number = 0): void {
 		if (!this.searchQuery.trim()) {
-			this.error = true;
-			this.errorMessage = 'Please enter the team, stadium or player you want to edit';
+			this.searchResults = [];
+			this.hasMore = false;
+			this.noResultsMessage = '';
 			return;
 		}
 
@@ -88,13 +103,6 @@ export class EditMenuComponent implements OnInit {
 					this.errorMessage = 'An error occur during the search';
 				}
 			});
-	}
-
-	@HostListener('document:keydown', ['$event'])
-	public handleEnter(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			this.performSearch();
-		}
 	}
 
 	public loadNextPage() {
