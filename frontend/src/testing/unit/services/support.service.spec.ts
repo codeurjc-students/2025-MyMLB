@@ -54,8 +54,8 @@ describe('Support Service Tests', () => {
 
     it('should fetch open tickets', () => {
         const mockTickets: SupportTicket[] = [
-            { id: '1', subject: 'A', status: 'OPEN', creationDate: new Date() },
-            { id: '2', subject: 'B', status: 'OPEN', creationDate: new Date() }
+            { id: 1, subject: 'A', status: 'OPEN', creationDate: new Date() },
+            { id: 2, subject: 'B', status: 'OPEN', creationDate: new Date() }
         ];
 
         service.getOpenTickets().subscribe((tickets) => {
@@ -69,10 +69,10 @@ describe('Support Service Tests', () => {
     });
 
     it('should fetch conversation for a ticket', () => {
-        const ticketId = '123';
+        const ticketId = 123;
         const mockMessages: SupportMessage[] = [
             {
-                id: 'm1',
+                id: 1,
                 senderEmail: 'user@test.com',
                 body: 'Hello',
                 fromUser: 'USER',
@@ -90,14 +90,14 @@ describe('Support Service Tests', () => {
     });
 
     it('should send a reply to a ticket', () => {
-        const ticketId = '123';
+        const ticketId = 123;
         const request: ReplyRequest = {
             adminEmail: 'admin@test.com',
             body: 'We are checking your issue'
         };
 
         const mockResponse: SupportMessage = {
-            id: 'msg1',
+            id: 1,
             senderEmail: 'admin@test.com',
             body: 'We are checking your issue',
             fromUser: 'ADMIN',
@@ -115,7 +115,7 @@ describe('Support Service Tests', () => {
     });
 
     it('should close a ticket', () => {
-        const ticketId = '123';
+        const ticketId = 123;
 
         const mockResponse: AuthResponse = {
             status: 'SUCCESS',
@@ -134,8 +134,8 @@ describe('Support Service Tests', () => {
 
     it('should update openTickets$ with the number of open tickets', () => {
         const mockTickets: SupportTicket[] = [
-            { id: '1', subject: 'A', status: 'OPEN', creationDate: new Date() },
-            { id: '2', subject: 'B', status: 'OPEN', creationDate: new Date() }
+            { id: 1, subject: 'A', status: 'OPEN', creationDate: new Date() },
+            { id: 2, subject: 'B', status: 'OPEN', creationDate: new Date() }
         ];
 
         service.opentTickets$.pipe(skip(1)).subscribe((count) => {

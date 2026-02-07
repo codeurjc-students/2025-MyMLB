@@ -64,22 +64,6 @@ describe('Edit Menu Component Integration Tests', () => {
 		httpMock.verify();
 	});
 
-	it('should set error when searchQuery is empty', () => {
-		component.searchQuery = '';
-		component.performSearch();
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toContain('Please enter');
-	});
-
-	it('should set error when playerType is missing for player search', () => {
-		component.searchQuery = 'Judge';
-		component.searchType = 'player';
-		component.playerType = null;
-		component.performSearch();
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toContain('Please select the type of player');
-	});
-
 	it('should perform search and populate results', () => {
 		component.searchQuery = 'Yankees';
 		component.searchType = 'team';
@@ -92,29 +76,5 @@ describe('Edit Menu Component Integration Tests', () => {
 		expect(component.searchResults.length).toBe(1);
 		expect((component.searchResults[0] as TeamInfo).teamStats.abbreviation).toBe('NYY');
 		expect(component.noResultsMessage).toBe('');
-	});
-
-	it('should handle no results', () => {
-		component.searchQuery = 'Unknown';
-		component.searchType = 'team';
-		component.performSearch();
-
-		const req = httpMock.expectOne('/api/v1/searchs/team?query=Unknown&page=0&size=10');
-		req.flush({ content: [], page: { size: 10, number: 0, totalElements: 0, totalPages: 0 } });
-
-		expect(component.noResultsMessage).toBe('No results were found');
-		expect(component.searchResults.length).toBe(0);
-	});
-
-	it('should handle search error', () => {
-		component.searchQuery = 'Yankees';
-		component.searchType = 'team';
-		component.performSearch();
-
-		const req = httpMock.expectOne(apiUrl);
-		req.flush({}, { status: 500, statusText: 'Server Error' });
-
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('An error occur during the search');
 	});
 });

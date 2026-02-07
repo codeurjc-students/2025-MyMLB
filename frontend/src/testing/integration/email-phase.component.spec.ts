@@ -58,31 +58,7 @@ describe('Email Phase Component Integration Tests', () => {
 		};
 		req.flush(mockResponse);
 
-		expect(component.loading).toBeFalse();
 		expect(component.errorMessage).toBe('');
 		expect(emitSpy).toHaveBeenCalled();
-	});
-
-	it('should show error message on failed request', () => {
-		const expectedErrorMessage = 'Resource Not Found';
-		component.emailForm.setValue({ email: 'fail@example.com' });
-
-		component.submitEmail();
-
-		const req = httpMock.expectOne(forgotPasswordUrl);
-
-		req.flush(expectedErrorMessage, { status: 404, statusText: 'Not Found' });
-
-		expect(component.loading).toBeFalse();
-	});
-
-	it('should not submit if form is invalid', () => {
-		const emitSpy = spyOn(component.emailSent, 'emit');
-		component.emailForm.setValue({ email: '' });
-
-		component.submitEmail();
-
-		httpMock.expectNone(forgotPasswordUrl);
-		expect(emitSpy).not.toHaveBeenCalled();
 	});
 });

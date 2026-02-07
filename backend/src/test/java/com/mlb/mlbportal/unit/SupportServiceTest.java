@@ -33,7 +33,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.mockito.Mockito.verify;
@@ -120,7 +119,7 @@ class SupportServiceTest {
     @DisplayName("Should reply to the user successfully")
     void testReply() throws MessagingException {
         ReplyRequest request = new ReplyRequest(ADMIN_EMAIL, "Reply body");
-        SupportMessageDTO dto = new SupportMessageDTO(UUID.randomUUID(), ADMIN_EMAIL, "Reply body", false, LocalDateTime.now());
+        SupportMessageDTO dto = new SupportMessageDTO(3L, ADMIN_EMAIL, "Reply body", false, LocalDateTime.now());
 
         when(this.supportTicketRepository.findById(SUPPORT_TICKET1_ID)).thenReturn(Optional.of(this.openTicket));
         when(this.supportMessageMapper.toSupportMessageDTO(any(SupportMessage.class))).thenReturn(dto);
@@ -148,7 +147,7 @@ class SupportServiceTest {
     @DisplayName("Should throw SupportTicketNotFound when the ticket doesn't exist")
     void testReplyWithNonExistentTicket() {
         ReplyRequest request = new ReplyRequest(ADMIN_EMAIL, "Reply body");
-        UUID nonExistentId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        Long nonExistentId = 99L;
 
         when(this.supportTicketRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
@@ -170,7 +169,7 @@ class SupportServiceTest {
     @Test
     @DisplayName("Should throw SupportTicketNotFound when closing a non-existent ticket")
     void testCloseNonExistentTicket() {
-        UUID nonExistentId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        Long nonExistentId = 99L;
 
         when(this.supportTicketRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 

@@ -38,7 +38,10 @@
 		/>
 	</div>
 
-	<button type="submit" class="app-button w-full">Confirm</button>
+	<button type="submit" class="app-button group tracking-widest w-full">
+		<span class="app-button-bright"></span>
+		<span class="app-button-texts">Confirm</span>
+	</button>
 
 	@if (errorMessage) {
 		<p class="text-red-600 text-sm mt-2">{{ errorMessage }}</p>

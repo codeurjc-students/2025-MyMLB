@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                     
                     // User Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/users/tickets").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.PATCH, "/api/v1/users").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/users/picture").hasAnyRole("USER", "ADMIN")

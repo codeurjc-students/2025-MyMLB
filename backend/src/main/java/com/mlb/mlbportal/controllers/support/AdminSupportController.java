@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(name = "AdminSupport", description = "Receives all the issues from the users and reply to each one of them")
 @RestController
@@ -43,7 +42,7 @@ public class AdminSupportController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/{ticketId}/conversation", produces = "application/json")
-    public ResponseEntity<List<SupportMessageDTO>> getConversation(@PathVariable("ticketId") UUID ticketId) {
+    public ResponseEntity<List<SupportMessageDTO>> getConversation(@PathVariable("ticketId") Long ticketId) {
         return ResponseEntity.ok(this.supportService.getConversation(ticketId));
     }
 
@@ -55,7 +54,7 @@ public class AdminSupportController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @PostMapping(value = "/{ticketId}/reply", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SupportMessageDTO> reply(@PathVariable("ticketId")UUID ticketId, @RequestBody ReplyRequest request) throws MessagingException {
+    public ResponseEntity<SupportMessageDTO> reply(@PathVariable("ticketId")Long ticketId, @RequestBody ReplyRequest request) throws MessagingException {
         return ResponseEntity.ok(this.supportService.reply(ticketId, request));
     }
 
@@ -67,7 +66,7 @@ public class AdminSupportController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @PostMapping(value = "/{ticketId}/close", produces = "application/json")
-    public ResponseEntity<AuthResponse> closeTicket(@PathVariable("ticketId")UUID ticketId) {
+    public ResponseEntity<AuthResponse> closeTicket(@PathVariable("ticketId")Long ticketId) {
         this.supportService.closeTicket(ticketId);
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Ticket Successfully Closed"));
     }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
@@ -297,7 +296,7 @@ public class BuildMocksFactory {
         return Arrays.asList(dto3);
     }
 
-    public static SupportTicket buildSupportTicket(UUID id, String subject, SupportTicketStatus status) {
+    public static SupportTicket buildSupportTicket(Long id, String subject, SupportTicketStatus status) {
         return SupportTicket.builder().id(id).subject(subject).userEmail(USER1_EMAIL).status(status).build();
     }
 

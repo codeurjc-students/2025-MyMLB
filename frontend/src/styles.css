@@ -29,7 +29,7 @@ html {
 }
 
 .app-button-texts {
-	@apply relative z-10 text-base lg:text-lg tracking-wide;
+	@apply relative z-10 text-base tracking-wide;
 }
 
 .app-page-titles {
@@ -50,6 +50,16 @@ html {
 
 .app-modal-background {
 	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
+}
+
+.mat-mdc-tooltip .mdc-tooltip__surface {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Authentication Forms Styles */

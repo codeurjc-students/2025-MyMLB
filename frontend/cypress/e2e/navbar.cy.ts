@@ -31,7 +31,7 @@ describe('Navbar Component E2E Tests', () => {
 		cy.contains('Fav Teams').should('exist');
 		cy.contains('Teams').should('exist');
 		cy.contains('Standings').should('exist');
-		cy.contains('Edit Info').should('not.exist');
+		cy.contains('Edit Menu').should('not.exist');
 	});
 
 	it('does not show login/signup when authenticated', () => {
@@ -63,7 +63,7 @@ describe('Navbar Component E2E Tests', () => {
 			cy.contains('Sign Up').should('exist');
 			cy.contains('My Tickets').should('not.exist');
 			cy.contains('Fav Teams').should('not.exist');
-			cy.contains('Edit Info').should('not.exist');
+			cy.contains('Edit Menu').should('not.exist');
 		});
 
 		it('shows avatar and navigates to auth forms', () => {
@@ -87,7 +87,7 @@ describe('Navbar Component E2E Tests', () => {
 		});
 
 		it('shows admin-specific links', () => {
-			cy.contains('Edit Info').should('exist');
+			cy.contains('Edit Menu').should('exist');
 			cy.contains('Create Player').should('exist');
 			cy.contains('Create Stadium').should('exist');
 			cy.contains('Statistics').should('exist');

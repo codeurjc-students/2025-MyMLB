@@ -45,11 +45,9 @@ export class Support implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.userService.getUserProfile().subscribe({
-			next: (response) => {
-				this.userEmail = response.email;
-				this.supportForm.get('email')?.setValue(this.userEmail);
-			}
+		this.userService.getUserProfile().subscribe(response => {
+			this.userEmail = response.email;
+			this.supportForm.get('email')?.setValue(this.userEmail);
 		});
 	}
 

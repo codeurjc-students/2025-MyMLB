@@ -4,11 +4,12 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../../models/auth/register-request.model';
 import { CommonModule } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-register',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
+	imports: [ReactiveFormsModule, CommonModule, MatTooltip],
 	templateUrl: './register.component.html'
 })
 export class RegisterComponent {
@@ -17,6 +18,7 @@ export class RegisterComponent {
 	public errorMessage = "";
 	public successMessage = "";
 	public showSuccess = false;
+	public hidePassword = true;
 
 	constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
 		this.registerForm = fb.group({

@@ -25,7 +25,7 @@ describe('Inbox Component Tests', () => {
 
     it('should load tickets on init', () => {
         const mockTickets: SupportTicket[] = [
-            { id: '1', subject: 'A', status: 'OPEN', creationDate: new Date() }
+            { id: 1, subject: 'A', status: 'OPEN', creationDate: new Date() }
         ];
 
         supportServiceSpy.getOpenTickets.and.returnValue(of(mockTickets));
@@ -37,8 +37,8 @@ describe('Inbox Component Tests', () => {
 
     it('should load tickets successfully', () => {
         const mockTickets: SupportTicket[] = [
-            { id: '1', subject: 'A', status: 'OPEN', creationDate: new Date() },
-            { id: '2', subject: 'B', status: 'OPEN', creationDate: new Date() }
+            { id: 1, subject: 'A', status: 'OPEN', creationDate: new Date() },
+            { id: 2, subject: 'B', status: 'OPEN', creationDate: new Date() }
         ];
 
         supportServiceSpy.getOpenTickets.and.returnValue(of(mockTickets));
@@ -50,19 +50,19 @@ describe('Inbox Component Tests', () => {
     });
 
     it('should set selectedTicketId when opening a ticket', () => {
-        component.openTicket('123');
+        component.openTicket(123);
 
-        expect(component.selectedTicketId).toBe('123');
+        expect(component.selectedTicketId).toBe(123);
     });
 
     it('should clear selectedTicketId and reload tickets when closing modal', () => {
         const mockTickets: SupportTicket[] = [
-            { id: '1', subject: 'A', status: 'OPEN', creationDate: new Date() }
+            { id: 1, subject: 'A', status: 'OPEN', creationDate: new Date() }
         ];
 
         supportServiceSpy.getOpenTickets.and.returnValue(of(mockTickets));
 
-        component.selectedTicketId = '123';
+        component.selectedTicketId = 123;
 
         component.closeModal();
 

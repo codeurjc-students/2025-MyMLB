@@ -1,20 +1,22 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginRequest } from '../../models/auth/login-request.model';
 import { CommonModule } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule],
+	imports: [ReactiveFormsModule, CommonModule, MatTooltip],
 	templateUrl: './login.component.html',
 })
 export class LoginComponent {
 	@Output() toggleForm = new EventEmitter<void>();
 	public loginForm: FormGroup;
 	public errorMessage: string = "";
+	public hidePassword = true;
 
 	constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
 		this.loginForm = fb.group({

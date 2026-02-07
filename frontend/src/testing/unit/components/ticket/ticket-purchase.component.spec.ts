@@ -65,7 +65,7 @@ describe('Ticket Purchase Component Tests', () => {
 
         expect(ticketServiceSpy.purchaseTicket).toHaveBeenCalled();
         expect(component.showSuccesModal).toBeTrue();
-        expect(component.successMessage).toBe('Thank you for your purchase');
+        expect(component.successMessage).toBe('Thank you for your purchase!');
     });
 
     it('should handle error during purchase', () => {
@@ -76,13 +76,17 @@ describe('Ticket Purchase Component Tests', () => {
             expirationDate: '2025-12-31'
         });
 
-        ticketServiceSpy.purchaseTicket.and.returnValue(throwError(() => new Error('Payment failed')));
+		const mockErrorResponse = {
+			error: { message: 'The card has expired' }
+		};
+
+        ticketServiceSpy.purchaseTicket.and.returnValue(throwError(() => mockErrorResponse));
 
         component.purchase();
 
         expect(component.loading).toBeFalse();
         expect(component.error).toBeTrue();
-        expect(component.errorMessage).toBe('An error occur during the payment');
+		expect(component.errorMessage).toBe('The card has expired');
     });
 
     it('should not call ticketService if form is invalid', () => {

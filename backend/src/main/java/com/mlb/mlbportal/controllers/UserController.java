@@ -64,6 +64,9 @@ public class UserController {
     })
     @GetMapping(value = "/profile", produces = "application/json")
     public ResponseEntity<ProfileDTO> getUserProfile(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.ok(new ProfileDTO("", null, false));
+        }
         return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));
     }
 

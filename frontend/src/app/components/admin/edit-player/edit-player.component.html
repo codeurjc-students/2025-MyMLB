@@ -55,11 +55,9 @@
 
 				<div class="flex flex-col">
 					<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Team</label>
-					<button
-						type="button"
-						(click)="showTeamsModal()"
-						class="px-3 py-2 app-button hover:scale-[1.02]">
-						{{ formInputs.teamName }}
+					<button type="button" (click)="showTeamsModal()" class="px-3 py-2 app-button h-10 group tracking-widest">
+						<span class="app-button-bright"></span>
+						<span class="app-button-texts !text-sm">{{ formInputs.teamName }}</span>
 					</button>
 				</div>
 			</div>
@@ -116,13 +114,12 @@
         }
     </div>
 
-    <!-- Acciones -->
+    <!-- Actions -->
     <div class="flex flex-row sm:flex-row justify-between items-center gap-4 mt-12">
 		<div class="flex justify-start gap-4 pt-6">
-			<button
-            	class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 hover:scale-[1.02] transition w-full sm:w-auto"
-            	(click)="showDeleteConfirmationModal = true">
-					Delete Player
+			<button class="px-4 py-2 w-full sm:w-auto app-red-buttons group tracking-widest" (click)="showDeleteConfirmationModal = true">
+				<span class="app-button-bright"></span>
+				<span class="app-button-texts">Delete Player</span>
 			</button>
 		</div>
         <app-action-buttons (goBack)="goToEditMenu()" (confirm)="confirm()"></app-action-buttons>

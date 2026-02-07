@@ -34,15 +34,15 @@ export class SupportService {
         return this.http.get<SupportTicket[]>(this.adminApi);
     }
 
-    public getConversation(ticketId: string): Observable<SupportMessage[]> {
+    public getConversation(ticketId: number): Observable<SupportMessage[]> {
         return this.http.get<SupportMessage[]>(`${this.adminApi}/${ticketId}/conversation`);
     }
 
-    public reply(ticketId: string, request: ReplyRequest): Observable<SupportMessage> {
+    public reply(ticketId: number, request: ReplyRequest): Observable<SupportMessage> {
         return this.http.post<SupportMessage>(`${this.adminApi}/${ticketId}/reply`, request);
     }
 
-    public closeTicket(ticketId: string): Observable<AuthResponse> {
+    public closeTicket(ticketId: number): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.adminApi}/${ticketId}/close`, {});
     }
 }

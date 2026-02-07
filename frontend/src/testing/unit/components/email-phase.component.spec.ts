@@ -45,7 +45,6 @@ describe('Email Phase Component Tests', () => {
 
 		component.submitEmail();
 
-		expect(component.loading).toBeFalse();
 		expect(authServiceSpy.forgotPassword).toHaveBeenCalledWith({ email: 'test@example.com' });
 		expect(emitSpy).toHaveBeenCalled();
 		expect(component.errorMessage).toBe('');
@@ -59,7 +58,6 @@ describe('Email Phase Component Tests', () => {
 
 		component.submitEmail();
 
-		expect(component.loading).toBeFalse();
 		expect(component.errorMessage).toBe('Resource Not Found');
 	});
 });

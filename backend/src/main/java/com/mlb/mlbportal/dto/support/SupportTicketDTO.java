@@ -1,12 +1,11 @@
 package com.mlb.mlbportal.dto.support;
 
+import java.time.LocalDateTime;
+
 import com.mlb.mlbportal.models.enums.SupportTicketStatus;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 public record SupportTicketDTO(
-        UUID id,
+        Long id,
         String subject,
         String userEmail,
         SupportTicketStatus status,

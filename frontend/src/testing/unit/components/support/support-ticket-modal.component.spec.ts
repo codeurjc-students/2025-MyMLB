@@ -28,13 +28,13 @@ describe('Support Ticket Modal Component Tests', () => {
 
         supportServiceSpy = TestBed.inject(SupportService) as jasmine.SpyObj<SupportService>;
 
-        component.ticketId = '123';
+        component.ticketId = 123;
     });
 
     it('should load conversation on init', () => {
         const mockMessages = [
             {
-                id: '1',
+                id: 1,
                 senderEmail: 'user@test.com',
                 body: 'Hello',
                 fromUser: 'USER',
@@ -76,7 +76,7 @@ describe('Support Ticket Modal Component Tests', () => {
 
     it('should send reply successfully', () => {
 		const response: SupportMessage = {
-			id: '1234',
+			id: 1234,
 			senderEmail: 'test@gmail.com',
 			body: 'body',
 			fromUser: 'testUser',

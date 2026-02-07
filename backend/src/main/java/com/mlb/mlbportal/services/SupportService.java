@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class SupportService {
      * @return All the exchanged messages of the conversation.
      */
     @Transactional(readOnly = true)
-    public List<SupportMessageDTO> getConversation(UUID ticketId) {
+    public List<SupportMessageDTO> getConversation(Long ticketId) {
         return this.supportMessageMapper.toListSupportMessageDTO(this.supportMessageRepository.findBySupportTicketIdOrderByCreationDateAsc(ticketId));
     }
 
@@ -86,7 +85,7 @@ public class SupportService {
      * @throws MessagingException if sending email fails.
      */
     @Transactional
-    public SupportMessageDTO reply(UUID ticketId, ReplyRequest request) throws MessagingException {
+    public SupportMessageDTO reply(Long ticketId, ReplyRequest request) throws MessagingException {
         SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);
 
         if (ticket.getStatus() == SupportTicketStatus.CLOSED) {
@@ -111,12 +110,12 @@ public class SupportService {
     /**
      * Closes a ticket.
      *
-     * @param ticketId The UUID of the ticket to close.
+     * @param ticketId The id of the ticket to close.
      * @throws SupportTicketNotFoundException if the ticket does not exist.
      * @throws SupportTicketAlreadyIsClosedException if the ticket is already closed.
      */
     @Transactional
-    public void closeTicket(UUID ticketId) {
+    public void closeTicket(Long ticketId) {
         SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);
         if (ticket.getStatus() == SupportTicketStatus.CLOSED) {
             throw new SupportTicketAlreadyIsClosedException();

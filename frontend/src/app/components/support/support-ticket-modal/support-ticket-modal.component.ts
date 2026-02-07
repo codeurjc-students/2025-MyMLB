@@ -17,7 +17,7 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
 export class SupportTicketModalComponent implements OnInit {
     private supportService = inject(SupportService);
 
-    @Input() ticketId!: string;
+    @Input() ticketId!: number;
     @Output() close = new EventEmitter<void>();
 
 	public isClosing = false;

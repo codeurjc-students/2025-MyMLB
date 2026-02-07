@@ -26,7 +26,9 @@
                                 alt="{{ match.awayTeam.abbreviation }} logo"
                             />
                         </div>
-                        <span class="font-semibold">{{ match.awayTeam.abbreviation }}</span>
+                        <span [matTooltip]="match.awayTeam.name" matTooltipPosition="below" class="font-semibold">
+							{{ match.awayTeam.abbreviation }}
+						</span>
                     </div>
 
                     <div class="flex flex-col items-center">
@@ -45,7 +47,9 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <span class="font-semibold">{{ match.homeTeam.abbreviation }}</span>
+                        <span [matTooltip]="match.homeTeam.name" matTooltipPosition="below" class="font-semibold">
+							{{ match.homeTeam.abbreviation }}
+						</span>
                         <div class="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
                              [ngClass]="backgroundService.getBackgroundColor(match.homeTeam.abbreviation)">
                             <img
@@ -78,11 +82,7 @@
     @if (hasMore && matches.length > 0) {
         <div class="text-center mt-8">
             <button
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm tracking-wide
-                    bg-gradient-to-r from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-600
-                    text-slate-800 dark:text-slate-100 shadow-md hover:shadow-lg
-                    hover:from-slate-400 hover:to-slate-500 hover:cursor-pointer dark:hover:from-slate-600 dark:hover:to-slate-500
-                    transition-all duration-200 ease-in-out"
+                class="px-8 py-3 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all shadow-lg hover:scale-105 active:scale-95"
                 (click)="loadNextPage()"
             >
                 ⚾ Load More Games

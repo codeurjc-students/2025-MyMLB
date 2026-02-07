@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatchService, ShowMatch } from '../../../services/match.service';
 import { CommonModule } from '@angular/common';
 import { BackgroundColorService } from '../../../services/background-color.service';
@@ -6,7 +7,7 @@ import { BackgroundColorService } from '../../../services/background-color.servi
 @Component({
 	selector: 'app-matches-of-the-day',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, MatTooltipModule],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './matches-of-the-day.component.html'
 })

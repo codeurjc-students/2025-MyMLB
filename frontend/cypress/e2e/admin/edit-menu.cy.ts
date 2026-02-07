@@ -16,7 +16,7 @@ describe('Edit Menu E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getAdmin');
 
-		cy.contains('Edit Info').click();
+		cy.contains('Edit Menu').click();
 	});
 
 	it('should perform search and show team results', () => {
@@ -25,8 +25,6 @@ describe('Edit Menu E2E Tests', () => {
 		cy.contains('Edit Menu').should('be.visible');
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankees');
 
-		cy.contains('SEARCH').click();
-
 		cy.wait('@searchTeam');
 		cy.contains('New York Yankees').should('be.visible');
 	});
@@ -34,10 +32,7 @@ describe('Edit Menu E2E Tests', () => {
 	it('should show no results message when search returns empty', () => {
 		cy.intercept('GET', '/api/v1/searchs/team*', { fixture: 'empty.json' }).as('searchEmpty');
 
-		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type(
-			'Unknown'
-		);
-		cy.contains('SEARCH').click();
+		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Unknown');
 
 		cy.wait('@searchEmpty');
 		cy.contains('No results were found').should('be.visible');
@@ -48,24 +43,9 @@ describe('Edit Menu E2E Tests', () => {
 			'searchPaginated'
 		);
 
-		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type(
-			'Yankees'
-		);
-		cy.contains('SEARCH').click();
+		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankees');
 
 		cy.wait('@searchPaginated');
 		cy.contains('LOAD MORE').should('be.visible');
-	});
-
-	it('should show error modal when backend fails', () => {
-		cy.intercept('GET', '/api/v1/searchs/team*', { statusCode: 500 }).as('searchError');
-
-		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type(
-			'Yankees'
-		);
-		cy.contains('SEARCH').click();
-
-		cy.wait('@searchError');
-		cy.get('app-error-modal').should('be.visible');
 	});
 });

@@ -13,13 +13,12 @@ describe('Edit Stadium E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getAdmin');
 
-		cy.contains('Edit Info').click();
+		cy.contains('Edit Menu').click();
 
 		cy.intercept('GET', '/api/v1/searchs/stadium*', { fixture: 'stadium.json' }).as('searchStadium');
 
 		cy.get('select').first().select('stadium');
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankee Stadium');
-		cy.contains('SEARCH').click();
 		cy.wait('@searchStadium');
 
 		cy.contains('EDIT').click();

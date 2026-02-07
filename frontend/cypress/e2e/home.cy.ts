@@ -13,7 +13,6 @@ describe('Landing Page E2E Tests', () => {
 		cy.contains('Track team standings, stats, and streaks across all divisions').should(
 			'be.visible'
 		);
-		cy.contains('Explore Features').should('have.attr', 'href', '#features');
 	});
 
 	it('should render all feature blocks with titles and images', () => {

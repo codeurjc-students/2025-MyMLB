@@ -74,7 +74,7 @@ describe('Navigation Bar Integration Tests', () => {
         expect(component.roles).toContain('ADMIN');
 
         const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.textContent).toContain('Edit Info');
+        expect(compiled.textContent).toContain('Edit Menu');
     });
 
 	it('should start polling if it is Admin user and stop it otherwise', () => {

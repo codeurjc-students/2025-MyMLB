@@ -15,7 +15,7 @@ export class InboxComponent implements OnInit {
     private supportService = inject(SupportService);
 
     public tickets: SupportTicket[] = [];
-    public selectedTicketId: string | null = null;
+    public selectedTicketId: number | null = null;
 
 	public error = false;
 	public errorMessage = '';
@@ -34,7 +34,7 @@ export class InboxComponent implements OnInit {
         });
     }
 
-    public openTicket(ticketId: string) {
+    public openTicket(ticketId: number) {
         this.selectedTicketId = ticketId;
     }
 
