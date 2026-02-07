@@ -84,3 +84,4 @@ jobs:
 
       - name: Run E2E Tests
         run: mvn test -e -Dsurefire.excludes="**/integration/**,**/unit/**"
+        working-directory: ./backend
