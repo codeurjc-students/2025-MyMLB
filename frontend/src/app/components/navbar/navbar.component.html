@@ -81,7 +81,7 @@
 				<img [src]="getProfilePicture()" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
 			</button>
 
-			<!-- Application Theme Toggle Button -->
+			<!-- For Mobile  -->
 			<button (click)="toggleMenu()" class="lg:hidden p-1 text-white hover:bg-white/10 rounded-md transition ml-1">
 				<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					@if (!isMenuOpen) {
@@ -94,5 +94,37 @@
 			</button>
 		</div>
 		</div>
+
+		<!-- Mobile Menu -->
+		@if (isMenuOpen) {
+            <div class="lg:hidden mt-2 pb-4 border-t border-white/10 animate-fadeIn">
+                <ul class="flex flex-col space-y-2 mt-4 px-2">
+                    <li>
+                        <a [routerLink]="'/'" (click)="isMenuOpen = false" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md">Home</a>
+                    </li>
+
+                    @if (!roles.includes("USER") && !roles.includes("ADMIN")) {
+                        <li><a [routerLink]="'/auth'" [queryParams]="{ form: 'login' }" (click)="isMenuOpen = false" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md">Login</a></li>
+                        <li><a [routerLink]="'/auth'" [queryParams]="{ form: 'register' }" (click)="isMenuOpen = false" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md">Sign Up</a></li>
+                    }
+
+                    @if (roles.includes("USER")) {
+                        <li><a (click)="isMenuOpen = false; redirect('tickets')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">My Tickets</a></li>
+                        <li><a (click)="isMenuOpen = false; redirect('fav-teams')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Fav Teams</a></li>
+                    }
+
+                    @if (!roles.includes("ADMIN")) {
+                        <li><a (click)="isMenuOpen = false; redirect('standings')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Standings</a></li>
+                    }
+                    @else if (roles.includes("ADMIN")) {
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest px-4 mt-2">Admin Tools</div>
+                        <li><a (click)="isMenuOpen = false; redirect('edit-menu')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Edit Menu</a></li>
+                        <li><a (click)="isMenuOpen = false; redirect('create-player')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Create Player</a></li>
+                        <li><a (click)="isMenuOpen = false; redirect('create-stadium')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Create Stadium</a></li>
+                        <li><a (click)="isMenuOpen = false; redirect('coming-soon')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Statistics</a></li>
+                    }
+                </ul>
+            </div>
+        }
 	</nav>
 </header>
