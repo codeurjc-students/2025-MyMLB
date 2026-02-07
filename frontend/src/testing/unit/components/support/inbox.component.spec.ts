@@ -50,9 +50,9 @@ describe('Inbox Component Tests', () => {
     });
 
     it('should set selectedTicketId when opening a ticket', () => {
-        component.openTicket('123');
+        component.openTicket(123);
 
-        expect(component.selectedTicketId).toBe('123');
+        expect(component.selectedTicketId).toBe(123);
     });
 
     it('should clear selectedTicketId and reload tickets when closing modal', () => {
@@ -62,7 +62,7 @@ describe('Inbox Component Tests', () => {
 
         supportServiceSpy.getOpenTickets.and.returnValue(of(mockTickets));
 
-        component.selectedTicketId = '123';
+        component.selectedTicketId = 123;
 
         component.closeModal();
 
