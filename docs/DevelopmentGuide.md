@@ -134,12 +134,12 @@ To facilitate the development and testing process, four different profiles were 
 
 Here are the configured profiles:
 
-- **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](backend/src/test/resources/application-test.properties).
-- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](backend/src/main/resources/application-prod.properties).
-- **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](backend/src/main/resources/application-dev.properties).
-- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `MYSQL` DB with the `mysql 8` docker image. This is configured in the [application-docker.properties](backend/src/main/resources/application-docker.properties).
+- **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
+- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
+- **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
+- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `MYSQL` DB with the `mysql 8` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
 
-All common application settings are stored in the file [application.properties](backend/src/main/resources/application.properties).
+All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
 ```mermaid
 flowchart LR
