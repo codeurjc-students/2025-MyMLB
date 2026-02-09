@@ -99,7 +99,8 @@ The application uses the following technologies for its execution:
   - **Spring MVC:** To develop web applications and controllers.
   - **Spring Data:** To interact with the database.
   - **Spring Security:**  For authentication and authorization.
-- **MySQL:** Database used to store and manage the application data. For more information, consult the [MySQL official website](https://www.mysql.com/).
+- **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
+- **MySQL:** Auxiliary DB used only on the `docker environment (mysql 8 image)`. For more information, consult the [MySQL official website](https://www.mysql.com/).
 
 ### Deployment
 - **Docker:** Containerization technology used to deploy the application. For more information, consult the [Docker official website](https://www.docker.com/).
@@ -111,6 +112,9 @@ The following IDEs and auxiliary tools were used during the development of the a
 ### IDEs
 - **Visual Studio Code:** Lightweight open-source code editor with support for extensions. It was used for developing of both frontend and backend side of the application.
 - **IntelliJ:** Powerful IDE for Java and other programming languages. It was used as a backup IDE to develop the backend side of the application.
+
+### Database
+- **DBeaver:** A database management tool for browsing, querying, and managing SQL databases.
 
 ### Auxiliary Tools
 - **REST Client:** Visual Studio Code extension that allows you to send HTTP requests and view responses directly within the editor
