@@ -160,6 +160,7 @@ If you are a Linux user, you will need to have `Docker` and `Docker Compose` ins
 To run and deploy the application, you will need to pull the `compose` published in `Docker Hub`. Additionally, you must have a`.env` file located in the [docker folder](https://github.com/codeurjc-students/2025-MyMLB/tree/main/docker). This file should follow the template below:
 
 ```bash
+SPRING_PROFILES_ACTIVE=docker
 SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
 SPRING_DATASOURCE_USERNAME=root
 SPRING_DATASOURCE_PASSWORD=root
@@ -213,6 +214,9 @@ Is a cloud-based service for managing, storing, and delivering media assets. In 
 
 ### REST Client
 REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](../backend/src/main/java/com/mlb/mlbportal/requests).
+
+### DBeaver
+Is a universal SQL client and management tool. It allows you to manage, query, and visualize multiple relational databases. This tool was used to test the PostgreSQL database, performing queries directly on the database to test the persistence of entities and the state of various data.
 
 ---
 ## 🧪 Tests Execution
@@ -274,7 +278,7 @@ npx cypress open
 You can create a release directly from GitHub, the only thing yo need to do is go to the repository's releases section, create a new release and publish it.
 
 ### 0.1 Version Release
-**Date of Release:** TBD
+**Date of Release:** December 19 of 2025
 
 **Features Developed:** The features developed on this version were the basic ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
