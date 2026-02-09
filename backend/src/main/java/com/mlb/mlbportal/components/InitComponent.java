@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!test")
+@Profile("dev")
 public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
