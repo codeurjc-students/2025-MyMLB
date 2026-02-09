@@ -47,7 +47,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Database</td>
-      <td>MySQL</td>
+      <td>PostgreSQL, MYSQL</td>
     </tr>
     <tr>
       <td>Languages</td>
@@ -59,7 +59,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
   </tr>
   <tr>
     <td>Auxiliary Tools</td>
-    <td>REST Client (Visual Studio Extension), JaCoCo, Git and GitHub</td>
+    <td>DBeaver, REST Client (Visual Studio Extension), JaCoCo, Git and GitHub</td>
   </tr>
   <tr>
     <td>External Services</td>
