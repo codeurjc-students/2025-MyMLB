@@ -14,6 +14,7 @@
 - [Render](https://render.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [DBeaver](https://dbeaver.io/)
+- [The Twelve-Factor App](https://12factor.net/es/)
 
 ## ☁️ External Services
 - MLB Stats API
