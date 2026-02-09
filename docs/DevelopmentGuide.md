@@ -4,6 +4,7 @@
 - [Introduction](#-introduction)
 - [Technologies](#-technologies)
 - [Tools](#-tools)
+- [Execution Environments (Profiles)](#-execution-environments-profiles)
 - [Architecture](#️-architecture)
 - [Deployment with Docker](#-deployment-with-docker)
 - [Quality Control](#-quality-control)
@@ -14,13 +15,13 @@ The MLB Portal application is built with a `SPA (Single Page Application)` archi
 
 On the server side of the application (backend), it was developed with `Spring Boot`, providing a `REST API` as the communciation method between the server and the client.
 
-For the data management, the application uses a `MySQL` database.
+For the data management, the application uses a `PostgreSQL` database.
 
 For deployment and the containerization technology, `Docker` was used.
 
 As it can be seen, the architecture of the application is `monolithic` divided into two main layers:
 - **Client (frontend)** --> Angular.
-- **Server (backend)** --> Srping Boot exposing a REST API, and a MySQL database.
+- **Server (backend)** --> Spring Boot exposing a REST API, and a PostgreSLQ database.
 
 ### 📌 Summary
 <table>
@@ -128,20 +129,43 @@ The following IDEs and auxiliary tools were used during the development of the a
 - **Resilience4J:** Is a lightweight fault tolerance library for Java applications. It helps the application to respond gracefully when an external service they depend on fails.
 
 ---
+## 🌍 Execution Environments (Profiles)
+To facilitate the development and testing process, four different profiles were configured for certain tasks and scenarios within the development. This profiles allows the application to have different configurations depending on the execution environment, such as testing, production, development, etc, favoring the maintainability and portability of the application. This also follows the modern practices of `Software as a Service Applications (SaaS)`, such as the [Twelve-Factor App Methodology](https://12factor.net/es/). 
+
+Here are the configured profiles:
+
+- **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](backend/src/test/resources/application-test.properties).
+- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](backend/src/main/resources/application-prod.properties).
+- **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](backend/src/main/resources/application-dev.properties).
+- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `MYSQL` DB with the `mysql 8` docker image. This is configured in the [application-docker.properties](backend/src/main/resources/application-docker.properties).
+
+All common application settings are stored in the file [application.properties](backend/src/main/resources/application.properties).
+
+```mermaid
+flowchart LR
+    A(Test) -- "Testing Environment" --> H[(H2 in memory DB)]
+    B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
+    C(Dev) -- "Development Environment" --> H
+    D(Docker) -- "Containerized Environment" --> M[(MYSQL)]
+````
+
+---
 ## 🏗️ Architecture
 ### 🔄 Communication Flow
 1) The user interacts with the frontend (Angular).
 2) The frontend sends requests to the backend (Spring) through the REST API.
-3) The backend interacts with the MySQL database through JDBC to persist the data.
+3) The backend interacts with the PostgreSQL database through JDBC to persist the data.
 
 ```mermaid
 flowchart LR
     A[User] -- "HTTP:4200" --> B[Angular Frontend]
     B -- "API Request" --> C[Backend Spring Boot]
     C -- "API Response" --> B
-    C -- "JDBC/SQL:3306" --> D[(MySQL)]
-    D -- "SQL Response:3306" --> C
+    C -- "JDBC/SQL:5432" --> D[(PostgreSQL)]
+    D -- "SQL Response:5432" --> C
 ````
+> [!NOTE]
+> This flow represents the `production environment (profile)`, the flow of the other profiles is exactly the same but the DB varies: In dev --> H2 in memory DB; In docker --> MYSQL (port 3306)
 
 ### 🚀 Deployment
 The deployment of the application is divided into three different proceses:
