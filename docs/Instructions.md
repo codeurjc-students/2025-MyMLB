@@ -74,7 +74,36 @@ cd 2025-MLB
 
 ---
 ## 💾 Database
-TBD
+The application primarly uses `PostgreSQL` as its main database. However, it also use a `MYSQL` database specifically for the containerized environment to demonstrate portability.
+
+### PostgreSQL
+PostgreSQL was selected to be the principal database of the application, driven by a personal interest in exploring its advanced features. From this, I started researching, obtaining the following advantages:
+- **Data Integrity and Consistency:** Great management of the `ACID principles` ensuring high integrity and consistency.
+- **Concurrency Management:** Good handling of multiple simultaneous transactions.
+- **Scalibility:** More powerfull than other relational databases like MYSQL.
+- **Enterprise-Grade:** Great reputation among enterprises, making it a perfecti fit for a project of this caliber.
+
+This is the configuration required to establish the connection with it:
+```bash
+spring.datasource.url=jdbc:postgresql://localhost:5432/MLBPortal
+spring.datasource.username=postgres
+spring.datasource.password=root
+````
+
+### MYSQL
+For the containerization environment, MYSQL was selected due to its simplicity, easy configuration and lightweight.
+
+This is the configuration required to establish the connection with it:
+```bash
+spring.datasource.url=jdbc:mysql://mysql-container:3306/mlb
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+The reason behind using two different database engines in two different environments was to demonstrate the `application portability`, and the flexibility Spring has to adapt to different environments by configuring `profiles`.
+
+> [!TIP]
+> It is possible to establish a connection to both databases in DBeaver.
 
 ---
 ## 💻 Backend
@@ -85,7 +114,7 @@ cd backend
 
 Once there, you can run the backend of the application by using the following command:
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 If everything goes as expected, you will be able to access it at: **https://localhost:8443**
