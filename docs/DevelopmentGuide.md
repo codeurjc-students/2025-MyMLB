@@ -374,6 +374,7 @@ Git was used as the version control tool. This project follows `GitHub Flow` as 
 - **main/master:** Stable branch and always ready to be deployed.
 - **feature:** These branches are where the features are implemented. Each branch represent a single feature with its corresponding tests.
 - **fix:** Branches where bug-fixing occurs. Each branch represent a single bug.
+- **config:** Branches to add configuration to the project.
 - **documentation:** Branches to add project documentation.
 
 At the end, every branch is added to `main/master` with `Pull Requests`.
@@ -382,7 +383,7 @@ At the end, every branch is added to `main/master` with `Pull Requests`.
 For CI, this project uses `GitHub Actions` in which two workflows were implemented to ensure the quality control:
 
 #### Basic Quality Control
-This workflow triggers on every commit made on the `feature/*` and `fix/*` branches.
+This workflow triggers on every commit made on the `feature/*`, `fix/*` and `config/*` branches.
 
 #### Jobs
 - **build-backend:** Set up and compile the backend.
@@ -428,6 +429,13 @@ This workflow triggers manually from every branch. The jobs are exactly the same
 
 #### CD Release
 This workflow is triggered whenever a `release` occurs. The jobs are the same as in the previous workflows; however, it publishes both Docker images and Compose artifacts using the release version and latest as tags.
+
+### 🌙 Nightly
+To complement the CI pipeline, two scheduled workflows were established to run every night (one for the back and one for the front). These worflows perfomance a full suite of automated tests, ensuring:
+- **Integrity:** Continous verifications that daily changes doesn't break the stable version.
+- **Reliability:** Ensure an early detection of regressions or bugs.
+
+These workflows ensure that the application has a stable version in production and, if any regression occurs, it is quickly reported and managed in development.
 
 ---
 [👈 Return to README](../README.md)
