@@ -21,7 +21,7 @@ For deployment and the containerization technology, `Docker` was used.
 
 As it can be seen, the architecture of the application is `monolithic` divided into two main layers:
 - **Client (frontend)** --> Angular.
-- **Server (backend)** --> Spring Boot exposing a REST API, and a PostgreSLQ database.
+- **Server (backend)** --> Spring Boot exposing a REST API, and a PostgreSQL database.
 
 ### 📌 Summary
 <table>
@@ -48,7 +48,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Database</td>
-      <td>PostgreSQL, MYSQL</td>
+      <td>PostgreSQL</td>
     </tr>
     <tr>
       <td>Languages</td>
@@ -100,8 +100,7 @@ The application uses the following technologies for its execution:
   - **Spring MVC:** To develop web applications and controllers.
   - **Spring Data:** To interact with the database.
   - **Spring Security:**  For authentication and authorization.
-- **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
-- **MySQL:** Auxiliary DB used only on the `docker environment (mysql 8 image)`. For more information, consult the [MySQL official website](https://www.mysql.com/).
+- **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)` and `docker-environment (docker profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
 
 ### Deployment
 - **Docker:** Containerization technology used to deploy the application. For more information, consult the [Docker official website](https://www.docker.com/).
@@ -137,7 +136,7 @@ Here are the configured profiles:
 - **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
 - **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
 - **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
-- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `MYSQL` DB with the `mysql 8` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
+- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
 
 All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
@@ -146,7 +145,7 @@ flowchart LR
     A(Test) -- "Testing Environment" --> H[(H2 in memory DB)]
     B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
     C(Dev) -- "Development Environment" --> H
-    D(Docker) -- "Containerized Environment" --> M[(MYSQL)]
+    D(Docker) -- "Containerized Environment" --> P
 ````
 
 ---
@@ -165,13 +164,13 @@ flowchart LR
     D -- "SQL Response:5432" --> C
 ````
 > [!NOTE]
-> This flow represents the `production environment (profile)`, the flow of the other profiles is exactly the same but the DB varies: In dev --> H2 in memory DB; In docker --> MYSQL (port 3306)
+> This flow represents the `production environment (profile)`, the flow of the dev profile is exactly the same but with H2 as database.
 
 ### 🚀 Deployment
 The deployment of the application is divided into three different proceses:
 - **Frontend:** Runs in a development server on port `4200`.
 - **Backend:** Runs on port `8443`.
-- **Database:** Runs on port `3306`.
+- **Database:** Runs on port `5432`.
 
 ### 🔗 Communication Protocols
 - **Frontend <--> Backend:** REST API over HTTPS.
