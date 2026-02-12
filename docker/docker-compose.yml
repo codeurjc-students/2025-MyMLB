@@ -1,7 +1,7 @@
 services:
   app:
     container_name: mlb-container
-    image: fonssi29/mlb-portal:0.1
+    image: fonssi29/mlb-portal:0.2
     ports:
       - "8443:8443"
 
