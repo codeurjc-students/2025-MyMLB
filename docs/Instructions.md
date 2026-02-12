@@ -74,7 +74,36 @@ cd 2025-MLB
 
 ---
 ## 💾 Database
-TBD
+The application primarly uses `PostgreSQL` as its main database. However, it also use a `MYSQL` database specifically for the containerized environment to demonstrate portability.
+
+### PostgreSQL
+PostgreSQL was selected to be the principal database of the application, driven by a personal interest in exploring its advanced features. From this, I started researching, obtaining the following advantages:
+- **Data Integrity and Consistency:** Great management of the `ACID principles` ensuring high integrity and consistency.
+- **Concurrency Management:** Good handling of multiple simultaneous transactions.
+- **Scalibility:** More powerfull than other relational databases like MYSQL.
+- **Enterprise-Grade:** Great reputation among enterprises, making it a perfecti fit for a project of this caliber.
+
+This is the configuration required to establish the connection with it:
+```bash
+spring.datasource.url=jdbc:postgresql://localhost:5432/MLBPortal
+spring.datasource.username=postgres
+spring.datasource.password=root
+````
+
+### MYSQL
+For the containerization environment, MYSQL was selected due to its simplicity, easy configuration and lightweight.
+
+This is the configuration required to establish the connection with it:
+```bash
+spring.datasource.url=jdbc:mysql://mysql-container:3306/mlb
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+The reason behind using two different database engines in two different environments was to demonstrate the `application portability`, and the flexibility Spring has to adapt to different environments by configuring `profiles`.
+
+> [!TIP]
+> It is possible to establish a connection to both databases in DBeaver.
 
 ---
 ## 💻 Backend
@@ -85,7 +114,7 @@ cd backend
 
 Once there, you can run the backend of the application by using the following command:
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 If everything goes as expected, you will be able to access it at: **https://localhost:8443**
@@ -160,6 +189,7 @@ If you are a Linux user, you will need to have `Docker` and `Docker Compose` ins
 To run and deploy the application, you will need to pull the `compose` published in `Docker Hub`. Additionally, you must have a`.env` file located in the [docker folder](https://github.com/codeurjc-students/2025-MyMLB/tree/main/docker). This file should follow the template below:
 
 ```bash
+SPRING_PROFILES_ACTIVE=docker
 SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
 SPRING_DATASOURCE_USERNAME=root
 SPRING_DATASOURCE_PASSWORD=root
@@ -213,6 +243,9 @@ Is a cloud-based service for managing, storing, and delivering media assets. In 
 
 ### REST Client
 REST Client is a Visual Studio Code extension that allows sending API requests to test it, within the IDE. This extension is used in this project, however, `Postman` is also a valid alternative. In order to use this extension, first you will need to install it in Visual Studio Code, and finally, send the API requests that are on every `.http` file. In this project, you can find these files by following this [link](../backend/src/main/java/com/mlb/mlbportal/requests).
+
+### DBeaver
+Is a universal SQL client and management tool. It allows you to manage, query, and visualize multiple relational databases. This tool was used to test the PostgreSQL database, performing queries directly on the database to test the persistence of entities and the state of various data.
 
 ---
 ## 🧪 Tests Execution
@@ -274,7 +307,7 @@ npx cypress open
 You can create a release directly from GitHub, the only thing yo need to do is go to the repository's releases section, create a new release and publish it.
 
 ### 0.1 Version Release
-**Date of Release:** TBD
+**Date of Release:** December 19 of 2025
 
 **Features Developed:** The features developed on this version were the basic ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 

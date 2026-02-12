@@ -410,6 +410,9 @@ To create an event the admins must enter the amount of sectors it will have, the
   <img src="images/features/admin/EditEvent.png" width="40%" />
 </p>
 
+> [!IMPORTANT]
+> The application does not use an external payment processing service, so the amount shown is fictitious and no charge will be made. Although the credit card details are fictitious, they must follow the pattern and structure of a real card, as the validation process is based on `Lunh's algorithm` (the algorithm used to validate the patterns of each field on the credit card).
+
 For the next and final version of the application will include the remaining functionalities that belong to the `Statistics` section for the admins.
 
 ---
