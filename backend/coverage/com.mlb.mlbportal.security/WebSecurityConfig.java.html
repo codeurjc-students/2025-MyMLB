@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                     
                     // User Endpoints
 <span class="nc" id="L72">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/users&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L73">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/users/profile&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
+<span class="nc" id="L73">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/users/profile&quot;).permitAll()</span>
 <span class="nc" id="L74">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/users/tickets&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
 <span class="nc" id="L75">                    .requestMatchers(HttpMethod.PATCH, &quot;/api/v1/users&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>
 <span class="nc" id="L76">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/users/picture&quot;).hasAnyRole(&quot;USER&quot;, &quot;ADMIN&quot;)</span>

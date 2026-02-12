@@ -25,7 +25,8 @@ COPY --from=build-frontend /app/frontend/dist/frontend /app/static
 
 EXPOSE 8443
 
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
+ENV SPRING_PROFILES_ACTIVE=docker
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/MLBPortal
 ARG SPRING_DATASOURCE_USERNAME=
 ARG SPRING_DATASOURCE_PASSWORD=
 

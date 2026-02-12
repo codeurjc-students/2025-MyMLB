@@ -125,7 +125,7 @@ public class TicketService {
 <span class="fc" id="L125">            ticket.setSeat(this.seatRepository.getReferenceById(seatDto.id()));</span>
 <span class="fc" id="L126">            user.addTicket(ticket);</span>
 <span class="fc" id="L127">            tickets.add(ticket);</span>
-        }
+<span class="fc" id="L128">        }</span>
 <span class="fc" id="L129">        return tickets;</span>
     }
 
@@ -146,15 +146,15 @@ public class TicketService {
 
 <span class="fc" id="L147">            this.emailService.sendTicketPurchaseEmail(</span>
 <span class="fc" id="L148">                    user.getEmail(),</span>
-<span class="fc" id="L149">                    subject,</span>
-<span class="fc" id="L150">                    body,</span>
-<span class="fc" id="L151">                    pdfContent,</span>
-<span class="fc" id="L152">                    &quot;Tickets.pdf&quot;</span>
+                    subject,
+                    body,
+                    pdfContent,
+                    &quot;Tickets.pdf&quot;
             );
-<span class="fc" id="L154">        }</span>
+        }
 <span class="fc" id="L155">        catch (MessagingException e) {</span>
 <span class="fc" id="L156">            log.error(&quot;Failed to send the purchase confirmation email to the user: {}&quot;, user.getUsername());</span>
-        }
+<span class="fc" id="L157">        }</span>
 <span class="fc" id="L158">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

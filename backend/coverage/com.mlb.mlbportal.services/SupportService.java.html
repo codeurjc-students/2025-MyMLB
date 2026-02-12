@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,27 +38,27 @@ public class SupportService {
      */
     @Transactional
     public void createSupportTicket(String userEmail, CreateTicketRequest request) {
-<span class="fc" id="L42">        SupportTicket newTicket = SupportTicket.builder()</span>
-<span class="fc" id="L43">                .subject(request.subject())</span>
-<span class="fc" id="L44">                .userEmail(userEmail)</span>
-<span class="fc" id="L45">                .status(SupportTicketStatus.OPEN)</span>
-<span class="fc" id="L46">                .build();</span>
+<span class="fc" id="L41">        SupportTicket newTicket = SupportTicket.builder()</span>
+<span class="fc" id="L42">                .subject(request.subject())</span>
+<span class="fc" id="L43">                .userEmail(userEmail)</span>
+<span class="fc" id="L44">                .status(SupportTicketStatus.OPEN)</span>
+<span class="fc" id="L45">                .build();</span>
 
-<span class="fc" id="L48">        SupportMessage newMessage = SupportMessage.builder()</span>
-<span class="fc" id="L49">                .supportTicket(newTicket)</span>
-<span class="fc" id="L50">                .senderEmail(userEmail)</span>
-<span class="fc" id="L51">                .body(request.body())</span>
-<span class="fc" id="L52">                .isFromUser(true)</span>
-<span class="fc" id="L53">                .build();</span>
+<span class="fc" id="L47">        SupportMessage newMessage = SupportMessage.builder()</span>
+<span class="fc" id="L48">                .supportTicket(newTicket)</span>
+<span class="fc" id="L49">                .senderEmail(userEmail)</span>
+<span class="fc" id="L50">                .body(request.body())</span>
+<span class="fc" id="L51">                .isFromUser(true)</span>
+<span class="fc" id="L52">                .build();</span>
 
-<span class="fc" id="L55">        newTicket.setMessages(List.of(newMessage));</span>
-<span class="fc" id="L56">        this.supportTicketRepository.save(newTicket);</span>
-<span class="fc" id="L57">        this.supportMessageRepository.save(newMessage);</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L54">        newTicket.setMessages(List.of(newMessage));</span>
+<span class="fc" id="L55">        this.supportTicketRepository.save(newTicket);</span>
+<span class="fc" id="L56">        this.supportMessageRepository.save(newMessage);</span>
+<span class="fc" id="L57">    }</span>
 
     @Transactional(readOnly = true)
     public List&lt;SupportTicketDTO&gt; getOpenTickets() {
-<span class="fc" id="L62">        return this.supportTicketMapper.toListSupportThreadDTO(this.supportTicketRepository.findAllOpenTickets());</span>
+<span class="fc" id="L61">        return this.supportTicketMapper.toListSupportThreadDTO(this.supportTicketRepository.findAllOpenTickets());</span>
     }
 
     /**
@@ -69,8 +68,8 @@ public class SupportService {
      * @return All the exchanged messages of the conversation.
      */
     @Transactional(readOnly = true)
-    public List&lt;SupportMessageDTO&gt; getConversation(UUID ticketId) {
-<span class="fc" id="L73">        return this.supportMessageMapper.toListSupportMessageDTO(this.supportMessageRepository.findBySupportTicketIdOrderByCreationDateAsc(ticketId));</span>
+    public List&lt;SupportMessageDTO&gt; getConversation(Long ticketId) {
+<span class="fc" id="L72">        return this.supportMessageMapper.toListSupportMessageDTO(this.supportMessageRepository.findBySupportTicketIdOrderByCreationDateAsc(ticketId));</span>
     }
 
     /**
@@ -86,43 +85,43 @@ public class SupportService {
      * @throws MessagingException if sending email fails.
      */
     @Transactional
-    public SupportMessageDTO reply(UUID ticketId, ReplyRequest request) throws MessagingException {
-<span class="fc" id="L90">        SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);</span>
+    public SupportMessageDTO reply(Long ticketId, ReplyRequest request) throws MessagingException {
+<span class="fc" id="L89">        SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);</span>
 
-<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (ticket.getStatus() == SupportTicketStatus.CLOSED) {</span>
-<span class="fc" id="L93">            throw new SupportTicketAlreadyIsClosedException();</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (ticket.getStatus() == SupportTicketStatus.CLOSED) {</span>
+<span class="fc" id="L92">            throw new SupportTicketAlreadyIsClosedException();</span>
         }
 
-<span class="fc" id="L96">        SupportMessage message = SupportMessage.builder()</span>
-<span class="fc" id="L97">                .supportTicket(ticket)</span>
-<span class="fc" id="L98">                .senderEmail(request.adminEmail())</span>
-<span class="fc" id="L99">                .body(request.body())</span>
-<span class="fc" id="L100">                .isFromUser(false)</span>
-<span class="fc" id="L101">                .build();</span>
+<span class="fc" id="L95">        SupportMessage message = SupportMessage.builder()</span>
+<span class="fc" id="L96">                .supportTicket(ticket)</span>
+<span class="fc" id="L97">                .senderEmail(request.adminEmail())</span>
+<span class="fc" id="L98">                .body(request.body())</span>
+<span class="fc" id="L99">                .isFromUser(false)</span>
+<span class="fc" id="L100">                .build();</span>
 
-<span class="fc" id="L103">        this.supportMessageRepository.save(message);</span>
-<span class="fc" id="L104">        ticket.setStatus(SupportTicketStatus.ANSWERED);</span>
-<span class="fc" id="L105">        this.supportTicketRepository.save(ticket);</span>
+<span class="fc" id="L102">        this.supportMessageRepository.save(message);</span>
+<span class="fc" id="L103">        ticket.setStatus(SupportTicketStatus.ANSWERED);</span>
+<span class="fc" id="L104">        this.supportTicketRepository.save(ticket);</span>
 
-<span class="fc" id="L107">        this.emailService.answerToUser(ticket.getUserEmail(), &quot;Re: &quot; + ticket.getSubject(), request.body());</span>
-<span class="fc" id="L108">        return this.supportMessageMapper.toSupportMessageDTO(message);</span>
+<span class="fc" id="L106">        this.emailService.answerToUser(ticket.getUserEmail(), &quot;Re: &quot; + ticket.getSubject(), request.body());</span>
+<span class="fc" id="L107">        return this.supportMessageMapper.toSupportMessageDTO(message);</span>
     }
 
     /**
      * Closes a ticket.
      *
-     * @param ticketId The UUID of the ticket to close.
+     * @param ticketId The id of the ticket to close.
      * @throws SupportTicketNotFoundException if the ticket does not exist.
      * @throws SupportTicketAlreadyIsClosedException if the ticket is already closed.
      */
     @Transactional
-    public void closeTicket(UUID ticketId) {
-<span class="fc" id="L120">        SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (ticket.getStatus() == SupportTicketStatus.CLOSED) {</span>
-<span class="fc" id="L122">            throw new SupportTicketAlreadyIsClosedException();</span>
+    public void closeTicket(Long ticketId) {
+<span class="fc" id="L119">        SupportTicket ticket = this.supportTicketRepository.findById(ticketId).orElseThrow(SupportTicketNotFoundException::new);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (ticket.getStatus() == SupportTicketStatus.CLOSED) {</span>
+<span class="fc" id="L121">            throw new SupportTicketAlreadyIsClosedException();</span>
         }
-<span class="fc" id="L124">        ticket.setStatus(SupportTicketStatus.CLOSED);</span>
-<span class="fc" id="L125">        this.supportTicketRepository.save(ticket);</span>
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L123">        ticket.setStatus(SupportTicketStatus.CLOSED);</span>
+<span class="fc" id="L124">        this.supportTicketRepository.save(ticket);</span>
+<span class="fc" id="L125">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -4,6 +4,7 @@
 - [Introduction](#-introduction)
 - [Technologies](#-technologies)
 - [Tools](#-tools)
+- [Execution Environments (Profiles)](#-execution-environments-profiles)
 - [Architecture](#️-architecture)
 - [Deployment with Docker](#-deployment-with-docker)
 - [Quality Control](#-quality-control)
@@ -14,13 +15,13 @@ The MLB Portal application is built with a `SPA (Single Page Application)` archi
 
 On the server side of the application (backend), it was developed with `Spring Boot`, providing a `REST API` as the communciation method between the server and the client.
 
-For the data management, the application uses a `MySQL` database.
+For the data management, the application uses a `PostgreSQL` database.
 
 For deployment and the containerization technology, `Docker` was used.
 
 As it can be seen, the architecture of the application is `monolithic` divided into two main layers:
 - **Client (frontend)** --> Angular.
-- **Server (backend)** --> Srping Boot exposing a REST API, and a MySQL database.
+- **Server (backend)** --> Spring Boot exposing a REST API, and a PostgreSQL database.
 
 ### 📌 Summary
 <table>
@@ -47,7 +48,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Database</td>
-      <td>MySQL</td>
+      <td>PostgreSQL</td>
     </tr>
     <tr>
       <td>Languages</td>
@@ -59,7 +60,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
   </tr>
   <tr>
     <td>Auxiliary Tools</td>
-    <td>REST Client (Visual Studio Extension), JaCoCo, Git and GitHub</td>
+    <td>DBeaver, REST Client (Visual Studio Extension), JaCoCo, Git and GitHub</td>
   </tr>
   <tr>
     <td>External Services</td>
@@ -99,7 +100,7 @@ The application uses the following technologies for its execution:
   - **Spring MVC:** To develop web applications and controllers.
   - **Spring Data:** To interact with the database.
   - **Spring Security:**  For authentication and authorization.
-- **MySQL:** Database used to store and manage the application data. For more information, consult the [MySQL official website](https://www.mysql.com/).
+- **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)` and `docker-environment (docker profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
 
 ### Deployment
 - **Docker:** Containerization technology used to deploy the application. For more information, consult the [Docker official website](https://www.docker.com/).
@@ -111,6 +112,9 @@ The following IDEs and auxiliary tools were used during the development of the a
 ### IDEs
 - **Visual Studio Code:** Lightweight open-source code editor with support for extensions. It was used for developing of both frontend and backend side of the application.
 - **IntelliJ:** Powerful IDE for Java and other programming languages. It was used as a backup IDE to develop the backend side of the application.
+
+### Database
+- **DBeaver:** A database management tool for browsing, querying, and managing SQL databases.
 
 ### Auxiliary Tools
 - **REST Client:** Visual Studio Code extension that allows you to send HTTP requests and view responses directly within the editor
@@ -124,26 +128,49 @@ The following IDEs and auxiliary tools were used during the development of the a
 - **Resilience4J:** Is a lightweight fault tolerance library for Java applications. It helps the application to respond gracefully when an external service they depend on fails.
 
 ---
+## 🌍 Execution Environments (Profiles)
+To facilitate the development and testing process, four different profiles were configured for certain tasks and scenarios within the development. This profiles allows the application to have different configurations depending on the execution environment, such as testing, production, development, etc, favoring the maintainability and portability of the application. This also follows the modern practices of `Software as a Service Applications (SaaS)`, such as the [Twelve-Factor App Methodology](https://12factor.net/es/). 
+
+Here are the configured profiles:
+
+- **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
+- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
+- **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
+- **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
+
+All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
+
+```mermaid
+flowchart LR
+    A(Test) -- "Testing Environment" --> H[(H2 in memory DB)]
+    B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
+    C(Dev) -- "Development Environment" --> H
+    D(Docker) -- "Containerized Environment" --> P
+````
+
+---
 ## 🏗️ Architecture
 ### 🔄 Communication Flow
 1) The user interacts with the frontend (Angular).
 2) The frontend sends requests to the backend (Spring) through the REST API.
-3) The backend interacts with the MySQL database through JDBC to persist the data.
+3) The backend interacts with the PostgreSQL database through JDBC to persist the data.
 
 ```mermaid
 flowchart LR
     A[User] -- "HTTP:4200" --> B[Angular Frontend]
     B -- "API Request" --> C[Backend Spring Boot]
     C -- "API Response" --> B
-    C -- "JDBC/SQL:3306" --> D[(MySQL)]
-    D -- "SQL Response:3306" --> C
+    C -- "JDBC/SQL:5432" --> D[(PostgreSQL)]
+    D -- "SQL Response:5432" --> C
 ````
+> [!NOTE]
+> This flow represents the `production environment (profile)`, the flow of the dev profile is exactly the same but with H2 as database.
 
 ### 🚀 Deployment
 The deployment of the application is divided into three different proceses:
 - **Frontend:** Runs in a development server on port `4200`.
 - **Backend:** Runs on port `8443`.
-- **Database:** Runs on port `3306`.
+- **Database:** Runs on port `5432`.
 
 ### 🔗 Communication Protocols
 - **Frontend <--> Backend:** REST API over HTTPS.
@@ -185,7 +212,7 @@ The following diagram illustrates the project architecture, showing how each com
 #### Test Metrics
 The following picture illustrates the coverage report of the executed tests generated by `JaCoCo `:
 
-![Backend Test Coverage](../images/coverage/BackendTestsCoverage2.png)
+![Backend Test Coverage](../images/coverage/BackendTestCoverageV2.png)
 
 To generate this report, you only need to execute the following command:
 
@@ -268,7 +295,7 @@ npx cypress open
 #### Test Metrics
 The following picture illustrates the coverage report of the executed tests generated by `Karma + Istanbul`:
 
-![Frontend Test Coverage](../images/coverage/FrontendTestsCoverage2.png)
+![Frontend Test Coverage](../images/coverage/FrontendTestCoverageV2.png)
 
 To generate this report, you only need to execute the following command:
 
@@ -346,6 +373,7 @@ Git was used as the version control tool. This project follows `GitHub Flow` as 
 - **main/master:** Stable branch and always ready to be deployed.
 - **feature:** These branches are where the features are implemented. Each branch represent a single feature with its corresponding tests.
 - **fix:** Branches where bug-fixing occurs. Each branch represent a single bug.
+- **config:** Branches to add configuration to the project.
 - **documentation:** Branches to add project documentation.
 
 At the end, every branch is added to `main/master` with `Pull Requests`.
@@ -354,7 +382,7 @@ At the end, every branch is added to `main/master` with `Pull Requests`.
 For CI, this project uses `GitHub Actions` in which two workflows were implemented to ensure the quality control:
 
 #### Basic Quality Control
-This workflow triggers on every commit made on the `feature/*` and `fix/*` branches.
+This workflow triggers on every commit made on the `feature/*`, `fix/*` and `config/*` branches.
 
 #### Jobs
 - **build-backend:** Set up and compile the backend.
@@ -400,6 +428,13 @@ This workflow triggers manually from every branch. The jobs are exactly the same
 
 #### CD Release
 This workflow is triggered whenever a `release` occurs. The jobs are the same as in the previous workflows; however, it publishes both Docker images and Compose artifacts using the release version and latest as tags.
+
+### 🌙 Nightly
+To complement the CI pipeline, two scheduled workflows were established to run every night (one for the back and one for the front). These worflows perfomance a full suite of automated tests, ensuring:
+- **Integrity:** Continous verifications that daily changes doesn't break the stable version.
+- **Reliability:** Ensure an early detection of regressions or bugs.
+
+These workflows ensure that the application has a stable version in production and, if any regression occurs, it is quickly reported and managed in development.
 
 ---
 [👈 Return to README](../README.md)

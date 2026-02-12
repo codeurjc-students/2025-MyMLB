@@ -1,7 +1,7 @@
 services:
   app:
     container_name: mlb-container
-    image: fonssi29/mlb-portal:0.1
+    image: fonssi29/mlb-portal:0.2
     ports:
       - "8443:8443"
 
@@ -13,17 +13,20 @@ services:
         condition: service_healthy
 
   db:
-    container_name: mysql-container
-    image: mysql:8.0
+    image: postgres:16
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mlb
+      POSTGRES_DB: MLBPortal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+
+    ports:
+      - "5432:5432"
 
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 10

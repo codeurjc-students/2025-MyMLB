@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Profile(&quot;!test&quot;)
+@Profile({&quot;dev&quot;, &quot;docker&quot;})
 public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
@@ -21,12 +21,14 @@ public class InitComponent {
 
     @PostConstruct
     public void init() {
-<span class="nc" id="L24">        this.dataInitializerService.init();</span>
-<span class="nc" id="L25">    }</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (this.dataInitializerService.isDBEmpty()) {</span>
+<span class="nc" id="L25">            this.dataInitializerService.init();</span>
+        }
+<span class="nc" id="L27">    }</span>
 
     @EventListener(ApplicationReadyEvent.class)
     public void triggerNotification() {
-<span class="nc" id="L29">        this.matchService.notificateMatchStart();</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L31">        this.matchService.notificateMatchStart();</span>
+<span class="nc" id="L32">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -513,7 +513,7 @@ erDiagram
       <td>Bar</td>
     </tr>
     <tr>
-      <td>User´s Favourite Teams</td>
+      <td>User's Favorite Teams</td>
       <td>Horizontal Bar</td>
     </tr>
   </tbody>
@@ -530,11 +530,16 @@ Since the front-end will be develop using `Angular`, the library chosen for crea
 ---
 
 ## 🔍 Algorithm or Advanced Query
-This section will be reflected when updating the standings of every division in both leagues, as these will be updated automatically based on the following data:
-- A team’s number of wins.
-- A team’s number of losses.
 
-From these fields, all of the other team statistics will be calculated automatically, and the standings will be updated accordingly.
+### Internal Messaging System
+The application features an internal messaging system between users and admins to report any issues encountered. The workflow is simple: a user creates a support ticket which is sended to the admins. Admins access these tickets through a personal inbox, where they can reply to or close them.
+
+To complete this operation, the system integrates `Java Mail Sender` for notifications, a `polling mechanism` to provide admins with real-time updates on the amount of open tickets, and a `concurrency control system`. This last component prevents multiple admins from simultaneously editing or closing the same ticket. This safety measure is implemented via `Optimistic Locking`, which utilizes database versioning to automatically manage concurrent access and lock tickets currently under review by another admin.
+
+### Event Management
+The application provides users with the option to purchase tickets for different matches. To make a more realistic system, each stadium has their own sectos and seats, with each sector having their own price, this means that the amount of sectors, seats, prices can vary depending on the stadium and on the event aswell. This was done thanks to the `EventManager` entity wich is the entity in charge of manage this dynamic information for each event.
+
+Concurrency problems, like seats being taken while a payment is in progress, are handled through strict database access control. The system manages simultaneous queries to prevent data inconsistencies and ensures that users are successfully notified if their selection is no longer available.
 
 ---
 [👈 Return to README](../README.md)

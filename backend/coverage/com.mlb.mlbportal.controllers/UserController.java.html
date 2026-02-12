@@ -64,7 +64,10 @@ public class UserController {
     })
     @GetMapping(value = &quot;/profile&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;ProfileDTO&gt; getUserProfile(Principal principal) {
-<span class="fc" id="L67">        return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (principal == null) {</span>
+<span class="nc" id="L68">            return ResponseEntity.ok(new ProfileDTO(&quot;&quot;, null, false));</span>
+        }
+<span class="fc" id="L70">        return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));</span>
     }
 
     @Operation(summary = &quot;Get favorite teams of a user&quot;, description = &quot;Returns the list of favorite MLB teams for the authenticated user.&quot;)
@@ -75,7 +78,7 @@ public class UserController {
     })
     @GetMapping(value = &quot;/favorites/teams&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Set&lt;TeamSummary&gt;&gt; getFavoriteTeams(Principal principal) {
-<span class="fc" id="L78">        return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));</span>
+<span class="fc" id="L81">        return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));</span>
     }
 
     @Operation(summary = &quot;Get purchased tickets of a user&quot;, description = &quot;Returns the list of the purchased tickets of the authenticated user.&quot;)
@@ -86,7 +89,7 @@ public class UserController {
     })
     @GetMapping(value = &quot;/tickets&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;TicketDTO&gt;&gt; getTickets(Principal principal) {
-<span class="nc" id="L89">        return ResponseEntity.ok(this.userService.getPurchasedTickets(principal.getName()));</span>
+<span class="nc" id="L92">        return ResponseEntity.ok(this.userService.getPurchasedTickets(principal.getName()));</span>
     }
 
     @Operation(summary = &quot;Edit the authenticated user's profile&quot;, description = &quot;Updates the profile of the authenticated user, allowing them to modify their email and password.&quot;)
@@ -99,7 +102,7 @@ public class UserController {
     })
     @PatchMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;ShowUser&gt; editProfile(Principal principal, @Valid @RequestBody EditProfileRequest request) {
-<span class="fc" id="L102">        return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));</span>
+<span class="fc" id="L105">        return ResponseEntity.ok(this.userService.updateProfile(principal.getName(), request));</span>
     }
 
     @Operation(summary = &quot;Upload a new profile picture&quot;, description = &quot;Uploads or updates the profile picture of the active user.&quot;)
@@ -110,7 +113,7 @@ public class UserController {
     })
     @PostMapping(value = &quot;/picture&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; editProfilePicture(Principal principal, @RequestParam MultipartFile file) throws IOException {
-<span class="fc" id="L113">        return ResponseEntity.ok(this.userService.changeProfilePicture(principal.getName(), file));</span>
+<span class="fc" id="L116">        return ResponseEntity.ok(this.userService.changeProfilePicture(principal.getName(), file));</span>
     }
 
     @Operation(summary = &quot;Delete the profile picture&quot;, description = &quot;Deletes the profile picture of the current active user.&quot;)
@@ -121,8 +124,8 @@ public class UserController {
     })
     @DeleteMapping(value = &quot;/picture&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; deleteProfilePicture(Principal principal) {
-<span class="fc" id="L124">        this.userService.deleteProfilePicture(principal.getName());</span>
-<span class="fc" id="L125">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Picture Deleted&quot;));</span>
+<span class="fc" id="L127">        this.userService.deleteProfilePicture(principal.getName());</span>
+<span class="fc" id="L128">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Picture Deleted&quot;));</span>
     }
 
     @Operation(summary = &quot;Add a favorite team&quot;, description = &quot;Adds a team to the authenticated user's list of favorites.&quot;)
@@ -135,8 +138,8 @@ public class UserController {
     @PostMapping(value = &quot;/favorites/teams/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; addFavoriteTeam(Principal principal,
             @PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L138">        this.userService.addFavTeam(principal.getName(), teamName);</span>
-<span class="fc" id="L139">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Succesfullly Added&quot;));</span>
+<span class="fc" id="L141">        this.userService.addFavTeam(principal.getName(), teamName);</span>
+<span class="fc" id="L142">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Succesfullly Added&quot;));</span>
     }
 
     @Operation(summary = &quot;Remove a favorite team&quot;, description = &quot;Removes a team from the authenticated user's list of favorites.&quot;)
@@ -149,8 +152,8 @@ public class UserController {
     @DeleteMapping(value = &quot;/favorites/teams/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; removeFavoriteTeam(Principal principal,
             @PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L152">        this.userService.removeFavTeam(principal.getName(), teamName);</span>
-<span class="fc" id="L153">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Successfully Remove&quot;));</span>
+<span class="fc" id="L155">        this.userService.removeFavTeam(principal.getName(), teamName);</span>
+<span class="fc" id="L156">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team Successfully Remove&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

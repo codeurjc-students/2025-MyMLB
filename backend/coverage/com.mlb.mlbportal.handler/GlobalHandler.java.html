@@ -84,70 +84,64 @@ import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 <span class="nc" id="L84">        return buildResponse(HttpStatus.CONFLICT, message, &quot;Resource Already Exists&quot;);</span>
     }
 
-    @ExceptionHandler(LastPictureDeletionException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map&lt;String, Object&gt; handleLastPictureDeletion(LastPictureDeletionException ex) {
-<span class="nc" id="L90">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot delete the last picture of a stadium&quot;);</span>
-    }
-
     @ExceptionHandler(OptimisticEntityLockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleOptimisticLock(OptimisticEntityLockException ex) {
-<span class="nc" id="L96">        String message = &quot;This ticket has been answered by another admin. Please, refresh your inbox.&quot;;</span>
-<span class="nc" id="L97">        return this.buildResponse(HttpStatus.CONFLICT, message, &quot;Concurrent Update Conflict&quot;);</span>
+<span class="nc" id="L90">        String message = &quot;This ticket has been answered by another admin. Please, refresh your inbox.&quot;;</span>
+<span class="nc" id="L91">        return this.buildResponse(HttpStatus.CONFLICT, message, &quot;Concurrent Update Conflict&quot;);</span>
     }
 
     @ExceptionHandler(InsufficientStockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleInssuficientStock(InsufficientStockException ex) {
-<span class="nc" id="L103">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot purchase the amount of tickets selected because there are no tickets available to purchase&quot;);</span>
+<span class="nc" id="L97">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;Cannot purchase the amount of tickets selected because there are no tickets available to purchase&quot;);</span>
     }
 
     @ExceptionHandler(ConcurrentModificationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map&lt;String, Object&gt; handleConcurrentModification(ConcurrentModificationException ex) {
-<span class="nc" id="L109">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;The transaction could not be completed due to a simultaneous update. Please refresh the page and try again&quot;);</span>
+<span class="nc" id="L103">        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), &quot;The transaction could not be completed due to a simultaneous update. Please refresh the page and try again&quot;);</span>
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map&lt;String, Object&gt; handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-<span class="nc" id="L115">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
-<span class="nc" id="L116">                &quot;HTTP method not allowed for this endpoint&quot;);</span>
+<span class="nc" id="L109">        return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage(),</span>
+                &quot;HTTP method not allowed for this endpoint&quot;);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Map&lt;String, Object&gt; handleAuthentication(AuthenticationException ex) {
-<span class="nc" id="L122">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
+<span class="nc" id="L116">        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;Unauthorized&quot;);</span>
     }
 
     @ExceptionHandler(InvalidSearchTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map&lt;String, Object&gt; handleInvalidSearchType(InvalidSearchTypeException ex) {
-<span class="fc" id="L128">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
+<span class="fc" id="L122">        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), &quot;Invalid Search Type&quot;);</span>
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public Map&lt;String, Object&gt; handleServiceUnavailable(ServiceUnavailableException ex) {
-<span class="nc" id="L134">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
+<span class="nc" id="L128">        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), &quot;Service Unavailable&quot;);</span>
     }
 
     @ExceptionHandler(PaymentException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public Map&lt;String, Object&gt; handlePayment(PaymentException ex) {
-<span class="nc" id="L140">        return this.buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), &quot;Payment Business Error&quot;);</span>
+<span class="nc" id="L134">        return this.buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), &quot;Payment Business Error&quot;);</span>
     }
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map&lt;String, Object&gt; handleNullPointer(NullPointerException ex) {
-<span class="nc bnc" id="L146" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
-<span class="nc" id="L147">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">        if (ex.getMessage() == null || ex.getMessage().contains(&quot;getUser&quot;)) {</span>
+<span class="nc" id="L141">            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), &quot;User Not Authenticated&quot;);</span>
         }
-<span class="nc" id="L149">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
-<span class="nc" id="L150">                &quot;Internal Server Error occurred due to NullPointerException&quot;);</span>
+<span class="nc" id="L143">        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(),</span>
+                &quot;Internal Server Error occurred due to NullPointerException&quot;);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

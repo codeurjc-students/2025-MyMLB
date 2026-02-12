@@ -35,19 +35,19 @@ public class Stadium {
 
     private int openingDate;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-<span class="pc" id="L39">    private List&lt;PictureInfo&gt; pictures = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L38">    @ElementCollection(fetch = FetchType.LAZY)</span>
+    private List&lt;PictureInfo&gt; pictures = new ArrayList&lt;&gt;();
 
     private PictureInfo pictureMap;
 
     @OneToOne(mappedBy = &quot;stadium&quot;)
     private Team team;
 
-    @OneToMany(mappedBy = &quot;stadium&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
-<span class="pc" id="L47">    private List&lt;Match&gt; matches = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L46">    @OneToMany(mappedBy = &quot;stadium&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    private List&lt;Match&gt; matches = new ArrayList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;stadium&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
-<span class="pc" id="L50">    private List&lt;Sector&gt; sectors = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L49">    @OneToMany(mappedBy = &quot;stadium&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    private List&lt;Sector&gt; sectors = new ArrayList&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
