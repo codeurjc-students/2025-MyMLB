@@ -85,6 +85,10 @@ public class DataInitializerService {
         this.setUpEventsForTodayMatches();
     }
 
+    public boolean isDBEmpty() {
+        return this.userRepository.count() == 0;
+    }
+
     private void createAdmins() {
         UserEntity fonssiUser = new UserEntity("fonssitorodriguezgutt@gmail.com", "fonssi29",
                 this.passwordEncoder.encode(this.fonssiPassword));

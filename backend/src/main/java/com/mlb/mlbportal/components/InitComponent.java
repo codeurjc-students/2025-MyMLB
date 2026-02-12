@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Profile("dev")
+@Profile({"dev", "docker"})
 public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
@@ -21,7 +21,9 @@ public class InitComponent {
 
     @PostConstruct
     public void init() {
-        this.dataInitializerService.init();
+        if (this.dataInitializerService.isDBEmpty()) {
+            this.dataInitializerService.init();
+        }
     }
 
     @EventListener(ApplicationReadyEvent.class)

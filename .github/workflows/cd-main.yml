@@ -81,10 +81,10 @@ jobs:
       - name: Create dummy .env for compose publish
         run: |
           cat <<EOF > docker/.env
-          SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
+          SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/MLBPortal
           SPRING_DATASOURCE_USERNAME=dummy
           SPRING_DATASOURCE_PASSWORD=dummy
-          MYSQL_ROOT_PASSWORD=dummy
+          POSTGRES_PASSWORD=dummy
 
           CLOUDINARY_CLOUD_NAME=
           CLOUDINARY_API_KEY=
