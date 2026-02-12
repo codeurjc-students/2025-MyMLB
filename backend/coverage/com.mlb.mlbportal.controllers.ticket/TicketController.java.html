@@ -58,7 +58,7 @@ public class TicketController {
     public ResponseEntity&lt;Page&lt;TicketDTO&gt;&gt; purchaseTicket(Principal principal, @Valid @RequestBody PurchaseRequest request, @RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
 
 <span class="fc" id="L60">        Page&lt;TicketDTO&gt; newTickets = this.ticketService.purchaseTicket(principal.getName(), request, page, size);</span>
-<span class="fc" id="L61">        URI location = ServletUriComponentsBuilder</span>
+        URI location = ServletUriComponentsBuilder
 <span class="fc" id="L62">                .fromCurrentRequest()</span>
 <span class="fc" id="L63">                .path(&quot;/{ticketId}&quot;)</span>
 <span class="fc" id="L64">                .buildAndExpand(newTickets.getContent().getFirst().id())</span>

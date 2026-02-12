@@ -34,25 +34,25 @@ public class UserEntity {
     @OneToOne(mappedBy=&quot;user&quot;, cascade= CascadeType.ALL, orphanRemoval=true)
     private PasswordResetToken resetToken;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+<span class="pc" id="L37">    @ManyToMany(fetch = FetchType.LAZY)</span>
     @JoinTable(
         name = &quot;T_USER_FAVORITE_TEAMS&quot;,
         joinColumns = @JoinColumn(name = &quot;user_id&quot;),
         inverseJoinColumns = @JoinColumn(name = &quot;team_id&quot;)
     )
-<span class="pc" id="L43">    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();</span>
+    private Set&lt;Team&gt; favTeams = new HashSet&lt;&gt;();
 
-    @ElementCollection(fetch= FetchType.EAGER)
-<span class="pc" id="L46">    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();</span>
+<span class="pc" id="L45">    @ElementCollection(fetch= FetchType.EAGER)</span>
+    private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
 
-    @OneToMany(mappedBy = &quot;owner&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
-<span class="pc" id="L49">    private List&lt;Ticket&gt; tickets = new LinkedList&lt;&gt;();</span>
+<span class="pc" id="L48">    @OneToMany(mappedBy = &quot;owner&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    private List&lt;Ticket&gt; tickets = new LinkedList&lt;&gt;();
 
     @PreRemove
     public void preRemove() {
 <span class="fc bfc" id="L53" title="All 2 branches covered.">        for (Team team : favTeams) {</span>
 <span class="fc" id="L54">            team.getFavoritedByUsers().remove(this);</span>
-        }
+<span class="fc" id="L55">        }</span>
 <span class="fc" id="L56">        this.favTeams.clear();</span>
 <span class="fc" id="L57">    }</span>
 

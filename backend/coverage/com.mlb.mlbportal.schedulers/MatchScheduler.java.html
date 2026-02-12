@@ -36,10 +36,10 @@ public class MatchScheduler {
 <span class="fc" id="L36">        log.info(&quot;Starting synchronization of the matches status&quot;);</span>
         try {
 <span class="fc" id="L38">            this.mlbImportService.verifyMatchStatus();</span>
-<span class="fc" id="L39">        }</span>
+        }
 <span class="fc" id="L40">        catch (Exception ex) {</span>
 <span class="fc" id="L41">            log.error(&quot;An error occur while synchronizing the matches status: {}&quot;, ex.getMessage());</span>
-        }
+<span class="fc" id="L42">        }</span>
 <span class="fc" id="L43">    }</span>
 
     @Scheduled(cron = &quot;0 */10 * * * *&quot;)

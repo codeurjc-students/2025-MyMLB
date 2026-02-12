@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-02-04T16:35:35+0100&quot;,
-    comments = &quot;version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260128-0750, environment: Java 21.0.9 (Eclipse Adoptium)&quot;
+    date = &quot;2026-02-12T22:44:04+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
 <span class="fc" id="L25">public class EventMapperImpl implements EventMapper {</span>
@@ -87,7 +87,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L87">        List&lt;EventManagerDTO&gt; list1 = new ArrayList&lt;EventManagerDTO&gt;( list.size() );</span>
 <span class="fc bfc" id="L88" title="All 2 branches covered.">        for ( EventManager eventManager : list ) {</span>
 <span class="fc" id="L89">            list1.add( toManagerDto( eventManager ) );</span>
-        }
+<span class="fc" id="L90">        }</span>
 
 <span class="fc" id="L92">        return list1;</span>
     }
@@ -98,8 +98,8 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L98">            return null;</span>
         }
 <span class="fc" id="L100">        Team awayTeam = match.getAwayTeam();</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        if ( awayTeam == null ) {</span>
-<span class="fc" id="L102">            return null;</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if ( awayTeam == null ) {</span>
+<span class="nc" id="L102">            return null;</span>
         }
 <span class="fc" id="L104">        return awayTeam.getName();</span>
     }
@@ -110,8 +110,8 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L110">            return null;</span>
         }
 <span class="fc" id="L112">        Team homeTeam = match.getHomeTeam();</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        if ( homeTeam == null ) {</span>
-<span class="fc" id="L114">            return null;</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if ( homeTeam == null ) {</span>
+<span class="nc" id="L114">            return null;</span>
         }
 <span class="fc" id="L116">        return homeTeam.getName();</span>
     }
@@ -122,8 +122,8 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L122">            return null;</span>
         }
 <span class="fc" id="L124">        Team homeTeam = match.getHomeTeam();</span>
-<span class="fc bfc" id="L125" title="All 2 branches covered.">        if ( homeTeam == null ) {</span>
-<span class="fc" id="L126">            return null;</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if ( homeTeam == null ) {</span>
+<span class="nc" id="L126">            return null;</span>
         }
 <span class="fc" id="L128">        return homeTeam.getAbbreviation();</span>
     }

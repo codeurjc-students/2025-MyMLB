@@ -24,8 +24,8 @@ public class Seat {
     @JoinColumn(name = &quot;sector_id&quot;)
     private Sector sector;
 
-    @Column(name = &quot;is_occupied&quot;)
-<span class="fc" id="L28">    private boolean isOccupied = false;</span>
+<span class="fc" id="L27">    @Column(name = &quot;is_occupied&quot;)</span>
+    private boolean isOccupied = false;
 
 <span class="fc" id="L30">    public Seat(String name, Sector sector, boolean state) {</span>
 <span class="fc" id="L31">        this.name = name;</span>

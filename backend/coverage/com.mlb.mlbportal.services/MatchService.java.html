@@ -133,10 +133,10 @@ public class MatchService {
             }
 <span class="fc" id="L134">            Long matchId = match.getId();</span>
 <span class="fc" id="L135">            this.taskScheduler.schedule(</span>
-<span class="pc" id="L136">                    () -&gt; this.emailService.sendDynamicGameReminder(matchId),</span>
+<span class="nc" id="L136">                    () -&gt; this.emailService.sendDynamicGameReminder(matchId),</span>
 <span class="fc" id="L137">                    notificationTime.atZone(ZoneId.systemDefault()).toInstant()</span>
             );
-        }
+<span class="fc" id="L139">        }</span>
 <span class="fc" id="L140">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
