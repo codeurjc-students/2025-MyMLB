@@ -58,8 +58,8 @@ cd 2025-MLB
       <td>10.9</td>
     </tr>
     <tr>
-      <td>MySQL</td>
-      <td>8.0</td>
+      <td>PostgreSQL (Docker Image)</td>
+      <td>16.0</td>
     </tr>
     <tr>
       <td>Docker</td>
@@ -74,36 +74,28 @@ cd 2025-MLB
 
 ---
 ## 💾 Database
-The application primarly uses `PostgreSQL` as its main database. However, it also use a `MYSQL` database specifically for the containerized environment to demonstrate portability.
+The application primarly uses `PostgreSQL` as its main database. 
 
-### PostgreSQL
 PostgreSQL was selected to be the principal database of the application, driven by a personal interest in exploring its advanced features. From this, I started researching, obtaining the following advantages:
 - **Data Integrity and Consistency:** Great management of the `ACID principles` ensuring high integrity and consistency.
 - **Concurrency Management:** Good handling of multiple simultaneous transactions.
 - **Scalibility:** More powerfull than other relational databases like MYSQL.
 - **Enterprise-Grade:** Great reputation among enterprises, making it a perfecti fit for a project of this caliber.
 
-This is the configuration required to establish the connection with it:
+This is the configuration required to establish the connection with it in local (prod profile):
 ```bash
 spring.datasource.url=jdbc:postgresql://localhost:5432/MLBPortal
 spring.datasource.username=postgres
 spring.datasource.password=root
 ````
 
-### MYSQL
-For the containerization environment, MYSQL was selected due to its simplicity, easy configuration and lightweight.
-
-This is the configuration required to establish the connection with it:
+An this the one for the docker environment:
 ```bash
-spring.datasource.url=jdbc:mysql://mysql-container:3306/mlb
-spring.datasource.username=root
+spring.datasource.url=jdbc:postgresql://db:5432/MLBPortal
+spring.datasource.username=postgres
 spring.datasource.password=root
-```
-
-The reason behind using two different database engines in two different environments was to demonstrate the `application portability`, and the flexibility Spring has to adapt to different environments by configuring `profiles`.
-
-> [!TIP]
-> It is possible to establish a connection to both databases in DBeaver.
+spring.datasource.driver-class-name=org.postgresql.Driver
+````
 
 ---
 ## 💻 Backend
@@ -190,10 +182,10 @@ To run and deploy the application, you will need to pull the `compose` published
 
 ```bash
 SPRING_PROFILES_ACTIVE=docker
-SPRING_DATASOURCE_URL=jdbc:mysql://mysql-container:3306/mlb
-SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/MLBPortal
+SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=root
-MYSQL_ROOT_PASSWORD=root
+POSTGRES_PASSWORD=root
 
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
