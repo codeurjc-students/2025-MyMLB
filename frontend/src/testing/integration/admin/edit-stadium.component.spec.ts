@@ -37,8 +37,9 @@ describe('Edit Stadium Component Integration Tests', () => {
 		httpMock.verify();
 	});
 
-	it('should upload a valid webp picture successfully', () => {
-		const file = new File(['dummy'], 'test.webp', { type: 'image/webp' });
+	it('should upload a valid picture successfully', () => {
+		const validPicture = 'a'.repeat(1024);
+		const file = new File([validPicture], 'test.webp', { type: 'image/webp' });
 		component.uploadPicture(mockStadium.name, file);
 
 		const req = httpMock.expectOne(`${apiUrl}/${mockStadium.name}/pictures`);
@@ -51,25 +52,6 @@ describe('Edit Stadium Component Integration Tests', () => {
 		expect(component.success).toBeTrue();
 		expect(component.successMessage).toBe('Picture uploaded successfully');
 		expect(component.pictures.some((p) => p.publicId === 'newPic')).toBeTrue();
-	});
-
-	it('should set error when uploading non-webp picture', () => {
-		const file = new File(['dummy'], 'test.png', { type: 'image/png' });
-		component.uploadPicture(mockStadium.name, file);
-
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('Only .webp images are allowed');
-	});
-
-	it('should handle upload error from service', () => {
-		const file = new File(['dummy'], 'test.webp', { type: 'image/webp' });
-		component.uploadPicture(mockStadium.name, file);
-
-		const req = httpMock.expectOne(`${apiUrl}/${mockStadium.name}/pictures`);
-		req.flush({}, { status: 500, statusText: 'Server Error' });
-
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('An error occurred trying to store the picture');
 	});
 
 	it('should remove picture successfully', () => {

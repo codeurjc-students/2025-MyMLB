@@ -45,6 +45,8 @@ export class ProfileComponent implements OnInit {
 
 	public loading = false;
 
+	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
+
 	ngOnInit(): void {
 		this.authService.getActiveUser().subscribe({
 			next: (response) => {
@@ -126,9 +128,9 @@ export class ProfileComponent implements OnInit {
 
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
-			if (file.type !== 'image/webp') {
+			if (file.size > this.maxPictureSize) {
 				this.error = true;
-				this.errorMessage = 'Only .webp images are allowed';
+				this.errorMessage = 'The picture must be less than 1MB';
 				this.loading = false;
 				input.value = '';
 				return;
@@ -146,9 +148,9 @@ export class ProfileComponent implements OnInit {
 	}
 
 	private changeProfilePicture(file: File) {
-		if (file.type !== 'image/webp') {
+		if (file.size > this.maxPictureSize) {
 			this.error = true;
-			this.errorMessage = 'Only .webp images are allowed';
+			this.errorMessage = 'The picture must be less than 1MB';
 			return;
 		}
 

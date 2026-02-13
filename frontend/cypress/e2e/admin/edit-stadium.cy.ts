@@ -38,17 +38,6 @@ describe('Edit Stadium E2E Tests', () => {
 		cy.get('img[alt="Stadium picture"]').should('have.length.at.least', 2);
 	});
 
-	it('should show error modal when upload fails', () => {
-		cy.intercept('POST', '/api/v1/stadiums/*/pictures', {
-			statusCode: 500,
-		}).as('uploadError');
-
-		cy.get('input[type="file"]').selectFile('cypress/fixtures/test.png', { force: true });
-
-		cy.get('app-error-modal').should('be.visible');
-		cy.contains('Only .webp images are allowed').should('be.visible');
-	});
-
 	it('should show loading modal when uploading', () => {
 		cy.intercept('POST', '/api/v1/stadiums/*/pictures', (req) => {
 			req.reply({

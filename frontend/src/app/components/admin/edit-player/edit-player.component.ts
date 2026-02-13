@@ -141,6 +141,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		'RP',
 	];
 
+	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
 	public showDeleteConfirmationModal = false;
 	public isPositionInputOpen = false;
 
@@ -207,19 +208,19 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		}, 300);
 	}
 
-	public uploadPicture(stadiumName: string, file: File) {
+	public uploadPicture(playerName: string, file: File) {
 		this.resetState();
 		this.loading = true;
 
-		if (file.type !== 'image/webp') {
+		if (file.size > this.maxPictureSize) {
 			this.error = true;
-			this.errorMessage = 'Only .webp images are allowed';
+			this.errorMessage = 'The picture must be less than 1MB';
 			this.loading = false;
 			return;
 		}
 
 		this.playerService
-			.updatePicture(stadiumName, file)
+			.updatePicture(playerName, file)
 			.pipe(finalize(() => (this.loading = false)))
 			.subscribe({
 				next: (savedPic) => {
@@ -239,9 +240,9 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
 
-			if (file.type !== 'image/webp') {
+			if (file.size > this.maxPictureSize) {
 				this.error = true;
-				this.errorMessage = 'Only .webp images are allowed';
+				this.errorMessage = 'The picture must be less than 1MB';
 				this.loading = false;
 				return;
 			}

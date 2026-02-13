@@ -110,7 +110,8 @@ describe('Profile Component Tests', () => {
     });
 
     it('should handle profile picture upload', () => {
-        const mockFile = new File([''], 'test.webp', { type: 'image/webp' });
+		const validPicture = 'a'.repeat(1024);
+        const mockFile = new File([validPicture], 'test.png', { type: 'image/png' });
         const mockEvent = { target: { files: [mockFile] } } as any;
         const mockPicture: Pictures = { publicId: 'test-123', url: 'http://test-123.png' };
         userServiceSpy.editProfilePicture.and.returnValue(of(mockPicture));
@@ -118,8 +119,9 @@ describe('Profile Component Tests', () => {
         expect(userServiceSpy.editProfilePicture).toHaveBeenCalledWith(mockFile);
     });
 
-    it('should not upload picture if type is not webp', () => {
-        const mockFile = new File([''], 'test.png', { type: 'image/png' });
+    it('should not upload picture if size is greater than 1MB', () => {
+        const invalidPicture = 'a'.repeat(1024 * 1024 + 1);
+		const mockFile = new File([invalidPicture], 'test.png', { type: 'image/png' });
         const mockEvent = { target: { files: [mockFile], value: 'test' } } as any;
         component.handleProfilePicture(mockEvent);
         expect(component.error).toBeTrue();
