@@ -81,9 +81,9 @@ public class PlayerServiceOperations {
             return;
         }
         int totalBases = player.getHits()
-                + player.getDoubles()
-                + 2 * player.getTriples()
-                + 3 * player.getHomeRuns();
+                + 2 *  player.getDoubles()
+                + 3 * player.getTriples()
+                + 4 * player.getHomeRuns();
         double slg = (double) totalBases / atBats;
         player.setSlugging(truncateToThreeDecimals(slg));
     }

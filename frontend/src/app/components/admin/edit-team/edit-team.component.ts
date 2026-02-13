@@ -13,6 +13,7 @@ import { TeamService } from '../../../services/team.service';
 import { SuccessModalComponent } from '../../success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { FormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { StadiumService } from '../../../services/stadium.service';
@@ -29,6 +30,7 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
 	imports: [
     CommonModule,
     FormsModule,
+	MatTooltipModule,
     SuccessModalComponent,
     ErrorModalComponent,
     ActionButtonsComponent,

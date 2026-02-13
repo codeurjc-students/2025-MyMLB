@@ -142,6 +142,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 	];
 
 	public showDeleteConfirmationModal = false;
+	public isPositionInputOpen = false;
 
 	constructor(
 		mapper: EntityFormMapperService,
@@ -262,8 +263,78 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		});
 	}
 
+	public togglePositionInput(state: boolean) {
+		this.isPositionInputOpen = state;
+	}
+
 	public goToEditMenu() {
 		this.finish = false;
 		this.backToMenu.emit();
+	}
+
+	public calculateTemporaryStats() {
+		if (this.validationService.isPositionPlayer(this.player)) {
+			this.calculatePositionPlayerNonEditableStats();
+		}
+		else {
+			this.calculatePitcherNonEditableStats();
+		}
+	}
+
+	private decimalFormatted(value: number, decimals: 1000 | 100) {
+		return Math.floor(value * decimals) / decimals;
+	}
+
+	private inningsFormatted(innings: number) {
+		const aux = Math.floor(innings);
+		const decimals = parseFloat((innings - aux).toFixed(1));
+
+		if (Math.abs(decimals - 0.1) < 0.01) {
+			return aux + (1.0 / 3.0);
+		}
+		else if (Math.abs(decimals - 0.2) < 0.01) {
+			return aux + (2.0 / 3.0)
+		}
+		return innings;
+	}
+
+	private calculatePositionPlayerNonEditableStats() {
+		const { atBats = 0, hits = 0, walks = 0, doubles = 0, triples = 0, homeRuns = 0 } = this.formInputs;
+
+		if (atBats === 0) {
+			this.formInputs.average = 0.0;
+			this.formInputs.obp = 0.0;
+			this.formInputs.slugging = 0.0;
+			this.formInputs.ops = 0.0;
+			return;
+		}
+
+		this.formInputs.average = this.decimalFormatted((hits / atBats), 1000);
+		const totalAbs = Number(atBats) + Number(walks);
+		const obpValue = (Number(hits) + Number(walks)) / totalAbs;
+		this.formInputs.obp = totalAbs === 0 ? 0.0 : this.decimalFormatted(obpValue, 1000);
+
+		const totalBases = Number(hits) + (2 * Number(doubles)) + (3 * Number(triples)) + (4 * Number(homeRuns));
+		this.formInputs.slugging = this.decimalFormatted((totalBases / atBats), 1000);
+
+		const opsValue = Number(this.formInputs.obp) + Number(this.formInputs.slugging);
+		this.formInputs.ops = this.decimalFormatted(opsValue, 1000);
+	}
+
+	private calculatePitcherNonEditableStats() {
+		const { inningsPitched = 0, runsAllowed = 0, hitsAllowed = 0, walks = 0 } = this.formInputs;
+		const innings = this.inningsFormatted(Number(inningsPitched));
+
+		if (innings === 0) {
+			this.formInputs.era = 0.0;
+			this.formInputs.whip = 0.0;
+			return;
+		}
+
+		const eraValue = (Number(runsAllowed) * 9) / innings;
+		this.formInputs.era = this.decimalFormatted(eraValue, 100);
+
+		const whipValue = (Number(hitsAllowed) + Number(walks)) / innings;
+		this.formInputs.whip = this.decimalFormatted(whipValue, 100);
 	}
 }
