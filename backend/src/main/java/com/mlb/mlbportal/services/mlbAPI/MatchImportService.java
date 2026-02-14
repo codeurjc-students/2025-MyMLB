@@ -36,9 +36,9 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class MlbImportService {
+public class MatchImportService {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final TeamLookupService teamLookupService;
+    private final TeamImportService teamLookupService;
     private final TeamService teamService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;

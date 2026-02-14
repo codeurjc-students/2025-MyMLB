@@ -12,6 +12,8 @@ import javax.naming.ServiceUnavailableException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
+import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 import com.mlb.mlbportal.services.team.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +45,6 @@ import com.mlb.mlbportal.models.enums.MatchStatus;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MlbImportService;
-import com.mlb.mlbportal.services.TeamLookupService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
@@ -54,10 +54,10 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MlbImportServiceTest {
+class MatchImportServiceTest {
 
     @Mock
-    private TeamLookupService teamLookupService;
+    private TeamImportService teamLookupService;
 
     @Mock
     private TeamService teamService;
@@ -78,7 +78,7 @@ class MlbImportServiceTest {
     private Clock clock;
 
     @InjectMocks
-    private MlbImportService mlbImportService;
+    private MatchImportService mlbImportService;
 
     private List<Team> mockTeams;
 
@@ -89,7 +89,7 @@ class MlbImportServiceTest {
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() throws Exception {
-        var field = MlbImportService.class.getDeclaredField("restTemplate");
+        var field = MatchImportService.class.getDeclaredField("restTemplate");
         field.setAccessible(true);
         field.set(this.mlbImportService, this.restTemplate);
         this.mockTeams = BuildMocksFactory.setUpTeamMocks();
@@ -194,7 +194,7 @@ class MlbImportServiceTest {
 
         when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of(cachedMatch));
 
-        var method = MlbImportService.class.getDeclaredMethod(
+        var method = MatchImportService.class.getDeclaredMethod(
                 "fallbackMatches", LocalDate.class, LocalDate.class, Throwable.class);
         method.setAccessible(true);
 
@@ -289,7 +289,7 @@ class MlbImportServiceTest {
     void testFallbackMatchesThrowsServiceUnavailableWhenNoCache() throws Exception {
         when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of());
 
-        var method = MlbImportService.class.getDeclaredMethod(
+        var method = MatchImportService.class.getDeclaredMethod(
                 "fallbackMatches", LocalDate.class, LocalDate.class, Throwable.class);
         method.setAccessible(true);
 

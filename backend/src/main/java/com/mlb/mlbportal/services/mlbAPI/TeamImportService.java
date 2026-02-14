@@ -2,6 +2,7 @@ package com.mlb.mlbportal.services;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
@@ -17,10 +18,12 @@ import com.mlb.mlbportal.models.enums.League;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class TeamLookupService {
+public class TeamImportService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map<Integer, TeamSummary> cache = new HashMap<>();
@@ -78,7 +81,7 @@ public class TeamLookupService {
             return null;
         }
 
-        TeamDetails t = response.teams().get(0);
+        TeamDetails t = response.teams().getFirst();
 
         League league = null;
         if (t.league() != null && t.league().name() != null) {
@@ -106,5 +109,31 @@ public class TeamLookupService {
             return this.cache.get(teamId);
         }
         throw new ServiceUnavailableException("MLB API not available and no cached data for teamId = " + teamId);
+    }
+
+    @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackFindStatsAPiID")
+    @Retry(name = "mlbApi")
+    public Map<String, Integer> findStatsApiId() {
+        String url = "https://statsapi.mlb.com/api/v1/teams?sportId=1";
+        try {
+            TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);
+            if (response != null && response.teams() != null) {
+                return response.teams().stream().collect(Collectors.toMap(
+                        TeamDetails::name,
+                        TeamDetails::id,
+                        (existing, replacement) -> existing
+                ));
+            }
+        }
+        catch (Exception ex) {
+            log.error("Cannot obtain the id from Stats API for the teams: {}", ex.getMessage());
+        }
+        return new HashMap<>();
+    }
+
+    @SuppressWarnings("unused")
+    public Map<String, Integer> fallbackFindStatsAPiID(Throwable t) {
+        log.error("Cannot obtain the stat API ID: {}", t.getMessage());
+        return new HashMap<>();
     }
 }

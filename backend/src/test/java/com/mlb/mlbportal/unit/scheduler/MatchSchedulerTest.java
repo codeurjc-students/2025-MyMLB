@@ -17,13 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mlb.mlbportal.schedulers.MatchScheduler;
 import com.mlb.mlbportal.services.MatchService;
-import com.mlb.mlbportal.services.MlbImportService;
+import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
 
 @ExtendWith(MockitoExtension.class)
 class MatchSchedulerTest {
 
     @Mock
-    private MlbImportService mlbImportService;
+    private MatchImportService mlbImportService;
 
     @Mock
     private MatchService matchService;
