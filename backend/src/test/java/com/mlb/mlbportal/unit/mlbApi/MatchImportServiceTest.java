@@ -28,14 +28,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.mlbapi.DateEntry;
-import com.mlb.mlbportal.dto.mlbapi.GameEntry;
-import com.mlb.mlbportal.dto.mlbapi.ScheduleResponse;
-import com.mlb.mlbportal.dto.mlbapi.Status;
-import com.mlb.mlbportal.dto.mlbapi.TeamData;
-import com.mlb.mlbportal.dto.mlbapi.TeamSide;
-import com.mlb.mlbportal.dto.mlbapi.Teams;
-import com.mlb.mlbportal.dto.mlbapi.Venue;
+import com.mlb.mlbportal.dto.mlbapi.match.DateEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.GameEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.ScheduleResponse;
+import com.mlb.mlbportal.dto.mlbapi.match.Status;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamData;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamSide;
+import com.mlb.mlbportal.dto.mlbapi.team.MatchTeams;
+import com.mlb.mlbportal.dto.mlbapi.team.Venue;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
@@ -106,7 +106,7 @@ class MatchImportServiceTest {
         TeamSide homeSide = new TeamSide(homeTeamData, 5);
         TeamSide awaySide = new TeamSide(awayTeamData, 3);
 
-        Teams teams = new Teams(homeSide, awaySide);
+        MatchTeams teams = new MatchTeams(homeSide, awaySide);
         Status status = new Status("Final");
 
         String expectedStadiumName = this.mockStadiums.getFirst().getName();
@@ -146,7 +146,7 @@ class MatchImportServiceTest {
         TeamSide homeSide = new TeamSide(homeTeamData, 2);
         TeamSide awaySide = new TeamSide(awayTeamData, 1);
 
-        Teams teams = new Teams(homeSide, awaySide);
+        MatchTeams teams = new MatchTeams(homeSide, awaySide);
         Status status = new Status("Final");
         Venue venue = new Venue(1, STADIUM1_NAME);
 

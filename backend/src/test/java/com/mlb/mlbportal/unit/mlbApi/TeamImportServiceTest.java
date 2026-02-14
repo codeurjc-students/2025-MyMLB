@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
-import com.mlb.mlbportal.dto.mlbapi.LeagueInfo;
-import com.mlb.mlbportal.dto.mlbapi.TeamDetails;
-import com.mlb.mlbportal.dto.mlbapi.TeamDetailsResponse;
+import com.mlb.mlbportal.dto.mlbapi.match.LeagueInfo;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;

@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.naming.ServiceUnavailableException;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbapi.player.PlayerDetailInfo;

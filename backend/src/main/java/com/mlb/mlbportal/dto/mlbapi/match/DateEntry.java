@@ -1,4 +1,8 @@
-package com.mlb.mlbportal.dto.mlbapi;
+/**
+ * DTO that maps the matches of a certain date
+ */
+
+package com.mlb.mlbportal.dto.mlbapi.match;
 
 import java.util.List;
 

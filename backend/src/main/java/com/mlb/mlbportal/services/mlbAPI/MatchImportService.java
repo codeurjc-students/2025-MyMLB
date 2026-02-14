@@ -1,5 +1,27 @@
 package com.mlb.mlbportal.services.mlbAPI;
 
+import com.mlb.mlbportal.dto.match.MatchDTO;
+import com.mlb.mlbportal.dto.mlbapi.match.DateEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.GameEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.ScheduleResponse;
+import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import com.mlb.mlbportal.models.Match;
+import com.mlb.mlbportal.models.Stadium;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.MatchRepository;
+import com.mlb.mlbportal.repositories.StadiumRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.services.team.TeamService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import javax.naming.ServiceUnavailableException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,31 +29,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
-import javax.naming.ServiceUnavailableException;
-
-import com.mlb.mlbportal.dto.mlbapi.DateEntry;
-import com.mlb.mlbportal.models.Stadium;
-import com.mlb.mlbportal.repositories.StadiumRepository;
-import com.mlb.mlbportal.services.team.TeamService;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.mlbapi.GameEntry;
-import com.mlb.mlbportal.dto.mlbapi.ScheduleResponse;
-import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
-import com.mlb.mlbportal.models.Match;
-import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.repositories.MatchRepository;
-import com.mlb.mlbportal.repositories.TeamRepository;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
