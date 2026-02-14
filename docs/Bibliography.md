@@ -31,6 +31,13 @@
 - [Angular Material (Tooltip)](https://material.angular.dev/components/tooltip/overview)
 - [flatpickr](https://flatpickr.js.org/)
 
+## 📚 Books
+- GoalKicker.com - Spring Framework Notes For Professionals (2017)
+- GoalKicker.com - TypeScript Notes For Professionals (2018)
+- GoalKicker.com - PostgreSQL Notes For Professionals (2017)
+- GoalKicker.com - AngularJS Notes For Professionals (2017)
+- GoalKicker.com - Angular2+ Notes For Professionals (2018)
+
 ## 🤖 IA Agents
 - Gemini
 - GitHub Copilot
