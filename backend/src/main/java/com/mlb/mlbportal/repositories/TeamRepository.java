@@ -14,6 +14,8 @@ import com.mlb.mlbportal.models.enums.League;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    Optional<Team> findByStatsApiId(Long id);
+
     List<Team> findByLeagueAndDivision(League league, Division division);
 
     Optional<Team> findByName(String name);

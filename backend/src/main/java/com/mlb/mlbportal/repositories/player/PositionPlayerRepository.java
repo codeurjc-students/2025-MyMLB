@@ -12,6 +12,8 @@ import com.mlb.mlbportal.models.player.PositionPlayer;
 
 @Repository
 public interface PositionPlayerRepository extends JpaRepository<PositionPlayer, Long> {
+    Optional<PositionPlayer> findByStatsApiId(Integer id);
+
     Optional<PositionPlayer> findByName(String name);
 
     default PositionPlayer findByNameOrThrow(String name) {

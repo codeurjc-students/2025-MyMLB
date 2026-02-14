@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PitcherPositions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.models.enums</a> &gt; <span class="el_source">PitcherPositions.java</span></div><h1>PitcherPositions.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.models.enums;
 
-<span class="fc" id="L3">public enum PitcherPositions {</span>
-<span class="fc" id="L4">    SP,</span>
-<span class="fc" id="L5">    RP,</span>
-<span class="fc" id="L6">    CL   </span>
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+<span class="fc" id="L6">public enum PitcherPositions {</span>
+<span class="fc" id="L7">    SP(&quot;SP&quot;),</span>
+<span class="fc" id="L8">    RP(&quot;RP&quot;),</span>
+<span class="fc" id="L9">    CL(&quot;CL&quot;),</span>
+<span class="fc" id="L10">    P(&quot;P&quot;);</span>
+
+    private final String label;
+
+<span class="fc" id="L14">    PitcherPositions(String label) {</span>
+<span class="fc" id="L15">        this.label = label;</span>
+<span class="fc" id="L16">    }</span>
+
+    @JsonValue
+    public String getLabel() {
+<span class="fc" id="L20">        return label;</span>
+    }
+
+    @JsonCreator
+    public static PitcherPositions fromLabel(String label) {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        for (PitcherPositions pos : values()) {</span>
+<span class="nc bnc" id="L26" title="All 4 branches missed.">            if (pos.name().equalsIgnoreCase(label) || pos.getLabel().equalsIgnoreCase(label)) {</span>
+<span class="nc" id="L27">                return pos;</span>
+            }
+        }
+<span class="nc" id="L30">        throw new IllegalArgumentException(&quot;Invalid player position: &quot; + label);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

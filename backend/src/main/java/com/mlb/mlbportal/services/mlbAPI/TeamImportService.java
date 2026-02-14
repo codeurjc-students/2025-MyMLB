@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.services;
+package com.mlb.mlbportal.services.mlbAPI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +20,9 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TeamImportService {
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -66,13 +66,19 @@ public class TeamImportService {
             Map.entry("ARI", Division.WEST)
     );
 
+    /**
+     * Get the API team and assign one to an application team.
+     *
+     * @param teamId stats API team ID.
+     *
+     * @return the team in the application format.
+     */
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackTeams")
     @Retry(name = "mlbApi")
     public TeamSummary getTeamSummary(int teamId) {
         if (this.cache.containsKey(teamId)) {
             return this.cache.get(teamId);
         }
-
         String url = "https://statsapi.mlb.com/api/v1/teams/" + teamId;
 
         TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);
@@ -111,6 +117,11 @@ public class TeamImportService {
         throw new ServiceUnavailableException("MLB API not available and no cached data for teamId = " + teamId);
     }
 
+    /**
+     * Associate each team of the application with its corresponding stats API ID.
+     *
+     * @return said association in a map format.
+     */
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackFindStatsAPiID")
     @Retry(name = "mlbApi")
     public Map<String, Integer> findStatsApiId() {

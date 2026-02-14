@@ -9,7 +9,6 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.mlb.mlbportal.models.ticket.Event;
-import com.mlb.mlbportal.models.ticket.EventManager;
-import com.mlb.mlbportal.models.ticket.Seat;
-import com.mlb.mlbportal.models.ticket.Sector;
-import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
-import com.mlb.mlbportal.repositories.ticket.EventRepository;
-import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,20 +31,26 @@ import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.models.enums.PitcherPositions;
-import com.mlb.mlbportal.models.enums.PlayerPositions;
-import com.mlb.mlbportal.models.others.PictureInfo;
-import com.mlb.mlbportal.models.player.Pitcher;
-import com.mlb.mlbportal.models.player.PositionPlayer;
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Seat;
+import com.mlb.mlbportal.models.ticket.Sector;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.repositories.ticket.EventRepository;
+import com.mlb.mlbportal.repositories.ticket.SectorRepository;
+import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
+import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
+import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DataInitializerService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -61,10 +59,11 @@ public class DataInitializerService {
     private final MatchRepository matchRepository;
     private final StadiumRepository stadiumRepository;
 
-    private final MlbImportService mlbImportService;
+    private final MatchImportService mlbImportService;
+    private final TeamImportService teamLookupService;
+    private final PlayerImportService playerImportService;
 
     private final EventRepository eventRepository;
-    private final EventManagerRepository eventManagerRepository;
     private final SectorRepository sectorRepository;
 
     private static final Random RANDOM = new Random();
@@ -79,9 +78,11 @@ public class DataInitializerService {
     public void init() {
         this.createAdmins();
         this.setUpTeams();
+        this.syncStatsApiIdWithTeams();
+        this.teamRepository.flush();
         this.setUpStadiums();
         this.setUpMatches();
-        this.setUpPlayers();
+        this.playerImportService.getTeamRoster();
         this.setUpEventsForTodayMatches();
     }
 
@@ -139,6 +140,21 @@ public class DataInitializerService {
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading team data from JSON", e);
         }
+    }
+
+    private void syncStatsApiIdWithTeams() {
+        List<Team> teams = this.teamRepository.findAll();
+        Map<String, Integer> map = this.teamLookupService.findStatsApiId();
+        for (Team team : teams) {
+            Integer statApiId = map.get(team.getName());
+            if (statApiId != null) {
+                team.setStatsApiId(statApiId);
+            }
+            else {
+                log.warn("Cannot find the Stat API ID for team: {}", team.getName());
+            }
+        }
+        this.teamRepository.saveAll(teams);
     }
 
     private List<Match> generateBalancedMatches(List<Team> teams) {
@@ -300,83 +316,6 @@ public class DataInitializerService {
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading stadium data from JSON", e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setUpPlayers() {
-        ObjectMapper mapper = new ObjectMapper();
-
-        try (InputStream input = getClass().getResourceAsStream("/data/players-2025.json")) {
-            List<Map<String, Object>> rawPlayers = mapper.readValue(input, List.class);
-            List<Team> allTeams = teamRepository.findAll();
-
-            Map<String, Team> teamMap = allTeams.stream()
-                    .collect(Collectors.toMap(t -> t.getName().toLowerCase(), t -> t));
-
-            Map<Team, List<PositionPlayer>> positionPlayersByTeam = new HashMap<>();
-            Map<Team, List<Pitcher>> pitchersByTeam = new HashMap<>();
-
-            for (Map<String, Object> raw : rawPlayers) {
-                String type = (String) raw.get("type");
-                String name = (String) raw.get("name");
-                int playerNumber = (int) raw.get("playerNumber");
-                String teamName = ((String) raw.get("teamName")).toLowerCase();
-                Map<String, Object> pictureMap = (Map<String, Object>) raw.get("picture");
-                PictureInfo picture = mapper.convertValue(pictureMap, PictureInfo.class);
-
-                Team team = teamMap.get(teamName);
-                if (team == null) continue;
-
-                if ("Pitcher".equalsIgnoreCase(type)) {
-                    Pitcher pitcher = new Pitcher(
-                            name,
-                            playerNumber,
-                            team,
-                            PitcherPositions.valueOf(((String) raw.get("position")).toUpperCase()),
-                            ((Number) raw.get("games")).intValue(),
-                            ((Number) raw.get("wins")).intValue(),
-                            ((Number) raw.get("losses")).intValue()
-                    );
-                    pitcher.setInningsPitched(((Number) raw.get("inningsPitched")).intValue());
-                    pitcher.setTotalStrikeouts(((Number) raw.get("totalStrikeouts")).intValue());
-                    pitcher.setWalks(((Number) raw.get("walks")).intValue());
-                    pitcher.setHitsAllowed(((Number) raw.get("hitsAllowed")).intValue());
-                    pitcher.setRunsAllowed(((Number) raw.get("runsAllowed")).intValue());
-                    pitcher.setSaves(((Number) raw.get("saves")).intValue());
-                    pitcher.setSaveOpportunities(((Number) raw.get("saveOpportunities")).intValue());
-                    pitchersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(pitcher);
-                    pitcher.setPicture(picture);
-                } else {
-                    PositionPlayer player = new PositionPlayer(
-                            name,
-                            playerNumber,
-                            team,
-                            PlayerPositions.fromLabel((String) raw.get("position")),
-                            ((Number) raw.get("atBats")).intValue(),
-                            ((Number) raw.get("walks")).intValue(),
-                            ((Number) raw.get("hits")).intValue()
-                    );
-                    player.setDoubles(((Number) raw.get("doubles")).intValue());
-                    player.setTriples(((Number) raw.get("triples")).intValue());
-                    player.setHomeRuns(((Number) raw.get("homeRuns")).intValue());
-                    player.setRbis(((Number) raw.get("rbis")).intValue());
-                    positionPlayersByTeam.computeIfAbsent(team, t -> new ArrayList<>()).add(player);
-                    player.setPicture(picture);
-                }
-            }
-
-            for (Team team : allTeams) {
-                List<PositionPlayer> positionPlayers = positionPlayersByTeam.getOrDefault(team, new ArrayList<>());
-                List<Pitcher> pitchers = pitchersByTeam.getOrDefault(team, new ArrayList<>());
-
-                team.setPositionPlayers(positionPlayers);
-                team.setPitchers(pitchers);
-            }
-            teamRepository.saveAll(allTeams);
-
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error loading players data", e);
         }
     }
 

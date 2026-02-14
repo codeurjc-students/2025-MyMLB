@@ -1,7 +1,7 @@
 package com.mlb.mlbportal.controllers;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.services.MlbImportService;
+import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MlbImportController {
 
-    private final MlbImportService mlbImportService;
+    private final MatchImportService mlbImportService;
 
     @Operation(summary = "Fetch official MLB matches from the MLB Stats API", description = "Returns matches between the given date range directly from the official MLB StatsAPI")
     @ApiResponses(value = {

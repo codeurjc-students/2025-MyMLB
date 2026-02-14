@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerImportService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services.mlbAPI</a> &gt; <span class="el_source">PlayerImportService.java</span></div><h1>PlayerImportService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services.mlbAPI;
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.naming.ServiceUnavailableException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import com.mlb.mlbportal.dto.mlbapi.player.PlayerDetailInfo;
+import com.mlb.mlbportal.dto.mlbapi.player.PlayerResponse;
+import com.mlb.mlbportal.dto.mlbapi.player.RosterEntry;
+import com.mlb.mlbportal.dto.mlbapi.player.RosterResponse;
+import com.mlb.mlbportal.dto.mlbapi.player.StatData;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.PlayerPositions;
+import com.mlb.mlbportal.models.others.PictureInfo;
+import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.PositionPlayer;
+import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.player.PitcherRepository;
+import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@AllArgsConstructor
+<span class="fc" id="L34">@Slf4j</span>
+public class PlayerImportService {
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final TeamRepository teamRepository;
+    private final PitcherRepository pitcherRepository;
+    private final PositionPlayerRepository positionPlayerRepository;
+
+    /**
+     * Main method of the service.
+     * Obtain the roster from each team, and then obtain the stats for each player.
+     */
+    @Transactional
+    @CircuitBreaker(name = &quot;playersFromStatsAPI&quot;, fallbackMethod = &quot;fallbackGetTeamsRoster&quot;)
+    @Retry(name = &quot;playersFromStatsAPI&quot;)
+    public void getTeamRoster() {
+<span class="fc" id="L49">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (Team team : teams) {</span>
+<span class="fc" id="L52">            String url = &quot;https://statsapi.mlb.com/api/v1/teams/&quot; + team.getStatsApiId() + &quot;/roster&quot;;</span>
+<span class="fc" id="L53">            RosterResponse response = this.restTemplate.getForObject(url, RosterResponse.class);</span>
+<span class="pc bpc" id="L54" title="2 of 4 branches missed.">            if (response != null &amp;&amp; response.roster() != null) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                for (RosterEntry entry : response.roster()) {</span>
+<span class="fc" id="L56">                    this.getPlayerStatsFromAPI(entry.person().id(), team);</span>
+<span class="fc" id="L57">                }</span>
+            }
+<span class="fc" id="L59">        }</span>
+<span class="fc" id="L60">        log.info(&quot;Rosters and Stats successfully retrieved and stored in the database&quot;);</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Obtain the stats for each player. The stats are different depending on the type of player (position or pitcher)
+     *
+     * @param personId stat API ID for the player.
+     * @param team of the player.
+     */
+    @CircuitBreaker(name = &quot;playerStatsFromAPI&quot;, fallbackMethod = &quot;fallbackGetPlayerStats&quot;)
+    @Retry(name = &quot;playerStatsFromAPI&quot;)
+    private void getPlayerStatsFromAPI(int personId, Team team) {
+<span class="fc" id="L72">        String url = &quot;https://statsapi.mlb.com/api/v1/people/&quot; + personId + &quot;?hydrate=stats(group=[hitting,pitching],type=[season])&quot;;</span>
+<span class="fc" id="L73">        PlayerResponse response = this.restTemplate.getForObject(url, PlayerResponse.class);</span>
+<span class="pc bpc" id="L74" title="2 of 4 branches missed.">        if (response == null || response.people().isEmpty()) {</span>
+<span class="nc" id="L75">            return;</span>
+        }
+<span class="fc" id="L77">        PlayerDetailInfo player = response.people().getFirst();</span>
+<span class="fc" id="L78">        StatData data = this.getData(player);</span>
+
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (&quot;1&quot;.equals(player.primaryPosition().code())) {</span>
+<span class="nc" id="L81">            this.savePitcher(player, data, team);</span>
+        }
+        else {
+<span class="fc" id="L84">            this.savePositionPlayer(player, data, team);</span>
+        }
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * Obtain the player's picture from the API, and if the player does not have any (or any error occur) it sets a default one.
+     *
+     * @param id stat API ID for the player.
+     *
+     * @return the picture obtained from the API.
+     */
+    @CircuitBreaker(name = &quot;playerPictureFromAPI&quot;, fallbackMethod = &quot;fallbackGetPlayerPicture&quot;)
+    @Retry(name = &quot;playerPictureFromAPI&quot;)
+    private PictureInfo savePlayerPicture(int id) {
+<span class="fc" id="L98">        String url = &quot;https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/v1/people/&quot;</span>
+                + id + &quot;/headshot/67/current&quot;;
+
+<span class="fc" id="L101">        PictureInfo pictureInfo = new PictureInfo();</span>
+<span class="fc" id="L102">        pictureInfo.setUrl(url);</span>
+<span class="fc" id="L103">        return pictureInfo;</span>
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void fallbackGetTeamsRoster(Throwable throwable) {
+<span class="fc" id="L108">        log.error(&quot;playersFromStatsAPI: Error obtaining the roster&quot;);</span>
+<span class="fc" id="L109">    }</span>
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public void fallbackGetPlayerStats(int personId, Team  team, Throwable throwable) throws ServiceUnavailableException {
+<span class="nc bnc" id="L113" title="All 4 branches missed.">        if (this.positionPlayerRepository.findByStatsApiId(personId).isEmpty() || this.pitcherRepository.findByStatsApiId(personId).isEmpty()) {</span>
+<span class="nc" id="L114">            log.warn(&quot;playerStatsFromAPI: Error obtaining the stats of the player whose stat API ID is: {}&quot;, personId);</span>
+        }
+<span class="nc" id="L116">    }</span>
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public PictureInfo fallbackGetPlayerPicture(int id, Throwable throwable)  {
+<span class="nc" id="L120">        log.warn(&quot;playerPictureFromAPI: Cannot get the picture for the player with statsApiId: {}&quot;, id);</span>
+<span class="nc" id="L121">        PictureInfo defaultPicture = new PictureInfo();</span>
+<span class="nc" id="L122">        defaultPicture.setUrl(&quot;https://img.mlbstatic.com/mlb-photos/image/upload/v1/people/generic/headshot/67/current&quot;);</span>
+<span class="nc" id="L123">        return defaultPicture;</span>
+    }
+
+    private StatData getData(PlayerDetailInfo playerDetailInfo) {
+<span class="pc bpc" id="L127" title="2 of 4 branches missed.">        if (playerDetailInfo.stats() != null &amp;&amp; !playerDetailInfo.stats().isEmpty()) {</span>
+<span class="fc" id="L128">            return playerDetailInfo.stats().getFirst().splits().getFirst().stat();</span>
+        }
+<span class="nc" id="L130">        return null;</span>
+    }
+
+    /**
+     * Map the position player's data obtained from the API, into the one that this application manages and store it in the database.
+     *
+     * @param playerDetailInfo player's info
+     * @param data stats of the player.
+     * @param team of the player.
+     */
+    private void savePositionPlayer(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
+<span class="fc" id="L141">        PositionPlayer positionPlayer = this.positionPlayerRepository.findByName(playerDetailInfo.fullName()).orElse(new PositionPlayer());</span>
+<span class="fc" id="L142">        positionPlayer.setStatsApiId(playerDetailInfo.id());</span>
+<span class="fc" id="L143">        positionPlayer.setName(playerDetailInfo.fullName());</span>
+<span class="fc" id="L144">        positionPlayer.setPlayerNumber(this.parsePlayerNumber(playerDetailInfo.primaryNumber()));</span>
+<span class="fc" id="L145">        positionPlayer.setTeam(team);</span>
+<span class="fc" id="L146">        positionPlayer.setPicture(this.savePlayerPicture(playerDetailInfo.id()));</span>
+        try {
+<span class="fc" id="L148">            String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();</span>
+<span class="fc" id="L149">            positionPlayer.setPosition(PlayerPositions.fromLabel(posAbbreviation));</span>
+        }
+<span class="nc" id="L151">        catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L152">            log.error(&quot;Unknown Position Player Position: {}&quot;, playerDetailInfo.primaryPosition().abbreviation());</span>
+<span class="fc" id="L153">        }</span>
+
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (data != null) {</span>
+<span class="fc" id="L156">            positionPlayer.setAtBats(data.atBats());</span>
+<span class="fc" id="L157">            positionPlayer.setHits(Objects.requireNonNullElse(data.hits(), 0));</span>
+<span class="fc" id="L158">            positionPlayer.setDoubles(Objects.requireNonNullElse(data.doubles(), 0));</span>
+<span class="fc" id="L159">            positionPlayer.setTriples(Objects.requireNonNullElse(data.triples(), 0));</span>
+<span class="fc" id="L160">            positionPlayer.setWalks(Objects.requireNonNullElse(data.baseOnBalls(), 0));</span>
+<span class="fc" id="L161">            positionPlayer.setHomeRuns(Objects.requireNonNullElse(data.homeRuns(), 0));</span>
+<span class="fc" id="L162">            positionPlayer.setRbis(Objects.requireNonNullElse(data.rbi(), 0));</span>
+<span class="fc" id="L163">            positionPlayer.setAverage(Objects.requireNonNullElse(data.avg(), 0.000));</span>
+<span class="fc" id="L164">            positionPlayer.setObp(Objects.requireNonNullElse(data.obp(), 0.000));</span>
+<span class="fc" id="L165">            positionPlayer.setOps(Objects.requireNonNullElse(data.ops(), 0.000));</span>
+<span class="fc" id="L166">            positionPlayer.setSlugging(Objects.requireNonNullElse(data.slg(), 0.000));</span>
+        }
+<span class="fc" id="L168">        this.positionPlayerRepository.save(positionPlayer);</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * Map the pitcher's data obtained from the API, into the one that this application manages and store it in the database.
+     *
+     * @param playerDetailInfo player's info
+     * @param data stats of the player.
+     * @param team of the player.
+     */
+    private void savePitcher(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
+<span class="nc" id="L179">        Pitcher pitcher = this.pitcherRepository.findByName(playerDetailInfo.fullName()).orElse(new Pitcher());</span>
+<span class="nc" id="L180">        pitcher.setStatsApiId(playerDetailInfo.id());</span>
+<span class="nc" id="L181">        pitcher.setName(playerDetailInfo.fullName());</span>
+<span class="nc" id="L182">        pitcher.setPlayerNumber(this.parsePlayerNumber(playerDetailInfo.primaryNumber()));</span>
+<span class="nc" id="L183">        pitcher.setTeam(team);</span>
+<span class="nc" id="L184">        pitcher.setPicture(this.savePlayerPicture(playerDetailInfo.id()));</span>
+        try {
+<span class="nc" id="L186">            String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();</span>
+<span class="nc" id="L187">            pitcher.setPosition(PitcherPositions.fromLabel(posAbbreviation));</span>
+        }
+<span class="nc" id="L189">        catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L190">            log.error(&quot;Unknown Pitcher Position: {}&quot;, playerDetailInfo.primaryPosition().abbreviation());</span>
+<span class="nc" id="L191">        }</span>
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (data != null) {</span>
+<span class="nc" id="L194">            pitcher.setGames(Objects.requireNonNullElse(data.gamesPlayed(), 0));</span>
+<span class="nc" id="L195">            pitcher.setEra(Objects.requireNonNullElse(data.era(), 0.000));</span>
+<span class="nc" id="L196">            pitcher.setWins(Objects.requireNonNullElse(data.wins(), 0));</span>
+<span class="nc" id="L197">            pitcher.setLosses(Objects.requireNonNullElse(data.losses(), 0));</span>
+<span class="nc" id="L198">            pitcher.setInningsPitched(Double.parseDouble(data.inningsPitched()));</span>
+<span class="nc" id="L199">            pitcher.setTotalStrikeouts(Objects.requireNonNullElse(data.strikeOuts(), 0));</span>
+<span class="nc" id="L200">            pitcher.setWalks(Objects.requireNonNullElse(data.baseOnBalls(), 0));</span>
+<span class="nc" id="L201">            pitcher.setHitsAllowed(Objects.requireNonNullElse(data.hits(), 0));</span>
+<span class="nc" id="L202">            pitcher.setRunsAllowed(Objects.requireNonNullElse(data.runs(), 0));</span>
+<span class="nc" id="L203">            pitcher.setSaves(Objects.requireNonNullElse(data.saves(), 0));</span>
+<span class="nc" id="L204">            pitcher.setSaveOpportunities(Objects.requireNonNullElse(data.saveOpportunities(), 0));</span>
+<span class="nc" id="L205">            pitcher.setWhip(Objects.requireNonNullElse(data.whip(), 0.000));</span>
+        }
+<span class="nc" id="L207">        this.pitcherRepository.save(pitcher);</span>
+<span class="nc" id="L208">    }</span>
+
+    /**
+     * Auxiliary method that do a save parser for the player's number
+     *
+     * @param number to parse.
+     *
+     * @return the number converted to integer.
+     */
+    private int parsePlayerNumber(String number) {
+        try {
+<span class="pc bpc" id="L219" title="2 of 4 branches missed.">            return (number != null &amp;&amp; !number.isEmpty()) ? Integer.parseInt(number) : 0;</span>
+        }
+<span class="nc" id="L221">        catch (NumberFormatException e) {</span>
+<span class="nc" id="L222">            return 0;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

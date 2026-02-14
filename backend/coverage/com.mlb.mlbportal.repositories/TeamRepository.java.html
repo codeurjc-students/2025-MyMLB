@@ -14,12 +14,14 @@ import com.mlb.mlbportal.models.enums.League;
 
 @Repository
 public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
+    Optional&lt;Team&gt; findByStatsApiId(Long id);
+
     List&lt;Team&gt; findByLeagueAndDivision(League league, Division division);
 
     Optional&lt;Team&gt; findByName(String name);
 
     default Team findByNameOrThrow(String name) {
-<span class="fc" id="L22">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L24">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
     }
 
     Optional&lt;Team&gt; findByAbbreviation(String abbreviation);

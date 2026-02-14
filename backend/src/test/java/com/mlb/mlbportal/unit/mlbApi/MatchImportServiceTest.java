@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.unit.match;
+package com.mlb.mlbportal.unit.mlbApi;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -88,7 +88,7 @@ class MatchImportServiceTest {
 
     @BeforeEach
     @SuppressWarnings("unused")
-    void setUp() throws Exception {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
         var field = MatchImportService.class.getDeclaredField("restTemplate");
         field.setAccessible(true);
         field.set(this.mlbImportService, this.restTemplate);

@@ -3,7 +3,10 @@ package com.mlb.mlbportal.unit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mlb.mlbportal.models.Match;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,7 +28,7 @@ import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.DataInitializerService;
-import com.mlb.mlbportal.services.MlbImportService;
+import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,12 +51,10 @@ class DataInitializerServiceTest {
 
     @Mock
     @SuppressWarnings("unused")
-    private MlbImportService mlbImportService;
+    private MatchImportService mlbImportService;
 
     @InjectMocks
     private DataInitializerService dataInitializerService;
-
-    private static final int TEAM_COUNT = 3;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -114,23 +115,5 @@ class DataInitializerServiceTest {
         verify(this.matchRepository, times(1)).saveAll(anyList());
 
         verify(this.teamRepository, times(1)).saveAll(mockTeams);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    void testSetUpPlayers() {
-        List<Team> mockTeams = this.generateMockTeams();
-        when(this.teamRepository.findAll()).thenReturn(mockTeams);
-
-        ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpPlayers");
-
-        verify(this.teamRepository, times(1)).findAll();
-        verify(this.teamRepository, times(1)).saveAll(anyList());
-
-        ArgumentCaptor<List<Team>> teamListCaptor = ArgumentCaptor.forClass(List.class);
-        verify(this.teamRepository).saveAll(teamListCaptor.capture());
-
-        List<Team> savedTeams = teamListCaptor.getValue();
-        assertThat(savedTeams).hasSize(TEAM_COUNT).isEqualTo(mockTeams);
     }
 }
