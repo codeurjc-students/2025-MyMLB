@@ -338,17 +338,9 @@ The [docker-compose.yml](https://github.com/codeurjc-students/2025-MyMLB/blob/ma
 docker compose -f ./docker/docker-compose.yml publish docker.io/fonssi29/mlb-portal-compose:tag --with-env -y
 ```
 
-Once published, the `compose` can be used locally by pulling it from the repository:
-
+Once published, the `compose` can be used locally by running the following command:
 ```bash
-docker compose pull
-```
-
-### Deploying the Application wiht the Compose File
-To deploy the application, run the `docker-compose` file using the following command:
-
-```bash
-docker compose -f ./docker/docker-compose.yml up
+docker compose -f oci://fonssi29/mlb-portal-compose:tag up
 ```
 
 > [!NOTE]
