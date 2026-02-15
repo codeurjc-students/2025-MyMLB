@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build-backend /app/backend/target/*.jar app.jar
 
 # Copy keystore
-COPY --from=build-backend /app/backend/src/main/resources/keystore.p12 /app/keystore.p12
+#COPY --from=build-backend /app/backend/src/main/resources/keystore.p12 /app/keystore.p12
 
 # Copy frontend build
 COPY --from=build-frontend /app/frontend/dist/frontend/browser /app/static
@@ -50,4 +50,4 @@ ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT=10000
 
-ENTRYPOINT ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-Dspring.profiles.active=docker-prod", "-jar", "app.jar"]
