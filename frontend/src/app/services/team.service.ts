@@ -6,6 +6,7 @@ import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.m
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth/auth-response.model';
+import { environment } from '../../environments/environment';
 
 export type StandingsResponse = {
 	[league: string]: {
@@ -17,7 +18,7 @@ export type StandingsResponse = {
 	providedIn: 'root',
 })
 export class TeamService {
-	private url = 'https://localhost:8443/api/v1/teams';
+	private url = `${environment.apiUrl}/teams`;
 
 	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
 

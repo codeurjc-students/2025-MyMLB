@@ -7,12 +7,13 @@ import { RegisterRequest } from '../models/auth/register-request.model';
 import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
 import { ResetPasswordRequest } from '../models/auth/reset-password-request.model';
 import { UserRole } from '../models/auth/user-role.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = 'https://localhost:8443/api/v1/auth';
+	private apiUrl = `${environment.apiUrl}/auth`;
 
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 	private currentUserSubject = new BehaviorSubject<UserRole>(this.defaultGuestUser);

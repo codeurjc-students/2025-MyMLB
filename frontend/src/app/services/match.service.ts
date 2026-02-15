@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TeamSummary } from '../models/team.model';
 import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../environments/environment';
 
 export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
 
@@ -22,7 +23,7 @@ export type ShowMatch = {
 })
 export class MatchService {
 	private http = inject(HttpClient);
-	private apiUrl = 'https://localhost:8443/api/v1/matches';
+	private apiUrl = `${environment.apiUrl}/matches`;
 
 	public getMatchById(matchId: number): Observable<ShowMatch> {
 		return this.http.get<ShowMatch>(`${this.apiUrl}/${matchId}`);

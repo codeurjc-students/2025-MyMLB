@@ -2,7 +2,7 @@
 FROM node:20 AS build-frontend
 WORKDIR /app/frontend
 COPY ./frontend/ /app/frontend
-RUN npm install && npm run config
+RUN npx ng build --configuration production
 
 # Step 2: Backend Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build-backend
@@ -23,7 +23,7 @@ COPY ./backend/src/main/resources/keystore.p12 /app/keystore.p12
 # Copy frontend build
 COPY --from=build-frontend /app/frontend/dist/frontend /app/static
 
-EXPOSE 8443
+EXPOSE 8080
 
 ENV SPRING_PROFILES_ACTIVE=docker
 ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/MLBPortal

@@ -7,14 +7,15 @@ import { ReplyRequest } from '../models/support/reply-request.model';
 import { SupportTicket } from '../models/support/support-ticket.model';
 import { SupportMessage } from '../models/support/support-message.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SupportService {
     private http = inject(HttpClient);
-    private userApi = 'https://localhost:8443/api/v1/support';
-    private adminApi = 'https://localhost:8443/api/v1/admin/support/tickets';
+    private userApi = `${environment.apiUrl}/support`;
+    private adminApi = `${environment.apiUrl}/admin/support/tickets`;
 
 	private openTicketsSubject = new BehaviorSubject<number>(0);
 	public opentTickets$: Observable<number> = this.openTicketsSubject.asObservable();

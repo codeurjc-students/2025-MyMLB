@@ -5,12 +5,13 @@ import { Pictures } from '../models/pictures.model';
 import { AuthResponse } from '../models/auth/auth-response.model';
 import { CreateStadiumRequest, Stadium, StadiumSummary } from '../models/stadium.model';
 import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class StadiumService {
-	private apiUrl = 'https://localhost:8443/api/v1/stadiums';
+	private apiUrl = `${environment.apiUrl}/stadiums`;
 
 	constructor(private http: HttpClient) {}
 
