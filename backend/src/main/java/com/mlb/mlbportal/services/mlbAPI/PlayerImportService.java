@@ -103,6 +103,7 @@ public class PlayerImportService {
 
     @SuppressWarnings("unused")
     public void fallbackGetTeamsRoster(Throwable throwable) {
+        log.error("Error REAL de la API: {}", throwable.getMessage());
         log.error("playersFromStatsAPI: Error obtaining the roster");
     }
 
