@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@Profile({"dev", "docker"})
+@Profile({"dev", "docker", "docker-prod"})
 public class InitComponent {
 
     private final DataInitializerService dataInitializerService;
