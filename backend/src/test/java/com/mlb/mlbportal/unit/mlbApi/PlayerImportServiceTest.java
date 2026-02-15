@@ -3,11 +3,15 @@ package com.mlb.mlbportal.unit.mlbApi;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
@@ -107,5 +111,96 @@ class PlayerImportServiceTest {
         assertDoesNotThrow(() -> {
             this.playerImportService.fallbackGetTeamsRoster(new RuntimeException("Stats API Down"));
         });
+    }
+
+    @Test
+    @DisplayName("Should save a Position Player")
+    void testSavePositionPlayer() {
+        when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
+
+        PlayerData playerData = new PlayerData(20, PLAYER2_NAME);
+        PositionData positionData = new PositionData("2", "C");
+        RosterEntry entry = new RosterEntry(playerData, positionData);
+        RosterResponse rosterResponse = new RosterResponse(List.of(entry));
+
+        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(rosterResponse);
+
+        StatData positionPlayerStats = new StatData(20, 10, 2, 2, 6, 0, 0, 0.500, 0.500, 1.554, 0.999,
+                0, 0, 0, 0, 0, 0, 0, 0.00, 0.00, "0.0");
+        Split split = new Split(positionPlayerStats);
+        Stats stats = new Stats(List.of(split));
+        PlayerDetailInfo playerDetailInfo = new PlayerDetailInfo(20, PLAYER2_NAME, "3", positionData, List.of(stats));
+        PlayerResponse playerResponse = new PlayerResponse(List.of(playerDetailInfo));
+
+        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(playerResponse);
+        when(this.positionPlayerRepository.findByName(anyString())).thenReturn(Optional.empty());
+
+        this.playerImportService.getTeamRoster();
+
+        verify(this.positionPlayerRepository, times(1)).save(any(PositionPlayer.class));
+    }
+
+    @Test
+    @DisplayName("Should save a Pitcher")
+    void testSavePitcher() {
+        when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
+
+        PlayerData playerData = new PlayerData(19, PLAYER1_NAME);
+        PositionData positionData = new PositionData("1", "P");
+        RosterEntry entry = new RosterEntry(playerData, positionData);
+        RosterResponse rosterResponse = new RosterResponse(List.of(entry));
+
+        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(rosterResponse);
+
+        StatData pitcherStats = new StatData(0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,
+                10, 3, 5, 2, 80, 10, 5, 4.00, 1.10, "50.2");
+        Split split = new Split(pitcherStats);
+        Stats stats = new Stats(List.of(split));
+        PlayerDetailInfo playerDetailInfo = new PlayerDetailInfo(19, PLAYER1_NAME, "17", positionData, List.of(stats));
+        PlayerResponse playerResponse = new PlayerResponse(List.of(playerDetailInfo));
+
+        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(playerResponse);
+        when(this.pitcherRepository.findByName(anyString())).thenReturn(Optional.empty());
+
+        this.playerImportService.getTeamRoster();
+
+        verify(this.pitcherRepository, times(1)).save(any(Pitcher.class));
+    }
+
+    @Test
+    @DisplayName("Should handle empty API response gracefully without saving any player")
+    void testGetTeamRosterEmptyResponse() {
+        when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
+        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(null);
+
+        this.playerImportService.getTeamRoster();
+
+        verify(this.positionPlayerRepository, never()).save(any());
+        verify(this.pitcherRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should set a default picture when the fallback method has been called")
+    void testFallbackGetPlayerPicture() {
+        var result = this.playerImportService.fallbackGetPlayerPicture(999, new RuntimeException("Timeout"));
+
+        assertThat(result).isNotNull();
+        assertThat(result.getUrl()).contains("generic/headshot");
+    }
+
+    @Test
+    @DisplayName("Should handle invalid position label")
+    void testManageInvalidPlayerPosition() {
+        when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
+
+        PositionData invalidPos = new PositionData("99", "CH");
+        RosterResponse rosterResponse = new RosterResponse(List.of(new RosterEntry(new PlayerData(1, PLAYER1_NAME), invalidPos)));
+
+        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(rosterResponse);
+
+        PlayerDetailInfo playerDetail = new PlayerDetailInfo(1, PLAYER1_NAME, "1", invalidPos, List.of());
+        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(new PlayerResponse(List.of(playerDetail)));
+
+        assertDoesNotThrow(() -> this.playerImportService.getTeamRoster());
     }
 }
