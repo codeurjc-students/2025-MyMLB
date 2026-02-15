@@ -184,7 +184,7 @@ class TeamImportServiceTest {
         Map<String, Integer> result = this.teamImportService.findStatsApiId();
 
         assertThat(result).hasSize(1);
-        assertThat(result.containsKey(TEST_TEAM1_NAME));
+        assertThat(result.containsKey(TEST_TEAM1_NAME)).isTrue();
         assertThat(result.get(TEST_TEAM1_NAME)).isEqualTo(1);
     }
 }
