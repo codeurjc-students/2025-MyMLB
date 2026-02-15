@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
 })
 export class EventService {
 	private httpMock = inject(HttpClient);
-	private apiUrl = `${environment.apiUrl}/api/v1/events`;
+	private apiUrl = `${environment.apiUrl}/events`;
 
 	public getEventById(eventId: number): Observable<EventResponse> {
 		return this.httpMock.get<EventResponse>(`${this.apiUrl}/${eventId}`);

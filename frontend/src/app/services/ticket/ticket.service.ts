@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 })
 export class TicketService {
 	private http = inject(HttpClient);
-	private apiUrl = `${environment.apiUrl}/api/v1/tickets`;
+	private apiUrl = `${environment.apiUrl}/tickets`;
 
 	public purchaseTicket(request: PurchaseRequest): Observable<PaginatedResponse<Ticket>> {
 		return this.http.post<PaginatedResponse<Ticket>>(this.apiUrl, request, { withCredentials: true });
