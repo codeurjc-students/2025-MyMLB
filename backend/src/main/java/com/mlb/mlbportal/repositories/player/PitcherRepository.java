@@ -12,6 +12,8 @@ import com.mlb.mlbportal.models.player.Pitcher;
 
 @Repository
 public interface PitcherRepository extends JpaRepository<Pitcher, Long> {
+    Optional<Pitcher> findByStatsApiId(Integer id);
+
     Optional<Pitcher> findByName(String name);
 
     default Pitcher findByNameOrThrow(String name) {

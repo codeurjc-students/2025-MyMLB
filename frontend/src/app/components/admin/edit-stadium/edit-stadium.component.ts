@@ -34,6 +34,8 @@ export class EditStadiumComponent implements OnInit {
 	public loading = false;
 	public finish = false;
 
+	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
+
 	constructor(private stadiumService: StadiumService) {}
 
 	ngOnInit(): void {
@@ -56,9 +58,9 @@ export class EditStadiumComponent implements OnInit {
 		this.resetState();
 		this.loading = true;
 
-		if (file.type !== 'image/webp') {
+		if (file.size > this.maxPictureSize) {
 			this.error = true;
-			this.errorMessage = 'Only .webp images are allowed';
+			this.errorMessage = 'The picture must be less than 1MB';
 			return;
 		}
 
@@ -106,9 +108,9 @@ export class EditStadiumComponent implements OnInit {
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
 
-			if (file.type !== 'image/webp') {
+			if (file.size > this.maxPictureSize) {
 				this.error = true;
-				this.errorMessage = 'Only .webp images are allowed';
+				this.errorMessage = 'The picture must be less than 1MB';
 				this.loading = false;
 				return;
 			}

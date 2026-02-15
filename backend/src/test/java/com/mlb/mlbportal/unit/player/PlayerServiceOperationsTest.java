@@ -1,15 +1,17 @@
 package com.mlb.mlbportal.unit.player;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.PitcherPositions;
@@ -20,11 +22,16 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerServiceOperations;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_AT_BATS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_DOUBLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HITS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HOME_RUNS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_TRIPLES;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_WALKS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_HITS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_INNINGS;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceOperationsTest {
@@ -60,7 +67,7 @@ class PlayerServiceOperationsTest {
 
         double expectedAvg = truncate((double) PLAYER1_HITS / PLAYER1_AT_BATS);
         double expectedObp = truncate((double) (PLAYER1_HITS + PLAYER1_WALKS) / (PLAYER1_AT_BATS + PLAYER1_WALKS));
-        int totalBases = PLAYER1_HITS + PLAYER1_DOUBLES + 2 * PLAYER1_TRIPLES + 3 * PLAYER1_HOME_RUNS;
+        int totalBases = PLAYER1_HITS + 2 * PLAYER1_DOUBLES + 3 * PLAYER1_TRIPLES + 4 * PLAYER1_HOME_RUNS;
         double expectedSlg = truncate((double) totalBases / PLAYER1_AT_BATS);
         double expectedOps = truncate(expectedObp + expectedSlg);
 

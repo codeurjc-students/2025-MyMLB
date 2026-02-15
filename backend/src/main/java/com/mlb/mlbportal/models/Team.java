@@ -39,6 +39,8 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    private long statsApiId;
+
     private String name;
 
     private String abbreviation;

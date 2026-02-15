@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.45% </span>
+                <span class="strong">84.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/55</span>
+                <span class='fraction'>48/57</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/19</span>
+                <span class='fraction'>16/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.67% </span>
+                <span class="strong">82.35% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/49</span>
+                <span class='fraction'>42/51</span>
             </div>
         
             
@@ -213,7 +213,17 @@
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -278,6 +288,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
@@ -363,6 +375,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { PlayerService } from './../../../services/player.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -377,6 +393,7 @@ import { TeamService } from '../../../services/team.service';
 import { Router } from '@angular/router';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import { MatTooltip } from '@angular/material/tooltip';
 &nbsp;
 @Component({
 	selector: 'app-create-player',
@@ -390,7 +407,8 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
     ErrorModalComponent,
     SelectElementModalComponent,
     ActionButtonsComponent,
-    EscapeCloseDirective
+    EscapeCloseDirective,
+	MatTooltip
 ],
 })
 export class CreatePlayerComponent implements OnInit {
@@ -429,6 +447,8 @@ export class CreatePlayerComponent implements OnInit {
 &nbsp;
 	private readonly pitcherPositions = ['SP', 'RP', 'CP'] as const;
   	private readonly positionPlayerPositions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'] as const;
+&nbsp;
+	public isPositionInputOpen = false;
 &nbsp;
 	constructor(private playerService: PlayerService, private teamService: TeamService, public selector: PaginatedSelectorService&lt;TeamSummary&gt;, private router: Router) {}
 &nbsp;
@@ -513,6 +533,10 @@ export class CreatePlayerComponent implements OnInit {
 	public returnToHome() {
 		this.router.navigate(['/']);
 	}
+&nbsp;
+	public <span class="fstat-no" title="function not covered" >togglePositionInput(</span>state: boolean) {
+<span class="cstat-no" title="statement not covered" >		this.isPositionInputOpen = state;</span>
+	}
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -520,7 +544,7 @@ export class CreatePlayerComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T19:24:17.960Z
+                at 2026-02-13T18:07:24.512Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

@@ -68,7 +68,6 @@ export class EditMenuComponent implements OnInit {
 			this.errorMessage = 'Please select the type of player you want to edit';
 			return;
 		}
-
 		const currentType = `${this.searchType}-${this.playerType ?? ''}`;
 		const isNewSearch = page === 0 || currentType !== this.lastSearch;
 

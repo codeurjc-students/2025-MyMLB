@@ -94,11 +94,13 @@ describe('Edit Player Component Tests', () => {
 		expect(playerServiceSpy.updatePicture).toHaveBeenCalled();
 	});
 
-	it('should set error when uploading non-webp picture', () => {
-		const mockFile = new File([''], 'pic.png', { type: 'image/png' });
-		component.uploadPicture('stadium', mockFile);
+	it('should set error when uploading a picture over 1MB', () => {
+		const invalidPicture = 'a'.repeat(1024 * 1024 + 1);
+		const file = new File([invalidPicture], 'test.png', { type: 'image/png' });
+		component.uploadPicture(mockPositionPlayer.name, file);
+
 		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('Only .webp images are allowed');
+		expect(component.errorMessage).toBe('The picture must be less than 1MB');
 	});
 
 	it('should delete player successfully', () => {

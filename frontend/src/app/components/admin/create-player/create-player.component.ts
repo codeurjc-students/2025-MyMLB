@@ -12,6 +12,7 @@ import { TeamService } from '../../../services/team.service';
 import { Router } from '@angular/router';
 import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-create-player',
@@ -25,7 +26,8 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
     ErrorModalComponent,
     SelectElementModalComponent,
     ActionButtonsComponent,
-    EscapeCloseDirective
+    EscapeCloseDirective,
+	MatTooltip
 ],
 })
 export class CreatePlayerComponent implements OnInit {
@@ -64,6 +66,8 @@ export class CreatePlayerComponent implements OnInit {
 
 	private readonly pitcherPositions = ['SP', 'RP', 'CP'] as const;
   	private readonly positionPlayerPositions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'] as const;
+
+	public isPositionInputOpen = false;
 
 	constructor(private playerService: PlayerService, private teamService: TeamService, public selector: PaginatedSelectorService<TeamSummary>, private router: Router) {}
 
@@ -147,5 +151,9 @@ export class CreatePlayerComponent implements OnInit {
 
 	public returnToHome() {
 		this.router.navigate(['/']);
+	}
+
+	public togglePositionInput(state: boolean) {
+		this.isPositionInputOpen = state;
 	}
 }

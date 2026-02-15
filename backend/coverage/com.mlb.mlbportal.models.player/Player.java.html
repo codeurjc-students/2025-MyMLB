@@ -24,6 +24,8 @@ public abstract class Player {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    private int statsApiId;
+
     private String name;
 
     private int playerNumber;
@@ -33,17 +35,17 @@ public abstract class Player {
 
     private PictureInfo picture;
 
-<span class="fc" id="L36">    protected Player(String name, int number, Team team) {</span>
-<span class="fc" id="L37">        this.name = name;</span>
-<span class="fc" id="L38">        this.playerNumber = number;</span>
-<span class="fc" id="L39">        this.team = team;</span>
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L38">    protected Player(String name, int number, Team team) {</span>
+<span class="fc" id="L39">        this.name = name;</span>
+<span class="fc" id="L40">        this.playerNumber = number;</span>
+<span class="fc" id="L41">        this.team = team;</span>
+<span class="fc" id="L42">    }</span>
 
-<span class="nc" id="L42">    protected Player(String name, int number, Team team, PictureInfo picture) {</span>
-<span class="nc" id="L43">        this.name = name;</span>
-<span class="nc" id="L44">        this.playerNumber = number;</span>
-<span class="nc" id="L45">        this.team = team;</span>
-<span class="nc" id="L46">        this.picture = picture;</span>
-<span class="nc" id="L47">    }</span>
+<span class="nc" id="L44">    protected Player(String name, int number, Team team, PictureInfo picture) {</span>
+<span class="nc" id="L45">        this.name = name;</span>
+<span class="nc" id="L46">        this.playerNumber = number;</span>
+<span class="nc" id="L47">        this.team = team;</span>
+<span class="nc" id="L48">        this.picture = picture;</span>
+<span class="nc" id="L49">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

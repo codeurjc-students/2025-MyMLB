@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.dto.mlbapi.DateEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.DateEntry;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.services.team.TeamService;
@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
-import com.mlb.mlbportal.dto.mlbapi.GameEntry;
-import com.mlb.mlbportal.dto.mlbapi.ScheduleResponse;
+import com.mlb.mlbportal.dto.mlbapi.match.GameEntry;
+import com.mlb.mlbportal.dto.mlbapi.match.ScheduleResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;

@@ -113,7 +113,7 @@ html {
 }
 
 .landing-hero-container {
-	@apply relative w-full h-screen flex items-center justify-center bg-cover bg-center bg-[url('/assets/landing/hero.png')] rounded-2xl dark:bg-[url('/assets/landing/hero-dark.png')];
+	@apply relative w-full h-screen flex items-center justify-center bg-cover bg-center bg-[url('/assets/landing/hero.png')] rounded-2xl;
 }
 
 .landing-hero-title {

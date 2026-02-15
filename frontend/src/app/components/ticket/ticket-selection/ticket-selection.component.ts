@@ -29,7 +29,7 @@ export class TicketSelectionComponent implements OnInit {
 	public availableSectors: EventManager[] = []
 	public availableSeats: Seat[] = [];
 
-	public selectedSectorId : number = 0;
+	public selectedSectorId : number = -1;
 	public ticketAmount!: number;
 	public selectedSeats : Seat[] = [];
 
@@ -138,5 +138,9 @@ export class TicketSelectionComponent implements OnInit {
 
 	public closeStadiumMap = () => {
 		this.isPictureOpen = false;
+	}
+
+	public isDisabled() {
+		return this.selectedSectorId === -1 || this.selectedSeats.length !== this.ticketAmount;
 	}
 }

@@ -33,71 +33,8 @@ import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.models.support.SupportMessage;
 import com.mlb.mlbportal.models.support.SupportTicket;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_AT_BATS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_DOUBLES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HITS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_HOME_RUNS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NUMBER;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_RBIS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_TRIPLES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_WALKS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_AT_BATS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_DOUBLES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HITS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_HOME_RUNS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NUMBER;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_RBIS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_TRIPLES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_WALKS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_GAMES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_HITS_ALLOWED;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_INNINGS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NUMBER;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_RUNS_ALLOWED;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SAVES_OPPORTUNITIES;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_SO;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WALKS;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.SUPPORT_MESSAGE_BODY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER2_USERNAME;
+
+import static com.mlb.mlbportal.utils.TestConstants.*;
 
 public class BuildMocksFactory {
 
@@ -120,18 +57,19 @@ public class BuildMocksFactory {
     }
 
     public static List<Team> setUpTeamMocks() {
-        Team team1 = buildTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+        Team team1 = buildTeam(TEST_TEAM1_NAME, TEST_TEAM1_STATS_API_ID, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL, Division.EAST, TEST_TEAM1_LOGO);
         team1.setCity(TEST_TEAM1_CITY);
-        Team team2 = buildTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.NL, Division.CENTRAL, TEST_TEAM2_LOGO);
+        Team team2 = buildTeam(TEST_TEAM2_NAME, TEST_TEAM2_STATS_API_ID, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.NL, Division.CENTRAL, TEST_TEAM2_LOGO);
         team2.setCity(TEST_TEAM2_CITY);
-        Team team3 = buildTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.AL, Division.WEST, TEST_TEAM3_LOGO);
+        Team team3 = buildTeam(TEST_TEAM3_NAME, TEST_TEAM3_STATS_API_ID, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.AL, Division.WEST, TEST_TEAM3_LOGO);
         team3.setCity(TEST_TEAM3_CITY);
 
         return Arrays.asList(team1, team2, team3);
     }
 
-    private static Team buildTeam(String name, String abbr, int wins, int losses, League league, Division division, String logo) {
+    private static Team buildTeam(String name, int id, String abbr, int wins, int losses, League league, Division division, String logo) {
         Team team = new Team(name, abbr, wins, losses, league, division, logo);
+        team.setStatsApiId(id);
         int totalGames = wins + losses;
         team.setTotalGames(totalGames);
         team.setPct((double) wins / totalGames);

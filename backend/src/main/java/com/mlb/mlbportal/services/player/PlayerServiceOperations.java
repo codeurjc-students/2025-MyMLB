@@ -81,9 +81,9 @@ public class PlayerServiceOperations {
             return;
         }
         int totalBases = player.getHits()
-                + player.getDoubles()
-                + 2 * player.getTriples()
-                + 3 * player.getHomeRuns();
+                + 2 *  player.getDoubles()
+                + 3 * player.getTriples()
+                + 4 * player.getHomeRuns();
         double slg = (double) totalBases / atBats;
         player.setSlugging(truncateToThreeDecimals(slg));
     }
@@ -112,7 +112,7 @@ public class PlayerServiceOperations {
             pitcher.setEra(0.0);
             return;
         }
-        double era = (double) (pitcher.getRunsAllowed() * 9) / innings;
+        double era = (pitcher.getRunsAllowed() * 9) / innings;
         pitcher.setEra(truncateToTwoDecimals(era));
     }
 
@@ -122,7 +122,7 @@ public class PlayerServiceOperations {
             pitcher.setWhip(0.0);
             return;
         }
-        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;
+        double whip = (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;
         pitcher.setWhip(truncateToThreeDecimals(whip));
     }
 

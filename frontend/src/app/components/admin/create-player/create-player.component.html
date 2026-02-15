@@ -3,7 +3,13 @@
 >
     <div class="w-full max-w-3xl mx-auto team-section-container space-y-10 animate-fade-in">
         <!-- Title -->
-        <h2 class="text-xl text-center app-page-titles">Create Player</h2>
+		 <div class="flex items-center justify-center gap-10">
+			<h2 class="text-xl text-center app-page-titles">Create Player</h2>
+			<svg [matTooltip]="'Creating a player means that the player has been promoted to the MLB team, and that he is playing his first season in the league'" matTooltipPosition="above" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+				class="w-15 h-15 opacity-70 hover:opacity-100 transition-opacity cursor-help">
+				<path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+			</svg>
+		</div>
 
         <!-- Form fields -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,14 +56,27 @@
             <!-- Position -->
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Position</label>
-                <select
-                    [(ngModel)]="positionInput"
-                    class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                    @for (pos of availablePositions; track pos) {
-                        <option [value]="pos">{{ pos }}</option>
-                    }
-                </select>
+                <div class="relative w-full">
+					<select
+						[(ngModel)]="positionInput"
+						(focus)="togglePositionInput(true)"
+						(blur)="togglePositionInput(false)"
+						(change)="togglePositionInput(false)"
+						placholder="Select the position..."
+						class="appearance-none w-full pr-10 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+					>
+						@for (pos of availablePositions; track pos) {
+							<option [value]="pos">{{ pos }}</option>
+						}
+					</select>
+					<svg
+						class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none
+						transition-transform duration-300 ease-in-out"
+						[ngClass]="{ 'rotate-180': isPositionInputOpen }"
+						xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+					</svg>
+				</div>
             </div>
         </div>
 

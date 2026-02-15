@@ -28,7 +28,7 @@
 
                 <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-7 xl:col-span-8 group">
-                        <div class="relative rounded-3xl overflow-hidden shadow-lg bg-white dark:bg-gray-400 border border-gray-200 dark:border-gray-700 p-6 h-[380px] lg:h-[420px] transition-all duration-500 hover:shadow-2xl">
+                        <div class="relative rounded-3xl overflow-hidden shadow-lg bg-white border border-gray-200 p-6 h-[380px] lg:h-[420px] transition-all duration-500 hover:shadow-2xl">
                             <div class="absolute top-4 left-4 z-10">
                                 <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
                                     Stadium Map
@@ -85,15 +85,15 @@
 
                             <div class="mb-6">
                                 <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Choose Sector</label>
-                                <select [(ngModel)]="selectedSectorId" (change)="onSectorChange()" class="text-inputs w-full appearance-none">
-                                    <option [value]="0" disabled>Select a sector...</option>
+                                <select [(ngModel)]="selectedSectorId" (change)="onSectorChange()" placeholder="Select a sector..." class="text-inputs w-full appearance-none placeholder:text-gray-400 dark:placeholder:text-gray-500">
+                                    <option [value]="-1" disabled>Select a sector...</option>
                                     @for (sector of availableSectors; track sector.id) {
                                         <option [value]="sector.id">{{ sector.sectorName }} — {{ sector.price | currency }}</option>
                                     }
                                 </select>
                             </div>
 
-                            @if (selectedSectorId !== 0) {
+                            @if (selectedSectorId !== -1) {
                                 <div class="mb-10 animate-fadeIn">
                                     <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 ml-1 uppercase tracking-wider">
                                         Select seats ({{ selectedSeats.length }}/{{ ticketAmount }})
@@ -124,7 +124,7 @@
                                     <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Estimated Total</span>
                                     <span class="text-4xl font-black text-indigo-600">{{ totalPrice | currency }}</span>
                                 </div>
-                                <button (click)="confirm = true" [disabled]="selectedSectorId === 0 || selectedSeats.length !== ticketAmount" class="app-button w-full py-4 group tracking-widest">
+                                <button (click)="confirm = true" [disabled]="isDisabled()" [ngClass]="isDisabled() ? 'w-full py-4 inline-flex items-center justify-center px-6 gap-2 overflow-hidden font-semibold text-white rounded-xl bg-gray-400 cursor-not-allowed' : 'app-button w-full py-4 group tracking-widest'">
                                     <span class="app-button-bright"></span>
 									<span class="app-button-texts">Proceed to Payment</span>
                                 </button>

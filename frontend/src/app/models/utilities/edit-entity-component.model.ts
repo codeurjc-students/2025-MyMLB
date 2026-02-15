@@ -39,11 +39,11 @@ export abstract class EditEntityComponent<T, R extends object> {
 		this.resetState();
 		this.prepareRequest();
 		this.updateEntityService(this.request).subscribe({
-			next: () => {
+			next: (_) => {
 				this.finish = true;
 				this.updateDashboard();
 			},
-			error: () => {
+			error: (_) => {
 				this.error = true;
 				this.errorMessage = 'An unexpected error occurr. Please, try again later';
 			},

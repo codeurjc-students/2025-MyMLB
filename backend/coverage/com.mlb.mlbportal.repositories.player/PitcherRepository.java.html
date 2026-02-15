@@ -3,6 +3,7 @@
 import java.util.List;
 import java.util.Optional;
 
+import com.mlb.mlbportal.models.player.PositionPlayer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +13,12 @@ import com.mlb.mlbportal.models.player.Pitcher;
 
 @Repository
 public interface PitcherRepository extends JpaRepository&lt;Pitcher, Long&gt; {
+    Optional&lt;Pitcher&gt; findByStatsApiId(Integer id);
+
     Optional&lt;Pitcher&gt; findByName(String name);
 
     default Pitcher findByNameOrThrow(String name) {
-<span class="nc" id="L18">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+<span class="nc" id="L21">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
     }
 
     List&lt;Pitcher&gt; findByTeamOrderByNameAsc(Team team);

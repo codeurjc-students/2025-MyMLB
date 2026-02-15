@@ -24,6 +24,8 @@ public abstract class Player {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    private int statsApiId;
+
     private String name;
 
     private int playerNumber;
