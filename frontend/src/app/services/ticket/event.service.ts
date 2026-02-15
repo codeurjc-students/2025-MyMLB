@@ -7,13 +7,14 @@ import { Seat } from '../../models/ticket/seat.model';
 import { EventManager } from '../../models/ticket/event-manager.model';
 import { EventCreateRequest } from '../../models/ticket/event-create-request-model';
 import { EventEditRequest } from '../../models/ticket/event-edit-request.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class EventService {
 	private httpMock = inject(HttpClient);
-	private apiUrl = 'https://localhost:8443/api/v1/events';
+	private apiUrl = `${environment.apiUrl}/api/v1/events`;
 
 	public getEventById(eventId: number): Observable<EventResponse> {
 		return this.httpMock.get<EventResponse>(`${this.apiUrl}/${eventId}`);
