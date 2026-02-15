@@ -51,7 +51,12 @@ public class PlayerImportService {
             RosterResponse response = this.restTemplate.getForObject(url, RosterResponse.class);
             if (response != null && response.roster() != null) {
                 for (RosterEntry entry : response.roster()) {
-                    this.getPlayerStatsFromAPI(entry.person().id(), team);
+                    try {
+                        this.getPlayerStatsFromAPI(entry.person().id(), team);
+                    }
+                    catch (Exception ex) {
+                        log.warn("Error fetching the data of player id: {} with the team : {}: {}", entry.person().id(), team.getName(), ex.getMessage());
+                    }
                 }
             }
         }
