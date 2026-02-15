@@ -1,13 +1,17 @@
 # Step 1: Frontend Build
 FROM node:20 AS build-frontend
 WORKDIR /app/frontend
-COPY ./frontend/ /app/frontend
+COPY ./frontend/package*.json ./
+RUN npm install
+COPY ./frontend/ .
 RUN npx ng build --configuration production
 
 # Step 2: Backend Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build-backend
 WORKDIR /app/backend
-COPY ./backend/ /app/backend
+COPY ./backend/pom.xml .
+RUN mvn dependency:go-offline
+COPY ./backend/ .
 RUN mvn clean package -DskipTests
 
 # Step 3: Runtime
@@ -18,10 +22,10 @@ WORKDIR /app
 COPY --from=build-backend /app/backend/target/*.jar app.jar
 
 # Copy keystore
-COPY ./backend/src/main/resources/keystore.p12 /app/keystore.p12
+COPY --from=build-backend /app/backend/src/main/resources/keystore.p12 /app/keystore.p12
 
 # Copy frontend build
-COPY --from=build-frontend /app/frontend/dist/frontend /app/static
+COPY --from=build-frontend /app/frontend/dist/frontend/browser /app/static
 
 EXPOSE 8080
 
@@ -46,4 +50,4 @@ ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT=10000
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
