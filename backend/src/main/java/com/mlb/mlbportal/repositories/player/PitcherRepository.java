@@ -3,7 +3,6 @@ package com.mlb.mlbportal.repositories.player;
 import java.util.List;
 import java.util.Optional;
 
-import com.mlb.mlbportal.models.player.PositionPlayer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
