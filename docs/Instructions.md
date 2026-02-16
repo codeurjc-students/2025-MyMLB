@@ -260,7 +260,7 @@ REST Client is a Visual Studio Code extension that allows sending API requests t
 Is a universal SQL client and management tool. It allows you to manage, query, and visualize multiple relational databases. This tool was used to test the PostgreSQL database, performing queries directly on the database to test the persistence of entities and the state of various data.
 
 ### Railway
-Is a `platform as a Service (PaaS)` that works as a `Software as a Service (SaaS)` designed to provide a lightweight deploy of applications on cloud services. The deployment is based on docker images, which allows a simple usage of services such as databases. It also add `continous deployment` to the CI pipeline of the application.
+It's a `Platform as a Service (PaaS)` designed to facilitate application deployment in the cloud. It simplifies the deployment process by providing automated builds with Docker. Furthermore, it integrates `continuous deployment` into the application's CI workflow.
 
 ---
 ## 🧪 Tests Execution
