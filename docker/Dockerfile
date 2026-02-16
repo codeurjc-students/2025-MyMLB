@@ -21,9 +21,6 @@ WORKDIR /app
 # Copy backend JAR
 COPY --from=build-backend /app/backend/target/*.jar app.jar
 
-# Copy keystore
-#COPY --from=build-backend /app/backend/src/main/resources/keystore.p12 /app/keystore.p12
-
 # Copy frontend build
 COPY --from=build-frontend /app/frontend/dist/frontend/browser /app/static
 
