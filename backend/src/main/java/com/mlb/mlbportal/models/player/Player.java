@@ -3,18 +3,13 @@ package com.mlb.mlbportal.models.player;
 import com.mlb.mlbportal.models.Team;
 
 import com.mlb.mlbportal.models.others.PictureInfo;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Player")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter

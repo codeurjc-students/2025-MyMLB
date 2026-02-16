@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "T_EVENT_MANAGER")
+@Table(name = "T_Event_Manager")
 @Getter
 @Setter
 @AllArgsConstructor

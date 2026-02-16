@@ -2,19 +2,16 @@ package com.mlb.mlbportal.models;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
+@Table(name = "T_Password_Reset_Token")
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
 public class PasswordResetToken {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

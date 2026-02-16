@@ -22,10 +22,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Stadium")
 @Getter
 @NoArgsConstructor
 @Setter
-@Table(name = "T_STADIUM")
 public class Stadium {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

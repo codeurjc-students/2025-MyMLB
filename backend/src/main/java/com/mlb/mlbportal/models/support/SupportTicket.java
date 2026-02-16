@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "T_Support_Ticket")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

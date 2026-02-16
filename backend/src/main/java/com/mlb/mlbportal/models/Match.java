@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Match")
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "T_Matches")
 public class Match {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

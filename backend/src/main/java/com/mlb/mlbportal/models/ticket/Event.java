@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "T_EVENT")
+@Table(name = "T_Event")
 @Getter
 @Setter
 @AllArgsConstructor

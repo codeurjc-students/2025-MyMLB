@@ -7,12 +7,14 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Position_Player")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -58,5 +60,33 @@ public class PositionPlayer extends Player {
         this.triples = 0;
         this.homeRuns = 0;
         this.rbis = 0;
+    }
+
+    public void createWithStats(int ab, int walks, int hits, int doubles, int triples, int hr, int rbis, double avg, double ops, double obp, double slg) {
+        this.atBats = ab;
+        this.hits = hits;
+        this.walks = walks;
+        this.doubles = doubles;
+        this.triples = triples;
+        this.homeRuns = hr;
+        this.rbis = rbis;
+        this.average = avg;
+        this.obp = obp;
+        this.ops = ops;
+        this.slugging = slg;
+    }
+
+    public void createWithNoStats() {
+        this.atBats = 0;
+        this.hits = 0;
+        this.walks = 0;
+        this.doubles = 0;
+        this.triples = 0;
+        this.homeRuns = 0;
+        this.rbis = 0;
+        this.average = 0.000;
+        this.obp = 0.000;
+        this.ops = 0.000;
+        this.slugging = 0.000;
     }
 }

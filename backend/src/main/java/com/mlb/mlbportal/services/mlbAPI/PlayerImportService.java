@@ -5,7 +5,9 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.models.player.Player;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbapi.player.PlayerDetailInfo;
@@ -41,6 +43,7 @@ public class PlayerImportService {
      * Main method of the service.
      * Obtain the roster from each team, and then obtain the stats for each player.
      */
+    @Transactional
     @CircuitBreaker(name = "playersFromStatsAPI", fallbackMethod = "fallbackGetTeamsRoster")
     @Retry(name = "playersFromStatsAPI")
     public void getTeamRoster() {
@@ -143,11 +146,7 @@ public class PlayerImportService {
      */
     private void savePositionPlayer(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
         PositionPlayer positionPlayer = this.positionPlayerRepository.findByName(playerDetailInfo.fullName()).orElse(new PositionPlayer());
-        positionPlayer.setStatsApiId(playerDetailInfo.id());
-        positionPlayer.setName(playerDetailInfo.fullName());
-        positionPlayer.setPlayerNumber(this.parsePlayerNumber(playerDetailInfo.primaryNumber()));
-        positionPlayer.setTeam(team);
-        positionPlayer.setPicture(this.savePlayerPicture(playerDetailInfo.id()));
+        this.saveCommonData(positionPlayer, playerDetailInfo, team);
         try {
             String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
             positionPlayer.setPosition(PlayerPositions.fromLabel(posAbbreviation));
@@ -157,17 +156,22 @@ public class PlayerImportService {
         }
 
         if (data != null) {
-            positionPlayer.setAtBats(data.atBats());
-            positionPlayer.setHits(Objects.requireNonNullElse(data.hits(), 0));
-            positionPlayer.setDoubles(Objects.requireNonNullElse(data.doubles(), 0));
-            positionPlayer.setTriples(Objects.requireNonNullElse(data.triples(), 0));
-            positionPlayer.setWalks(Objects.requireNonNullElse(data.baseOnBalls(), 0));
-            positionPlayer.setHomeRuns(Objects.requireNonNullElse(data.homeRuns(), 0));
-            positionPlayer.setRbis(Objects.requireNonNullElse(data.rbi(), 0));
-            positionPlayer.setAverage(Objects.requireNonNullElse(data.avg(), 0.000));
-            positionPlayer.setObp(Objects.requireNonNullElse(data.obp(), 0.000));
-            positionPlayer.setOps(Objects.requireNonNullElse(data.ops(), 0.000));
-            positionPlayer.setSlugging(Objects.requireNonNullElse(data.slg(), 0.000));
+            positionPlayer.createWithStats(
+                    Objects.requireNonNullElse(data.atBats(), 0),
+                    Objects.requireNonNullElse(data.baseOnBalls(), 0),
+                    Objects.requireNonNullElse(data.hits(), 0),
+                    Objects.requireNonNullElse(data.doubles(), 0),
+                    Objects.requireNonNullElse(data.triples(), 0),
+                    Objects.requireNonNullElse(data.homeRuns(), 0),
+                    Objects.requireNonNullElse(data.rbi(), 0),
+                    Objects.requireNonNullElse(data.avg(), 0.000),
+                    Objects.requireNonNullElse(data.ops(), 0.000),
+                    Objects.requireNonNullElse(data.obp(), 0.000),
+                    Objects.requireNonNullElse(data.slg(), 0.000)
+            );
+        }
+        else {
+            positionPlayer.createWithNoStats();
         }
         this.positionPlayerRepository.save(positionPlayer);
     }
@@ -181,11 +185,7 @@ public class PlayerImportService {
      */
     private void savePitcher(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
         Pitcher pitcher = this.pitcherRepository.findByName(playerDetailInfo.fullName()).orElse(new Pitcher());
-        pitcher.setStatsApiId(playerDetailInfo.id());
-        pitcher.setName(playerDetailInfo.fullName());
-        pitcher.setPlayerNumber(this.parsePlayerNumber(playerDetailInfo.primaryNumber()));
-        pitcher.setTeam(team);
-        pitcher.setPicture(this.savePlayerPicture(playerDetailInfo.id()));
+        this.saveCommonData(pitcher, playerDetailInfo, team);
         try {
             String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
             pitcher.setPosition(PitcherPositions.fromLabel(posAbbreviation));
@@ -195,20 +195,40 @@ public class PlayerImportService {
         }
 
         if (data != null) {
-            pitcher.setGames(Objects.requireNonNullElse(data.gamesPlayed(), 0));
-            pitcher.setEra(Objects.requireNonNullElse(data.era(), 0.000));
-            pitcher.setWins(Objects.requireNonNullElse(data.wins(), 0));
-            pitcher.setLosses(Objects.requireNonNullElse(data.losses(), 0));
-            pitcher.setInningsPitched(Double.parseDouble(data.inningsPitched()));
-            pitcher.setTotalStrikeouts(Objects.requireNonNullElse(data.strikeOuts(), 0));
-            pitcher.setWalks(Objects.requireNonNullElse(data.baseOnBalls(), 0));
-            pitcher.setHitsAllowed(Objects.requireNonNullElse(data.hits(), 0));
-            pitcher.setRunsAllowed(Objects.requireNonNullElse(data.runs(), 0));
-            pitcher.setSaves(Objects.requireNonNullElse(data.saves(), 0));
-            pitcher.setSaveOpportunities(Objects.requireNonNullElse(data.saveOpportunities(), 0));
-            pitcher.setWhip(Objects.requireNonNullElse(data.whip(), 0.000));
+            pitcher.createWithStats(
+                    Objects.requireNonNullElse(data.gamesPlayed(), 0),
+                    Objects.requireNonNullElse(data.wins(), 0),
+                    Objects.requireNonNullElse(data.losses(), 0),
+                    Double.parseDouble(data.inningsPitched()),
+                    Objects.requireNonNullElse(data.strikeOuts(), 0),
+                    Objects.requireNonNullElse(data.baseOnBalls(), 0),
+                    Objects.requireNonNullElse(data.hits(), 0),
+                    Objects.requireNonNullElse(data.runs(), 0),
+                    Objects.requireNonNullElse(data.saves(), 0),
+                    Objects.requireNonNullElse(data.saveOpportunities(), 0),
+                    Objects.requireNonNullElse(data.era(), 0.000),
+                    Objects.requireNonNullElse(data.whip(), 0.000)
+            );
+        }
+        else {
+            pitcher.createWithNoStats();
         }
         this.pitcherRepository.save(pitcher);
+    }
+
+    /**
+     * Auxiliary method that manages common data for players.
+     *
+     * @param player siad player.
+     * @param data of said player.
+     * @param team of said player.
+     */
+    public <T extends Player> void saveCommonData(T player, PlayerDetailInfo data, Team team) {
+        player.setStatsApiId(data.id());
+        player.setName(data.fullName());
+        player.setPlayerNumber(this.parsePlayerNumber(data.primaryNumber()));
+        player.setTeam(team);
+        player.setPicture(this.savePlayerPicture(data.id()));
     }
 
     /**

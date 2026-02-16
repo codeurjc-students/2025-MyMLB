@@ -7,12 +7,14 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Pitcher")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -60,6 +62,36 @@ public class Pitcher extends Player {
         this.walks = 0;
         this.hitsAllowed = 0;
         this.runsAllowed = 0;
+        this.saves = 0;
+        this.saveOpportunities = 0;
+    }
+
+    public void createWithStats(int games, int wins, int losses, double ip, int so, int walks, int ha, int ra, int saves, int saveO, double era, double whip) {
+        this.games = games;
+        this.wins = wins;
+        this.losses = losses;
+        this.inningsPitched = ip;
+        this.totalStrikeouts = so;
+        this.walks = walks;
+        this.hitsAllowed = ha;
+        this.runsAllowed = ra;
+        this.saves = saves;
+        this.saveOpportunities = saveO;
+        this.era = era;
+        this.whip = whip;
+    }
+
+    public void createWithNoStats() {
+        this.games = 0;
+        this.wins = 0;
+        this.losses = 0;
+        this.inningsPitched = 0.0;
+        this.totalStrikeouts = 0;
+        this.walks = 0;
+        this.hitsAllowed = 0;
+        this.runsAllowed = 0;
+        this.era = 0.00;
+        this.whip = 0.00;
         this.saves = 0;
         this.saveOpportunities = 0;
     }

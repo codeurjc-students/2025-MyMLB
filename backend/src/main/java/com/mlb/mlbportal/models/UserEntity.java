@@ -11,9 +11,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
+@Table(name = "T_User")
 @Getter
 @Setter
-@Entity
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
