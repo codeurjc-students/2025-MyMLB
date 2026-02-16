@@ -52,7 +52,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Languages</td>
-      <td>Java, TypeScript and JavaScript</td>
+      <td>Java, SQL, TypeScript and JavaScript</td>
     </tr>
   <tr>
     <td>IDE</td>
@@ -75,8 +75,12 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     <td>JUnit, AssertJ, Mockito, REST Assured, Jasmine, Karma and Cypress</td>
   </tr>
   <tr>
-    <td>Deployment</td>
+    <td>Containerization Technology</td>
     <td>Docker</td>
+  </tr>
+  <tr>
+    <td>Deployment (PaaS)</td>
+    <td>Railway</td>
   </tr>
   <tr>
     <td>Development Process</td>
@@ -103,7 +107,8 @@ The application uses the following technologies for its execution:
 - **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)` and `docker-environment (docker profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
 
 ### Deployment
-- **Docker:** Containerization technology used to deploy the application. For more information, consult the [Docker official website](https://www.docker.com/).
+- **Docker:** Containerization technology used to containerize the application. For more information, consult the [Docker official website](https://www.docker.com/).
+- **Railway:** Cloud service used to deploy the application. For more information, consult the [Railway official website](https://railway.com/).
 
 ---
 ## 🔧 Tools
@@ -137,6 +142,7 @@ Here are the configured profiles:
 - **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
 - **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
 - **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
+- **Docker-prod:** Porfile only used by Railway to deploy the application. The only differences with the `docker profile` is the desactivation of `SSL` because Railway manage security all by itself. This is configured in the [application-docker-prod.properties](../backend/src/main/resources/application-docker-prod.properties).
 
 All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
@@ -146,6 +152,7 @@ flowchart LR
     B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
     C(Dev) -- "Development Environment" --> H
     D(Docker) -- "Containerized Environment" --> P
+    E(Docker-prod) -- "Deployment Environment" --> P
 ````
 
 ---
@@ -163,6 +170,7 @@ flowchart LR
     C -- "JDBC/SQL:5432" --> D[(PostgreSQL)]
     D -- "SQL Response:5432" --> C
 ````
+
 > [!NOTE]
 > This flow represents the `production environment (profile)`, the flow of the dev profile is exactly the same but with H2 as database.
 
@@ -420,6 +428,9 @@ This workflow triggers manually from every branch. The jobs are exactly the same
 
 #### CD Release
 This workflow is triggered whenever a `release` occurs. The jobs are the same as in the previous workflows; however, it publishes both Docker images and Compose artifacts using the release version and latest as tags.
+
+### 🚀 Continous Deployment (CD)
+Workflow managed by Railway that is triggered on every commit to main (PR closed) by deploying an updated version of the application.
 
 ### 🌙 Nightly
 To complement the CI pipeline, two scheduled workflows were established to run every night (one for the back and one for the front). These worflows perfomance a full suite of automated tests, ensuring:
