@@ -66,7 +66,7 @@ cd 2025-MLB
       <td>28</td>
     </tr>
     <tr>
-      <td>Docker Conpose</td>
+      <td>Docker Compose</td>
       <td>2.34-desktop.1</td>
     </tr>
   </tbody>
@@ -89,13 +89,33 @@ spring.datasource.username=postgres
 spring.datasource.password=root
 ````
 
-An this the one for the docker environment:
+This one for the docker environment (local):
 ```bash
 spring.datasource.url=jdbc:postgresql://db:5432/MLBPortal
 spring.datasource.username=postgres
 spring.datasource.password=root
 spring.datasource.driver-class-name=org.postgresql.Driver
 ````
+
+And finally for the docker environment used ny `Railway` to deploy the application:
+```bash
+# Profile used by Railway to deploy the application.
+
+# Disable SSL and security and let Railway handles it
+server.port=${PORT:8080}
+server.ssl.enabled=false
+
+# PostgreSQL DB Config (Let Railway manage the DB)
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA and Hibernate Config
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+```
 
 ---
 ## 💻 Backend
@@ -239,6 +259,9 @@ REST Client is a Visual Studio Code extension that allows sending API requests t
 ### DBeaver
 Is a universal SQL client and management tool. It allows you to manage, query, and visualize multiple relational databases. This tool was used to test the PostgreSQL database, performing queries directly on the database to test the persistence of entities and the state of various data.
 
+### Railway
+Is a `platform as a Service (PaaS)` that works as a `Software as a Service (SaaS)` designed to provide a lightweight deploy of applications on cloud services. The deployment is based on docker images, which allows a simple usage of services such as databases. It also add `continous deployment` to the CI pipeline of the application.
+
 ---
 ## 🧪 Tests Execution
 
@@ -307,6 +330,8 @@ You can create a release directly from GitHub, the only thing yo need to do is g
 **Date of Release:** TBD
 
 **Features Developed:** The features developed on this version were the intermediate ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+Application deployed on the `Railway cloud servers` and available at [https://2025-mymlb-production-a771.up.railway.app/](https://2025-mymlb-production-a771.up.railway.app/)
 
 
 ### 1.0 Version Release
