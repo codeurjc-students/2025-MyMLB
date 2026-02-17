@@ -90,7 +90,7 @@ jobs:
       - name: Build & Push Docker image
         run: |
           TAG=${{ steps.compute.outputs.tag }}
-          docker build -f ./docker/Dockerfile -t $REGISTRY/$IMAGE_NAME:$TAG .
+          docker build -f ./docker/Dockerfile.dev -t $REGISTRY/$IMAGE_NAME:$TAG .
           docker push $REGISTRY/$IMAGE_NAME:$TAG
 
   publish-compose:

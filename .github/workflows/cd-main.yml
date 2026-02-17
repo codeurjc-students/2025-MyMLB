@@ -61,7 +61,7 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:dev .
+          docker build -f ./docker/Dockerfile.dev -t docker.io/fonssi29/mlb-portal:dev .
           docker push docker.io/fonssi29/mlb-portal:dev
 
   publish-compose:
