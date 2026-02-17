@@ -139,10 +139,10 @@ To facilitate the development and testing process, four different profiles were 
 Here are the configured profiles:
 
 - **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
-- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
+- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency and used to deploy the application. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
 - **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
 - **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
-- **Docker-prod:** Porfile only used by Railway to deploy the application. The only differences with the `docker profile` is the desactivation of `SSL` because Railway manage security all by itself. This is configured in the [application-docker-prod.properties](../backend/src/main/resources/application-docker-prod.properties).
+- **Local-prod:** Equivalent to `prod` but for the local environment for a quick local deployment. This is configured in the [application-docker-prod.properties](../backend/src/main/resources/application-local-prod.properties).
 
 All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
@@ -152,7 +152,7 @@ flowchart LR
     B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
     C(Dev) -- "Development Environment" --> H
     D(Docker) -- "Containerized Environment" --> P
-    E(Docker-prod) -- "Deployment Environment" --> P
+    E(Local-prod) -- "Local Production Environment" --> P
 ````
 
 ---
