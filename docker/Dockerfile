@@ -47,4 +47,4 @@ ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=10000
 ENV SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT=10000
 
-ENTRYPOINT ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-Dspring.profiles.active=docker-prod", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
