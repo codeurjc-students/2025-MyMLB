@@ -20,10 +20,12 @@ public class Match {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_team_id")
     private Team homeTeam;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "away_team_id")
     private Team awayTeam;
 
     private int homeScore;
@@ -33,7 +35,7 @@ public class Match {
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     private LocalDateTime date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
 

@@ -59,10 +59,10 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Division division;
 
-    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "homeTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Match> homeMatches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "awayTeam", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Match> awayMatches = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
