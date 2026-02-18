@@ -320,11 +320,13 @@ This will generate it in `frontend/coverage/frontend`. Opening the `index.html` 
 ## 🐋 Deployment with Docker
 
 ### Image Creation
-The project generates Docker images with two different tags: one for development (`dev`) and other for production, which corresponds to the current version of the project (currently `0.1`). To build the image using the `Dockerfile`, navigate to the project’s root directory and run the following command:
+The project generates Docker images with two different tags: one for development (`dev`) and other for production, which corresponds to the current version of the project (currently `0.2`). To build the image using the `Dockerfile`, navigate to the project’s root directory and run the following command:
 
 ```bash
-docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:tag .
+docker build -f ./docker/Dockerfile.dev -t docker.io/fonssi29/mlb-portal:tag .
 ```
+
+As it can be appreciated in the command above, there are two different Dockerfiles, one for the local (Dockerfile.dev) and the other for the production (Dockerfile.prod) environment. This separation was made due to the different conditions on these environments, for example, in local the datasource url used is the one related to the database container in your local machine, meanwhile in Railway, this parameter corresponds to the Railway database container. These Dockerfiles are both located in the [docker folder](../docker).
 
 ### Images Publication
 The image were published at `Docker Hub` in this [Docker Repository](https://hub.docker.com/repository/docker/fonssi29/mlb-portal/general), using the following command:

@@ -252,22 +252,22 @@ To make a deployment of the application in the Railway service you will need to 
 2) Create a new database service. You can use any engine you want but be advised that the application is currently configured for PostgreSQL, in order to use another database, you will need to update the configurations or create a new profile.
 3) Create a new service and select `GitHub Repository` and link this GitHub repository with Railway.
 4) Once created, you will need to adjust some service settings of the GitHub repository service
-  4.1) Set the root directory to `/`
-  4.2) In the `Build` section, change the builer to `Dockerfile` and select location of it in the repository (/docker/Dockerfile).
-  4.3) On the `Variables` side, you will need to input the following environment variables:
+   - Set the root directory to `/`
+   - In the `Build` section, change the builer to `Dockerfile` and select its location in the repository `(/docker/Dockerfile.prod)`.
+   - On the `Variables` side, you will need to input the following environment variables:
 
 ```bash
 SPRING_DATASOURCE_URL="jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}"
 SPRING_DATASOURCE_USERNAME="${{Postgres.PGUSER}}"
 SPRING_DATASOURCE_PASSWORD="${{Postgres.PGPASSWORD}}"
 DATABASE_URL="${{Postgres.TCP_URL}}"
-CLOUDINARY_CLOUD_NAME="dexuwucsw"
-CLOUDINARY_API_KEY="353971379779258"
-CLOUDINARY_API_SECRET="l4WceL7n4TWUIOECrqpsiDHqzvc"
+CLOUDINARY_CLOUD_NAME="cloudinary_cloud_name"
+CLOUDINARY_API_KEY="cloudinary_api_key"
+CLOUDINARY_API_SECRET="cloudinary_api_secret"
 SPRING_MAIL_HOST="smtp.gmail.com"
 SPRING_MAIL_PORT="465"
 SPRING_MAIL_USERNAME="mlbportal29@gmail.com"
-SPRING_MAIL_PASSWORD="wzjmephecegyelui"
+SPRING_MAIL_PASSWORD="mail_application_password"
 SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH="true"
 SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_ENABLE="true"
 SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST="smtp.gmail.com"
