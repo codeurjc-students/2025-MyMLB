@@ -192,9 +192,23 @@ The backend exposes a `REST API` as communication method with the frontend.
 👉 [View REST API Documentation](./api)
 
 ### 🧠 Backend Structure
-The following diagram illustrates the backend structire, showing each layer of the `hexagonal architecture`, and how the interact between each other.
+The following diagrams illustrates the backend structure, showing each layer of the `hexagonal architecture`, and how they interact between each other.
 
-![Backend Structure](../images/diagrams/Backend.jpg)
+<p align="center">
+  <img src="../images/diagrams/v0.2/ImportServices.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/EntitiesModification.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/Ticket.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/TeamAndMatches.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/ContactSupport.jpg" width="40%"/>
+</p>
 
 ### 🌐 Frontend Structure
 The following diagram illustrates the frontend structire, showing each layer of the `MVC architecture`, and how the interact between each other.
