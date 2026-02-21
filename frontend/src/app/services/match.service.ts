@@ -1,22 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TeamSummary } from '../models/team.model';
 import { PaginatedResponse } from '../models/pagination.model';
 import { environment } from '../../environments/environment';
-
-export type MatchStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'FINISHED';
-
-export type ShowMatch = {
-	id: number,
-	homeTeam: TeamSummary;
-	awayTeam: TeamSummary;
-	homeScore: number;
-	awayScore: number;
-	date: string;
-	status: MatchStatus;
-	stadiumName: string;
-};
+import { ShowMatch } from '../models/match.model';
 
 @Injectable({
 	providedIn: 'root',

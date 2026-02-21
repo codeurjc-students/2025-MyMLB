@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { MatchService, ShowMatch } from '../../../app/services/match.service';
+import { MatchService } from '../../../app/services/match.service';
+import { ShowMatch } from '../../../app/models/match.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { MockFactory } from '../../utils/mock-factory';
 

@@ -3,7 +3,7 @@ import { UserService } from '../../services/user.service';
 import { SupportService } from '../../services/support.service';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CreateTicketRequest } from '../../models/support/create-ticket-request.model';
+import { CreateTicketRequest } from '../../models/support.model';
 import { EscapeCloseDirective } from "../../directives/escape-close.directive";
 import { SuccessModalComponent } from "../success-modal/success-modal.component";
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";

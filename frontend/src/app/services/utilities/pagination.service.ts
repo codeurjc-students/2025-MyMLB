@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { PaginatedResponse } from '../../models/pagination.model';
 
 @Injectable({ providedIn: 'root' })
-export class PaginatedSelectorService<T> {
+export class PaginationService<T> {
 	public items$ = new BehaviorSubject<T[]>([]);
 	private rawItems: T[] = [];
 

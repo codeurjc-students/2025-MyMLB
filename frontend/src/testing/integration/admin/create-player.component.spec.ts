@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { CreatePlayerComponent } from '../../../app/components/admin/create-player/create-player.component';
 import { PlayerService } from '../../../app/services/player.service';
 import { TeamService } from '../../../app/services/team.service';
-import { PaginatedSelectorService } from '../../../app/services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../app/services/utilities/pagination.service';
 import { MockFactory } from '../../utils/mock-factory';
 import { PositionPlayerGlobal } from '../../../app/models/position-player.model';
 
@@ -45,7 +45,7 @@ describe('Create Player Component Integration Tests', () => {
 			providers: [
 				PlayerService,
 				TeamService,
-				PaginatedSelectorService,
+				PaginationService,
 				provideHttpClient(withFetch()),
 				provideHttpClientTesting(),
 				{ provide: Router, useValue: routerSpy },

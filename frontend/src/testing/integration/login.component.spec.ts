@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from '../../app/components/login/login.component';
-import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/models/auth/auth-response.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { UserRole } from '../../app/models/auth/user-role.model';
+import { LoginComponent } from '../../app/components/login/login.component';
+import { AuthService } from '../../app/services/auth.service';
+import { AuthResponse, UserRole } from '../../app/models/auth.model';
 
 describe("Login Component Integration Test", () => {
     let fixture: ComponentFixture<LoginComponent>;

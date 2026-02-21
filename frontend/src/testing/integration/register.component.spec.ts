@@ -4,9 +4,8 @@ import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../app/models/auth/auth-response.model';
+import { AuthResponse, UserRole } from '../../app/models/auth.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { UserRole } from '../../app/models/auth/user-role.model';
 
 describe('Register Component Integration Test', () => {
 	let fixture: ComponentFixture<RegisterComponent>;

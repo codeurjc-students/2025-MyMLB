@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginRequest } from '../../models/auth/login-request.model';
+import { LoginRequest } from '../../models/auth.model';
 import { CommonModule } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 

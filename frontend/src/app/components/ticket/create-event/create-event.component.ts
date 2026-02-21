@@ -3,10 +3,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../../services/ticket/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EventCreateRequest } from '../../../models/ticket/event-create-request-model';
+import { EventCreateRequest } from '../../../models/ticket/event.model';
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
-import { MatchService, ShowMatch } from '../../../services/match.service';
+import { MatchService } from '../../../services/match.service';
+import { ShowMatch } from '../../../models/match.model';
 
 @Component({
 	selector: 'app-create-event',

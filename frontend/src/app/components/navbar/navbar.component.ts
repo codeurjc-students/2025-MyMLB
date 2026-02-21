@@ -3,7 +3,7 @@ import { Component, EventEmitter, OnInit, Input, Output, ChangeDetectionStrategy
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DropdownMenuComponent } from "./dropdown-menu/dropdown-menu.component";
-import { combineLatest, filter, startWith, Subscription } from 'rxjs';
+import { combineLatest, filter, startWith } from 'rxjs';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { SelectedTeamService } from '../../services/selected-team.service';
 import { UserService } from '../../services/user.service';

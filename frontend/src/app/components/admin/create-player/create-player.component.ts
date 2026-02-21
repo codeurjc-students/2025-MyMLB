@@ -10,7 +10,7 @@ import { CreatePlayerRequest } from '../../../models/position-player.model';
 import { TeamSummary } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
 import { Router } from '@angular/router';
-import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../services/utilities/pagination.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 import { MatTooltip } from '@angular/material/tooltip';
 
@@ -69,7 +69,7 @@ export class CreatePlayerComponent implements OnInit {
 
 	public isPositionInputOpen = false;
 
-	constructor(private playerService: PlayerService, private teamService: TeamService, public selector: PaginatedSelectorService<TeamSummary>, private router: Router) {}
+	constructor(private playerService: PlayerService, private teamService: TeamService, public paginationService: PaginationService<TeamSummary>, private router: Router) {}
 
 	private buildRequest(): CreatePlayerRequest {
 		return {
@@ -121,8 +121,8 @@ export class CreatePlayerComponent implements OnInit {
 
 	public showTeamsModal() {
 		this.selectTeamButtonClicked = true;
-		this.selector.reset();
-		this.selector.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
+		this.paginationService.reset();
+		this.paginationService.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public closeTeamModal = () => {
@@ -142,11 +142,11 @@ export class CreatePlayerComponent implements OnInit {
 		const team = item as TeamSummary;
 		this.selectedTeam = true;
 		this.successMessage = 'Team Selected';
-		this.teamNameInput = this.selector.select(team, (t) => t.name);
+		this.teamNameInput = this.paginationService.select(team, (t) => t.name);
 	}
 
 	public loadNextPage() {
-		this.selector.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
+		this.paginationService.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public returnToHome() {

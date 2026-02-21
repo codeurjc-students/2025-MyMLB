@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreatePlayerComponent } from '../../../../app/components/admin/create-player/create-player.component';
 import { PlayerService } from '../../../../app/services/player.service';
 import { TeamService } from '../../../../app/services/team.service';
-import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../../app/services/utilities/pagination.service';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { TeamSummary } from '../../../../app/models/team.model';
@@ -16,7 +16,7 @@ describe('Create Player Component Tests', () => {
 	let playerServiceSpy: jasmine.SpyObj<PlayerService>;
 	let teamServiceSpy: jasmine.SpyObj<TeamService>;
 	let routerSpy: jasmine.SpyObj<Router>;
-	let selectorService: PaginatedSelectorService<TeamSummary>;
+	let paginationService: PaginationService<TeamSummary>;
 
 	beforeEach(() => {
 		playerServiceSpy = jasmine.createSpyObj('PlayerService', [
@@ -25,14 +25,14 @@ describe('Create Player Component Tests', () => {
 		]);
 		teamServiceSpy = jasmine.createSpyObj('TeamService', ['getAvailableTeams']);
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-		selectorService = new PaginatedSelectorService<TeamSummary>();
+		paginationService = new PaginationService<TeamSummary>();
 
 		TestBed.configureTestingModule({
 			imports: [CreatePlayerComponent],
 			providers: [
 				{ provide: PlayerService, useValue: playerServiceSpy },
 				{ provide: TeamService, useValue: teamServiceSpy },
-				{ provide: PaginatedSelectorService, useValue: selectorService },
+				{ provide: PaginationService, useValue: paginationService },
 				{ provide: Router, useValue: routerSpy },
 			],
 		});
@@ -120,12 +120,12 @@ describe('Create Player Component Tests', () => {
 	});
 
 	it('should show teams modal and reset selector', () => {
-		spyOn(selectorService, 'reset');
-		spyOn(selectorService, 'loadPage');
+		spyOn(paginationService, 'reset');
+		spyOn(paginationService, 'loadPage');
 		component.showTeamsModal();
 		expect(component.selectTeamButtonClicked).toBeTrue();
-		expect(selectorService.reset).toHaveBeenCalled();
-		expect(selectorService.loadPage).toHaveBeenCalled();
+		expect(paginationService.reset).toHaveBeenCalled();
+		expect(paginationService.loadPage).toHaveBeenCalled();
 	});
 
 	it('should select team and update teamNameInput', () => {
@@ -135,7 +135,7 @@ describe('Create Player Component Tests', () => {
 			'NL',
 			'WEST'
 		);
-		spyOn(selectorService, 'select').and.returnValue(team.name);
+		spyOn(paginationService, 'select').and.returnValue(team.name);
 		component.selectTeam(team);
 		expect(component.selectedTeam).toBeTrue();
 		expect(component.successMessage).toBe('Team Selected');
@@ -143,9 +143,9 @@ describe('Create Player Component Tests', () => {
 	});
 
 	it('should load next page of teams', () => {
-		spyOn(selectorService, 'loadNextPage');
+		spyOn(paginationService, 'loadNextPage');
 		component.loadNextPage();
-		expect(selectorService.loadNextPage).toHaveBeenCalled();
+		expect(paginationService.loadNextPage).toHaveBeenCalled();
 	});
 
 	it('should navigate to home on returnToHome', () => {

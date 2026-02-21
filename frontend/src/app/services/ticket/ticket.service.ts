@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { PurchaseRequest } from '../../models/ticket/purchase-request.model';
+import { PurchaseRequest } from '../../models/ticket/ticket.model';
 import { Observable } from 'rxjs';
 import { Ticket } from '../../models/ticket/ticket.model';
 import { PaginatedResponse } from '../../models/pagination.model';

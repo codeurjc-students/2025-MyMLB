@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EditProfileRequest, Profile, User } from '../models/user.model';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { AuthResponse } from '../models/auth.model';
 import { TeamSummary } from '../models/team.model';
 import { Pictures } from '../models/pictures.model';
 import { Ticket } from '../models/ticket/ticket.model';

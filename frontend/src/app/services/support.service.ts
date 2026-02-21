@@ -1,12 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-import { CreateTicketRequest } from '../models/support/create-ticket-request.model';
-import { ReplyRequest } from '../models/support/reply-request.model';
-import { SupportTicket } from '../models/support/support-ticket.model';
-import { SupportMessage } from '../models/support/support-message.model';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { CreateTicketRequest, ReplyRequest, SupportMessage, SupportTicket } from '../models/support.model';
+import { AuthResponse } from '../models/auth.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { StadiumService } from '../../../app/services/stadium.service';
 import { Pictures } from '../../../app/models/pictures.model';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { PaginatedResponse } from '../../../app/models/pagination.model';
 import { MockFactory } from '../../utils/mock-factory';

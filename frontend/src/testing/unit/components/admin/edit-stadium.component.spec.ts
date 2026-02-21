@@ -5,7 +5,7 @@ import { StadiumService } from '../../../../app/services/stadium.service';
 import { MockFactory } from '../../../../testing/utils/mock-factory';
 import { Stadium } from '../../../../app/models/stadium.model';
 import { Pictures } from '../../../../app/models/pictures.model';
-import { AuthResponse } from '../../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../../app/models/auth.model';
 
 describe('Edit Stadium Component Tests', () => {
 	let component: EditStadiumComponent;

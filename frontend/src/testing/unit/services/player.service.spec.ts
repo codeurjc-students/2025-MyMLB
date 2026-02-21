@@ -9,7 +9,7 @@ import {
 import { MockFactory } from '../../utils/mock-factory';
 import { Pictures } from '../../../app/models/pictures.model';
 import { PitcherGlobal } from '../../../app/models/pitcher.model';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth.model';
 
 describe('Player Service Tests', () => {
 	let service: PlayerService;

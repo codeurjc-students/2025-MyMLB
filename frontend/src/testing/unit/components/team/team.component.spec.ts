@@ -7,11 +7,12 @@ import { MockFactory } from '../../../utils/mock-factory';
 import { of, throwError } from 'rxjs';
 import { TeamInfo } from '../../../../app/models/team.model';
 import { provideHttpClient } from '@angular/common/http';
-import { MatchService, ShowMatch } from '../../../../app/services/match.service';
+import { MatchService } from '../../../../app/services/match.service';
+import { ShowMatch } from '../../../../app/models/match.model';
 import { EventService } from '../../../../app/services/ticket/event.service';
 import { AuthService } from '../../../../app/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../../app/services/utilities/pagination.service';
 import { Pictures } from '../../../../app/models/pictures.model';
 
 describe('Team Component Tests', () => {
@@ -22,7 +23,7 @@ describe('Team Component Tests', () => {
     let authServiceSpy: jasmine.SpyObj<AuthService>;
     let routerSpy: jasmine.SpyObj<Router>;
 	let routeSpy: any;
-    let paginationService: PaginatedSelectorService<ShowMatch>;
+    let paginationService: PaginationService<ShowMatch>;
 
     const mockTeamStats = MockFactory.buildTeamMocks(
         'New York Yankees', 'NYY', 'AL', 'EAST', 162, 100, 62, 0.617, 0, '7-3'
@@ -59,7 +60,7 @@ describe('Team Component Tests', () => {
         eventServiceSpy = jasmine.createSpyObj('EventService', ['getEventByMatchId', 'deleteEvent']);
         authServiceSpy = jasmine.createSpyObj('AuthService', ['getActiveUser']);
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-        paginationService = new PaginatedSelectorService<ShowMatch>();
+        paginationService = new PaginationService<ShowMatch>();
 
 		const paramMapSpy = jasmine.createSpyObj('paramMap', ['get']);
 		paramMapSpy.get.and.returnValue('New York Yankees');
@@ -84,7 +85,7 @@ describe('Team Component Tests', () => {
                 { provide: AuthService, useValue: authServiceSpy },
                 { provide: Router, useValue: routerSpy },
 				{ provide: ActivatedRoute, useValue: routeSpy },
-                { provide: PaginatedSelectorService, useValue: paginationService }
+                { provide: PaginationService, useValue: paginationService }
             ],
         });
 

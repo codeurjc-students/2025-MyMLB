@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Pictures } from '../models/pictures.model';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { AuthResponse } from '../models/auth.model';
 import { CreateStadiumRequest, Stadium, StadiumSummary } from '../models/stadium.model';
 import { PaginatedResponse } from '../models/pagination.model';
 import { environment } from '../../environments/environment';

@@ -26,7 +26,7 @@ import { LoadingModalComponent } from '../../modal/loading-modal/loading-modal.c
 import { TeamService } from '../../../services/team.service';
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
-import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../services/utilities/pagination.service';
 import { ValidationService } from '../../../services/utilities/validation.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
@@ -149,7 +149,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		mapper: EntityFormMapperService,
 		private playerService: PlayerService,
 		private teamService: TeamService,
-		public selector: PaginatedSelectorService<TeamSummary>,
+		public paginationService: PaginationService<TeamSummary>,
 		public validationService: ValidationService
 	) {
 		super(mapper);
@@ -157,7 +157,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 
 	ngOnInit() {
 		this.hydrateForm();
-		this.selector.setLabelFn((team) => team.name);
+		this.paginationService.setLabelFn((team) => team.name);
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
@@ -184,12 +184,12 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 
 	public showTeamsModal() {
 		this.selectTeamButtonClicked = true;
-		this.selector.reset();
-    	this.selector.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
+		this.paginationService.reset();
+    	this.paginationService.loadPage(0, this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public loadNextPage() {
-		this.selector.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
+		this.paginationService.loadNextPage(this.pageSize, this.teamService.getAvailableTeams.bind(this.teamService));
 	}
 
 	public selectTeam(item: unknown) {
@@ -197,7 +197,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		this.resetState();
 		this.success = true;
 		this.successMessage = 'Team Selected';
-		this.formInputs.teamName = this.selector.select(team, (t) => t.name);
+		this.formInputs.teamName = this.paginationService.select(team, (t) => t.name);
 	}
 
 	public closeTeamModal = () => {

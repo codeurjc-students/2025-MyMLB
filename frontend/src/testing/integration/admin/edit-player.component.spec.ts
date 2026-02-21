@@ -107,7 +107,7 @@ describe('Edit Player Component Integration Tests', () => {
 		});
 
 		expect(component.selectTeamButtonClicked).toBeTrue();
-		component.selector.items$.subscribe((item) => {
+		component.paginationService.items$.subscribe((item) => {
 			expect(item.length).toBe(1);
 			expect(item[0].name).toBe('Los Angeles Dodgers');
 		});

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InboxComponent } from '../../../../app/components/support/inbox/inbox.component';
 import { SupportService } from '../../../../app/services/support.service';
 import { of } from 'rxjs';
-import { SupportTicket } from '../../../../app/models/support/support-ticket.model';
+import { SupportTicket } from '../../../../app/models/support.model';
 
 describe('Inbox Component Tests', () => {
     let component: InboxComponent;

@@ -1,9 +1,9 @@
-import { AuthResponse } from './../../../../app/models/auth/auth-response.model';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
+import { AuthResponse } from './../../../../app/models/auth.model';
 import { SupportTicketModalComponent } from './../../../../app/components/support/support-ticket-modal/support-ticket-modal.component';
 import { SupportService } from '../../../../app/services/support.service';
-import { of, throwError } from 'rxjs';
-import { SupportMessage } from '../../../../app/models/support/support-message.model';
+import { SupportMessage } from '../../../../app/models/support.model';
 
 describe('Support Ticket Modal Component Tests', () => {
     let component: SupportTicketModalComponent;

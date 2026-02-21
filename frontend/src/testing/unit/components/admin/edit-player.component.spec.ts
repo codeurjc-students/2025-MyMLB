@@ -4,7 +4,7 @@ import { EditPlayerComponent } from '../../../../app/components/admin/edit-playe
 import { PlayerService } from '../../../../app/services/player.service';
 import { TeamService } from '../../../../app/services/team.service';
 import { EntityFormMapperService } from '../../../../app/services/utilities/entity-form-mapper.service';
-import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../../app/services/utilities/pagination.service';
 import { of, throwError } from 'rxjs';
 import { PitcherGlobal } from './../../../../app/models/pitcher.model';
 import { TeamSummary } from '../../../../app/models/team.model';
@@ -16,7 +16,7 @@ describe('Edit Player Component Tests', () => {
 	let fixture: ComponentFixture<EditPlayerComponent>;
 	let playerServiceSpy: jasmine.SpyObj<PlayerService>;
 	let teamServiceSpy: jasmine.SpyObj<TeamService>;
-	let selectorService: PaginatedSelectorService<TeamSummary>;
+	let paginationService: PaginationService<TeamSummary>;
 
 	const mockPositionPlayer: PositionPlayerGlobal = MockFactory.buildPositionPlayerGlobalMock(
 		'Aaron Judge',
@@ -44,7 +44,7 @@ describe('Edit Player Component Tests', () => {
 			'deletePlayer',
 		]);
 		teamServiceSpy = jasmine.createSpyObj('TeamService', ['getAvailableTeams']);
-		selectorService = new PaginatedSelectorService<TeamSummary>();
+		paginationService = new PaginationService<TeamSummary>();
 
 		TestBed.configureTestingModule({
 			imports: [EditPlayerComponent],
@@ -52,7 +52,7 @@ describe('Edit Player Component Tests', () => {
 				EntityFormMapperService,
 				{ provide: PlayerService, useValue: playerServiceSpy },
 				{ provide: TeamService, useValue: teamServiceSpy },
-				{ provide: PaginatedSelectorService, useValue: selectorService },
+				{ provide: PaginationService, useValue: paginationService },
 			],
 		});
 
@@ -69,17 +69,17 @@ describe('Edit Player Component Tests', () => {
 	});
 
 	it('should show teams modal and reset selector', () => {
-		spyOn(selectorService, 'reset');
-		spyOn(selectorService, 'loadPage');
+		spyOn(paginationService, 'reset');
+		spyOn(paginationService, 'loadPage');
 		component.showTeamsModal();
 		expect(component.selectTeamButtonClicked).toBeTrue();
-		expect(selectorService.reset).toHaveBeenCalled();
-		expect(selectorService.loadPage).toHaveBeenCalled();
+		expect(paginationService.reset).toHaveBeenCalled();
+		expect(paginationService.loadPage).toHaveBeenCalled();
 	});
 
 	it('should select a team and update formInputs', () => {
 		const team: TeamSummary = MockFactory.buildTeamSummaryMock('Los Angeles Dodgers', 'LAD', 'NL', 'WEST');
-		spyOn(selectorService, 'select').and.returnValue(team.name);
+		spyOn(paginationService, 'select').and.returnValue(team.name);
 		component.selectTeam(team);
 		expect(component.success).toBeTrue();
 		expect(component.successMessage).toBe('Team Selected');

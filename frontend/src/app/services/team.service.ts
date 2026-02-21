@@ -5,7 +5,7 @@ import { map, Observable, tap } from 'rxjs';
 import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.model';
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { AuthResponse } from '../models/auth.model';
 import { environment } from '../../environments/environment';
 
 export type StandingsResponse = {

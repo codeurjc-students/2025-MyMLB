@@ -3,7 +3,7 @@ import { SupportTicketModalComponent } from '../../../app/components/support/sup
 import { SupportService } from '../../../app/services/support.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { SupportMessage } from '../../../app/models/support/support-message.model';
+import { SupportMessage } from '../../../app/models/support.model';
 
 describe('Support Ticket Modal Component Integration Test', () => {
     let fixture: ComponentFixture<SupportTicketModalComponent>;

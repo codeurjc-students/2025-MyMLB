@@ -3,19 +3,12 @@ import { PositionPlayer, PositionPlayerGlobal } from '../../app/models/position-
 import { Stadium, StadiumSummary } from '../../app/models/stadium.model';
 import { Team, TeamInfo, TeamSummary } from '../../app/models/team.model';
 import { User } from '../../app/models/user.model';
-import { AuthResponse } from '../../app/models/auth/auth-response.model';
-import { UserRole } from '../../app/models/auth/user-role.model';
-import { ShowMatch } from '../../app/services/match.service';
+import { UserRole, AuthResponse } from '../../app/models/auth.model';
+import { ShowMatch } from '../../app/models/match.model';
 import { Pictures } from '../../app/models/pictures.model';
 import { PaginatedResponse, PaginatedSearchs } from '../../app/models/pagination.model';
-import { EventResponse } from '../../app/models/ticket/event-response.model';
-import { EventManager } from '../../app/models/ticket/event-manager.model';
-import { Seat } from '../../app/models/ticket/seat.model';
-import { SectorCreateRequest } from '../../app/models/ticket/sector-create-request.model';
-import { EventCreateRequest } from '../../app/models/ticket/event-create-request-model';
-import { EventEditRequest } from '../../app/models/ticket/event-edit-request.model';
-import { PurchaseRequest } from '../../app/models/ticket/purchase-request.model';
-import { Ticket } from '../../app/models/ticket/ticket.model';
+import { PurchaseRequest, Ticket } from '../../app/models/ticket/ticket.model';
+import { EventCreateRequest, EventEditRequest, EventManager, EventResponse, Seat, SectorCreateRequest } from '../../app/models/ticket/event.model';
 
 export class MockFactory {
 	static buildUserMocks = (username: string, email: string) => {

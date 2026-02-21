@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from '../../app/components/navbar/navbar.component';
 import { AuthService } from '../../app/services/auth.service';
 import { ThemeService } from '../../app/services/theme.service';
-import { UserRole } from '../../app/models/auth/user-role.model';
+import { UserRole } from '../../app/models/auth.model';
 import { BackgroundColorService } from '../../app/services/background-color.service';
 import { SelectedTeamService } from '../../app/services/selected-team.service';
 import { UserService } from '../../app/services/user.service';

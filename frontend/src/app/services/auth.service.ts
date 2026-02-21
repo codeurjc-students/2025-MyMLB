@@ -1,12 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../models/auth/login-request.model';
-import { Observable, BehaviorSubject, tap, catchError, of, switchMap } from 'rxjs';
-import { AuthResponse } from '../models/auth/auth-response.model';
-import { RegisterRequest } from '../models/auth/register-request.model';
-import { ForgotPasswordRequest } from '../models/auth/forgot-password.model';
-import { ResetPasswordRequest } from '../models/auth/reset-password-request.model';
-import { UserRole } from '../models/auth/user-role.model';
+import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
+import { AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest, UserRole } from '../models/auth.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({

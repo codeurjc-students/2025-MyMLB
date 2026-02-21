@@ -3,10 +3,9 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnIn
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import flatpickr from 'flatpickr';
 import monthSelectPlugin from 'flatpickr/dist/plugins/monthSelect/index.js';
-import { Seat } from '../../../models/ticket/seat.model';
 import { TicketService } from '../../../services/ticket/ticket.service';
-import { PurchaseRequest } from '../../../models/ticket/purchase-request.model';
-import { EventResponse } from '../../../models/ticket/event-response.model';
+import { PurchaseRequest } from '../../../models/ticket/ticket.model';
+import { EventResponse, Seat } from '../../../models/ticket/event.model';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { SuccessModalComponent } from "../../success-modal/success-modal.component";
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";

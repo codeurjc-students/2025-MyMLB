@@ -1,15 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-
+import { CreateTicketRequest, ReplyRequest, SupportMessage, SupportTicket } from '../../../app/models/support.model';
 import { SupportService } from '../../../app/services/support.service';
-import { CreateTicketRequest } from '../../../app/models/support/create-ticket-request.model';
-import { ReplyRequest } from '../../../app/models/support/reply-request.model';
-import { SupportTicket } from '../../../app/models/support/support-ticket.model';
-import { SupportMessage } from '../../../app/models/support/support-message.model';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth.model';
 import { skip } from 'rxjs';
-
 describe('Support Service Tests', () => {
     let service: SupportService;
     let httpMock: HttpTestingController;
