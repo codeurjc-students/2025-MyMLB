@@ -213,6 +213,9 @@ The following diagrams illustrates the backend structure, showing each layer of 
 ### 🌐 Frontend Structure
 The following diagrams illustrates the frontend structure, showing each layer of the `MVC architecture`, and how the interact between each other.
 
+> [!NOTE]
+> To make the diagrams as readable as possible, only the relationships between `components and services`, and between `services and models`, were represented. The relationships between components and models (those types used within components) were not represented.
+
 <p align="center">
   <img src="../images/diagrams/v0.2/frontend/Auth.jpg" width="40%"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -236,6 +239,68 @@ The following diagrams illustrates the frontend structure, showing each layer of
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="../images/diagrams/v0.2/frontend/Profile.jpg" width="40%"/>
 </p>
+
+Each model wraps different `types` that are used throughout the frontend. These are as follows:
+<table>
+  <thead>
+    <th>Model</th>
+    <th>Types</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Auth</td>
+      <td>UserRole, AuthResponse, LoginRequest, RegisterRequest, ForgotPasswordRequest, ResetPasswordRequest</td>
+    </tr>
+    <tr>
+      <td>User</td>
+      <td>User, EditProfileRequest, Profile</td>
+    </tr>
+  <tr>
+    <td>Team</td>
+    <td>Team, TeamSumary, TeamInfo, UpdateTeamRequest</td>
+  </tr>
+  <tr>
+    <td>Match</td>
+    <td>MatchStatus, ShowMatch</td>
+  </tr>
+  <tr>
+    <td>PositionPlayer</td>
+    <td>PositionPlayer, PositionPlayerGlobal, CreatePlayerRequest, EditPositionPlayerRequest</td>
+  </tr>
+  <tr>
+    <td>Pitcher</td>
+    <td>Pitcher, PitcherGlobal, CreatePitcherRequest, EditPitcherRequest</td>
+  </tr>
+  <tr>
+    <td>Stadium</td>
+    <td>Stadium, StadiumSummary, CreateStadiumRequest</td>
+  </tr>
+  <tr>
+    <td>StandingsData</td>
+    <td>StandingsData</td>
+  </tr>
+  <tr>
+    <td>Pictures</td>
+    <td>Pictures</td>
+  </tr>
+  <tr>
+    <td>Pagination</td>
+    <td>PaginatedSearchs, PaginatedResponse</td>
+  </tr>
+  <tr>
+    <td>Support</td>
+    <td>SupportTicket, SupportMessage, CreateTicketRequest, ReplyRequest</td>
+  </tr>
+  <tr>
+    <td>Event</td>
+    <td>EventResponse, EventManager, Seat, SectorCreateRequest, EventCreateRequest, EventEditRequest</td>
+  </tr>
+  <tr>
+    <td>Ticket</td>
+    <td>Ticket, PurchaseRequest</td>
+  </tr>
+  </tbody>
+</table>
 
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
