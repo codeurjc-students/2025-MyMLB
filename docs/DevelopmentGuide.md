@@ -195,25 +195,47 @@ The backend exposes a `REST API` as communication method with the frontend.
 The following diagrams illustrates the backend structure, showing each layer of the `hexagonal architecture`, and how they interact between each other.
 
 <p align="center">
-  <img src="../images/diagrams/v0.2/ImportServices.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/backend/ImportServices.jpg" width="40%"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="../images/diagrams/v0.2/EntitiesModification.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/backend/EntitiesModification.jpg" width="40%"/>
 </p>
 
 <p align="center">
-  <img src="../images/diagrams/v0.2/Ticket.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/backend/Ticket.jpg" width="40%"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="../images/diagrams/v0.2/TeamAndMatches.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/backend/TeamAndMatches.jpg" width="40%"/>
 </p>
 
 <p align="center">
-  <img src="../images/diagrams/v0.2/ContactSupport.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/backend/ContactSupport.jpg" width="40%"/>
 </p>
 
 ### 🌐 Frontend Structure
-The following diagram illustrates the frontend structire, showing each layer of the `MVC architecture`, and how the interact between each other.
+The following diagrams illustrates the frontend structure, showing each layer of the `MVC architecture`, and how the interact between each other.
 
-![Frontend Structure](../images/diagrams/Frontend.jpg)
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Auth.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/Navbar.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Support.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/TicketFront.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Team.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/EntitiesModFront.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Match.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/Profile.jpg" width="40%"/>
+</p>
 
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
