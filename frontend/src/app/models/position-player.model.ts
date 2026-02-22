@@ -1,23 +1,5 @@
 import { Pictures } from "./pictures.model"
 
-export type PositionPlayer = {
-	name: string,
-	playerNumber: number,
-	position: string,
-	atBats: number,
-	walks: number,
-	hits: number,
-	doubles: number,
-	triples: number,
-	homeRuns: number,
-	rbis: number,
-	average: number,
-	obp: number,
-	ops: number,
-	slugging: number,
-	picture: Pictures
-}
-
 export type PositionPlayerGlobal = {
 	name: string,
 	playerNumber: number,
@@ -36,6 +18,8 @@ export type PositionPlayerGlobal = {
 	slugging: number,
 	picture: Pictures
 }
+
+export type PositionPlayer = Omit<PositionPlayerGlobal, 'teamName'>;
 
 export type CreatePlayerRequest = {
 	name: string,

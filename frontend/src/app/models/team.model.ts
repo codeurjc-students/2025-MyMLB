@@ -15,12 +15,7 @@ export type Team = {
 	lastTen: string
 }
 
-export type TeamSummary = {
-	name: string;
-	abbreviation: string;
-	league: string;
-	division: string;
-};
+export type TeamSummary = Pick<Team, 'name' | 'abbreviation' | 'league' | 'division'>;
 
 export type TeamInfo = {
 	teamStats: Team,
