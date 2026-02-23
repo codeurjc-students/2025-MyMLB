@@ -17,10 +17,10 @@ import {
 } from '../../../models/position-player.model';
 import { EditPitcherRequest, PitcherGlobal } from '../../../models/pitcher.model';
 import { TeamSummary } from '../../../models/team.model';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { PlayerService } from '../../../services/player.service';
-import { RemoveConfirmationModalComponent } from '../../remove-confirmation-modal/remove-confirmation-modal.component';
+import { RemoveConfirmationModalComponent } from '../../modal/remove-confirmation-modal/remove-confirmation-modal.component';
 import { finalize } from 'rxjs';
 import { LoadingModalComponent } from '../../modal/loading-modal/loading-modal.component';
 import { TeamService } from '../../../services/team.service';

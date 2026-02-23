@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { Stadium } from '../../../models/stadium.model';
 import { StadiumService } from '../../../services/stadium.service';
 import { CommonModule } from '@angular/common';
-import { RemoveConfirmationModalComponent } from "../../remove-confirmation-modal/remove-confirmation-modal.component";
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { RemoveConfirmationModalComponent } from '../../modal/remove-confirmation-modal/remove-confirmation-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { finalize } from 'rxjs';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";

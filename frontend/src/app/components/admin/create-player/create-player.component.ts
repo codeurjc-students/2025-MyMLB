@@ -2,7 +2,7 @@ import { PlayerService } from './../../../services/player.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';

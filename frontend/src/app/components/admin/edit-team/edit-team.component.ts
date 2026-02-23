@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { TeamInfo, UpdateTeamRequest } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';

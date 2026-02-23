@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { EscapeCloseDirective } from "../../directives/escape-close.directive";
+import { EscapeCloseDirective } from '../../../directives/escape-close.directive';
 
 @Component({
     selector: 'app-remove-confirmation-modal',

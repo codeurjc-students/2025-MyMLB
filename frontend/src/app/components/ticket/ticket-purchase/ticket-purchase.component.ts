@@ -7,7 +7,7 @@ import { TicketService } from '../../../services/ticket/ticket.service';
 import { PurchaseRequest } from '../../../models/ticket/ticket.model';
 import { EventResponse, Seat } from '../../../models/ticket/event.model';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { SuccessfullPurchaseComponent } from "../successfull-purchase/successfull-purchase.component";
 

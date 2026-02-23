@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { CreateTicketRequest } from '../../models/support.model';
 import { EscapeCloseDirective } from "../../directives/escape-close.directive";
-import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 
 @Component({

@@ -16,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/ticket/event.service';
 import { EventResponse } from '../../models/ticket/event.model';
-import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 
 @Component({

@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../../services/ticket/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { EventResponse, EventEditRequest } from '../../../models/ticket/event.model';
 
