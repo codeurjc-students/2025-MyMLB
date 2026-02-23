@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 @Entity
 @Table(name = "T_Event_Manager")
 @Getter
@@ -24,6 +28,9 @@ public class EventManager {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sector_id")
     private Sector sector;
+
+    @OneToMany(mappedBy = "eventManager", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Ticket> tickets = new LinkedList<>();
 
     private double price;
 
