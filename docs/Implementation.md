@@ -5,3 +5,4 @@
 - Code Organization.
 - Problems.
 - Environments (Front and Back. Environment variables etc)
+- SeatBatchService
