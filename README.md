@@ -416,6 +416,8 @@ To create an event the admins must enter the amount of sectors it will have, the
 To see this features in action, check the video below that shows the current state of the application:
 
 
+https://github.com/user-attachments/assets/295069c7-43db-4cad-8354-9c7e52c04933
+
 For the next and final version of the application will include the remaining functionalities that belong to the `Statistics` section for the admins.
 
 ---
