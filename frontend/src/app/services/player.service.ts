@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
 import { Pictures } from '../models/pictures.model';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { AuthResponse } from '../models/auth.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlayerService {
-	private apiUrl = 'https://localhost:8443/api/v1/players';
+	private apiUrl = `${environment.apiUrl}/players`;
 
 	constructor(private httpMock: HttpClient) {}
 

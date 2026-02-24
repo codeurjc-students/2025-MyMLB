@@ -2,6 +2,7 @@ package com.mlb.mlbportal.unit.mlbApi;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
@@ -113,58 +118,43 @@ class PlayerImportServiceTest {
         });
     }
 
-    @Test
-    @DisplayName("Should save a Position Player")
-    void testSavePositionPlayer() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("providePlayerTestData")
+    void testSavePlayer(String testName, int id, String playerName, String posCode, String posAbbr, String number, StatData statsData, Class<?> repositoryClass) {
         when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
+        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(new RosterResponse(List.of(new RosterEntry(new PlayerData(id, playerName), new PositionData(posCode, posAbbr)))));
 
-        PlayerData playerData = new PlayerData(20, PLAYER2_NAME);
-        PositionData positionData = new PositionData("2", "C");
-        RosterEntry entry = new RosterEntry(playerData, positionData);
-        RosterResponse rosterResponse = new RosterResponse(List.of(entry));
+        PlayerDetailInfo detailInfo = new PlayerDetailInfo(id, playerName, number, new PositionData(posCode, posAbbr), List.of(new Stats(List.of(new Split(statsData)))));
+        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(new PlayerResponse(List.of(detailInfo)));
 
-        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(rosterResponse);
-
-        StatData positionPlayerStats = new StatData(20, 10, 2, 2, 6, 0, 0, 0.500, 0.500, 1.554, 0.999,
-                0, 0, 0, 0, 0, 0, 0, 0.00, 0.00, "0.0");
-        Split split = new Split(positionPlayerStats);
-        Stats stats = new Stats(List.of(split));
-        PlayerDetailInfo playerDetailInfo = new PlayerDetailInfo(20, PLAYER2_NAME, "3", positionData, List.of(stats));
-        PlayerResponse playerResponse = new PlayerResponse(List.of(playerDetailInfo));
-
-        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(playerResponse);
-        when(this.positionPlayerRepository.findByName(anyString())).thenReturn(Optional.empty());
+        if (repositoryClass.equals(PositionPlayer.class)) {
+            when(this.positionPlayerRepository.findByName(anyString())).thenReturn(Optional.empty());
+        }
+        else {
+            when(this.pitcherRepository.findByName(anyString())).thenReturn(Optional.empty());
+        }
 
         this.playerImportService.getTeamRoster();
 
-        verify(this.positionPlayerRepository, times(1)).save(any(PositionPlayer.class));
+        if (repositoryClass.equals(PositionPlayer.class)) {
+            verify(this.positionPlayerRepository, times(1)).save(any(PositionPlayer.class));
+        }
+        else {
+            verify(this.pitcherRepository, times(1)).save(any(Pitcher.class));
+        }
     }
 
-    @Test
-    @DisplayName("Should save a Pitcher")
-    void testSavePitcher() {
-        when(this.teamRepository.findAll()).thenReturn(List.of(this.mockTeams.getFirst()));
-
-        PlayerData playerData = new PlayerData(19, PLAYER1_NAME);
-        PositionData positionData = new PositionData("1", "P");
-        RosterEntry entry = new RosterEntry(playerData, positionData);
-        RosterResponse rosterResponse = new RosterResponse(List.of(entry));
-
-        when(this.restTemplate.getForObject(anyString(), eq(RosterResponse.class))).thenReturn(rosterResponse);
+    private static Stream<Arguments> providePlayerTestData() {
+        StatData posPlayerStats = new StatData(20, 10, 2, 2, 6, 0, 0, 0.500, 0.500, 1.554, 0.999,
+                0, 0, 0, 0, 0, 0, 0, 0.00, 0.00, "0.0");
 
         StatData pitcherStats = new StatData(0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,
                 10, 3, 5, 2, 80, 10, 5, 4.00, 1.10, "50.2");
-        Split split = new Split(pitcherStats);
-        Stats stats = new Stats(List.of(split));
-        PlayerDetailInfo playerDetailInfo = new PlayerDetailInfo(19, PLAYER1_NAME, "17", positionData, List.of(stats));
-        PlayerResponse playerResponse = new PlayerResponse(List.of(playerDetailInfo));
 
-        when(this.restTemplate.getForObject(contains("/people/"), eq(PlayerResponse.class))).thenReturn(playerResponse);
-        when(this.pitcherRepository.findByName(anyString())).thenReturn(Optional.empty());
-
-        this.playerImportService.getTeamRoster();
-
-        verify(this.pitcherRepository, times(1)).save(any(Pitcher.class));
+        return Stream.of(
+                Arguments.of("Should save a Position Player", 20, PLAYER2_NAME, "2", "C", "3", posPlayerStats, PositionPlayer.class),
+                Arguments.of("Should save a Pitcher", 19, PLAYER1_NAME, "1", "P", "17", pitcherStats, Pitcher.class)
+        );
     }
 
     @Test

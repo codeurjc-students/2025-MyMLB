@@ -1,19 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EventResponse } from '../../models/ticket/event-response.model';
+import { EventCreateRequest, EventEditRequest, EventManager, EventResponse, Seat } from '../../models/ticket/event.model';
 import { PaginatedResponse } from '../../models/pagination.model';
-import { Seat } from '../../models/ticket/seat.model';
-import { EventManager } from '../../models/ticket/event-manager.model';
-import { EventCreateRequest } from '../../models/ticket/event-create-request-model';
-import { EventEditRequest } from '../../models/ticket/event-edit-request.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class EventService {
 	private httpMock = inject(HttpClient);
-	private apiUrl = 'https://localhost:8443/api/v1/events';
+	private apiUrl = `${environment.apiUrl}/events`;
 
 	public getEventById(eventId: number): Observable<EventResponse> {
 		return this.httpMock.get<EventResponse>(`${this.apiUrl}/${eventId}`);

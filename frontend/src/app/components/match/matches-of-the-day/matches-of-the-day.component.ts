@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatchService, ShowMatch } from '../../../services/match.service';
+import { ShowMatch } from '../../../models/match.model';
 import { CommonModule } from '@angular/common';
 import { BackgroundColorService } from '../../../services/background-color.service';
+import { MatchService } from '../../../services/match.service';
 
 @Component({
 	selector: 'app-matches-of-the-day',

@@ -1,5 +1,5 @@
 import { PositionPlayer } from './../../../models/position-player.model';
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TeamInfo } from '../../../models/team.model';
 import { Pitcher } from '../../../models/pitcher.model';
 import { CommonModule } from '@angular/common';

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatchService, ShowMatch } from '../../../services/match.service';
+import { MatchService } from '../../../services/match.service';
+import { ShowMatch } from '../../../models/match.model';
 import { TeamInfo } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { subMonths, addMonths, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns';

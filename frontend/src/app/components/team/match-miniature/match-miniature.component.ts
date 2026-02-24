@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ShowMatch } from '../../../services/match.service';
+import { ShowMatch } from '../../../models/match.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { CommonModule } from '@angular/common';
 import { EscapeCloseDirective } from '../../../directives/escape-close.directive';

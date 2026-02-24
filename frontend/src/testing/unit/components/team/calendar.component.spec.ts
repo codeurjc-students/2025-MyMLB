@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CalendarComponent } from '../../../../app/components/team/calendar/calendar.component';
-import { MatchService, ShowMatch } from './../../../../app/services/match.service';
+import { MatchService } from './../../../../app/services/match.service';
+import { ShowMatch } from '../../../../app/models/match.model';
 import { BackgroundColorService } from '../../../../app/services/background-color.service';
 import { of, throwError } from 'rxjs';
 import { MockFactory } from '../../../utils/mock-factory';

@@ -8,7 +8,7 @@ import { MockFactory } from '../../../utils/mock-factory';
 import { TeamInfo } from '../../../../app/models/team.model';
 import { SelectedTeamService } from '../../../../app/services/selected-team.service';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../../app/models/auth.model';
 
 describe('Team Service Tests', () => {
 	let service: TeamService;

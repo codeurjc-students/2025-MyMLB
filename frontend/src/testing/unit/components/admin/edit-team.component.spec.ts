@@ -6,9 +6,9 @@ import { StadiumService } from '../../../../app/services/stadium.service';
 import { BackgroundColorService } from '../../../../app/services/background-color.service';
 import { TeamInfo } from '../../../../app/models/team.model';
 import { Stadium } from '../../../../app/models/stadium.model';
-import { AuthResponse } from '../../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../../app/models/auth.model';
 import { MockFactory } from '../../../utils/mock-factory';
-import { PaginatedSelectorService } from '../../../../app/services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../../app/services/utilities/pagination.service';
 import { EntityFormMapperService } from '../../../../app/services/utilities/entity-form-mapper.service';
 
 describe('Edit Team Component Tests', () => {
@@ -56,7 +56,7 @@ describe('Edit Team Component Tests', () => {
 			imports: [EditTeamComponent],
 			providers: [
 				EntityFormMapperService,
-				PaginatedSelectorService,
+				PaginationService,
 				{ provide: TeamService, useValue: teamServiceSpy },
 				{ provide: StadiumService, useValue: stadiumServiceSpy },
 				{ provide: BackgroundColorService, useValue: backgroundServiceSpy },
@@ -76,7 +76,7 @@ describe('Edit Team Component Tests', () => {
 
 	it('should select a stadium and show success message', () => {
 		const stadium: Stadium = { name: 'Yankee Stadium' } as Stadium;
-		spyOn(component.selector, 'select').and.returnValue(stadium.name);
+		spyOn(component.paginationService, 'select').and.returnValue(stadium.name);
 
 		component.selectStadium(stadium);
 

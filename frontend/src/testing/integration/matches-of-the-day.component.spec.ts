@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatchesOfTheDayComponent } from '../../app/components/match/matches-of-the-day/matches-of-the-day.component';
-import { MatchService, ShowMatch } from '../../app/services/match.service';
+import { MatchService } from '../../app/services/match.service';
+import { ShowMatch } from '../../app/models/match.model';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { PaginatedResponse } from '../../app/models/pagination.model';

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditEventComponent } from '../../../../app/components/ticket/edit-event/edit-event.component';
 import { EventService } from '../../../../app/services/ticket/event.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
 import { MockFactory } from '../../../utils/mock-factory';
 import { FormsModule } from '@angular/forms';

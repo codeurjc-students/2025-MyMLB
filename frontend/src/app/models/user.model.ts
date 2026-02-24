@@ -1,6 +1,6 @@
 import { Pictures } from "./pictures.model"
 
-export interface User {
+export type User =  {
 	email: string,
 	username: string
 }

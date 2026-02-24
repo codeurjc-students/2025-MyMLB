@@ -9,13 +9,14 @@ import { BackgroundColorService } from '../../services/background-color.service'
 import { StatsPanelComponent } from './stats-panel/stats-panel.component';
 import { CalendarComponent } from "./calendar/calendar.component";
 import { Pictures } from '../../models/pictures.model';
-import { MatchService, ShowMatch } from '../../services/match.service';
-import { PaginatedSelectorService } from '../../services/utilities/paginated-selector.service';
+import { MatchService } from '../../services/match.service';
+import { ShowMatch } from '../../models/match.model';
+import { PaginationService } from '../../services/utilities/pagination.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/ticket/event.service';
-import { EventResponse } from '../../models/ticket/event-response.model';
-import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { EventResponse } from '../../models/ticket/event.model';
+import { SuccessModalComponent } from '../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 
 @Component({
@@ -29,7 +30,7 @@ export class TeamComponent implements OnInit {
 	private teamService = inject(TeamService);
 	private selectedTeamService = inject(SelectedTeamService);
 	private matchService = inject(MatchService);
-	public paginationHandlerService = inject(PaginatedSelectorService);
+	public paginationHandlerService = inject(PaginationService);
 	private authService = inject(AuthService);
 	private eventService = inject(EventService);
 	private router = inject(Router);

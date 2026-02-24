@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileComponent } from '../../../app/components/profile/profile.component';
 import { AuthService } from '../../../app/services/auth.service';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
+import { AuthResponse, UserRole } from '../../../app/models/auth.model';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { UserRole } from '../../../app/models/auth/user-role.model';
 import { UserService } from '../../../app/services/user.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { User } from '../../../app/models/user.model';

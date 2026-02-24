@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { TeamInfo, UpdateTeamRequest } from '../../../models/team.model';
 import { TeamService } from '../../../services/team.service';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,7 +20,7 @@ import { StadiumService } from '../../../services/stadium.service';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { EntityFormMapperService } from '../../../services/utilities/entity-form-mapper.service';
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
-import { PaginatedSelectorService } from '../../../services/utilities/paginated-selector.service';
+import { PaginationService } from '../../../services/utilities/pagination.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 
 @Component({
@@ -61,7 +61,7 @@ export class EditTeamComponent
 		mapper: EntityFormMapperService,
 		private teamService: TeamService,
 		private stadiumService: StadiumService,
-		public selector: PaginatedSelectorService<Stadium>,
+		public paginationService: PaginationService<Stadium>,
 		public backgroundService: BackgroundColorService,
 	) {
 		super(mapper);
@@ -99,17 +99,17 @@ export class EditTeamComponent
 
 	public showStadiumsModal() {
 		this.selectStadiumButtonClicked = true;
-		this.selector.reset();
-    	this.selector.loadPage(0, this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
+		this.paginationService.reset();
+    	this.paginationService.loadPage(0, this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
 	}
 
 	public loadNextPage() {
-		this.selector.loadNextPage(this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
+		this.paginationService.loadNextPage(this.pageSize, this.stadiumService.getAvailableStadiums.bind(this.stadiumService));
 	}
 
 	public selectStadium(item: unknown) {
 		const stadium = item as Stadium;
-		this.formInputs.stadiumName = this.selector.select(stadium, (s) => s.name);
+		this.formInputs.stadiumName = this.paginationService.select(stadium, (s) => s.name);
 		this.success = true;
 		this.successMessage = 'Stadium Selected';
 	}

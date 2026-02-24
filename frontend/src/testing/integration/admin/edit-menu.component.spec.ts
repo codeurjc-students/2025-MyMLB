@@ -12,7 +12,7 @@ describe('Edit Menu Component Integration Tests', () => {
 	let component: EditMenuComponent;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = '/api/v1/searchs/team?query=Yankees&page=0&size=10';
+	const apiUrl = 'https://localhost:8443/api/v1/searchs/team?query=Yankees&page=0&size=10';
 
 	const mockTeam: TeamInfo = {
 		teamStats: {

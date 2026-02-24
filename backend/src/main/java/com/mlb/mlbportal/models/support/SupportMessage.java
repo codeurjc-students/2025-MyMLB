@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "T_Support_Message")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

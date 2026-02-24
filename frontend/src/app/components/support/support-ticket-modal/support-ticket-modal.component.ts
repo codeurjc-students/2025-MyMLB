@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupportService } from '../../../services/support.service';
-import { SupportMessage } from '../../../models/support/support-message.model';
+import { SupportMessage } from '../../../models/support.model';
 import { FormsModule } from '@angular/forms';
-import { SuccessModalComponent } from "../../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";

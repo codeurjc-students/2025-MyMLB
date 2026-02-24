@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileComponent } from '../../app/components/profile/profile.component';
 import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { UserRole } from '../../app/models/auth/user-role.model';
+import { UserRole } from '../../app/models/auth.model';
 import { Router } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { UserService } from '../../app/services/user.service';

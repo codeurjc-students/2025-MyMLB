@@ -1,13 +1,8 @@
-import { UserRole } from './../../../app/models/auth/user-role.model';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from '../../../app/services/auth.service';
-import { LoginRequest } from './../../../app/models/auth/login-request.model';
-import { RegisterRequest } from '../../../app/models/auth/register-request.model';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
-import { ForgotPasswordRequest } from '../../../app/models/auth/forgot-password.model';
-import { ResetPasswordRequest } from '../../../app/models/auth/reset-password-request.model';
+import { UserRole, LoginRequest, RegisterRequest, AuthResponse, ForgotPasswordRequest, ResetPasswordRequest } from './../../../app/models/auth.model';
 import { first, skip } from 'rxjs';
 
 describe('Auth Service Tests', () => {

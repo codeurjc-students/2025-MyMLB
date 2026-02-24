@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { EventService } from '../../../services/ticket/event.service';
-import { EventResponse } from '../../../models/ticket/event-response.model';
-import { Seat } from '../../../models/ticket/seat.model';
-import { EventManager } from '../../../models/ticket/event-manager.model';
+import { EventManager, EventResponse, Seat } from '../../../models/ticket/event.model';
 import { FormsModule } from '@angular/forms';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { ActivatedRoute } from '@angular/router';

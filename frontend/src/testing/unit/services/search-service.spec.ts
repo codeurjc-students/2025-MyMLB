@@ -13,7 +13,7 @@ describe('Search Service Tests', () => {
 	let service: SearchService;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = '/api/v1/searchs';
+	const apiUrl = 'https://localhost:8443/api/v1/searchs';
 
 	const teamStats = MockFactory.buildTeamMocks(
 		'New York Yankees',

@@ -7,7 +7,8 @@
 - [Backend](#-backend)
 - [Frontend](#-frontend)
 - [Executable Generation](#-executable-generation)
-- [Docker Deployment](#-docker-deployment)
+- [Docker Containerization](#-docker-containerization)
+- [Deployment](#-deployment)
 - [Tools Usage](#-tools-usage)
 - [Tests Execution](#-tests-execution)
 - [Release Creation](#-release-creation)
@@ -66,7 +67,7 @@ cd 2025-MLB
       <td>28</td>
     </tr>
     <tr>
-      <td>Docker Conpose</td>
+      <td>Docker Compose</td>
       <td>2.34-desktop.1</td>
     </tr>
   </tbody>
@@ -89,13 +90,33 @@ spring.datasource.username=postgres
 spring.datasource.password=root
 ````
 
-An this the one for the docker environment:
+This one for the docker environment (local):
 ```bash
 spring.datasource.url=jdbc:postgresql://db:5432/MLBPortal
 spring.datasource.username=postgres
 spring.datasource.password=root
 spring.datasource.driver-class-name=org.postgresql.Driver
 ````
+
+And finally for the docker environment used ny `Railway` to deploy the application:
+```bash
+# Profile used by Railway to deploy the application.
+
+# Disable SSL and security and let Railway handles it
+server.port=${PORT:8080}
+server.ssl.enabled=false
+
+# PostgreSQL DB Config (Let Railway manage the DB)
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA and Hibernate Config
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+```
 
 ---
 ## 💻 Backend
@@ -161,7 +182,7 @@ cl
 
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Docker Containerization
 Docker was used to containerize the application by generating it's images to an easily deployment. These are the instructions you need to follow in order to run this image, aswell the requirements for it.
 
 ### Requirements for Windows and Mac OS
@@ -222,6 +243,44 @@ docker compose up
 
 ---
 
+## 🚀 Deployment
+Once the docker image is generated we can use this to deploy the application:
+
+To make a deployment of the application in the Railway service you will need to follow these steps:
+
+1) Create an Empty Project on Railway
+2) Create a new database service. You can use any engine you want but be advised that the application is currently configured for PostgreSQL, in order to use another database, you will need to update the configurations or create a new profile.
+3) Create a new service and select `GitHub Repository` and link this GitHub repository with Railway.
+4) Once created, you will need to adjust some service settings of the GitHub repository service
+   - Set the root directory to `/`
+   - In the `Build` section, change the builer to `Dockerfile` and select its location in the repository `(/docker/Dockerfile.prod)`.
+   - On the `Variables` side, you will need to input the following environment variables:
+
+```bash
+SPRING_DATASOURCE_URL="jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}"
+SPRING_DATASOURCE_USERNAME="${{Postgres.PGUSER}}"
+SPRING_DATASOURCE_PASSWORD="${{Postgres.PGPASSWORD}}"
+DATABASE_URL="${{Postgres.TCP_URL}}"
+CLOUDINARY_CLOUD_NAME="cloudinary_cloud_name"
+CLOUDINARY_API_KEY="cloudinary_api_key"
+CLOUDINARY_API_SECRET="cloudinary_api_secret"
+SPRING_MAIL_HOST="smtp.gmail.com"
+SPRING_MAIL_PORT="465"
+SPRING_MAIL_USERNAME="mlbportal29@gmail.com"
+SPRING_MAIL_PASSWORD="mail_application_password"
+SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH="true"
+SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_ENABLE="true"
+SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST="smtp.gmail.com"
+SPRING_MAIL_PROPERTIES_MAIL_SMTP_SOCKETFACTORY_PORT="465"
+SPRING_MAIL_PROPERTIES_MAIL_SMTP_SOCKETFACTORY_CLASS="javax.net.ssl.SSLSocketFactory"
+```
+
+If everything is correctly configured, the application should be deployed after a few minutes.
+
+![Deployment Map](../images/other/Deploy.png)
+
+---
+
 ## 🔧 Tools Usage
 
 ### Visual Studio Code
@@ -238,6 +297,9 @@ REST Client is a Visual Studio Code extension that allows sending API requests t
 
 ### DBeaver
 Is a universal SQL client and management tool. It allows you to manage, query, and visualize multiple relational databases. This tool was used to test the PostgreSQL database, performing queries directly on the database to test the persistence of entities and the state of various data.
+
+### Railway
+It's a `Platform as a Service (PaaS)` designed to facilitate application deployment in the cloud. It simplifies the deployment process by providing automated builds with Docker. Furthermore, it integrates `continuous deployment` into the application's CI workflow.
 
 ---
 ## 🧪 Tests Execution
@@ -307,6 +369,8 @@ You can create a release directly from GitHub, the only thing yo need to do is g
 **Date of Release:** TBD
 
 **Features Developed:** The features developed on this version were the intermediate ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
+
+Application deployed on the `Railway cloud servers` and available at [https://2025-mymlb-production-a771.up.railway.app/](https://2025-mymlb-production-a771.up.railway.app/)
 
 
 ### 1.0 Version Release

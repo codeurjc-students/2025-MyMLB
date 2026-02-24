@@ -3,7 +3,7 @@ import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ErrorService } from '../services/error.service';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {

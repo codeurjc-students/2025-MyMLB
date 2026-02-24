@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupportService } from '../../../services/support.service';
-import { SupportTicket } from '../../../models/support/support-ticket.model';
+import { SupportTicket } from '../../../models/support.model';
 import { SupportTicketItemComponent } from '../support-ticket-item/support-ticket-item.component';
 import { SupportTicketModalComponent } from '../support-ticket-modal/support-ticket-modal.component';
 

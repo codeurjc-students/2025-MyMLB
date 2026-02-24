@@ -2,16 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EditProfileRequest, Profile, User } from '../models/user.model';
-import { AuthResponse } from '../models/auth/auth-response.model';
+import { AuthResponse } from '../models/auth.model';
 import { TeamSummary } from '../models/team.model';
 import { Pictures } from '../models/pictures.model';
 import { Ticket } from '../models/ticket/ticket.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: "root"
 })
 export class UserService {
-	private apiUrl = "https://localhost:8443/api/v1/users"
+	private apiUrl = `${environment.apiUrl}/users`
 	private favTeamsSubject = new BehaviorSubject<TeamSummary[]>([]);
 	public favTeams$ = this.favTeamsSubject.asObservable();
 

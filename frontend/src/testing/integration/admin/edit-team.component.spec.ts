@@ -7,7 +7,7 @@ import { StadiumService } from '../../../app/services/stadium.service';
 import { BackgroundColorService } from '../../../app/services/background-color.service';
 import { TeamInfo } from '../../../app/models/team.model';
 import { Stadium } from '../../../app/models/stadium.model';
-import { AuthResponse } from '../../../app/models/auth/auth-response.model';
+import { AuthResponse } from '../../../app/models/auth.model';
 
 describe('Edit Team Component Integration Tests', () => {
 	let fixture: ComponentFixture<EditTeamComponent>;
@@ -88,7 +88,7 @@ describe('Edit Team Component Integration Tests', () => {
 			],
 			page: { size: component.pageSize, number: 0, totalElements: 1, totalPages: 1 },
 		});
-		component.selector.items$.subscribe((items) => {
+		component.paginationService.items$.subscribe((items) => {
 			expect(items.length).toBe(1);
 			expect(items[0].name).toBe('Fenway Park');
 			expect(items[0].teamName).toBe('Boston Red Sox');

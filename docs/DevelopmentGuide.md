@@ -52,7 +52,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     </tr>
     <tr>
       <td>Languages</td>
-      <td>Java, TypeScript and JavaScript</td>
+      <td>Java, SQL, TypeScript and JavaScript</td>
     </tr>
   <tr>
     <td>IDE</td>
@@ -75,8 +75,12 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     <td>JUnit, AssertJ, Mockito, REST Assured, Jasmine, Karma and Cypress</td>
   </tr>
   <tr>
-    <td>Deployment</td>
+    <td>Containerization Technology</td>
     <td>Docker</td>
+  </tr>
+  <tr>
+    <td>Deployment (PaaS)</td>
+    <td>Railway</td>
   </tr>
   <tr>
     <td>Development Process</td>
@@ -103,7 +107,8 @@ The application uses the following technologies for its execution:
 - **PostgreSQL:** Main DB of the application. It is used in the `production environment (prod profile)` and `docker-environment (docker profile)`. For more information, consult the [PostgreSQL official website](https://www.postgresql.org/)
 
 ### Deployment
-- **Docker:** Containerization technology used to deploy the application. For more information, consult the [Docker official website](https://www.docker.com/).
+- **Docker:** Containerization technology used to containerize the application. For more information, consult the [Docker official website](https://www.docker.com/).
+- **Railway:** Cloud service used to deploy the application. For more information, consult the [Railway official website](https://railway.com/).
 
 ---
 ## 🔧 Tools
@@ -134,9 +139,10 @@ To facilitate the development and testing process, four different profiles were 
 Here are the configured profiles:
 
 - **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
-- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
+- **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency and used to deploy the application. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
 - **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
 - **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
+- **Local-prod:** Equivalent to `prod` but for the local environment for a quick local deployment. This is configured in the [application-docker-prod.properties](../backend/src/main/resources/application-local-prod.properties).
 
 All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
@@ -146,6 +152,7 @@ flowchart LR
     B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
     C(Dev) -- "Development Environment" --> H
     D(Docker) -- "Containerized Environment" --> P
+    E(Local-prod) -- "Local Production Environment" --> P
 ````
 
 ---
@@ -163,6 +170,7 @@ flowchart LR
     C -- "JDBC/SQL:5432" --> D[(PostgreSQL)]
     D -- "SQL Response:5432" --> C
 ````
+
 > [!NOTE]
 > This flow represents the `production environment (profile)`, the flow of the dev profile is exactly the same but with H2 as database.
 
@@ -184,14 +192,115 @@ The backend exposes a `REST API` as communication method with the frontend.
 👉 [View REST API Documentation](./api)
 
 ### 🧠 Backend Structure
-The following diagram illustrates the backend structire, showing each layer of the `hexagonal architecture`, and how the interact between each other.
+The following diagrams illustrates the backend structure, showing each layer of the `hexagonal architecture`, and how they interact between each other.
 
-![Backend Structure](../images/diagrams/Backend.jpg)
+<p align="center">
+  <img src="../images/diagrams/v0.2/backend/ImportServices.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/backend/EntitiesModification.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/backend/Ticket.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/backend/TeamAndMatches.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/backend/ContactSupport.jpg" width="40%"/>
+</p>
 
 ### 🌐 Frontend Structure
-The following diagram illustrates the frontend structire, showing each layer of the `MVC architecture`, and how the interact between each other.
+The following diagrams illustrates the frontend structure, showing each layer of the `MVC architecture`, and how the interact between each other.
 
-![Frontend Structure](../images/diagrams/Frontend.jpg)
+> [!NOTE]
+> To make the diagrams as readable as possible, only the relationships between `components and services`, and between `services and models`, were represented. The relationships between components and models (those types used within components) were not represented.
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Auth.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/Navbar.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Support.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/TicketFront.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Team.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/EntitiesModFront.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v0.2/frontend/Match.jpg" width="40%"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="../images/diagrams/v0.2/frontend/Profile.jpg" width="40%"/>
+</p>
+
+Each model wraps different `types` that are used throughout the frontend. These are as follows:
+<table>
+  <thead>
+    <th>Model</th>
+    <th>Types</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Auth</td>
+      <td>UserRole, AuthResponse, LoginRequest, RegisterRequest, ForgotPasswordRequest, ResetPasswordRequest</td>
+    </tr>
+    <tr>
+      <td>User</td>
+      <td>User, EditProfileRequest, Profile</td>
+    </tr>
+  <tr>
+    <td>Team</td>
+    <td>Team, TeamSumary, TeamInfo, UpdateTeamRequest</td>
+  </tr>
+  <tr>
+    <td>Match</td>
+    <td>MatchStatus, ShowMatch</td>
+  </tr>
+  <tr>
+    <td>PositionPlayer</td>
+    <td>PositionPlayer, PositionPlayerGlobal, CreatePlayerRequest, EditPositionPlayerRequest</td>
+  </tr>
+  <tr>
+    <td>Pitcher</td>
+    <td>Pitcher, PitcherGlobal, CreatePitcherRequest, EditPitcherRequest</td>
+  </tr>
+  <tr>
+    <td>Stadium</td>
+    <td>Stadium, StadiumSummary, CreateStadiumRequest</td>
+  </tr>
+  <tr>
+    <td>StandingsData</td>
+    <td>StandingsData</td>
+  </tr>
+  <tr>
+    <td>Pictures</td>
+    <td>Pictures</td>
+  </tr>
+  <tr>
+    <td>Pagination</td>
+    <td>PaginatedSearchs, PaginatedResponse</td>
+  </tr>
+  <tr>
+    <td>Support</td>
+    <td>SupportTicket, SupportMessage, CreateTicketRequest, ReplyRequest</td>
+  </tr>
+  <tr>
+    <td>Event</td>
+    <td>EventResponse, EventManager, Seat, SectorCreateRequest, EventCreateRequest, EventEditRequest</td>
+  </tr>
+  <tr>
+    <td>Ticket</td>
+    <td>Ticket, PurchaseRequest</td>
+  </tr>
+  </tbody>
+</table>
 
 ### 🧱 Project Architecture
 The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
@@ -312,11 +421,13 @@ This will generate it in `frontend/coverage/frontend`. Opening the `index.html` 
 ## 🐋 Deployment with Docker
 
 ### Image Creation
-The project generates Docker images with two different tags: one for development (`dev`) and other for production, which corresponds to the current version of the project (currently `0.1`). To build the image using the `Dockerfile`, navigate to the project’s root directory and run the following command:
+The project generates Docker images with two different tags: one for development (`dev`) and other for production, which corresponds to the current version of the project (currently `0.2`). To build the image using the `Dockerfile`, navigate to the project’s root directory and run the following command:
 
 ```bash
-docker build -f ./docker/Dockerfile -t docker.io/fonssi29/mlb-portal:tag .
+docker build -f ./docker/Dockerfile.dev -t docker.io/fonssi29/mlb-portal:tag .
 ```
+
+As it can be appreciated in the command above, there are two different Dockerfiles, one for the local (Dockerfile.dev) and the other for the production (Dockerfile.prod) environment. This separation was made due to the different conditions on these environments, for example, in local the datasource url used is the one related to the database container in your local machine, meanwhile in Railway, this parameter corresponds to the Railway database container. These Dockerfiles are both located in the [docker folder](../docker).
 
 ### Images Publication
 The image were published at `Docker Hub` in this [Docker Repository](https://hub.docker.com/repository/docker/fonssi29/mlb-portal/general), using the following command:
@@ -420,6 +531,9 @@ This workflow triggers manually from every branch. The jobs are exactly the same
 
 #### CD Release
 This workflow is triggered whenever a `release` occurs. The jobs are the same as in the previous workflows; however, it publishes both Docker images and Compose artifacts using the release version and latest as tags.
+
+### 🚀 Continous Deployment (CD)
+Workflow managed by Railway that is triggered on every commit to main (PR closed) by deploying an updated version of the application.
 
 ### 🌙 Nightly
 To complement the CI pipeline, two scheduled workflows were established to run every night (one for the back and one for the front). These worflows perfomance a full suite of automated tests, ensuring:

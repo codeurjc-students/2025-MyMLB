@@ -2,6 +2,7 @@ import { PaginatedSearchs } from './../models/pagination.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
@@ -14,7 +15,7 @@ export class SearchService {
 		size: number = 10,
 		playerType?: 'position' | 'pitcher'
 	): Observable<PaginatedSearchs> {
-		let url = `/api/v1/searchs/${type}?query=${encodeURIComponent(
+		let url = `${environment.apiUrl}/searchs/${type}?query=${encodeURIComponent(
 			query
 		)}&page=${page}&size=${size}`;
 		if (type === 'player' && playerType) {

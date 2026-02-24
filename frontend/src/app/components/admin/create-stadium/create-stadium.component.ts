@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { StadiumService } from '../../../services/stadium.service';
