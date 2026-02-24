@@ -366,7 +366,7 @@ You can create a release directly from GitHub, the only thing yo need to do is g
 **Features Developed:** The features developed on this version were the basic ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
 ### 0.2 Version Release
-**Date of Release:** TBD
+**Date of Release:** February 24 of 2026
 
 **Features Developed:** The features developed on this version were the intermediate ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
