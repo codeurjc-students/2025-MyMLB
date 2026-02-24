@@ -48,12 +48,12 @@ This phase will follow an **iterative and incremental development process**, mea
 
 **Due Date:** March 1
 
-**Real End Date:** TBD
+**Real End Date:** February 24
 
 The intermediate features will be implemented along with their corresponding automated tests, and the application will also be packaged. Finally, the 0.2 version will be released.
 
 ## 🔴 Phase 5: Version 1.0 - Advanced Features
-**Start Date:** TBD
+**Start Date:** February 25
 
 **Due Date:** April 15
 
