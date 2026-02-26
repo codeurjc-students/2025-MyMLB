@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,16 +58,13 @@ public class PlayerService {
 
     private final PaginationHandlerService paginationHandlerService;
 
-    @Transactional
+    // TODO - Review
+    @Transactional(readOnly = true)
     public Page<PlayerDTO> getAllPlayers(int page, int size) {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
         List<Pitcher> pitcherList = this.pitcherRepository.findAll();
 
-        this.updateAndSaveStats(positionPlayers);
-        this.updateAndSaveStats(pitcherList);
-
-        List<PositionPlayerDTO> mappedPositionPlayers = this.positionPlayerMapper
-                .toListPositionPlayerDTO(positionPlayers);
+        List<PositionPlayerDTO> mappedPositionPlayers = this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);
         List<PitcherDTO> mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);
 
         List<PlayerDTO> result = new ArrayList<>();
@@ -75,86 +75,37 @@ public class PlayerService {
         return this.paginationHandlerService.paginateAndMap(result, page, size, Function.identity());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<PositionPlayerDTO> getAllPositionPlayers(int page, int size) {
-        List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
-        this.updateAndSaveStats(positionPlayers);
-        positionPlayers.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
-        return this.paginationHandlerService.paginateAndMap(positionPlayers, page, size, this.positionPlayerMapper::toPositionPlayerDTO);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+        return this.positionPlayerRepository.findAll(pageable).map(this.positionPlayerMapper::toPositionPlayerDTO);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<PitcherDTO> getAllPitchers(int page, int size) {
-        List<Pitcher> pitchers = this.pitcherRepository.findAll();
-        this.updateAndSaveStats(pitchers);
-        pitchers.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
-        return this.paginationHandlerService.paginateAndMap(pitchers, page, size, this.pitcherMapper::toPitcherDTO);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+        return this.pitcherRepository.findAll(pageable).map(this.pitcherMapper::toPitcherDTO);
     }
 
-    /**
-     * Updates and persists a player if their stats have changed.
-     *
-     * @param player the player to check and save
-     * @throws IllegalArgumentException if the player subtype is not supported
-     */
-    private void saveIfStatsChanged(Player player) {
-        if (PlayerServiceOperations.updatePlayerStats(player)) {
-            switch (player) {
-                case PositionPlayer pp -> this.positionPlayerRepository.save(pp);
-                case Pitcher p -> this.pitcherRepository.save(p);
-                default -> throw new IllegalArgumentException("Unexpected subtype: " + player.getClass().getName());
-            }
-        }
-    }
-
-    private <T extends Player> void updateAndSaveStats(List<T> players) {
-        players.forEach(this::saveIfStatsChanged);
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public PlayerDTO findPlayerByName(String name) {
         Player player = this.playerRepository.findByNameOrThrow(name);
-        this.saveIfStatsChanged(player);
         return (player instanceof PositionPlayer pp)
                 ? positionPlayerMapper.toPositionPlayerDTO(pp)
                 : pitcherMapper.toPitcherDTO((Pitcher) player);
     }
 
-    public List<PositionPlayer> getUpdatedPositionPlayersOfTeam(Team team) {
-        List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
-
-        players.forEach(p -> {
-            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);
-            if (hasChanged) {
-                this.positionPlayerRepository.save(p);
-            }
-        });
-        return players;
-    }
-    
-    public List<Pitcher> getUpdatedPitchersOfTeam(Team team) {
-        List<Pitcher> pitchers = this.pitcherRepository.findByTeamOrderByNameAsc(team);
-
-        pitchers.forEach(p -> {
-            boolean hasChanged = PlayerServiceOperations.updatePlayerStats(p);
-            if (hasChanged) {
-                this.pitcherRepository.save(p);
-            }
-        });
-        return pitchers;
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
-        List<PositionPlayer> players = this.getUpdatedPositionPlayersOfTeam(team);
+        List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
         return this.paginationHandlerService.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
-        List<Pitcher> players = this.getUpdatedPitchersOfTeam(team);
+        List<Pitcher> players = this.pitcherRepository.findByTeamOrderByNameAsc(team);
         return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);
     }
 

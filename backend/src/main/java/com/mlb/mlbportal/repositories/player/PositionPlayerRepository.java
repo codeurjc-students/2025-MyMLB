@@ -3,6 +3,8 @@ package com.mlb.mlbportal.repositories.player;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,9 @@ import com.mlb.mlbportal.models.player.PositionPlayer;
 
 @Repository
 public interface PositionPlayerRepository extends JpaRepository<PositionPlayer, Long> {
+    @Override
+    Page<PositionPlayer> findAll(Pageable pageable);
+
     Optional<PositionPlayer> findByStatsApiId(Integer id);
 
     Optional<PositionPlayer> findByName(String name);

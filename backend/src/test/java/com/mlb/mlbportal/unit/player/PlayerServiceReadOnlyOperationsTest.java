@@ -23,7 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
@@ -41,8 +41,6 @@ import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceReadOnlyOperationsTest {
@@ -123,9 +121,10 @@ class PlayerServiceReadOnlyOperationsTest {
     @Test
     @DisplayName("Should return all position players")
     void testGetAllPositionPlayers() {
-        Page<PositionPlayerDTO> mockPage = new PageImpl<>(this.positionPlayerDTOs, PageRequest.of(0, 10), this.positionPlayerDTOs.size());
-        when(this.positionPlayerRepository.findAll()).thenReturn(this.positionPlayers);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
+        Page<PositionPlayer> mockPage = new PageImpl<>(this.positionPlayers, PageRequest.of(0, 10), this.positionPlayers.size());
+        when(this.positionPlayerRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.getFirst())).thenReturn(this.positionPlayerDTOs.getFirst());
+        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.get(1))).thenReturn(this.positionPlayerDTOs.get(1));
 
         Page<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers(0, 10);
 
@@ -138,9 +137,10 @@ class PlayerServiceReadOnlyOperationsTest {
     @Test
     @DisplayName("Should return all pitchers")
     void testGetAllPitchers() {
-        Page<PitcherDTO> mockPage = new PageImpl<>(this.pitcherDTOs, PageRequest.of(0, 10), this.pitcherDTOs.size());
-        when(this.pitcherRepository.findAll()).thenReturn(this.pitchers);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
+        Page<Pitcher> mockPage = new PageImpl<>(this.pitchers, PageRequest.of(0, 10), this.pitchers.size());
+
+        when(this.pitcherRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(this.pitcherMapper.toPitcherDTO(this.pitchers.getFirst())).thenReturn(this.pitcherDTOs.getFirst());
 
         Page<PitcherDTO> result = this.playerService.getAllPitchers(0, 10);
 
@@ -184,32 +184,6 @@ class PlayerServiceReadOnlyOperationsTest {
         assertThatThrownBy(() -> this.playerService.findPlayerByName(UNKNOWN_PLAYER))
                 .isInstanceOf(PlayerNotFoundException.class)
                 .hasMessageContaining("Player Not Found");
-    }
-
-    @Test
-    @DisplayName("Should return updated position players of a known team")
-    void testGetUpdatedPositionPlayersOfTeam() {
-        Team team = this.teams.getFirst();
-        when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
-
-        List<PositionPlayer> result = this.playerService.getUpdatedPositionPlayersOfTeam(this.teams.getFirst());
-
-        assertThat(result).hasSize(2);
-        assertThat(result.getFirst().getTeam().getName()).isEqualTo(TEST_TEAM1_NAME);
-        assertThat(result.getFirst().getName()).isEqualTo(PLAYER1_NAME);
-    }
-
-    @Test
-    @DisplayName("Should return updated pitchers of a known team")
-    void testGetUpdatedPitchersOfTeam() {
-        Team team = this.teams.get(1);
-        when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
-
-        List<Pitcher> result = this.playerService.getUpdatedPitchersOfTeam(this.teams.get(1));
-
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getTeam().getName()).isEqualTo(TEST_TEAM2_NAME);
-        assertThat(result.getFirst().getName()).isEqualTo(PLAYER3_NAME);
     }
 
     @Test

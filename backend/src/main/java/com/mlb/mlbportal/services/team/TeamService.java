@@ -61,19 +61,10 @@ public class TeamService {
         return this.teamRepository.findByNameOrThrow(teamName);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
         TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
-        
-        List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);
-        List<Pitcher> pitchers = this.playerService.getUpdatedPitchersOfTeam(team);
-
-        positionPlayers.forEach(p -> p.setTeam(team));
-        pitchers.forEach(p -> p.setTeam(team));
-
-        team.setPositionPlayers(positionPlayers);
-        team.setPitchers(pitchers);
         this.teamRepository.save(team);
         return this.teamMapper.toTeamInfoDTO(team);
     }
