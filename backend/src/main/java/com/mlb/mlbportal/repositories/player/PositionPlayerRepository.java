@@ -27,5 +27,5 @@ public interface PositionPlayerRepository extends JpaRepository<PositionPlayer, 
 
     List<PositionPlayer> findByTeamOrderByNameAsc(Team team);
 
-    List<PositionPlayer> findByNameContainingIgnoreCase(String input);
+    Page<PositionPlayer> findByNameContainingIgnoreCase(String input, Pageable pageable);
 }

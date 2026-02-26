@@ -9,6 +9,9 @@ import java.util.Set;
 import com.mlb.mlbportal.dto.ticket.TicketDTO;
 import com.mlb.mlbportal.mappers.ticket.TicketMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +36,6 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
 import lombok.AllArgsConstructor;
 
@@ -49,13 +51,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final TeamRepository teamRepository;
-    private final PaginationHandlerService paginationHandlerService;
     private final PictureService pictureService;
 
     @Transactional(readOnly = true)
     public Page<ShowUser> getAllUsers(int page, int size) {
-        List<UserEntity> users = this.userRepository.findAll();
-        return this.paginationHandlerService.paginateAndMap(users, page, size, this.userMapper::toShowUser);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+        Page<UserEntity> users = this.userRepository.findAll(pageable);
+        return users.map(this.userMapper::toShowUser);
     }
 
     @Transactional(readOnly = true)

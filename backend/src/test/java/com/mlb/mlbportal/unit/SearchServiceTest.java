@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,9 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.SearchService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
@@ -122,9 +128,13 @@ class SearchServiceTest {
     @Test
     @DisplayName("Should return paginated position players that match the input search")
     void testSearchPositionPlayer() {
-        when(this.positionPlayerRepository.findByNameContainingIgnoreCase("pl")).thenReturn(this.positionPlayers);
-        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.getFirst())).thenReturn(this.positionPlayerDtos.getFirst());
-        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.get(1))).thenReturn(this.positionPlayerDtos.get(1));
+        Page<PositionPlayer> mockPage = new PageImpl<>(this.positionPlayers, PageRequest.of(0, 10), this.positionPlayers.size());
+        when(this.positionPlayerRepository.findByNameContainingIgnoreCase(eq("pl"), any(Pageable.class))).thenReturn(mockPage);
+        when(this.positionPlayerMapper.toPositionPlayerDTO(any(PositionPlayer.class))).thenAnswer(invocation -> {
+            PositionPlayer mockPlayer = invocation.getArgument(0);
+            int index = this.positionPlayers.indexOf(mockPlayer);
+            return this.positionPlayerDtos.get(index);
+        });
 
         Page<PositionPlayerDTO> result = this.searchService.searchPositionPlayers("pl", 0, 10);
 
@@ -135,8 +145,13 @@ class SearchServiceTest {
     @Test
     @DisplayName("Should return paginated pitchers that match the input search")
     void testSearchPitcher() {
-        when(this.pitcherRepository.findByNameContainingIgnoreCase("pl")).thenReturn(this.pitchers);
-        when(this.pitcherMapper.toPitcherDTO(this.pitchers.getFirst())).thenReturn(this.pitcherDtos.get(0));
+        Page<Pitcher> mockPage = new PageImpl<>(this.pitchers, PageRequest.of(0, 10), this.pitchers.size());
+        when(this.pitcherRepository.findByNameContainingIgnoreCase(eq("pl"), any(Pageable.class))).thenReturn(mockPage);
+        when(this.pitcherMapper.toPitcherDTO(any(Pitcher.class))).thenAnswer(invocation -> {
+            Pitcher mockPlayer = invocation.getArgument(0);
+            int index = this.pitchers.indexOf(mockPlayer);
+            return this.pitcherDtos.get(index);
+        });
 
         Page<PitcherDTO> result = this.searchService.searchPitchers("pl", 0, 10);
 

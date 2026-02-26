@@ -24,7 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.mockito.InjectMocks;
@@ -33,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mlb.mlbportal.dto.authentication.RegisterRequest;
@@ -52,7 +52,6 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.EmailService;
 import com.mlb.mlbportal.services.UserService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,9 +81,6 @@ class UserServiceTest {
 
     @Mock
     private TicketMapper ticketMapper;
-
-    @Mock
-    private PaginationHandlerService paginationHandlerService;
 
     @Mock
     private PictureService pictureService;
@@ -128,10 +124,14 @@ class UserServiceTest {
     void testGetAllUsers() {
         List<UserEntity> users = Arrays.asList(user1, user2, testUser);
         List<ShowUser> mockUsers = BuildMocksFactory.buildShowUserDTOs(users);
-        Page<ShowUser> mockPage = new PageImpl<>(mockUsers, PageRequest.of(0, 10), mockUsers.size());
+        Page<UserEntity> mockPage = new PageImpl<>(users, PageRequest.of(0, 10), users.size());
 
-        when(this.userRepository.findAll()).thenReturn(users);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(users), eq(0), eq(10), any());
+        when(this.userRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(this.userMapper.toShowUser(any(UserEntity.class))).thenAnswer(invocation -> {
+            UserEntity mockUser = invocation.getArgument(0);
+            int index = users.indexOf(mockUser);
+            return mockUsers.get(index);
+        });
 
         Page<ShowUser> result = this.userService.getAllUsers(0, 10);
 

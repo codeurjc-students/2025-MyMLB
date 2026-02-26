@@ -14,7 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doReturn;
@@ -49,6 +48,7 @@ import com.mlb.mlbportal.services.ticket.EventService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
@@ -103,10 +103,10 @@ class EventServiceTest {
     void testGetAllEvents() {
         List<Event> events = List.of(this.testEvent);
         EventResponseDTO dto = BuildMocksFactory.buildEventResponseDTO();
-        Page<EventResponseDTO> mockPage = new PageImpl<>(List.of(dto), PageRequest.of(0, 10), 1);
+        Page<Event> mockPage = new PageImpl<>(events, PageRequest.of(0, 10), events.size());
 
-        when(this.eventRepository.findAll()).thenReturn(events);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(events), eq(0), eq(10), any());
+        when(this.eventRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(this.eventMapper.toEventResponseDto(any(Event.class))).thenReturn(dto);
 
         Page<EventResponseDTO> result = this.eventService.getAllEvents(0, 10);
         assertThat(result.getContent()).hasSize(1);

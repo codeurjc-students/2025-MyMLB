@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.stadium.CreateStadiumRequest;
@@ -76,10 +77,14 @@ class StadiumServiceTest {
     @Test
     @DisplayName("Should return all of the stadiums")
     void testGetAllStadiums() {
-        Page<StadiumInitDTO> mockPage = new PageImpl<>(this.stadiumDtos, PageRequest.of(0, 10), this.stadiumDtos.size());
+       Page<Stadium> mockPage = new PageImpl<>(this.stadiums, PageRequest.of(0, 10), this.stadiums.size());
 
-        when(this.stadiumRepository.findAll()).thenReturn(this.stadiums);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.stadiums), eq(0), eq(10), any());
+        when(this.stadiumRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(this.stadiumMapper.toStadiumInitDTO(any(Stadium.class))).thenAnswer(invocation -> {
+            Stadium mockStadium =invocation.getArgument(0);
+            int index = this.stadiums.indexOf(mockStadium);
+            return this.stadiumDtos.get(index);
+        });
 
         Page<StadiumInitDTO> result = this.stadiumService.getAllStadiums(0, 10);
         List<StadiumInitDTO> content = result.getContent();

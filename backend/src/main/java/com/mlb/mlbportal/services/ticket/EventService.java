@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +52,9 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public Page<EventResponseDTO> getAllEvents(int page, int size) {
-        List<Event> events = this.eventRepository.findAll();
-        return this.paginationHandlerService.paginateAndMap(events, page, size, this.eventMapper::toEventResponseDto);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> events = this.eventRepository.findAll(pageable);
+        return events.map(this.eventMapper::toEventResponseDto);
     }
 
     @Transactional(readOnly = true)

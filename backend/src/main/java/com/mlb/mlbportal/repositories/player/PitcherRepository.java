@@ -27,5 +27,5 @@ public interface PitcherRepository extends JpaRepository<Pitcher, Long> {
 
     List<Pitcher> findByTeamOrderByNameAsc(Team team);
 
-    List<Pitcher> findByNameContainingIgnoreCase(String input);
+    Page<Pitcher> findByNameContainingIgnoreCase(String input, Pageable pageable);
 }
