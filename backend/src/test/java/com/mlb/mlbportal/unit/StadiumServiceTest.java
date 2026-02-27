@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -142,7 +143,7 @@ class StadiumServiceTest {
         when(this.stadiumRepository.findByNameOrThrow(any())).thenCallRealMethod();
         assertThatThrownBy(() -> this.stadiumService.findStadiumByName(UNKNOWN_TEAM))
             .isInstanceOf(StadiumNotFoundException.class)
-            .hasMessageContaining("Stadium Not Found");
+            .hasMessage("Stadium Not Found");
     }
 
     @Test
@@ -159,7 +160,7 @@ class StadiumServiceTest {
     }
 
     @Test
-    @DisplayName("Should upload picture and return PictureDTO")
+    @DisplayName("Should upload picture")
     void testAddPicture() throws Exception {
         Stadium stadium = this.stadiums.getFirst();
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -172,6 +173,7 @@ class StadiumServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getUrl()).isEqualTo(pictureInfo.getUrl());
         assertThat(result.getPublicId()).isEqualTo(pictureInfo.getPublicId());
+        assertThat(stadium.getPictures()).contains(result);
 
         verify(this.stadiumRepository, times(1)).save(any(Stadium.class));
     }
@@ -193,7 +195,7 @@ class StadiumServiceTest {
 
         assertThatThrownBy(() -> this.stadiumService.addPicture(STADIUM1_NAME, mockFile))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Maximum amount of pictures reached");
+            .hasMessage("Maximum amount of pictures reached");
     }
 
     /**
@@ -230,6 +232,25 @@ class StadiumServiceTest {
 
         verify(this.stadiumRepository).save(stadium);
         assertThat(stadium.getPictures()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Should update the stadium map picture")
+    void testEdiStadiumMapPicture() throws IOException {
+        Stadium stadium = this.stadiums.getFirst();
+        MultipartFile mockFile = mock(MultipartFile.class);
+        PictureInfo pictureInfo = new PictureInfo("http://cloudinary.com/test123.jpg", "test123");
+
+        when(this.stadiumRepository.findByNameOrThrow(stadium.getName())).thenReturn(stadium);
+        when(this.pictureService.uploadPicture(mockFile)).thenReturn(pictureInfo);
+
+        PictureInfo result = this.stadiumService.editStadiumMapPicture(stadium.getName(), mockFile);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getUrl()).isEqualTo(pictureInfo.getUrl());
+        assertThat(result.getPublicId()).isEqualTo(pictureInfo.getPublicId());
+        assertThat(stadium.getPictureMap()).isEqualTo(result);
+        verify(this.stadiumRepository, times(1)).save(any(Stadium.class));
     }
 
     @Test

@@ -81,6 +81,15 @@ public class StadiumService {
     }
 
     @Transactional
+    public PictureInfo editStadiumMapPicture(String stadiumNae, MultipartFile file) throws IOException {
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumNae);
+        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
+        stadium.setPictureMap(pictureInfo);
+        this.stadiumRepository.save(stadium);
+        return pictureInfo;
+    }
+
+    @Transactional
     public StadiumDTO createStadium(CreateStadiumRequest request) {
         if (this.stadiumRepository.findByName(request.name()).isPresent()) {
             throw new StadiumAlreadyExistsException();

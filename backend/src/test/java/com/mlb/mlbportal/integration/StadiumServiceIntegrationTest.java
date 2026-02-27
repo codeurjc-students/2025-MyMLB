@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.integration;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,7 +94,7 @@ class StadiumServiceIntegrationTest {
     @Test
     @DisplayName("Should persist Stadium with its associated Team")
     void testStadiumEntityHasTeam() {
-        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME);
         Team team = stadium.getTeam();
 
         assertThat(team).isNotNull();
@@ -104,19 +105,33 @@ class StadiumServiceIntegrationTest {
     @Test
     @DisplayName("Should upload picture and persist URL + publicId")
     void testAddPicture() throws Exception {
-        Stadium stadium = this.stadiumRepository.findByName(STADIUM1_NAME).orElseThrow(StadiumNotFoundException::new);
 
         MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
         PictureInfo dto = this.stadiumService.addPicture(STADIUM1_NAME, file);
 
         assertThat(dto.getUrl()).contains("http://fake.cloudinary.com");
         assertThat(dto.getPublicId()).isEqualTo("fake123");
-        assertThat(stadium.getPictures()).anySatisfy(p -> {
+
+        Stadium storedStadium = this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME);
+        assertThat(storedStadium.getPictures()).anySatisfy(p -> {
             assertThat(p.getUrl()).contains("http://fake.cloudinary.com");
             assertThat(p.getPublicId()).isEqualTo("fake123");
         });
     }
 
+    @Test
+    @DisplayName("Should update the stadium map picture")
+    void testEditStadiumMapPicture() throws IOException {
+        MockMultipartFile file = new MockMultipartFile("file", "test.png", "image/png", "fake".getBytes());
+        PictureInfo dto = this.stadiumService.editStadiumMapPicture(STADIUM1_NAME, file);
+
+        assertThat(dto.getUrl()).contains("http://fake.cloudinary.com");
+        assertThat(dto.getPublicId()).isEqualTo("fake123");
+
+        Stadium storedStadium = this.stadiumRepository.findByNameOrThrow(STADIUM1_NAME);
+        assertThat(storedStadium.getPictureMap()).isEqualTo(dto);
+
+    }
     @Test
     @DisplayName("Should delete picture by publicId")
     void testDeletePicture() {

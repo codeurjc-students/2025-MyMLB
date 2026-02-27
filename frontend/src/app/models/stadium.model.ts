@@ -4,7 +4,8 @@ export type Stadium = {
 	name: string,
 	openingDate: number,
 	teamName: string,
-	pictures: Pictures[]
+	pictures: Pictures[],
+	pictureMap: Pictures
 }
 
 export type StadiumSummary = Omit<Stadium, 'teamName'>;

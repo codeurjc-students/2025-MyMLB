@@ -2,17 +2,23 @@ import { TestBed } from '@angular/core/testing';
 import { ValidationService } from '../../../../app/services/utilities/validation.service';
 import { MockFactory } from '../../../utils/mock-factory';
 import { TeamInfo } from '../../../../app/models/team.model';
+import { Pictures } from '../../../../app/models/pictures.model';
 
 describe('Validation Service Tests', () => {
 	let service: ValidationService;
 
 	const mockTeamSummary = MockFactory.buildTeamSummaryMock('New York Mets', 'NYM', 'NL', 'EAST');
 
+	const mockPictureMap: Pictures = {
+		url: 'https://test_pic/123',
+		publicId: '123'
+	};
 	const mockStadium = MockFactory.buildStadiumCompleteMock(
 		'City Field',
 		1999,
 		'New York Mets',
-		[]
+		[],
+		mockPictureMap
 	);
 
 	const mockPositionPlayer = MockFactory.buildPositionPlayerMock(

@@ -86,17 +86,29 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));
     }
 
-    @Operation(summary = "Upload stadium picture", description = "Uploads a new picture for a specific MLB stadium. Only .webp images are supported.")
+    @Operation(summary = "Upload stadium picture", description = "Uploads a new picture for a specific MLB stadium.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture uploaded successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = "400", description = "Invalid file format or request parameters", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
-    @PostMapping(value = "/{stadiumName}/pictures", produces = "application/json")
+    @PostMapping(value = "/{stadiumName}/pictures", consumes = "multipart/form-data", produces = "application/json")
     public ResponseEntity<PictureInfo> uploadPicture(@PathVariable("stadiumName") String stadiumName,
             @RequestParam("file") MultipartFile picturePath) throws IOException {
         return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));
+    }
+
+    @Operation(summary = "Update stadium map picture", description = "Updates the stadium map picture for a specific MLB stadium.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Picture uploaded successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid file format or request parameters", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping(value = "/{stadiumName}/pictures/map", consumes = "multipart/form-data", produces = "application/json")
+    public ResponseEntity<PictureInfo> updateStadiumMapPicture(@PathVariable("stadiumName")String stadiumName, @RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(this.stadiumService.editStadiumMapPicture(stadiumName, file));
     }
 
     @Operation(summary = "Delete stadium picture", description = "Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.")
@@ -121,7 +133,7 @@ public class StadiumController {
             @ApiResponse(responseCode = "409", description = "Stadium already exists", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<StadiumDTO> createStadium(@Valid @RequestBody CreateStadiumRequest request) {
         StadiumDTO newStadium = this.stadiumService.createStadium(request);
         URI location = ServletUriComponentsBuilder

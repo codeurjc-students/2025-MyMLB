@@ -18,6 +18,10 @@ describe('Edit Stadium Component Integration Tests', () => {
 		openingDate: 2009,
 		teamName: 'New York Yankees',
 		pictures: [{ url: 'http://test.com/pic.webp', publicId: 'pic1' }],
+		pictureMap: {
+			url: 'https://test_pic/123',
+			publicId: '123'
+		}
 	};
 
 	beforeEach(() => {
@@ -37,21 +41,40 @@ describe('Edit Stadium Component Integration Tests', () => {
 		httpMock.verify();
 	});
 
-	it('should upload a valid picture successfully', () => {
-		const validPicture = 'a'.repeat(1024);
-		const file = new File([validPicture], 'test.webp', { type: 'image/webp' });
-		component.uploadPicture(mockStadium.name, file);
+	// Parametrized Tests for picture uploading
+	[
+	{
+		description: 'upload a valid picture successfully',
+		isMap: false,
+		suffix: '',
+		check: (newPic: Pictures) => expect(component.pictures).toContain(newPic)
+	},
+	{
+		description: 'update the stadium map picture successfully',
+		isMap: true,
+		suffix: '/map',
+		check: (newPic: Pictures) => expect(component.pictureMap).toEqual(newPic)
+	}
+	].forEach(({ description, isMap, suffix, check }) => {
 
-		const req = httpMock.expectOne(`${apiUrl}/${mockStadium.name}/pictures`);
+	it(`should ${description}`, () => {
+		const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
+		const newPic: Pictures = { url: `http://test.com/${isMap ? 'map' : 'new'}.png`, publicId: 'id123' };
+
+		component.savePicture(mockStadium.name, file, isMap);
+
+		const req = httpMock.expectOne(`${apiUrl}/${mockStadium.name}/pictures${suffix}`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body instanceof FormData).toBeTrue();
 
-		const newPic: Pictures = { url: 'http://test.com/new.webp', publicId: 'newPic' };
 		req.flush(newPic);
 
 		expect(component.success).toBeTrue();
 		expect(component.successMessage).toBe('Picture uploaded successfully');
-		expect(component.pictures.some((p) => p.publicId === 'newPic')).toBeTrue();
+		expect(component.loading).toBeFalse();
+		check(newPic);
+	});
+
 	});
 
 	it('should remove picture successfully', () => {

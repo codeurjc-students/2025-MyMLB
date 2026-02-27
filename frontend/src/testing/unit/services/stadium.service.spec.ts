@@ -4,7 +4,6 @@ import { StadiumService } from '../../../app/services/stadium.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { AuthResponse } from '../../../app/models/auth.model';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { PaginatedResponse } from '../../../app/models/pagination.model';
 import { MockFactory } from '../../utils/mock-factory';
 
 describe('Stadium Service Tests', () => {
@@ -12,11 +11,6 @@ describe('Stadium Service Tests', () => {
 	let httpMock: HttpTestingController;
 
 	const apiUrl = 'https://localhost:8443/api/v1/stadiums';
-
-	const mockPicture: Pictures = {
-		url: 'https://example.com/image.webp',
-		publicId: 'abc123',
-	};
 
 	const mockAuthResponse: AuthResponse = {
 		status: 'SUCCESS',
@@ -37,11 +31,16 @@ describe('Stadium Service Tests', () => {
 	});
 
 	it('should return all available stadiums', () => {
+		const mockPictureMap: Pictures = {
+			url: 'https://test_pic/123',
+			publicId: '123'
+		};
 		const mockStadium = MockFactory.buildStadiumCompleteMock(
 			'Yankee Stadium',
 			2009,
 			'New York Yankees',
-			[]
+			[],
+			mockPictureMap
 		);
 		const mockResponse = MockFactory.buildPaginatedResponse(mockStadium);
 
@@ -56,31 +55,40 @@ describe('Stadium Service Tests', () => {
 		req.flush(mockResponse);
 	});
 
-	it('should fetch stadium pictures', () => {
-		const stadiumName = 'Yankee Stadium';
+	// Parametrized Tests for picture uploading
+	[
+		{
+			description: 'upload a stadium picture',
+			method: (name: string, file: File) => service.uploadPicture(name, file),
+			suffix: ''
+		},
+		{
+			description: 'update the stadium map picture',
+			method: (name: string, file: File) => service.editStadiumMapPicture(name, file),
+			suffix: '/map'
+		}
+	].forEach(({ description, method, suffix }) => {
 
-		service.getStadiumPictures(stadiumName).subscribe((pictures) => {
-			expect(pictures.length).toBe(1);
-			expect(pictures[0]).toEqual(mockPicture);
+		it(`should ${description}`, () => {
+			const stadiumName = 'Yankee Stadium';
+			const file = new File(['dummy'], 'test.png', { type: 'image/png' });
+			const mockResponse: Pictures = {
+				url: `https://example.com/${file.name}`,
+				publicId: 'abc123',
+			};
+
+			method(stadiumName, file).subscribe((picture) => {
+				expect(picture).toEqual(mockResponse);
+			});
+
+			const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures${suffix}`);
+
+			expect(req.request.method).toBe('POST');
+			expect(req.request.body instanceof FormData).toBeTrue();
+			expect(req.request.body.has('file')).toBeTrue();
+
+			req.flush(mockResponse);
 		});
-
-		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures`);
-		expect(req.request.method).toBe('GET');
-		req.flush([mockPicture]);
-	});
-
-	it('should upload a stadium picture', () => {
-		const stadiumName = 'Yankee Stadium';
-		const file = new File(['dummy'], 'test.webp', { type: 'image/webp' });
-
-		service.uploadPicture(stadiumName, file).subscribe((picture) => {
-			expect(picture).toEqual(mockPicture);
-		});
-
-		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures`);
-		expect(req.request.method).toBe('POST');
-		expect(req.request.body instanceof FormData).toBeTrue();
-		req.flush(mockPicture);
 	});
 
 	it('should remove a stadium picture', () => {

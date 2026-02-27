@@ -75,12 +75,13 @@ export class MockFactory {
 		} as StadiumSummary;
 	};
 
-	static buildStadiumCompleteMock = (name: string, year: number, teamName: string, pictures: Pictures[]) => {
+	static buildStadiumCompleteMock = (name: string, year: number, teamName: string, pictures: Pictures[], pictureMap: Pictures) => {
 		return {
 			name: name,
 			openingDate: year,
 			teamName: teamName,
-			pictures: pictures
+			pictures: pictures,
+			pictureMap: pictureMap
 		} as Stadium;
 	};
 

@@ -19,14 +19,16 @@ export class StadiumService {
 		return this.http.get<PaginatedResponse<Stadium>>(`${this.apiUrl}/available?page=${page}&size=${size}`);
 	}
 
-	public getStadiumPictures(stadiumName: string): Observable<Pictures[]> {
-		return this.http.get<Pictures[]>(`${this.apiUrl}/${stadiumName}/pictures`);
-	}
-
 	public uploadPicture(stadiumName: string, file: File):Observable<Pictures> {
 		const formData = new FormData();
 		formData.append('file', file);
 		return this.http.post<Pictures>(`${this.apiUrl}/${stadiumName}/pictures`, formData);
+	}
+
+	public editStadiumMapPicture(stadiumName: string, file: File): Observable<Pictures> {
+		const formData = new FormData();
+		formData.append('file', file);
+		return this.http.post<Pictures>(`${this.apiUrl}/${stadiumName}/pictures/map`, formData);
 	}
 
 	public removePicture(stadiumName: string, publicId: string): Observable<AuthResponse> {

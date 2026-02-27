@@ -1,5 +1,5 @@
 import { Pictures } from './../../../models/pictures.model';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { Stadium } from '../../../models/stadium.model';
 import { StadiumService } from '../../../services/stadium.service';
 import { CommonModule } from '@angular/common';
@@ -22,8 +22,11 @@ export class EditStadiumComponent implements OnInit {
 
 	@Output() backToMenu = new EventEmitter<void>();
 
+	private stadiumService = inject(StadiumService);
+
 	public pictures: Pictures[] = [];
 	public pictureToDelete!: Pictures;
+	public pictureMap!: Pictures;
 
 	public success = false;
 	public successMessage = '';
@@ -36,10 +39,9 @@ export class EditStadiumComponent implements OnInit {
 
 	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
 
-	constructor(private stadiumService: StadiumService) {}
-
 	ngOnInit(): void {
 		this.pictures = this.stadium.pictures;
+		this.pictureMap = this.stadium.pictureMap;
 	}
 
 	public verifyPictures(): boolean {
@@ -54,23 +56,27 @@ export class EditStadiumComponent implements OnInit {
 		this.loading = false;
 	}
 
-	public uploadPicture(stadiumName: string, file: File) {
+	public savePicture(stadiumName: string, file: File, isMap: boolean) {
 		this.resetState();
 		this.loading = true;
 
-		if (file.size > this.maxPictureSize) {
-			this.error = true;
-			this.errorMessage = 'The picture must be less than 1MB';
-			return;
-		}
+		const upload$ = isMap
+			? this.stadiumService.editStadiumMapPicture(stadiumName, file)
+			: this.stadiumService.uploadPicture(stadiumName, file);
 
-		this.stadiumService.uploadPicture(stadiumName, file).pipe(finalize(() => this.loading = false)).subscribe({
+		upload$.pipe(finalize(() => this.loading = false)).subscribe({
 			next: (savedPic) => {
 				this.success = true;
 				this.successMessage = 'Picture uploaded successfully';
-				this.pictures.push(savedPic);
+
+				if (isMap) {
+					this.pictureMap = savedPic;
+				}
+				else {
+					this.pictures.push(savedPic);
+				}
 			},
-			error: (_) => {
+			error: () => {
 				this.error = true;
 				this.errorMessage = 'An error occurred trying to store the picture';
 			}
@@ -103,7 +109,7 @@ export class EditStadiumComponent implements OnInit {
 		this.openConfirmationModal = false;
 	}
 
-	public handleFileUpload(event: Event): void {
+	public handleFileUpload(event: Event, isMap: boolean): void {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
@@ -114,7 +120,7 @@ export class EditStadiumComponent implements OnInit {
 				this.loading = false;
 				return;
 			}
-			this.uploadPicture(this.stadium.name, file);
+			this.savePicture(this.stadium.name, file, isMap);
 		}
 	}
 

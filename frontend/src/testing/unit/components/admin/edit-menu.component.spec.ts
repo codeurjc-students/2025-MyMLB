@@ -7,6 +7,7 @@ import { MockFactory } from '../../../../testing/utils/mock-factory';
 import { TeamInfo } from '../../../../app/models/team.model';
 import { PitcherGlobal } from '../../../../app/models/pitcher.model';
 import { PaginatedSearchs } from '../../../../app/models/pagination.model';
+import { Pictures } from '../../../../app/models/pictures.model';
 
 describe('Edit Menu Component Tests', () => {
 	let component: EditMenuComponent;
@@ -27,11 +28,16 @@ describe('Edit Menu Component Tests', () => {
 		'7-3'
 	);
 
+	const mockPictureMap: Pictures = {
+		url: 'https://test_pic/123',
+		publicId: '123'
+	};
 	const stadium = MockFactory.buildStadiumCompleteMock(
 		'Yankee Stadium',
 		2009,
 		'New York Yankees',
-		[]
+		[],
+		mockPictureMap
 	);
 
 	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
@@ -127,7 +133,7 @@ describe('Edit Menu Component Tests', () => {
 			'5-5'
 		);
 
-		const stadium2 = MockFactory.buildStadiumCompleteMock('City Field', 2001, 'New York Mets', []);
+		const stadium2 = MockFactory.buildStadiumCompleteMock('City Field', 2001, 'New York Mets', [], mockPictureMap);
 
 		const mockTeamInfo2: TeamInfo = MockFactory.buildTeamInfoMock(
 			teamStats2,
