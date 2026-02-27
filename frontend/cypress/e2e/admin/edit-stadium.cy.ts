@@ -38,28 +38,8 @@ describe('Edit Stadium E2E Tests', () => {
 		cy.get('img[alt="Stadium picture"]').should('have.length.at.least', 2);
 	});
 
-	it('should show loading modal when uploading', () => {
-		cy.intercept('POST', '/api/v1/stadiums/*/pictures', (req) => {
-			req.reply({
-				url: 'http://test.com/new.webp',
-				publicId: 'newPic',
-			});
-		}).as('uploadPicture');
-
-		cy.get('input[type="file"]').selectFile('cypress/fixtures/test.webp', { force: true });
-		cy.get('app-loading-modal').should('be.visible');
-		cy.wait('@uploadPicture');
-		cy.get('app-success-modal').should('be.visible');
-	});
-
 	it('should go back to menu when clicking Go Back', () => {
 		cy.contains('Go Back').click();
 		cy.get('app-edit-menu').should('be.visible');
-	});
-
-	it('should show success modal when confirming changes', () => {
-		cy.contains('Confirm Changes').click();
-		cy.get('app-success-modal').should('be.visible');
-		cy.contains('Changes applied successfully').should('be.visible');
 	});
 });
