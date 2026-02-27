@@ -67,7 +67,7 @@ export class TicketSelectionComponent implements OnInit {
 	private loadAvailableSectors() {
 		this.eventService.getAvailableSectors(this.event?.id).subscribe({
 			next: (response) => {
-				this.availableSectors = response.content;
+				this.availableSectors = response;
 			},
 			error: (_) => {
 				this.error = true;
@@ -79,7 +79,7 @@ export class TicketSelectionComponent implements OnInit {
 	private loadAvailableSeats() {
 		this.eventService.getAvailableSeats(this.event?.id, this.selectedSectorId).subscribe({
 			next: (response) => {
-				this.availableSeats = response.content;
+				this.availableSeats = response;
 			},
 			error: (_) => {
 				this.error = true;

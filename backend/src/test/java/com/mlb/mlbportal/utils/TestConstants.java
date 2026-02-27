@@ -148,4 +148,8 @@ public final class TestConstants {
     public static final String ADMIN_EMAIL = "admin_email@gmail.com";
 
     public static final String SUPPORT_MESSAGE_BODY = "Body of the response";
+
+    public static final Long EVENT_ID = 100L;
+    public static final Long SECTOR_ID = 1L;
+    public static final Long SEAT_ID = 20L;
 }

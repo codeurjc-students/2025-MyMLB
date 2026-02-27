@@ -45,8 +45,9 @@ describe('Ticket Selection Component Tests', () => {
     });
 
     it('should load event and sectors when matchId is present in queryParams', () => {
+		const sectors = [mockSector];
         eventServiceSpy.getEventByMatchId.and.returnValue(of(mockEvent as any));
-        eventServiceSpy.getAvailableSectors.and.returnValue(of(mockSectorsResponse));
+        eventServiceSpy.getAvailableSectors.and.returnValue(of(sectors));
 
         fixture.detectChanges();
         routeQueryParams$.next({ matchId: '1' });
@@ -57,9 +58,10 @@ describe('Ticket Selection Component Tests', () => {
     });
 
     it('should load available seats when sector changes', () => {
+		const seats = [mockSeat];
         component.event = mockEvent as any;
         component.selectedSectorId = 10;
-        eventServiceSpy.getAvailableSeats.and.returnValue(of(mockSeatsResponse));
+        eventServiceSpy.getAvailableSeats.and.returnValue(of(seats));
 
         component.onSectorChange();
 

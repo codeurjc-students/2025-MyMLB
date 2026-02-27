@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.ticket.*;
+import com.mlb.mlbportal.models.ticket.Seat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,10 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import com.mlb.mlbportal.dto.ticket.EditEventRequest;
-import com.mlb.mlbportal.dto.ticket.EventCreateRequest;
-import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
-import com.mlb.mlbportal.dto.ticket.SectorCreateRequest;
 import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
 import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
@@ -45,7 +44,6 @@ import com.mlb.mlbportal.repositories.ticket.EventRepository;
 import com.mlb.mlbportal.repositories.ticket.SeatRepository;
 import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.services.ticket.EventService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.springframework.data.domain.Pageable;
@@ -59,12 +57,14 @@ class EventServiceTest {
     private EventManagerRepository eventManagerRepository;
 
     @Mock
+    @SuppressWarnings("unused")
     private SectorRepository sectorRepository;
 
     @Mock
     private MatchRepository matchRepository;
 
     @Mock
+    @SuppressWarnings("unused")
     private SeatRepository seatRepository;
 
     @Mock
@@ -73,9 +73,6 @@ class EventServiceTest {
     @Mock
     @SuppressWarnings("unused")
     private SeatMapper seatMapper;
-
-    @Mock
-    private PaginationHandlerService paginationHandlerService;
 
     @Mock
     @SuppressWarnings("unused")
@@ -95,7 +92,7 @@ class EventServiceTest {
         this.testMatch.setId(1L);
         this.testMatch.setStadium(testStadium);
         this.testEvent = new Event(testMatch);
-        this.testEvent.setId(100L);
+        this.testEvent.setId(EVENT_ID);
     }
 
     @Test
@@ -116,31 +113,50 @@ class EventServiceTest {
     @DisplayName("Should return successfully the event")
     void testGetEvent() {
         EventResponseDTO dto = BuildMocksFactory.buildEventResponseDTO();
-        when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(this.testEvent);
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(this.testEvent);
         when(this.eventMapper.toEventResponseDto(this.testEvent)).thenReturn(dto);
 
-        EventResponseDTO result = this.eventService.getEvent(100L);
-        assertThat(result.id()).isEqualTo(100L);
+        EventResponseDTO result = this.eventService.getEvent(EVENT_ID);
+        assertThat(result.id()).isEqualTo(EVENT_ID);
     }
 
     @Test
     @DisplayName("Should retrieve available sectors for an event")
     void testGetAvailableSectors() {
-        EventManager manager = new EventManager(testEvent, new Sector(), 50.0);
+        EventManager manager = BuildMocksFactory.buildEventManager(this.testEvent, new Sector(), 50.0);
+        EventManagerDTO dto = BuildMocksFactory.buildEventManagerDTO();
         List<EventManager> managers = List.of(manager);
-        when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(testEvent);
-        when(this.eventManagerRepository.findAvailableSectors(100L)).thenReturn(managers);
-        doReturn(new PageImpl<>(List.of())).when(this.paginationHandlerService).paginateAndMap(any(), any(Integer.class), any(Integer.class), any());
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(this.testEvent);
+        when(this.eventManagerRepository.findAvailableSectors(EVENT_ID)).thenReturn(managers);
+        when(this.eventMapper.toListManagerDTO(managers)).thenReturn(List.of(dto));
 
-        this.eventService.getAvailableSectors(100L, 0, 10);
-        verify(this.eventManagerRepository).findAvailableSectors(100L);
+        List<EventManagerDTO> result = this.eventService.getAvailableSectors(EVENT_ID);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().sectorName()).isEqualTo("North Sector");
+    }
+
+    @Test
+    @DisplayName("Should retrieve available seats of a sector")
+    void testGetAvailableSeats() {
+        Seat seat = BuildMocksFactory.buildSeat("NS-1", new Sector(), false);
+        SeatDTO dto = BuildMocksFactory.buildSeatDTO();
+
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(this.testEvent);
+        when(this.seatRepository.findAvailableSeats(SECTOR_ID, EVENT_ID)).thenReturn(List.of(seat));
+        when(this.seatMapper.toListSeatDTO(List.of(seat))).thenReturn(List.of(dto));
+
+        List<SeatDTO> result = this.eventService.getAvailableSeats(SECTOR_ID, EVENT_ID);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().name()).isEqualTo("NS-1");
     }
 
     @Test
     @DisplayName("Should successfully create an event with its sectors and seats")
     void testCreateEvent() {
-        SectorCreateRequest sectorReq = new SectorCreateRequest("Bleachers", 50);
-        EventCreateRequest request = new EventCreateRequest(1L, List.of(25.0), List.of(sectorReq));
+        SectorCreateRequest sectorReq = BuildMocksFactory.buildSectorCreateRequest();
+        EventCreateRequest request = BuildMocksFactory.buildEventCreateRequest(List.of(sectorReq));
         when(this.matchRepository.findById(1L)).thenReturn(Optional.of(testMatch));
         when(this.eventMapper.toEventResponseDto(any(Event.class))).thenReturn(BuildMocksFactory.buildEventResponseDTO());
 
@@ -151,14 +167,13 @@ class EventServiceTest {
     @Test
     @DisplayName("Should successfully update prices for specific sectors")
     void testEditEventSuccess() {
-        long sectorId = 5L;
-        Sector sector = new Sector("Main", 100, testStadium);
-        sector.setId(sectorId);
-        EventManager manager = new EventManager(testEvent, sector, 50.0);
-        testEvent.setEventManagers(new ArrayList<>(List.of(manager)));
+        long sectorId = SECTOR_ID;
+        Sector sector = BuildMocksFactory.buildSector(this.testStadium);
+        EventManager manager = BuildMocksFactory.buildEventManager(this.testEvent, sector, 50.0);
+        this.testEvent.setEventManagers(new ArrayList<>(List.of(manager)));
 
-        EditEventRequest request = new EditEventRequest(100L, List.of(sectorId), List.of(75.0));
-        when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(testEvent);
+        EditEventRequest request = BuildMocksFactory.buildEditEventRequest(List.of(sectorId), List.of(75.0));
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(testEvent);
         when(this.eventMapper.toEventResponseDto(testEvent)).thenReturn(BuildMocksFactory.buildEventResponseDTO());
 
         this.eventService.editEvent(request);
@@ -168,10 +183,10 @@ class EventServiceTest {
     @Test
     @DisplayName("Should delete the event and return it")
     void testDeleteEvent() {
-        when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(testEvent);
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(testEvent);
         when(this.eventMapper.toEventResponseDto(testEvent)).thenReturn(BuildMocksFactory.buildEventResponseDTO());
 
-        this.eventService.deleteEvent(100L);
+        this.eventService.deleteEvent(EVENT_ID);
         verify(this.eventRepository).delete(testEvent);
     }
 
@@ -212,25 +227,25 @@ class EventServiceTest {
 
         assertThatThrownBy(action::run)
                 .isInstanceOf(MatchNotFoundException.class)
-                .hasMessageContaining("Match Not Found");
+                .hasMessage("Match Not Found");
     }
 
     @Test
     @DisplayName("Should throw EventRequestMissMatchException when prices and sectors size mismatch")
     void testCreateEventMismatch() {
         EventCreateRequest request = new EventCreateRequest(1L, List.of(10.0, 20.0), List.of(new SectorCreateRequest("S1", 10)));
-        assertThatThrownBy(() -> this.eventService.createEvent(request))
-                .isInstanceOf(EventRequestMissMatchException.class);
+        assertThatThrownBy(() -> this.eventService.createEvent(request)).isInstanceOf(EventRequestMissMatchException.class);
     }
 
     @Test
     @DisplayName("Should throw SectorNotFoundException if sector does not belong to event")
     void testEditEventInvalidSector() {
         this.testEvent.setEventManagers(new ArrayList<>());
-        EditEventRequest request = new EditEventRequest(100L, List.of(999L), List.of(50.0));
-        when(this.eventRepository.findEventByIdOrElseThrow(100L)).thenReturn(testEvent);
+        EditEventRequest request = new EditEventRequest(EVENT_ID, List.of(999L), List.of(50.0));
+        when(this.eventRepository.findEventByIdOrElseThrow(EVENT_ID)).thenReturn(this.testEvent);
 
         assertThatThrownBy(() -> this.eventService.editEvent(request))
-                .isInstanceOf(SectorNotFoundException.class);
+                .isInstanceOf(SectorNotFoundException.class)
+                .hasMessage("Sector " + 999 + " Not Found");
     }
 }

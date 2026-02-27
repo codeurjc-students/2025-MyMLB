@@ -64,16 +64,17 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public Page<EventManagerDTO> getAvailableSectors(Long eventId, int page, int size) {
+    public List<EventManagerDTO> getAvailableSectors(Long eventId) {
         this.eventRepository.findEventByIdOrElseThrow(eventId);
         List<EventManager> query = this.eventManagerRepository.findAvailableSectors(eventId);
-        return this.paginationHandlerService.paginateAndMap(query, page, size, this.eventMapper::toManagerDto);
+        return this.eventMapper.toListManagerDTO(query);
     }
 
     @Transactional(readOnly = true)
-    public Page<SeatDTO> getAvailableSeats(Long sectorId, Long eventId, int page, int size) {
+    public List<SeatDTO> getAvailableSeats(Long sectorId, Long eventId) {
+        this.eventRepository.findEventByIdOrElseThrow(eventId);
         List<Seat> query = this.seatRepository.findAvailableSeats(sectorId, eventId);
-        return this.paginationHandlerService.paginateAndMap(query, page, size, this.seatMapper::toSeatDTO);
+        return this.seatMapper.toListSeatDTO(query);
     }
 
     @Transactional(readOnly = true)

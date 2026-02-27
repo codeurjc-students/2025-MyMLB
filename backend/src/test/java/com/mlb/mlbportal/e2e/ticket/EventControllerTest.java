@@ -4,10 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-
 import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +43,8 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -102,7 +100,7 @@ class EventControllerTest extends BaseE2ETest {
         event = this.eventRepository.saveAndFlush(event);
         this.savedEventId = event.getId();
 
-        Sector sector = new Sector("Grandstand", 100, stadium);
+        Sector sector = new Sector("North Sector", 100, stadium);
         sector = this.sectorRepository.saveAndFlush(sector);
         this.savedSectorId = sector.getId();
 
@@ -110,7 +108,7 @@ class EventControllerTest extends BaseE2ETest {
         manager.setAvailability(10);
         this.eventManagerRepository.saveAndFlush(manager);
 
-        Seat seat = new Seat("A1", sector, false);
+        Seat seat = new Seat("NS-1", sector, false);
         this.seatRepository.saveAndFlush(seat);
     }
 
@@ -181,9 +179,9 @@ class EventControllerTest extends BaseE2ETest {
                 .get(url)
                 .then()
                 .statusCode(200)
-                .body("content.size()", is(1))
-                .body("content[0].sectorName", is("Grandstand"))
-                .body("content[0].price", is(50.0f));
+                .body("size()", is(1))
+                .body("sectorName", contains("North Sector"))
+                .body("price", contains(50.0f));
     }
 
     @Test
@@ -196,8 +194,8 @@ class EventControllerTest extends BaseE2ETest {
                 .get(url)
                 .then()
                 .statusCode(200)
-                .body("content.size()", is(1))
-                .body("content[0].name", is("A1"));
+                .body("size()", is(1))
+                .body("name", contains("NS-1"));
     }
 
     @Test
