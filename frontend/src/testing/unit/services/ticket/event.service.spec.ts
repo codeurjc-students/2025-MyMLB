@@ -54,10 +54,10 @@ describe('Event Service Tests', () => {
 	});
 
 	it('should return the available sectors of a given event', () => {
-		const mockResponse = MockFactory.buildPaginatedResponse(mockEventManager);
+		const mockResponse = [mockEventManager];
 		service.getAvailableSectors(eventId).subscribe((sectors) => {
-			expect(sectors.content.length).toBe(mockResponse.content.length);
-			expect(sectors.content).toEqual(mockResponse.content);
+			expect(sectors.length).toBe(mockResponse.length);
+			expect(sectors).toEqual(mockResponse);
 		});
 
 		const request = httpMock.expectOne(`${apiUrl}/${eventId}/sectors`);
@@ -67,10 +67,10 @@ describe('Event Service Tests', () => {
 
 	it('should return the available seats of a given event and sector', () => {
 		const mockSeat = MockFactory.buildMockSeat(5, 'S-1');
-		const mockResponse = MockFactory.buildPaginatedResponse(mockSeat);
+		const mockResponse = [mockSeat];
 		service.getAvailableSeats(eventId, sectorId).subscribe((seats) => {
-			expect(seats.content.length).toBe(mockResponse.content.length);
-			expect(seats.content).toEqual(mockResponse.content);
+			expect(seats.length).toBe(mockResponse.length);
+			expect(seats).toEqual(mockResponse);
 		});
 
 		const request = httpMock.expectOne(`${apiUrl}/${eventId}/sector/${sectorId}`);

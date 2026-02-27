@@ -61,6 +61,7 @@ import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
 import jakarta.mail.MessagingException;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class TicketServiceTest {
@@ -142,7 +143,7 @@ class TicketServiceTest {
 
         assertThatThrownBy(() -> this.ticketService.getTicket(1L))
                 .isInstanceOf(TicketNotFoundException.class)
-                .hasMessageContaining("Ticket 1 Not Found");
+                .hasMessage("Ticket 1 Not Found");
     }
 
     @Test
@@ -151,18 +152,18 @@ class TicketServiceTest {
         Long eventId = 100L;
         List<Ticket> tickets = List.of(new Ticket(), new Ticket());
         TicketDTO dto = mock(TicketDTO.class);
-        Page<TicketDTO> mockPage = new PageImpl<>(List.of(dto), PageRequest.of(0, 10), 1);
+        Page<Ticket> mockPage = new PageImpl<>(tickets, PageRequest.of(0, 10), tickets.size());
 
         when(this.eventRepository.findEventByIdOrElseThrow(eventId)).thenReturn(null);
-        when(this.ticketRepository.findTicketByEvent(eventId)).thenReturn(tickets);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(tickets), eq(0), eq(10), any());
+        when(this.ticketRepository.findTicketByEvent(eq(eventId), any(Pageable.class))).thenReturn(mockPage);
+        when(this.ticketMapper.toTicketDTO(any(Ticket.class))).thenReturn(dto);
 
         Page<TicketDTO> result = this.ticketService.getTicketsOfEvent(eventId, 0, 10);
 
         assertThat(result).isNotNull();
-        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent()).hasSize(2);
         verify(this.eventRepository).findEventByIdOrElseThrow(eventId);
-        verify(this.ticketRepository).findTicketByEvent(eventId);
+        verify(this.ticketRepository).findTicketByEvent(eq(eventId), any(Pageable.class));
     }
 
     @Test
@@ -175,7 +176,7 @@ class TicketServiceTest {
                 .isInstanceOf(EventNotFoundException.class)
                 .hasMessage("Event 999 Not Found");
 
-        verify(this.ticketRepository, never()).findTicketByEvent(anyLong());
+        verify(this.ticketRepository, never()).findTicketByEvent(anyLong(), any(Pageable.class));
     }
 
     @Test

@@ -26,8 +26,8 @@ describe('Ticket Selection Component Integration Test', () => {
 		publicId: 'test'
 	}
 	const mockEvent = MockFactory.buildEventResponse(eventId, 'Boston Red Sox', 'New York Yankees', 'NYY', 'Yankee Stadium', new Date(), mockPicture, [mockEventManager]);
-    const mockSectors = MockFactory.buildPaginatedResponse(MockFactory.buildEventManager(1, 10, 'North', 50, 100, 100));
-    const mockSeats = MockFactory.buildPaginatedResponse(MockFactory.buildMockSeat(1, 'A-1'));
+    const mockSectors = [MockFactory.buildEventManager(1, 10, 'North', 50, 100, 100)];
+    const mockSeats = [MockFactory.buildMockSeat(1, 'A-1')];
 
     beforeEach(() => {
         routeQueryParams$ = new Subject();

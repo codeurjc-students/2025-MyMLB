@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +35,9 @@ public class StadiumService {
 
     @Transactional(readOnly = true)
     public Page<StadiumInitDTO> getAllStadiums(int page, int size) {
-        List<Stadium> stadiums = this.stadiumRepository.findAll();
-        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+        Page<Stadium> stadiums = this.stadiumRepository.findAll(pageable);
+        return stadiums.map(this.stadiumMapper::toStadiumInitDTO);
     }
 
     @Transactional(readOnly = true)

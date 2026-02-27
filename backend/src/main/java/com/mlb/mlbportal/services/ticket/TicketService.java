@@ -7,6 +7,8 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,9 +57,10 @@ public class TicketService {
 
     @Transactional(readOnly = true)
     public Page<TicketDTO> getTicketsOfEvent(Long eventId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         this.eventRepository.findEventByIdOrElseThrow(eventId);
-        List<Ticket> query = this.ticketRepository.findTicketByEvent(eventId);
-        return this.paginationHandlerService.paginateAndMap(query, page, size, this.ticketMapper::toTicketDTO);
+        Page<Ticket> query = this.ticketRepository.findTicketByEvent(eventId, pageable);
+        return query.map(this.ticketMapper::toTicketDTO);
     }
 
     @Transactional

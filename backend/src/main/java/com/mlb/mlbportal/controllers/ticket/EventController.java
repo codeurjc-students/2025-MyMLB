@@ -1,6 +1,7 @@
 package com.mlb.mlbportal.controllers.ticket;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +70,8 @@ public class EventController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/{eventId}/sectors", produces = "application/json")
-    public ResponseEntity<Page<EventManagerDTO>> getAvailableSectors(@PathVariable("eventId")Long eventId,@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
-        return ResponseEntity.ok(this.eventService.getAvailableSectors(eventId, page, size));
+    public ResponseEntity<List<EventManagerDTO>> getAvailableSectors(@PathVariable("eventId")Long eventId) {
+        return ResponseEntity.ok(this.eventService.getAvailableSectors(eventId));
     }
 
     @Operation(summary = "Return available seats of an event", description = "Retrieve all the available seats of a given sector and event")
@@ -80,11 +81,9 @@ public class EventController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/{eventId}/sector/{sectorId}", produces = "application/json")
-    public ResponseEntity<Page<SeatDTO>> getAvailableSeats(@PathVariable("eventId")Long eventId,
-                                                           @PathVariable("sectorId")Long sectorId,
-                                                           @RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(this.eventService.getAvailableSeats(sectorId, eventId, page, size));
+    public ResponseEntity<List<SeatDTO>> getAvailableSeats(@PathVariable("eventId")Long eventId,
+                                                           @PathVariable("sectorId")Long sectorId) {
+        return ResponseEntity.ok(this.eventService.getAvailableSeats(sectorId, eventId));
     }
 
     @Operation(summary = "Return the event of a certain match", description = "Returns the event belonging to the match whose ID is provided")

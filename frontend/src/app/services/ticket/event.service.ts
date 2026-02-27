@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EventCreateRequest, EventEditRequest, EventManager, EventResponse, Seat } from '../../models/ticket/event.model';
-import { PaginatedResponse } from '../../models/pagination.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,12 +19,12 @@ export class EventService {
 		return this.httpMock.get<EventResponse>(`${this.apiUrl}/match/${matchId}`);
 	}
 
-	public getAvailableSectors(eventId: number): Observable<PaginatedResponse<EventManager>> {
-		return this.httpMock.get<PaginatedResponse<EventManager>>(`${this.apiUrl}/${eventId}/sectors`);
+	public getAvailableSectors(eventId: number): Observable<EventManager[]> {
+		return this.httpMock.get<EventManager[]>(`${this.apiUrl}/${eventId}/sectors`);
 	}
 
-	public getAvailableSeats(eventId: number, sectorId: number): Observable<PaginatedResponse<Seat>> {
-		return this.httpMock.get<PaginatedResponse<Seat>>(`${this.apiUrl}/${eventId}/sector/${sectorId}`);
+	public getAvailableSeats(eventId: number, sectorId: number): Observable<Seat[]> {
+		return this.httpMock.get<Seat[]>(`${this.apiUrl}/${eventId}/sector/${sectorId}`);
 	}
 
 	public createEvent(request: EventCreateRequest): Observable<EventResponse> {

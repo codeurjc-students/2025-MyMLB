@@ -1,6 +1,12 @@
 package com.mlb.mlbportal.services.team;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -17,13 +23,10 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
-import com.mlb.mlbportal.models.player.Pitcher;
-import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
-import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +40,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
     private final MatchService matchService;
-    private final PlayerService playerService;
     private final UserService userService;
     private final PaginationHandlerService paginationHandlerService;
     private final StadiumRepository stadiumRepository;
@@ -61,19 +63,10 @@ public class TeamService {
         return this.teamRepository.findByNameOrThrow(teamName);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
         TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
-        
-        List<PositionPlayer> positionPlayers = this.playerService.getUpdatedPositionPlayersOfTeam(team);
-        List<Pitcher> pitchers = this.playerService.getUpdatedPitchersOfTeam(team);
-
-        positionPlayers.forEach(p -> p.setTeam(team));
-        pitchers.forEach(p -> p.setTeam(team));
-
-        team.setPositionPlayers(positionPlayers);
-        team.setPitchers(pitchers);
         this.teamRepository.save(team);
         return this.teamMapper.toTeamInfoDTO(team);
     }

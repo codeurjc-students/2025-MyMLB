@@ -16,7 +16,7 @@ import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.dto.ticket.EventResponseDTO;
+import com.mlb.mlbportal.dto.ticket.*;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
@@ -33,6 +33,10 @@ import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.models.support.SupportMessage;
 import com.mlb.mlbportal.models.support.SupportTicket;
+import com.mlb.mlbportal.models.ticket.Event;
+import com.mlb.mlbportal.models.ticket.EventManager;
+import com.mlb.mlbportal.models.ticket.Seat;
+import com.mlb.mlbportal.models.ticket.Sector;
 
 import static com.mlb.mlbportal.utils.TestConstants.*;
 
@@ -244,5 +248,41 @@ public class BuildMocksFactory {
 
     public static EventResponseDTO buildEventResponseDTO() {
         return new EventResponseDTO(100L, TEST_TEAM1_NAME, TEST_TEAM2_NAME, TEST_TEAM1_ABBREVIATION, STADIUM1_NAME, LocalDateTime.now(), null, List.of());
+    }
+
+    public static EventManager buildEventManager(Event event, Sector sector, double price) {
+        return new EventManager(event, sector, price);
+    }
+
+    public static EventManagerDTO buildEventManagerDTO() {
+        return new EventManagerDTO(EVENT_ID, SECTOR_ID, "North Sector", 50.0, 100, 100);
+    }
+
+    public static Seat buildSeat(String name, Sector sector, boolean state) {
+        Seat seat = new Seat(name, sector, state);
+        seat.setId(SEAT_ID);
+        return seat;
+    }
+
+    public static SeatDTO buildSeatDTO() {
+        return new SeatDTO(SEAT_ID, "NS-1");
+    }
+
+    public static SectorCreateRequest buildSectorCreateRequest() {
+        return new SectorCreateRequest("Bleachers", 50);
+    }
+
+    public static EventCreateRequest buildEventCreateRequest(List<SectorCreateRequest> sectorRequest) {
+        return new EventCreateRequest(1L, List.of(25.0), sectorRequest);
+    }
+
+    public static Sector buildSector(Stadium stadium) {
+        Sector sector = new Sector("Main", 100, stadium);
+        sector.setId(SECTOR_ID);
+        return sector;
+    }
+
+    public static EditEventRequest buildEditEventRequest(List<Long> sectorIds, List<Double> prices) {
+        return new EditEventRequest(EVENT_ID, sectorIds, prices);
     }
 }

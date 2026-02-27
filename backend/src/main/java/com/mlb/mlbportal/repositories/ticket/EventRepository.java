@@ -2,6 +2,9 @@ package com.mlb.mlbportal.repositories.ticket;
 
 import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.models.ticket.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,10 +14,14 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
+    @Override
+    Page<Event> findAll(Pageable pageable);
+
     default Event findEventByIdOrElseThrow(Long eventId) {
         return this.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 
-    @Query("SELECT e FROM Event e JOIN FETCH e.match m WHERE m.id = :matchId AND m.date > CURRENT_TIMESTAMP")
+    @EntityGraph(attributePaths = {"match"})
+    @Query("SELECT e FROM Event e WHERE e.match.id = :matchId AND e.match.date > CURRENT_TIMESTAMP")
     Optional<Event> findEventByMatchId(@Param("matchId") Long matchId);
 }
