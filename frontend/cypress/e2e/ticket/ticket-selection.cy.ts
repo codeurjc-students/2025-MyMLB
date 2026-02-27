@@ -31,23 +31,19 @@ describe('Ticket Selection E2E Tests', () => {
 
 		cy.intercept('GET', `**/api/v1/events/${eventId}/sectors`, {
 			statusCode: 200,
-			body: {
-				content: [
-					{ id: 1, sectorName: 'North Stand', price: 100 },
-					{ id: 2, sectorName: 'South Stand', price: 150 },
-				],
-			},
+			body: [
+				{ id: 1, sectorName: 'North Stand', price: 100 },
+				{ id: 2, sectorName: 'South Stand', price: 150 },
+			],
 		}).as('getSectors');
 
 		cy.intercept('GET', `**/api/v1/events/${eventId}/sector/1`, {
 			statusCode: 200,
-			body: {
-				content: [
-					{ id: 101, name: 'A-1' },
-					{ id: 102, name: 'A-2' },
-					{ id: 103, name: 'A-3' },
-				],
-			},
+			body: [
+				{ id: 101, name: 'A-1' },
+				{ id: 102, name: 'A-2' },
+				{ id: 103, name: 'A-3' },
+			],
 		}).as('getSeats');
 
 		cy.visit(`/tickets?matchId=${matchId}`);
