@@ -13,13 +13,22 @@ describe('Edit Stadium Component Tests', () => {
 	let stadiumServiceSpy: jasmine.SpyObj<StadiumService>;
 
 	const mockPicture: Pictures = { url: 'http://test.com/img.webp', publicId: '123' };
-	const mockStadium: Stadium = MockFactory.buildStadiumCompleteMock('Yankee Stadium', 2009, 'New York Yankees', [
-		mockPicture,
-	]);
+	const mockPictureMap: Pictures = {
+		url: 'https://test_pic/123',
+		publicId: '123'
+	};
+	const mockStadium: Stadium = MockFactory.buildStadiumCompleteMock(
+		'Yankee Stadium',
+		2009,
+		'New York Yankees',
+		[mockPicture],
+		mockPictureMap
+	);
 
 	beforeEach(() => {
 		stadiumServiceSpy = jasmine.createSpyObj('StadiumService', [
 			'uploadPicture',
+			'editStadiumMapPicture',
 			'removePicture',
 		]);
 
@@ -41,28 +50,51 @@ describe('Edit Stadium Component Tests', () => {
 	it('should set error when uploading a picture over 1MB', () => {
 		const invalidPicture = 'a'.repeat(1024 * 1024 + 1);
 		const file = new File([invalidPicture], 'test.png', { type: 'image/png' });
-		component.uploadPicture(mockStadium.name, file);
+		const event = { target: { files: [file] } } as unknown as Event;
 
-		expect(component.error).toBeTrue();
-		expect(component.errorMessage).toBe('The picture must be less than 1MB');
+		component.handleFileUpload(event, false);
+
+    	expect(component.error).toBeTrue();
+    	expect(component.errorMessage).toBe('The picture must be less than 1MB');
 	});
 
-	it('should upload picture successfully', () => {
-		const file = new File(['dummy'], 'test.webp', { type: 'image/webp' });
-		stadiumServiceSpy.uploadPicture.and.returnValue(of(mockPicture));
+	// Parametrized Tests for picture uploading
+	[
+		{
+			description: 'upload a picture',
+			isMap: false,
+			spyMethod: () => stadiumServiceSpy.uploadPicture,
+			verify: () => expect(component.pictures).toContain(mockPicture)
+		},
+		{
+			description: 'update the stadium map picture',
+			isMap: true,
+			spyMethod: () => stadiumServiceSpy.editStadiumMapPicture,
+			verify: () => expect(component.pictureMap.url).toBe('http://test.com/newMap.png')
+		}
+	].forEach(({ description, isMap, spyMethod, verify }) => {
+		it(`should ${description} successfully`, () => {
+			const file = new File(['dummy'], 'test.png', { type: 'image/png' });
+			const mockResponse = isMap
+				? { url: 'http://test.com/newMap.png', publicId: '123' }
+				: mockPicture;
 
-		component.uploadPicture(mockStadium.name, file);
+			spyMethod().and.returnValue(of(mockResponse));
 
-		expect(component.success).toBeTrue();
-		expect(component.successMessage).toBe('Picture uploaded successfully');
-		expect(component.pictures.length).toBe(2);
+			component.savePicture(mockStadium.name, file, isMap);
+
+			expect(component.success).toBeTrue();
+			expect(component.successMessage).toBe('Picture uploaded successfully');
+			expect(component.loading).toBeFalse();
+			verify();
+		});
 	});
 
 	it('should handle upload picture error', () => {
 		const file = new File(['dummy'], 'test.webp', { type: 'image/webp' });
 		stadiumServiceSpy.uploadPicture.and.returnValue(throwError(() => new Error('fail')));
 
-		component.uploadPicture(mockStadium.name, file);
+		component.savePicture(mockStadium.name, file, false);
 
 		expect(component.error).toBeTrue();
 		expect(component.errorMessage).toBe('An error occurred trying to store the picture');

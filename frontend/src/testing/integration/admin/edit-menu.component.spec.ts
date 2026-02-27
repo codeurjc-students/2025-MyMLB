@@ -30,7 +30,15 @@ describe('Edit Menu Component Integration Tests', () => {
 		city: 'New York',
 		generalInfo: 'Founded in 1901',
 		championships: [1903, 1923],
-		stadium: { name: 'Yankee Stadium', openingDate: 2009, pictures: [] },
+		stadium: {
+			name: 'Yankee Stadium',
+			openingDate: 2009,
+			pictures: [],
+			pictureMap: {
+				url: 'https://test_pic/123',
+				publicId: '123'
+			}
+		},
 		positionPlayers: [],
 		pitchers: [],
 	};

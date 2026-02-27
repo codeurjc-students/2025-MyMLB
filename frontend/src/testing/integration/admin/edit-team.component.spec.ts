@@ -33,7 +33,15 @@ describe('Edit Team Component Integration Tests', () => {
 		city: 'New York',
 		generalInfo: 'Founded in 1901',
 		championships: [1903, 1923],
-		stadium: { name: 'Yankee Stadium', openingDate: 2009, pictures: [] },
+		stadium: {
+			name: 'Yankee Stadium',
+			openingDate: 2009,
+			pictures: [],
+			pictureMap: {
+				url: 'https://test_pic/123',
+				publicId: '123'
+			}
+		},
 		positionPlayers: [],
 		pitchers: [],
 	};
@@ -84,6 +92,10 @@ describe('Edit Team Component Integration Tests', () => {
 					openingDate: 1912,
 					teamName: 'Boston Red Sox',
 					pictures: [],
+					pictureMap: {
+						url: 'https://test_pic/123',
+						publicId: '123'
+					}
 				} as Stadium,
 			],
 			page: { size: component.pageSize, number: 0, totalElements: 1, totalPages: 1 },

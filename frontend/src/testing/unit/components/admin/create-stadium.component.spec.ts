@@ -41,6 +41,10 @@ describe('Create Stadium Component Tests', () => {
 			name: 'Fenway Park',
 			openingDate: 1912,
 			pictures: [],
+			pictureMap: {
+				url: 'https://test_pic/123',
+				publicId: '123'
+			}
 		};
 		stadiumServiceSpy.createStadium.and.returnValue(of(mockResponse));
 

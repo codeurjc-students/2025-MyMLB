@@ -51,6 +51,10 @@ describe('Create Stadium Component Integration Tests', () => {
 			name: 'Fenway Park',
 			openingDate: 1912,
 			pictures: [],
+			pictureMap: {
+				url: 'https://test_pic/123',
+				publicId: '123'
+			}
 		};
 		req.flush(mockResponse);
 

@@ -90,7 +90,8 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/available").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/stadiums/*").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/stadiums/*/pictures/map").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/stadiums").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/stadiums/*/pictures").permitAll()
 

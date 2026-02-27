@@ -8,6 +8,7 @@ import { MockFactory } from '../../utils/mock-factory';
 import { PaginatedSearchs } from '../../../app/models/pagination.model';
 import { Stadium } from '../../../app/models/stadium.model';
 import { PitcherGlobal } from '../../../app/models/pitcher.model';
+import { Pictures } from '../../../app/models/pictures.model';
 
 describe('Search Service Tests', () => {
 	let service: SearchService;
@@ -28,7 +29,11 @@ describe('Search Service Tests', () => {
 		'7-3'
 	);
 
-	const stadium = MockFactory.buildStadiumCompleteMock('Yankee Stadium', 2009, 'New York Yankees', []);
+	const mockPictureMap: Pictures = {
+		url: 'https://test_pic/123',
+		publicId: '123'
+	};
+	const stadium = MockFactory.buildStadiumCompleteMock('Yankee Stadium', 2009, 'New York Yankees', [], mockPictureMap);
 
 	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
 		teamStats,

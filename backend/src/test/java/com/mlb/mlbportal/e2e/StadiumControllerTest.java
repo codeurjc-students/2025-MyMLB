@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.Team;
@@ -21,6 +22,7 @@ import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class StadiumControllerTest extends BaseE2ETest {
 
     private Team team1, team2, team3;
@@ -99,8 +101,11 @@ class StadiumControllerTest extends BaseE2ETest {
                 .body("teamName", is(this.team1.getName()));
     }
 
-    private String picturesUrl(String stadiumName) {
-        return STADIUM_PATH + stadiumName + "/pictures";
+    private String getPicturesUrl(boolean isMap) {
+        if (isMap) {
+            return STADIUM_PATH + STADIUM1_NAME + "/pictures/map";
+        }
+        return STADIUM_PATH + STADIUM1_NAME + "/pictures";
     }
 
     /**
@@ -115,12 +120,12 @@ class StadiumControllerTest extends BaseE2ETest {
      * @param fileName the name of the file to be uploaded (e.g. "test.png")
      * @param content the content of the file as a string, which will be converted to bytes
      */
-    private void uploadPicture(String fileName, String content) {
+    private void uploadPicture(String fileName, String content, boolean isMap) {
         given()
                 .multiPart("file", fileName, content.getBytes())
                 .accept(ContentType.JSON)
                 .when()
-                .post(this.picturesUrl(STADIUM1_NAME))
+                .post(this.getPicturesUrl(isMap))
                 .then()
                 .statusCode(200)
                 .body("url", is("http://fake.cloudinary.com/test.jpg"))
@@ -130,14 +135,17 @@ class StadiumControllerTest extends BaseE2ETest {
     @Test
     @DisplayName("GET /api/v1/stadiums/{stadiumName}/pictures should return all pictures of the stadium")
     void testGetStadiumPictures() {
-        this.uploadPicture("test.png", "fake-image");
+        this.uploadPicture("test.png", "fake-image", false);
 
         given()
                 .accept(ContentType.JSON)
+                .log().all()
                 .when()
-                .get(this.picturesUrl(STADIUM1_NAME))
+                .get(this.getPicturesUrl(false))
                 .then()
                 .statusCode(200)
+                .log().all()
+                .contentType(ContentType.JSON)
                 .body("size()", greaterThanOrEqualTo(1))
                 .body("[0].url", is("http://fake.cloudinary.com/test.jpg"))
                 .body("[0].publicId", is("fake123"));
@@ -146,20 +154,26 @@ class StadiumControllerTest extends BaseE2ETest {
     @Test
     @DisplayName("POST /api/v1/stadiums/{stadiumName}/pictures should add the new picture to the pictureList of the stadium")
     void testAddPicture() {
-        this.uploadPicture("test.png", "fake-image");
+        this.uploadPicture("test.png", "fake-image", false);
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/stadiums/{stadiumName}/pictures/map should update the stadium map picture")
+    void testEditStadiumMapPicture() {
+        this.uploadPicture("test.png", "fake-image", true);
     }
 
     @Test
     @DisplayName("DELETE /api/v1/stadiums/{stadiumName}/pictures should remove picture from stadium")
     void testDeletePicture() {
-        this.uploadPicture("test.png", "fake-image");
-        this.uploadPicture("test2.png", "fake2-image");
+        this.uploadPicture("test.png", "fake-image", false);
+        this.uploadPicture("test2.png", "fake2-image", false);
 
         given()
                 .queryParam("publicId", "fake123")
                 .accept(ContentType.JSON)
                 .when()
-                .delete(this.picturesUrl(STADIUM1_NAME))
+                .delete(this.getPicturesUrl(false))
                 .then()
                 .statusCode(200);
     }
