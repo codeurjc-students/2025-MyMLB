@@ -30,6 +30,8 @@ public abstract class Player {
 
     private PictureInfo picture;
 
+    private boolean apiDataSource = true;
+
     protected Player(String name, int number, Team team) {
         this.name = name;
         this.playerNumber = number;

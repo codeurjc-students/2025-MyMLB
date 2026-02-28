@@ -29,6 +29,9 @@ import { EditEntityComponent } from '../../../models/utilities/edit-entity-compo
 import { PaginationService } from '../../../services/utilities/pagination.service';
 import { ValidationService } from '../../../services/utilities/validation.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
 	selector: 'app-edit-player',
@@ -43,7 +46,10 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
     ErrorModalComponent,
     RemoveConfirmationModalComponent,
     LoadingModalComponent,
-    EscapeCloseDirective
+    EscapeCloseDirective,
+	MatFormFieldModule,
+	MatSelectModule,
+	MatInputModule
 ],
 	templateUrl: './edit-player.component.html',
 })

@@ -14,11 +14,24 @@ import { EditPlayerComponent } from "../edit-player/edit-player.component";
 import { ValidationService } from '../../../services/utilities/validation.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
 	selector: 'app-edit-menu',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ErrorModalComponent, EditStadiumComponent, EditTeamComponent, EditPlayerComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		ErrorModalComponent,
+		EditStadiumComponent,
+		EditTeamComponent,
+		EditPlayerComponent,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatInputModule
+	],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './edit-menu.component.html',
 })

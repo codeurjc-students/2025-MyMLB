@@ -4,11 +4,13 @@ import { AuthService } from '../../../services/auth.service';
 import { ResetPasswordRequest } from '../../../models/auth.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @Component({
 	selector: 'app-password-phase',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule, RouterLink],
+	imports: [ReactiveFormsModule, CommonModule, RouterLink, MatInputModule, MatFormFieldModule],
 	templateUrl: './new-password.component.html',
 })
 export class PasswordPhaseComponent {

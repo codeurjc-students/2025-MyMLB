@@ -103,6 +103,7 @@ class PlayerServiceWriteOperationsIntegrationTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 Optional.empty()
         );
 

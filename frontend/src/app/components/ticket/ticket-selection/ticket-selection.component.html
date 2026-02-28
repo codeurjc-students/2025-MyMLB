@@ -80,17 +80,29 @@
 
                             <div class="mb-6">
                                 <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Ticket Amount</label>
-                                <input type="number" [(ngModel)]="ticketAmount" min="1" max="10" placeholder="Choose the amount of tickets you wish to purchase" (change)="onTicketAmountChange()" class="text-inputs w-full" />
+                                <mat-form-field class="w-full">
+									<mat-label>Tickets</mat-label>
+									<input matInput
+										type="number"
+										[(ngModel)]="ticketAmount"
+										min="1"
+										max="10"
+										placeholder="Choose the amount of tickets"
+										(ngModelChange)="onTicketAmountChange()">
+								</mat-form-field>
                             </div>
 
                             <div class="mb-6">
                                 <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Choose Sector</label>
-                                <select [(ngModel)]="selectedSectorId" (change)="onSectorChange()" placeholder="Select a sector..." class="text-inputs w-full appearance-none placeholder:text-gray-400 dark:placeholder:text-gray-500">
-                                    <option [value]="-1" disabled>Select a sector...</option>
-                                    @for (sector of availableSectors; track sector.id) {
-                                        <option [value]="sector.id">{{ sector.sectorName }} — {{ sector.price | currency }}</option>
-                                    }
-                                </select>
+                                <mat-form-field class="w-full">
+									<mat-label>Select a Sector...</mat-label>
+									<mat-select [(ngModel)]="selectedSectorId" (selectionChange)="onSectorChange()" placeholder="Select a sector...">
+										<mat-option [value]="-1" disabled="">Select a Sector...</mat-option>
+										@for (sector of availableSectors; track sector.id) {
+											<mat-option [value]="sector.id">{{ sector.sectorName }} — {{ sector.price | currency }}</mat-option>
+										}
+									</mat-select>
+								</mat-form-field>
                             </div>
 
                             @if (selectedSectorId !== -1) {
@@ -98,12 +110,15 @@
                                     <label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 ml-1 uppercase tracking-wider">
                                         Select seats ({{ selectedSeats.length }}/{{ ticketAmount }})
                                     </label>
-                                    <select class="text-inputs w-full mb-4" #seatSelect (change)="addSeats(availableSeats[seatSelect.selectedIndex - 1]); seatSelect.value = ''" [disabled]="selectedSeats.length >= ticketAmount">
-                                        <option value="" disabled selected>{{ selectedSeats.length >= ticketAmount ? 'Limit reached' : 'Click to add a seat...' }}</option>
-                                        @for (seat of availableSeats; track seat.id) {
-                                            <option [ngValue]="seat" [disabled]="isAlreadySelected(seat.id)">Seat {{ seat.name }}</option>
-                                        }
-                                    </select>
+									<mat-form-field class="w-full">
+										<mat-label>Select Seats...</mat-label>
+										<mat-select #seatSelect (selectionChange)="addSeats($event.value); seatSelect.value = ''" [disabled]="selectedSeats.length >= ticketAmount">
+											<mat-option value="" disabled selected>{{ selectedSeats.length >= ticketAmount ? 'Limit reached' : 'Click to add a seat...' }}</mat-option>
+											@for (seat of availableSeats; track seat.id) {
+												<mat-option [value]="seat" [disabled]="isAlreadySelected(seat.id)">Seat {{ seat.name }}</mat-option>
+											}
+										</mat-select>
+									</mat-form-field>
                                     <div class="flex flex-wrap gap-2 min-h-[48px] p-2 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200">
                                         @for (seat of selectedSeats; track seat.id) {
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold">

@@ -42,5 +42,6 @@ export type EditPitcherRequest = {
 	hitsAllowed?: number,
 	runsAllowed?: number,
 	saves?: number,
-	saveOpportunities?: number
+	saveOpportunities?: number,
+	isApiDataSource?: boolean
 }

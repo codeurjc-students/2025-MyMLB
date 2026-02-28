@@ -16,37 +16,41 @@
             <!-- Name -->
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Name</label>
-                <input
-                    type="text"
-                    [(ngModel)]="nameInput"
-                    placeholder="e.g., Aaron Judge"
-                    class="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
+                <mat-form-field class="admin-input-fields w-full">
+					<mat-label>Name</mat-label>
+					<input matInput
+						type="text"
+                    	[(ngModel)]="nameInput"
+                    	placeholder="Ex. Aaron Judge">
+				</mat-form-field>
             </div>
 
             <!-- Player number -->
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Player #</label>
-                <input
-                    type="number"
-                    [(ngModel)]="playerNumberInput"
-                    placeholder="99"
-                    min="0"
-                    class="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-center"
-                />
+                <mat-form-field class="admin-input-fields w-full">
+					<mat-label>Number</mat-label>
+					<input matInput
+						type="number"
+						[(ngModel)]="playerNumberInput"
+						placeholder="99"
+						min="0">
+				</mat-form-field>
             </div>
 
             <!-- Team name -->
             <div class="flex flex-col md:col-span-2">
                 <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Team</label>
                 <div class="flex items-center gap-3">
-                    <input
-                        type="text"
-                        [(ngModel)]="teamNameInput"
-                        placeholder="e.g., New York Yankees"
-                        class="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    />
-                    <button type="button" (click)="showTeamsModal()" class="px-4 py-2 app-button group tracking-widest">
+                    <mat-form-field class="admin-input-fields w-83">
+						<mat-label>Team Name</mat-label>
+						<input matInput
+							type="text"
+							readonly
+							[(ngModel)]="teamNameInput"
+							placeholder="Ex. New York Yankees">
+					</mat-form-field>
+                    <button type="button" (click)="showTeamsModal()" class="px-4 py-2 mb-5 app-button group tracking-widest">
                         <span class="app-button-bright"></span>
 						<span class="app-button-texts">Select Team</span>
                     </button>
@@ -57,25 +61,14 @@
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">Position</label>
                 <div class="relative w-full">
-					<select
-						[(ngModel)]="positionInput"
-						(focus)="togglePositionInput(true)"
-						(blur)="togglePositionInput(false)"
-						(change)="togglePositionInput(false)"
-						placholder="Select the position..."
-						class="appearance-none w-full pr-10 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
-					>
-						@for (pos of availablePositions; track pos) {
-							<option [value]="pos">{{ pos }}</option>
-						}
-					</select>
-					<svg
-						class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none
-						transition-transform duration-300 ease-in-out"
-						[ngClass]="{ 'rotate-180': isPositionInputOpen }"
-						xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-					</svg>
+					<mat-form-field class="w-full admin-input-fields">
+						<mat-label>Positions</mat-label>
+						<mat-select [(ngModel)]="positionInput" placeholder="Select the position...">
+							@for (pos of availablePositions; track pos) {
+								<mat-option [value]="pos">{{pos}}</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
 				</div>
             </div>
         </div>

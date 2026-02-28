@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
 import { PaginationService } from '../../../services/utilities/pagination.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
 import { MatTooltip } from '@angular/material/tooltip';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
 	selector: 'app-create-player',
@@ -27,7 +30,10 @@ import { MatTooltip } from '@angular/material/tooltip';
     SelectElementModalComponent,
     ActionButtonsComponent,
     EscapeCloseDirective,
-	MatTooltip
+	MatTooltip,
+	MatInputModule,
+	MatFormFieldModule,
+	MatSelectModule
 ],
 })
 export class CreatePlayerComponent implements OnInit {

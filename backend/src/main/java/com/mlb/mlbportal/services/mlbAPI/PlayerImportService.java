@@ -146,34 +146,36 @@ public class PlayerImportService {
      */
     private void savePositionPlayer(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
         PositionPlayer positionPlayer = this.positionPlayerRepository.findByName(playerDetailInfo.fullName()).orElse(new PositionPlayer());
-        this.saveCommonData(positionPlayer, playerDetailInfo, team);
-        try {
-            String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
-            positionPlayer.setPosition(PlayerPositions.fromLabel(posAbbreviation));
-        }
-        catch (IllegalArgumentException ex) {
-            log.error("Unknown Position Player Position: {}", playerDetailInfo.primaryPosition().abbreviation());
-        }
+        if (positionPlayer.isApiDataSource()) {
+            this.saveCommonData(positionPlayer, playerDetailInfo, team);
+            try {
+                String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
+                positionPlayer.setPosition(PlayerPositions.fromLabel(posAbbreviation));
+            }
+            catch (IllegalArgumentException ex) {
+                log.error("Unknown Position Player Position: {}", playerDetailInfo.primaryPosition().abbreviation());
+            }
 
-        if (data != null) {
-            positionPlayer.createWithStats(
-                    Objects.requireNonNullElse(data.atBats(), 0),
-                    Objects.requireNonNullElse(data.baseOnBalls(), 0),
-                    Objects.requireNonNullElse(data.hits(), 0),
-                    Objects.requireNonNullElse(data.doubles(), 0),
-                    Objects.requireNonNullElse(data.triples(), 0),
-                    Objects.requireNonNullElse(data.homeRuns(), 0),
-                    Objects.requireNonNullElse(data.rbi(), 0),
-                    Objects.requireNonNullElse(data.avg(), 0.000),
-                    Objects.requireNonNullElse(data.ops(), 0.000),
-                    Objects.requireNonNullElse(data.obp(), 0.000),
-                    Objects.requireNonNullElse(data.slg(), 0.000)
-            );
+            if (data != null) {
+                positionPlayer.createWithStats(
+                        Objects.requireNonNullElse(data.atBats(), 0),
+                        Objects.requireNonNullElse(data.baseOnBalls(), 0),
+                        Objects.requireNonNullElse(data.hits(), 0),
+                        Objects.requireNonNullElse(data.doubles(), 0),
+                        Objects.requireNonNullElse(data.triples(), 0),
+                        Objects.requireNonNullElse(data.homeRuns(), 0),
+                        Objects.requireNonNullElse(data.rbi(), 0),
+                        Objects.requireNonNullElse(data.avg(), 0.000),
+                        Objects.requireNonNullElse(data.ops(), 0.000),
+                        Objects.requireNonNullElse(data.obp(), 0.000),
+                        Objects.requireNonNullElse(data.slg(), 0.000)
+                );
+            }
+            else {
+                positionPlayer.createWithNoStats();
+            }
+            this.positionPlayerRepository.save(positionPlayer);
         }
-        else {
-            positionPlayer.createWithNoStats();
-        }
-        this.positionPlayerRepository.save(positionPlayer);
     }
 
     /**
@@ -185,35 +187,37 @@ public class PlayerImportService {
      */
     private void savePitcher(PlayerDetailInfo playerDetailInfo, StatData data, Team team) {
         Pitcher pitcher = this.pitcherRepository.findByName(playerDetailInfo.fullName()).orElse(new Pitcher());
-        this.saveCommonData(pitcher, playerDetailInfo, team);
-        try {
-            String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
-            pitcher.setPosition(PitcherPositions.fromLabel(posAbbreviation));
-        }
-        catch (IllegalArgumentException ex) {
-            log.error("Unknown Pitcher Position: {}", playerDetailInfo.primaryPosition().abbreviation());
-        }
+        if (pitcher.isApiDataSource()) {
+            this.saveCommonData(pitcher, playerDetailInfo, team);
+            try {
+                String posAbbreviation = playerDetailInfo.primaryPosition().abbreviation();
+                pitcher.setPosition(PitcherPositions.fromLabel(posAbbreviation));
+            }
+            catch (IllegalArgumentException ex) {
+                log.error("Unknown Pitcher Position: {}", playerDetailInfo.primaryPosition().abbreviation());
+            }
 
-        if (data != null) {
-            pitcher.createWithStats(
-                    Objects.requireNonNullElse(data.gamesPlayed(), 0),
-                    Objects.requireNonNullElse(data.wins(), 0),
-                    Objects.requireNonNullElse(data.losses(), 0),
-                    Double.parseDouble(data.inningsPitched()),
-                    Objects.requireNonNullElse(data.strikeOuts(), 0),
-                    Objects.requireNonNullElse(data.baseOnBalls(), 0),
-                    Objects.requireNonNullElse(data.hits(), 0),
-                    Objects.requireNonNullElse(data.runs(), 0),
-                    Objects.requireNonNullElse(data.saves(), 0),
-                    Objects.requireNonNullElse(data.saveOpportunities(), 0),
-                    Objects.requireNonNullElse(data.era(), 0.000),
-                    Objects.requireNonNullElse(data.whip(), 0.000)
-            );
+            if (data != null) {
+                pitcher.createWithStats(
+                        Objects.requireNonNullElse(data.gamesPlayed(), 0),
+                        Objects.requireNonNullElse(data.wins(), 0),
+                        Objects.requireNonNullElse(data.losses(), 0),
+                        Double.parseDouble(data.inningsPitched()),
+                        Objects.requireNonNullElse(data.strikeOuts(), 0),
+                        Objects.requireNonNullElse(data.baseOnBalls(), 0),
+                        Objects.requireNonNullElse(data.hits(), 0),
+                        Objects.requireNonNullElse(data.runs(), 0),
+                        Objects.requireNonNullElse(data.saves(), 0),
+                        Objects.requireNonNullElse(data.saveOpportunities(), 0),
+                        Objects.requireNonNullElse(data.era(), 0.000),
+                        Objects.requireNonNullElse(data.whip(), 0.000)
+                );
+            }
+            else {
+                pitcher.createWithNoStats();
+            }
+            this.pitcherRepository.save(pitcher);
         }
-        else {
-            pitcher.createWithNoStats();
-        }
-        this.pitcherRepository.save(pitcher);
     }
 
     /**

@@ -9,10 +9,23 @@ import { TicketPurchaseComponent } from "../ticket-purchase/ticket-purchase.comp
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
 	selector: 'app-ticket-selection',
-	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent, NgxImageZoomModule, EscapeCloseDirective],
+	imports: [
+		CommonModule,
+		FormsModule,
+		ErrorModalComponent,
+		TicketPurchaseComponent,
+		NgxImageZoomModule,
+		EscapeCloseDirective,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatInputModule
+	],
 	standalone: true,
 	templateUrl: './ticket-selection.component.html',
 })
@@ -115,13 +128,15 @@ export class TicketSelectionComponent implements OnInit {
 	}
 
 	public addSeats(seat: Seat) {
-		const index = this.selectedSeats.findIndex(s => s.id === seat.id);
-		if (index !== -1) {
-			this.selectedSeats.splice(index, 1);
-		}
-		else {
-			if (this.selectedSeats.length < this.ticketAmount) {
-				this.selectedSeats.push(seat);
+		if (seat) {
+			const index = this.selectedSeats.findIndex(s => s.id === seat.id);
+			if (index !== -1) {
+				this.selectedSeats.splice(index, 1);
+			}
+			else {
+				if (this.selectedSeats.length < this.ticketAmount) {
+					this.selectedSeats.push(seat);
+				}
 			}
 		}
 	}

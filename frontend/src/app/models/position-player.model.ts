@@ -39,4 +39,5 @@ export type EditPositionPlayerRequest = {
 	triples?: number,
 	rbis?: number,
 	homeRuns?: number
+	isApiDataSource?: boolean
 }
