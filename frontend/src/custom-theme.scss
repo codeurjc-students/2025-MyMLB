@@ -78,10 +78,22 @@ body {
 
 /* Options */
 .dark .admin-input-fields .mat-mdc-select-panel {
-  background-color: rgb(30, 41, 59) !important; /* Slate 800 */
+  background-color: rgb(30, 41, 59) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dark .admin-input-fields .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
   background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .mdc-text-field--disabled {
+	background-color: rgb(157, 159, 161) !important;
+}
+
+.dark .admin-input-fields .mdc-text-field--disabled .mdc-floating-label {
+    color: black !important;
+}
+
+.dark .admin-input-fields .mat-mdc-select-disabled .mat-mdc-select-placeholder {
+    color: black !important;
 }

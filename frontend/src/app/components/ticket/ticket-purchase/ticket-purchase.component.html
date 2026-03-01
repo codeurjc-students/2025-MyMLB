@@ -69,29 +69,35 @@
 						<div class="group">
 							<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Cardholder Name</label>
 							<div class="relative">
-							<input type="text" formControlName="ownerName"
-									[class.border-red-500]="invalidField('ownerName')"
-									class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent focus:bg-white transition-all duration-300"
-									placeholder="Ex: Alex Jonson">
-							@if (invalidField('ownerName')) {
-								<span class="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 animate-bounce">
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-								</span>
-							}
+								<mat-form-field class="w-full">
+									<mat-label>Owner</mat-label>
+									<input matInput
+										type="text"
+										formControlName="ownerName"
+										placeholder="Ex. Alex Jonson">
+
+									@if (invalidField('ownerName')) {
+										<mat-error>Owner Name is required</mat-error>
+									}
+								</mat-form-field>
 							</div>
 						</div>
 
 						<div class="group">
 							<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">Card Number</label>
 							<div class="relative">
-							<input type="text" formControlName="cardNumber" maxlength="19"
-									[class.border-red-500]="invalidField('cardNumber')"
-									class="text-inputs w-full font-mono tracking-[0.15em] bg-gray-50 dark:bg-gray-900/50 border-transparent focus:bg-white transition-all duration-300"
-									placeholder="0000 0000 0000 0000">
-							<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-30">
-								<div class="w-8 h-5 bg-gray-400 rounded-sm"></div>
-								<div class="w-8 h-5 bg-gray-400 rounded-sm"></div>
-							</div>
+								<mat-form-field class="w-full">
+									<mat-label>Card Number</mat-label>
+									<input matInput
+										type="text"
+										formControlName="cardNumber"
+										maxlength="19"
+										placeholder="0000 0000 0000 0000"
+									>
+									@if (invalidField('cardNumber')) {
+										<mat-error>Card Number is required</mat-error>
+									}
+								</mat-form-field>
 							</div>
 						</div>
 
@@ -114,20 +120,28 @@
 							</div>
 
 							<div class="group">
-							<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">CVV</label>
-							<input type="password" formControlName="cvv" maxlength="4"
-									[class.border-red-500]="invalidField('cvv')"
-									class="text-inputs w-full bg-gray-50 dark:bg-gray-900/50 border-transparent transition-all duration-300"
-									placeholder="***">
+								<label class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1 mb-2 block group-focus-within:text-indigo-500 transition-colors">CVV</label>
+								<mat-form-field class="w-full">
+									<mat-label>CVV</mat-label>
+									<input matInput
+										type="password"
+										formControlName="cvv"
+										maxlength="4"
+										placeholder="***">
+
+									@if (invalidField('cvv')) {
+										<mat-error>CVV is required</mat-error>
+									}
+								</mat-form-field>
 							</div>
 						</div>
 
 						@if (errorMessage) {
 							<div class="bg-red-500/5 border border-red-500/20 p-5 rounded-2xl flex items-center gap-4 text-red-600 dark:text-red-400 animate-shake">
-							<div class="w-10 h-10 bg-red-500/10 rounded-full flex items-center justify-center shrink-0">
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-black"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-							</div>
-							<span class="text-sm font-bold tracking-tight">{{ errorMessage }}</span>
+								<div class="w-10 h-10 bg-red-500/10 rounded-full flex items-center justify-center shrink-0">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-black"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+								</div>
+									<span class="text-sm font-bold tracking-tight">{{ errorMessage }}</span>
 							</div>
 						}
 
