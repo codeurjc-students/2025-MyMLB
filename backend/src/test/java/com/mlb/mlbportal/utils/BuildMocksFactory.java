@@ -201,8 +201,8 @@ public class BuildMocksFactory {
 
     public static List<PositionPlayerDTO> buildPositionPlayerDTOs() {
         List<Team> teamList = setUpTeamMocks();
-        PositionPlayerDTO dto1 = new PositionPlayerDTO(PLAYER1_NAME, PLAYER1_NUMBER, teamList.getFirst().getName(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0, null);
-        PositionPlayerDTO dto2 = new PositionPlayerDTO(PLAYER2_NAME, PLAYER2_NUMBER, teamList.getFirst().getName(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0, null);
+        PositionPlayerDTO dto1 = new PositionPlayerDTO(PLAYER1_NAME, PLAYER1_NUMBER, teamList.getFirst().getName(), PlayerPositions.CF, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS, 0.0, 0.0, 0.0, 0.0, null, true);
+        PositionPlayerDTO dto2 = new PositionPlayerDTO(PLAYER2_NAME, PLAYER2_NUMBER, teamList.getFirst().getName(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS, 0.0, 0.0, 0.0, 0.0, null, true);
         return Arrays.asList(dto1, dto2);
     }
 
@@ -229,7 +229,7 @@ public class BuildMocksFactory {
 
     public static List<PitcherDTO> buildPitcherDTOs() {
         List<Team> teamList = setUpTeamMocks();
-        PitcherDTO dto3 = new PitcherDTO(PLAYER3_NAME, PLAYER3_NUMBER, teamList.get(1).getName(), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES, null);
+        PitcherDTO dto3 = new PitcherDTO(PLAYER3_NAME, PLAYER3_NUMBER, teamList.get(1).getName(), PitcherPositions.SP, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, 0.0, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, 0.0, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES, null, true);
         return Arrays.asList(dto3);
     }
 

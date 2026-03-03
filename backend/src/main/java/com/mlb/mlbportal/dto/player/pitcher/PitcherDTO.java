@@ -21,7 +21,8 @@ public record PitcherDTO(
     double whip,
     int saves,
     int saveOpportunities,
-    PictureInfo picture
+    PictureInfo picture,
+    boolean apiDataSource
 ) implements PlayerDTO {
 
     @Override

@@ -18,5 +18,5 @@ public record EditPitcherRequest(
         Optional<Integer> runsAllowed,
         Optional<Integer> saves,
         Optional<Integer> saveOpportunities,
-        Optional<Boolean> isApiDataSource
+        Optional<Boolean> apiDataSource
 ) {}

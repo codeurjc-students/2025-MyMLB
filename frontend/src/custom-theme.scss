@@ -97,3 +97,12 @@ body {
 .dark .admin-input-fields .mat-mdc-select-disabled .mat-mdc-select-placeholder {
     color: black !important;
 }
+
+/* --- API Data Source Checkbox --- */
+.datasource-checkbox .mdc-label {
+  color: #000000 !important;
+}
+
+.dark .datasource-checkbox .mdc-label {
+  color: #ffffff !important;
+}

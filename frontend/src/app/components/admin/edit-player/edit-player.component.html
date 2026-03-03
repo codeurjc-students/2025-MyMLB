@@ -63,6 +63,27 @@
 						<span class="app-button-texts !text-sm">{{ formInputs.teamName }}</span>
 					</button>
 				</div>
+
+				<div class="col-span-2 md:col-span-3 flex justify-center items-center h-12 mt-4">
+					<div class="flex items-center space-x-2 -mr-10">
+						<mat-checkbox [(ngModel)]="formInputs.apiDataSource" class="datasource-checkbox">
+							<span class="text-sm font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">
+								API Data Source
+							</span>
+						</mat-checkbox>
+
+						<svg [matTooltip]="'Determine the source from where the player will obtain their stats'"
+							matTooltipPosition="above"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity cursor-help shrink-0">
+							<path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+						</svg>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -79,7 +100,7 @@
 							type="number"
 							[(ngModel)]="formInputs[field.key]"
 							(ngModelChange)="calculateTemporaryStats()"
-							[placeholder]="player[field.key].toString()">
+							[placeholder]="player ? (player[field.key]?.toString() ?? '') : ''">
 					</mat-form-field>
                 </div>
             }
@@ -94,7 +115,7 @@
 							type="number"
 							[(ngModel)]="formInputs[field.key]"
 							(ngModelChange)="calculateTemporaryStats()"
-							[placeholder]="player[field.key].toString()">
+							[placeholder]="player ? (player[field.key]?.toString() ?? '') : ''">
 					</mat-form-field>
                 </div>
             }

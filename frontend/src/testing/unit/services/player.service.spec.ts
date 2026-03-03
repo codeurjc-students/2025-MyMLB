@@ -90,6 +90,7 @@ describe('Player Service Tests', () => {
 			saves: 0,
 			saveOpportunities: 0,
 			picture: { url: '', publicId: '' },
+			apiDataSource: true
 		};
 
 		service.createPitcher(mockCreatePitcherRequest).subscribe((response) => {

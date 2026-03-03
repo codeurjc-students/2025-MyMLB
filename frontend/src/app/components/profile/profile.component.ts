@@ -14,12 +14,23 @@ import { LoadingModalComponent } from "../modal/loading-modal/loading-modal.comp
 import { Pictures } from '../../models/pictures.model';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
 	selector: 'app-profile',
 	standalone: true,
 	templateUrl: './profile.component.html',
-	imports: [CommonModule, FormsModule, RemoveConfirmationModalComponent, ProfileButtons, SuccessModalComponent, ErrorModalComponent, LoadingModalComponent, MatInputModule, MatFormFieldModule],
+	imports: [
+		CommonModule,
+		FormsModule,
+		RemoveConfirmationModalComponent,
+		ProfileButtons, SuccessModalComponent,
+		ErrorModalComponent,
+		LoadingModalComponent,
+		MatInputModule,
+		MatFormFieldModule,
+		MatSlideToggleModule,
+	],
 })
 export class ProfileComponent implements OnInit {
 	private authService = inject(AuthService);

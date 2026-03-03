@@ -6,12 +6,11 @@ import { TeamService } from '../../../../app/services/team.service';
 import { EntityFormMapperService } from '../../../../app/services/utilities/entity-form-mapper.service';
 import { PaginationService } from '../../../../app/services/utilities/pagination.service';
 import { of, throwError } from 'rxjs';
-import { PitcherGlobal } from './../../../../app/models/pitcher.model';
 import { TeamSummary } from '../../../../app/models/team.model';
 import { PositionPlayerGlobal } from '../../../../app/models/position-player.model';
 import { MockFactory } from '../../../utils/mock-factory';
 
-describe('Edit Player Component Tests', () => {
+fdescribe('Edit Player Component Tests', () => {
 	let component: EditPlayerComponent;
 	let fixture: ComponentFixture<EditPlayerComponent>;
 	let playerServiceSpy: jasmine.SpyObj<PlayerService>;

@@ -220,7 +220,7 @@ public class PlayerService {
         request.triples().ifPresent(player::setTriples);
         request.rbis().ifPresent(player::setRbis);
         request.homeRuns().ifPresent(player::setHomeRuns);
-        request.isApiDataSource().ifPresent(player::setApiDataSource);
+        request.apiDataSource().ifPresent(player::setApiDataSource);
         this.updateTeamIfNeeded(player, request.teamName());
 
         this.playerRepository.save(player);
@@ -242,7 +242,7 @@ public class PlayerService {
         request.runsAllowed().ifPresent(player::setRunsAllowed);
         request.saves().ifPresent(player::setSaves);
         request.saveOpportunities().ifPresent(player::setSaveOpportunities);
-        request.isApiDataSource().ifPresent(player::setApiDataSource);
+        request.apiDataSource().ifPresent(player::setApiDataSource);
         this.updateTeamIfNeeded(player, request.teamName());
 
         this.playerRepository.save(player);

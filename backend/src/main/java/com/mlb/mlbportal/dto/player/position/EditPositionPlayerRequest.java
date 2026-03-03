@@ -15,5 +15,5 @@ public record EditPositionPlayerRequest(
         Optional<Integer> triples,
         Optional<Integer> rbis,
         Optional<Integer> homeRuns,
-        Optional<Boolean> isApiDataSource
+        Optional<Boolean> apiDataSource
 ) {}

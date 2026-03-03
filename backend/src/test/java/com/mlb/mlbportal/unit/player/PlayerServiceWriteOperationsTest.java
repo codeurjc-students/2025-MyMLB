@@ -146,7 +146,7 @@ class PlayerServiceWriteOperationsTest {
 
         PositionPlayerDTO posDto = new PositionPlayerDTO(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF,
-                0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,null, false
         );
         CreatePositionPlayerRequest posReq = new CreatePositionPlayerRequest(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF
@@ -154,7 +154,7 @@ class PlayerServiceWriteOperationsTest {
 
         PitcherDTO pitDto = new PitcherDTO(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.RP,
-                0,0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,0,null, false
         );
         CreatePitcherRequest pitReq = new CreatePitcherRequest(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.SP
@@ -278,14 +278,14 @@ class PlayerServiceWriteOperationsTest {
         posPlayer.setName(PLAYER1_NAME);
         PositionPlayerDTO posDto = new PositionPlayerDTO(
                 posPlayer.getName(), PLAYER1_NUMBER, TEST_TEAM1_NAME, PlayerPositions.CF,
-                0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,null, true
         );
 
         Pitcher pitcher = new Pitcher();
         pitcher.setName(PLAYER1_NAME);
         PitcherDTO pitDto = new PitcherDTO(
                 pitcher.getName(), PLAYER1_NUMBER, TEST_TEAM1_NAME, PitcherPositions.SP,
-                0,0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,0,null, true
         );
 
         return Stream.of(

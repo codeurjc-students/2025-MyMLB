@@ -16,7 +16,8 @@ export type PositionPlayerGlobal = {
 	obp: number,
 	ops: number,
 	slugging: number,
-	picture: Pictures
+	picture: Pictures,
+	apiDataSource: boolean
 }
 
 export type PositionPlayer = Omit<PositionPlayerGlobal, 'teamName'>;
@@ -39,5 +40,5 @@ export type EditPositionPlayerRequest = {
 	triples?: number,
 	rbis?: number,
 	homeRuns?: number
-	isApiDataSource?: boolean
+	apiDataSource?: boolean
 }

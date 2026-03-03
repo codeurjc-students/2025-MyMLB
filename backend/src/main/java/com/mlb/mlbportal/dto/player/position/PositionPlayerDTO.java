@@ -20,7 +20,8 @@ public record PositionPlayerDTO(
     double obp,
     double ops,
     double slugging,
-    PictureInfo picture
+    PictureInfo picture,
+    boolean apiDataSource
 ) implements PlayerDTO {
 
     @Override
