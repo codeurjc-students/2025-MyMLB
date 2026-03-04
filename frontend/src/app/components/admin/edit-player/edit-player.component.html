@@ -38,7 +38,7 @@
 						<input matInput
 							type="number"
 							[(ngModel)]="formInputs.number"
-							[placeholder]="player.playerNumber.toString()">
+							placeholder="{{ player.playerNumber}}">
 					</mat-form-field>
 				</div>
 
@@ -100,7 +100,7 @@
 							type="number"
 							[(ngModel)]="formInputs[field.key]"
 							(ngModelChange)="calculateTemporaryStats()"
-							[placeholder]="player ? (player[field.key]?.toString() ?? '') : ''">
+							placeholder="{{ player[field.key] }}">
 					</mat-form-field>
                 </div>
             }
@@ -115,7 +115,7 @@
 							type="number"
 							[(ngModel)]="formInputs[field.key]"
 							(ngModelChange)="calculateTemporaryStats()"
-							[placeholder]="player ? (player[field.key]?.toString() ?? '') : ''">
+							placeholder="{{ player[field.key] }}">
 					</mat-form-field>
                 </div>
             }

@@ -10,7 +10,7 @@ import { TeamSummary } from '../../../../app/models/team.model';
 import { PositionPlayerGlobal } from '../../../../app/models/position-player.model';
 import { MockFactory } from '../../../utils/mock-factory';
 
-fdescribe('Edit Player Component Tests', () => {
+describe('Edit Player Component Tests', () => {
 	let component: EditPlayerComponent;
 	let fixture: ComponentFixture<EditPlayerComponent>;
 	let playerServiceSpy: jasmine.SpyObj<PlayerService>;

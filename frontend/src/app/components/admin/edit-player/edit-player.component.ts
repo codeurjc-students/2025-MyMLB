@@ -11,10 +11,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
-import {
-	EditPositionPlayerRequest,
-	PositionPlayerGlobal,
-} from '../../../models/position-player.model';
+import { EditPositionPlayerRequest,PositionPlayerGlobal } from '../../../models/position-player.model';
 import { EditPitcherRequest, PitcherGlobal } from '../../../models/pitcher.model';
 import { TeamSummary } from '../../../models/team.model';
 import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
