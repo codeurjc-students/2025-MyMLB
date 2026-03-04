@@ -16,9 +16,9 @@ describe('Create Player Component E2E Tests', () => {
 
 	it('should display the creation form', () => {
 		cy.contains('Create Player').should('be.visible');
-		cy.get('input[placeholder="e.g., Aaron Judge"]').should('exist').and('be.visible');
+		cy.get('input[placeholder="Ex. Aaron Judge"]').should('exist').and('be.visible');
 		cy.get('input[placeholder="99"]').should('exist').and('be.visible');
-		cy.get('input[placeholder="e.g., New York Yankees"]').should('exist').and('be.visible');
+		cy.get('input[placeholder="Ex. New York Yankees"]').should('exist').and('be.visible');
 		cy.get('button').contains('Select Team').should('exist').and('be.visible');
 	});
 
@@ -41,9 +41,10 @@ describe('Create Player Component E2E Tests', () => {
             },
         }).as('createPlayer');
 
-        cy.get('input[placeholder="e.g., Aaron Judge"]').clear().type('Gleyber Torres');
+        cy.get('input[placeholder="Ex. Aaron Judge"]').clear().type('Gleyber Torres');
         cy.get('input[placeholder="99"]').clear().type('25');
-        cy.get('select').select('2B');
+		cy.get('mat-select').last().click();
+		cy.get('mat-option').contains('2B').click();
 
         cy.get('button').contains('Select Team').click();
         cy.wait('@getAvailableTeams');

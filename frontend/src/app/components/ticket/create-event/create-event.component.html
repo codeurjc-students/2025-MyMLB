@@ -86,16 +86,15 @@
 					>
 						Sector Names ({{ sectorNames.length }}/{{ numSectors }})
 					</label>
-					<input
-						type="text"
-						#nameInput
-						(keyup.enter)="addSectorName(nameInput.value); nameInput.value = ''"
-						[disabled]="sectorNames.length >= numSectors"
-						class="text-inputs w-full"
-						[placeholder]="
-							sectorNames.length >= numSectors ? 'Limit reached' : 'Type & Enter...'
-						"
-					/>
+					<mat-form-field class="admin-input-fields w-full">
+						<mat-label>Sector</mat-label>
+						<input matInput
+							type="text"
+							#nameInput
+							(keyup.enter)="addSectorName(nameInput.value); nameInput.value = ''"
+							[disabled]="sectorNames.length >= numSectors"
+							[placeholder]="sectorNames.length >= numSectors ? 'Limit reached' : 'Type & Enter...'">
+					</mat-form-field>
 
 					<div
 						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700"
@@ -105,10 +104,7 @@
 								class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold animate-fadeIn"
 							>
 								{{ name }}
-								<button
-									(click)="removeSectorName(i)"
-									class="hover:text-red-300 transition-colors"
-								>
+								<button (click)="removeSectorName(i)" class="hover:text-red-300 transition-colors">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										class="h-4 w-4"
@@ -130,14 +126,15 @@
 					>
 						Prices ({{ sectorPrices.length }}/{{ numSectors }})
 					</label>
-					<input
-						type="number"
-						#priceInput
-						(keyup.enter)="addSectorPrice(priceInput.valueAsNumber); priceInput.value = ''"
-						[disabled]="sectorPrices.length >= numSectors"
-						class="text-inputs w-full"
-						[placeholder]="sectorPrices.length >= numSectors ? 'Limit reached' : '$ 0.00'"
-					/>
+					<mat-form-field class="admin-input-fields w-full">
+						<mat-label>Price</mat-label>
+						<input matInput
+							type="number"
+							#priceInput
+							(keyup.enter)="addSectorPrice(priceInput.valueAsNumber); priceInput.value = ''"
+							[disabled]="sectorPrices.length >= numSectors"
+							[placeholder]="sectorPrices.length >= numSectors ? 'Limit reached' : '$ 0.00'">
+					</mat-form-field>
 
 					<div
 						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700"
@@ -166,14 +163,15 @@
 					>
 						Capacities ({{ sectorCapacities.length }}/{{ numSectors }})
 					</label>
-					<input
-						type="number"
-						#capInput
-						(keyup.enter)="addSectorCapacity(capInput.valueAsNumber); capInput.value = ''"
-						[disabled]="sectorCapacities.length >= numSectors"
-						class="text-inputs w-full"
-						[placeholder]="sectorCapacities.length >= numSectors ? 'Limit reached' : 'e.g 100'"/>
-
+					<mat-form-field class="admin-input-fields w-full">
+						<mat-label>Capacity</mat-label>
+						<input matInput
+							type="number"
+							#capInput
+							(keyup.enter)="addSectorCapacity(capInput.valueAsNumber); capInput.value = ''"
+							[disabled]="sectorCapacities.length >= numSectors"
+							[placeholder]="sectorCapacities.length >= numSectors ? 'Limit reached' : 'e.g 100'">
+					</mat-form-field>
 					<div
 						class="flex flex-wrap gap-2 min-h-[120px] p-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
 						@for (cap of sectorCapacities; let i = $index; track i) {
@@ -212,7 +210,8 @@
 								</svg>
 								Ready to generate event with {{ numSectors }} sectors
 							</span>
-						} @else {
+						}
+						@else {
 							* Please complete all tags for the {{ numSectors }} defined sectors.
 						}
 					</div>

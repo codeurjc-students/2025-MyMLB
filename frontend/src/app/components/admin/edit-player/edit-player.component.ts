@@ -11,10 +11,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
 import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
-import {
-	EditPositionPlayerRequest,
-	PositionPlayerGlobal,
-} from '../../../models/position-player.model';
+import { EditPositionPlayerRequest,PositionPlayerGlobal } from '../../../models/position-player.model';
 import { EditPitcherRequest, PitcherGlobal } from '../../../models/pitcher.model';
 import { TeamSummary } from '../../../models/team.model';
 import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
@@ -29,6 +26,11 @@ import { EditEntityComponent } from '../../../models/utilities/edit-entity-compo
 import { PaginationService } from '../../../services/utilities/pagination.service';
 import { ValidationService } from '../../../services/utilities/validation.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-edit-player',
@@ -43,7 +45,12 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
     ErrorModalComponent,
     RemoveConfirmationModalComponent,
     LoadingModalComponent,
-    EscapeCloseDirective
+    EscapeCloseDirective,
+	MatFormFieldModule,
+	MatSelectModule,
+	MatInputModule,
+	MatCheckboxModule,
+	MatTooltip
 ],
 	templateUrl: './edit-player.component.html',
 })
@@ -71,6 +78,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		obp: 'obp',
 		ops: 'ops',
 		slugging: 'slugging',
+		apiDataSource: 'apiDataSource',
 	};
 
 	public pitcherFieldMap: Record<string, string> = {
@@ -88,7 +96,8 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		runsAllowed: 'runsAllowed',
 		whip: 'whip',
 		saves: 'saves',
-		saveOpportunities: 'saveOpportunities'
+		saveOpportunities: 'saveOpportunities',
+		apiDataSource: 'apiDataSource',
 	};
 
 	public positionPlayerEditableFields = [
@@ -99,6 +108,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		{ key: 'triples', label: 'Triples' },
 		{ key: 'homeRuns', label: 'Home Runs' },
 		{ key: 'rbis', label: 'RBIs' },
+		{ key: 'apiDataSource', label: 'Data Source' }
 	] as const;
 
 	public positionPlayerReadonlyFields = [
@@ -119,6 +129,7 @@ export class EditPlayerComponent extends EditEntityComponent<PositionPlayerGloba
 		{ key: 'runsAllowed', label: 'Runs Allowed' },
 		{ key: 'saves', label: 'Saves' },
 		{ key: 'saveOpportunities', label: 'Save Opportunities' },
+		{ key: 'apiDataSource', label: 'Data Source' }
 	] as const;
 
 	public pitcherReadonlyFields = [

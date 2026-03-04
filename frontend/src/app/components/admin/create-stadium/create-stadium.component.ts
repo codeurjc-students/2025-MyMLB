@@ -7,6 +7,8 @@ import { ActionButtonsComponent } from '../action-buttons/action-buttons.compone
 import { StadiumService } from '../../../services/stadium.service';
 import { Router } from '@angular/router';
 import { CreateStadiumRequest } from '../../../models/stadium.model';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @Component({
 	selector: 'app-create-stadium',
@@ -17,6 +19,8 @@ import { CreateStadiumRequest } from '../../../models/stadium.model';
 		SuccessModalComponent,
 		ErrorModalComponent,
 		ActionButtonsComponent,
+		MatInputModule,
+		MatFormFieldModule
 	],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './create-stadium.component.html',

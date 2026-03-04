@@ -22,6 +22,9 @@ import { EntityFormMapperService } from '../../../services/utilities/entity-form
 import { EditEntityComponent } from '../../../models/utilities/edit-entity-component.model';
 import { PaginationService } from '../../../services/utilities/pagination.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 @Component({
 	selector: 'app-edit-team',
@@ -35,7 +38,10 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
     ErrorModalComponent,
     ActionButtonsComponent,
     SelectElementModalComponent,
-    EscapeCloseDirective
+    EscapeCloseDirective,
+	MatFormFieldModule,
+	MatSelectModule,
+	MatInputModule
 ],
 	templateUrl: './edit-team.component.html',
 })

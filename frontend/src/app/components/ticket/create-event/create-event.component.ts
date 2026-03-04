@@ -8,11 +8,20 @@ import { SuccessModalComponent } from '../../modal/success-modal/success-modal.c
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { MatchService } from '../../../services/match.service';
 import { ShowMatch } from '../../../models/match.model';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
 	selector: 'app-create-event',
 	standalone: true,
-	imports: [CommonModule, FormsModule, SuccessModalComponent, ErrorModalComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		SuccessModalComponent,
+		ErrorModalComponent,
+		MatFormFieldModule,
+		MatInputModule
+	],
 	templateUrl: './create-event.component.html'
 })
 export class CreateEventComponent implements OnInit {

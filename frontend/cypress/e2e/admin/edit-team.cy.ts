@@ -39,6 +39,7 @@ describe('Edit Team Component E2E Tests', () => {
 	it('should allow editing city and general info', () => {
 		cy.get('input[placeholder="New York"]').clear().type('Boston');
 		cy.get('textarea[placeholder="Founded in 1901"]').clear().type('Updated info about team');
+		cy.get('mat-form-field').contains('Championship').click();
 		cy.get('input[placeholder="Add year..."]').type('2025');
 	});
 

@@ -18,6 +18,7 @@ export type PitcherGlobal = {
 	saves: number;
 	saveOpportunities: number;
 	picture: Pictures;
+	apiDataSource: boolean;
 };
 
 export type Pitcher = Omit<PitcherGlobal, 'teamName'>;
@@ -42,5 +43,6 @@ export type EditPitcherRequest = {
 	hitsAllowed?: number,
 	runsAllowed?: number,
 	saves?: number,
-	saveOpportunities?: number
+	saveOpportunities?: number,
+	apiDataSource?: boolean
 }

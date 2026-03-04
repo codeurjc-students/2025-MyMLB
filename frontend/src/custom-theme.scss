@@ -33,3 +33,76 @@ body {
   // Reset the user agent margin.
   margin: 0;
 }
+
+/* Background color */
+.dark .admin-input-fields .mdc-text-field--filled {
+  background-color: rgb(30, 41, 59) !important;
+}
+
+/* Input text color */
+.dark .admin-input-fields .mat-mdc-input-element,
+.dark .admin-input-fields .mat-mdc-select-value {
+  color: white !important;
+}
+
+/* Placeholder invisible by default */
+.dark .admin-input-fields .mat-mdc-input-element::placeholder {
+  color: transparent !important;
+  transition: color 0.2s ease;
+}
+
+/* Placeholder */
+.dark .admin-input-fields.mat-focused .mat-mdc-input-element::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Label */
+.dark .admin-input-fields .mdc-floating-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Label when clicked */
+.dark .admin-input-fields.mat-focused .mdc-floating-label {
+  color: #a5f3fc !important;
+}
+
+/* Select Arrow */
+.dark .admin-input-fields .mat-mdc-select-arrow {
+  color: rgba(255, 255, 255, 0.5) !important;
+  transition: transform 0.7s ease-in-out !important;
+}
+
+.dark .admin-input-fields .mat-mdc-select-placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Options */
+.dark .admin-input-fields .mat-mdc-select-panel {
+  background-color: rgb(30, 41, 59) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .admin-input-fields .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .mdc-text-field--disabled {
+	background-color: rgb(157, 159, 161) !important;
+}
+
+.dark .admin-input-fields .mdc-text-field--disabled .mdc-floating-label {
+    color: black !important;
+}
+
+.dark .admin-input-fields .mat-mdc-select-disabled .mat-mdc-select-placeholder {
+    color: black !important;
+}
+
+/* --- API Data Source Checkbox --- */
+.datasource-checkbox .mdc-label {
+  color: #000000 !important;
+}
+
+.dark .datasource-checkbox .mdc-label {
+  color: #ffffff !important;
+}

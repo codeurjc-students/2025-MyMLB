@@ -16,8 +16,8 @@ describe('Create Stadium Component E2E Tests', () => {
 
 	it('should display the creation form', () => {
 		cy.contains('Create Stadium').should('be.visible');
-		cy.get('input[placeholder="e.g., Shippett Stadium"]').should('exist');
-		cy.get('input[placeholder="e.g., 1923"]').should('exist');
+		cy.get('input[placeholder="Ex. Shippett Stadium"]').should('exist');
+		cy.get('input[placeholder="Ex. 1923"]').should('exist');
 	});
 
 	it('should create the stadium successfully', () => {
@@ -26,8 +26,8 @@ describe('Create Stadium Component E2E Tests', () => {
 			body: { name: 'Fenway Park', openingDate: 1912, pictures: [] },
 		}).as('createStadium');
 
-		cy.get('input[placeholder="e.g., Shippett Stadium"]').type('Fenway Park');
-		cy.get('input[placeholder="e.g., 1923"]').type('1912');
+		cy.get('input[placeholder="Ex. Shippett Stadium"]').type('Fenway Park');
+		cy.get('input[placeholder="Ex. 1923"]').type('1912');
 
 		cy.get('app-action-buttons button').contains('Confirm').click();
 

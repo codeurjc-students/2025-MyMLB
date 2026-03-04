@@ -32,7 +32,6 @@ import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
 import com.mlb.mlbportal.repositories.ticket.EventRepository;
 import com.mlb.mlbportal.repositories.ticket.SeatRepository;
 import com.mlb.mlbportal.repositories.ticket.SectorRepository;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.services.utilities.SeatBatchGenerationService;
 
 import lombok.RequiredArgsConstructor;
@@ -47,7 +46,6 @@ public class EventService {
     private final SeatRepository seatRepository;
     private final EventMapper eventMapper;
     private final SeatMapper seatMapper;
-    private final PaginationHandlerService paginationHandlerService;
     private final SeatBatchGenerationService seatBatchGenerationService;
 
     @Transactional(readOnly = true)

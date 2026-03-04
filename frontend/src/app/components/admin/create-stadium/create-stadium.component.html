@@ -8,25 +8,27 @@
 			<!-- Name -->
 			<div class="flex flex-col">
 				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Name</label>
-				<input
-					type="text"
-					[(ngModel)]="nameInput"
-					placeholder="e.g., Shippett Stadium"
-					class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
-				/>
+				<mat-form-field class="admin-input-fields w-full">
+					<mat-label>Name</mat-label>
+					<input matInput
+						type="text"
+						placeholder="Ex. Shippett Stadium"
+						[(ngModel)]="nameInput">
+				</mat-form-field>
 			</div>
 
 			<!-- Opening year -->
 			<div class="flex flex-col">
 				<label class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Opening year</label>
-				<input
-					type="number"
-					[(ngModel)]="openingDateInput"
-					placeholder="e.g., 1923"
-					min="1800"
-					max="{{getCurrentYear()}}"
-					class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-700"
-				/>
+				<mat-form-field class="admin-input-fields w-full">
+					<mat-label>Opening Year</mat-label>
+					<input matInput
+						type="number"
+						[(ngModel)]="openingDateInput"
+						placeholder="Ex. 1923"
+						min="1800"
+						max="{{getCurrentYear()}}">
+				</mat-form-field>
 			</div>
 		</div>
 

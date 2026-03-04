@@ -17,5 +17,6 @@ public record EditPitcherRequest(
         Optional<Integer> hitsAllowed,
         Optional<Integer> runsAllowed,
         Optional<Integer> saves,
-        Optional<Integer> saveOpportunities
+        Optional<Integer> saveOpportunities,
+        Optional<Boolean> apiDataSource
 ) {}

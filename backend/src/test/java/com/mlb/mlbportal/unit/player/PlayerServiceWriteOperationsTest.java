@@ -1,5 +1,31 @@
 package com.mlb.mlbportal.unit.player;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
@@ -27,29 +53,13 @@ import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static com.mlb.mlbportal.utils.TestConstants.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PLAYER_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.NEW_PLAYER_NUMBER;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NUMBER;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceWriteOperationsTest {
@@ -136,7 +146,7 @@ class PlayerServiceWriteOperationsTest {
 
         PositionPlayerDTO posDto = new PositionPlayerDTO(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF,
-                0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,null, false
         );
         CreatePositionPlayerRequest posReq = new CreatePositionPlayerRequest(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF
@@ -144,7 +154,7 @@ class PlayerServiceWriteOperationsTest {
 
         PitcherDTO pitDto = new PitcherDTO(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.RP,
-                0,0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,0,null, false
         );
         CreatePitcherRequest pitReq = new CreatePitcherRequest(
                 NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.SP
@@ -202,12 +212,12 @@ class PlayerServiceWriteOperationsTest {
 
         EditPositionPlayerRequest positionRequest = new EditPositionPlayerRequest(
                 Optional.empty(), Optional.of(NEW_PLAYER_NUMBER), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
         );
         EditPitcherRequest pitcherRequest = new EditPitcherRequest(
                 Optional.empty(), Optional.of(NEW_PLAYER_NUMBER), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()
         );
 
         return Stream.of(
@@ -268,14 +278,14 @@ class PlayerServiceWriteOperationsTest {
         posPlayer.setName(PLAYER1_NAME);
         PositionPlayerDTO posDto = new PositionPlayerDTO(
                 posPlayer.getName(), PLAYER1_NUMBER, TEST_TEAM1_NAME, PlayerPositions.CF,
-                0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,null, true
         );
 
         Pitcher pitcher = new Pitcher();
         pitcher.setName(PLAYER1_NAME);
         PitcherDTO pitDto = new PitcherDTO(
                 pitcher.getName(), PLAYER1_NUMBER, TEST_TEAM1_NAME, PitcherPositions.SP,
-                0,0,0,0,0,0,0,0,0,0,0,0,null
+                0,0,0,0,0,0,0,0,0,0,0,0,null, true
         );
 
         return Stream.of(

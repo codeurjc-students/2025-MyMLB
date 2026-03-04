@@ -5,11 +5,13 @@ import { Router } from '@angular/router';
 import { RegisterRequest } from '../../models/auth.model';
 import { CommonModule } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @Component({
 	selector: 'app-register',
 	standalone: true,
-	imports: [ReactiveFormsModule, CommonModule, MatTooltip],
+	imports: [ReactiveFormsModule, CommonModule, MatTooltip, MatInputModule, MatFormFieldModule],
 	templateUrl: './register.component.html'
 })
 export class RegisterComponent {

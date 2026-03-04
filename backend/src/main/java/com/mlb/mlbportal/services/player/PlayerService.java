@@ -150,6 +150,7 @@ public class PlayerService {
     public PositionPlayerDTO createPositionPlayer(CreatePositionPlayerRequest request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());
+        newPlayer.setApiDataSource(false);
         team.addPositionPlayer(newPlayer);
         this.playerRepository.save(newPlayer);
         return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);
@@ -164,6 +165,7 @@ public class PlayerService {
     public PitcherDTO createPitcher(CreatePitcherRequest request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());
+        newPlayer.setApiDataSource(false);
         team.addPitcher(newPlayer);
         this.playerRepository.save(newPlayer);
         return this.pitcherMapper.toPitcherDTO(newPlayer);
@@ -218,6 +220,7 @@ public class PlayerService {
         request.triples().ifPresent(player::setTriples);
         request.rbis().ifPresent(player::setRbis);
         request.homeRuns().ifPresent(player::setHomeRuns);
+        request.apiDataSource().ifPresent(player::setApiDataSource);
         this.updateTeamIfNeeded(player, request.teamName());
 
         this.playerRepository.save(player);
@@ -239,6 +242,7 @@ public class PlayerService {
         request.runsAllowed().ifPresent(player::setRunsAllowed);
         request.saves().ifPresent(player::setSaves);
         request.saveOpportunities().ifPresent(player::setSaveOpportunities);
+        request.apiDataSource().ifPresent(player::setApiDataSource);
         this.updateTeamIfNeeded(player, request.teamName());
 
         this.playerRepository.save(player);

@@ -10,10 +10,21 @@ import { ErrorModalComponent } from "../../modal/error-modal/error-modal.compone
 import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { SuccessfullPurchaseComponent } from "../successfull-purchase/successfull-purchase.component";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
 	selector: 'app-ticket-purchase',
-	imports: [CommonModule, ReactiveFormsModule, ErrorModalComponent, SuccessModalComponent, LoadingModalComponent, SuccessfullPurchaseComponent],
+	imports: [
+		CommonModule,
+		ReactiveFormsModule,
+		ErrorModalComponent,
+		SuccessModalComponent,
+		LoadingModalComponent,
+		SuccessfullPurchaseComponent,
+		MatFormFieldModule,
+		MatInputModule
+	],
 	standalone: true,
 	templateUrl: './ticket-purchase.component.html',
 })
