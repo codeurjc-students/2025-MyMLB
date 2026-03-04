@@ -17,8 +17,11 @@ describe('Edit Player Component E2E Tests', () => {
 
 		cy.intercept('GET', '/api/v1/searchs/player*', { fixture: 'player.json' }).as('searchPlayer');
 
-		cy.get('select').first().select('player');
-		cy.get('#player-type').select('position');
+		cy.get('mat-select').first().click();
+		cy.get('mat-option').contains('Player').click();
+
+		cy.get('#player-type').first().click();
+		cy.get('mat-option').contains('Position').click();
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Aaron Judge');
 		cy.wait('@searchPlayer');
 
@@ -32,7 +35,9 @@ describe('Edit Player Component E2E Tests', () => {
 
     it('should allow editing editable fields', () => {
         cy.get('input[type="number"][placeholder="99"]').clear().type('27');
-        cy.get('select').select('CF');
+		cy.get('mat-select').last().click();
+		cy.get('mat-option').contains('CF').click();
+
         cy.get('button').contains('Yankees').click();
         cy.get('app-select-element-modal').should('be.visible');
     });

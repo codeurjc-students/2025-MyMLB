@@ -84,10 +84,13 @@ class PlayerServiceWriteOperationsIntegrationTest {
         assertThat(player.name()).isEqualTo(NEW_PLAYER_NAME);
 
         Team team = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
+        PositionPlayer storedPlayer = this.positionPlayerRepository.findByNameOrThrow(NEW_PLAYER_NAME);
 
         assertThat(team.getPositionPlayers())
                 .extracting(PositionPlayer::getName)
                 .contains(player.name());
+
+        assertThat(storedPlayer.isApiDataSource()).isFalse();
     }
 
     @Test

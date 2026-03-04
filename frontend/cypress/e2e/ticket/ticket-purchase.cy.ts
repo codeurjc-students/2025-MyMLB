@@ -51,11 +51,15 @@ describe('Ticket Purchase E2E Tests', () => {
 	it('should purchase the ticket successfully', () => {
 		cy.get('input[type="number"]').clear().type('2');
 
-		cy.get('select').first().select('1').trigger('change');
+		cy.get('mat-select').first().click();
+		cy.get('mat-option').contains('1').click();
 		cy.wait('@getSeats');
 
-		cy.get('select').last().select('Seat A-1');
-		cy.get('select').last().select('Seat A-2');
+		cy.get('mat-select').last().click();
+		cy.get('mat-option').contains('Seat A-1').click();
+
+		cy.get('mat-select').last().click();
+		cy.get('mat-option').contains('Seat A-2').click();
 
 		cy.contains('Seat A-1').should('be.visible');
 		cy.contains('Seat A-2').should('be.visible');
