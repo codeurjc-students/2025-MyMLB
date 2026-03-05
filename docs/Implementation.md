@@ -6,6 +6,7 @@
 - Problems.
 - Environments (Front and Back. Environment variables etc)
 - SeatBatchService
+- Prueba
 
 
 ## @EntityGraph: 
