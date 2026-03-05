@@ -22,8 +22,8 @@ public class TeamServiceOperations {
         int totalGames = team.getWins() + team.getLosses();
         team.setTotalGames(totalGames);
         double pct = totalGames > 0 ? (double) team.getWins() / totalGames : 0.0;
-        double truncatedPct = ((int) (pct * 1000)) / 1000.0;
-        team.setPct(truncatedPct);
+        String formatted = String.format("%.3f", pct).replace("0.", ".");
+        team.setPct(formatted.startsWith(".") ? formatted : "." + formatted);
     }
 
     private static void calculateGamesBehind(Team team, TeamRepository teamRepository) {
@@ -31,14 +31,18 @@ public class TeamServiceOperations {
 
         divisionTeams.forEach(TeamServiceOperations::recalculatePct);
 
-        divisionTeams.sort((a, b) -> Double.compare(b.getPct(), a.getPct()));
+        divisionTeams.sort((a, b) -> {
+            Double pct1 = parseSafePct(a.getPct());
+            Double pct2 = parseSafePct(b.getPct());
+            return Double.compare(pct2, pct1);
+        });
 
         if (divisionTeams.isEmpty())
             return;
 
-        Team leader = divisionTeams.get(0);
+        Team leader = divisionTeams.getFirst();
         double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;
-        team.setGamesBehind(gamesBehind);
+        team.setGamesBehind(String.valueOf(gamesBehind));
     }
 
     private static void calculateLast10Games(Team team, MatchService matchService) {
@@ -58,8 +62,19 @@ public class TeamServiceOperations {
                     numberOfWins++;
                 }
             }
-            matchesRecord = numberOfWins + " - " + (last10Matches.size() - numberOfWins);
+            matchesRecord = numberOfWins + "-" + (last10Matches.size() - numberOfWins);
         }
         team.setLastTen(matchesRecord);
+    }
+
+    public static double parseSafePct(String pct) {
+        if (pct == null || pct.isEmpty() || pct.equals("-")) return 0.0;
+        try {
+            String normalized = pct.startsWith(".") ? "0" + pct : pct;
+            return Double.parseDouble(normalized);
+        }
+        catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 }

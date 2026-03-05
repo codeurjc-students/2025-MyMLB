@@ -47,7 +47,6 @@ public class TeamService {
     @Transactional(readOnly = true)
     public Page<TeamInfoDTO> getTeams(int page, int size) {
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));
         return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamInfoDTO);
     }
 
@@ -66,7 +65,6 @@ public class TeamService {
     @Transactional(readOnly = true)
     public TeamInfoDTO getTeamInfo(String teamName) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
-        TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService);
         this.teamRepository.save(team);
         return this.teamMapper.toTeamInfoDTO(team);
     }
@@ -97,7 +95,6 @@ public class TeamService {
         }
 
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> TeamServiceOperations.enrichTeamStats(team, teamRepository, matchService));
 
         Map<League, Map<Division, List<Team>>> grouped = teams.stream()
                 .collect(Collectors.groupingBy(Team::getLeague, Collectors.groupingBy(Team::getDivision)));
@@ -118,12 +115,13 @@ public class TeamService {
                     .getOrDefault(division, List.of());
 
             List<TeamDTO> sorted = divisionTeams.stream()
-                    .sorted((a, b) -> Double.compare(b.getPct(), a.getPct()))
-                    .map(this.teamMapper::toTeamDTO)
-                    .toList();
+                    .sorted((t1, t2) -> {
+                        Double pct1 = TeamServiceOperations.parseSafePct(t1.getPct());
+                        Double pct2 = TeamServiceOperations.parseSafePct(t2.getPct());
+                        return Double.compare(pct2, pct1);
+                    }).map(this.teamMapper::toTeamDTO).toList();
 
-            standings.computeIfAbsent(league, l -> new LinkedHashMap<>())
-                    .put(division, sorted);
+            standings.computeIfAbsent(league, l -> new LinkedHashMap<>()).put(division, sorted);
         }
         return standings;
     }

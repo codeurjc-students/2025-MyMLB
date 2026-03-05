@@ -10,8 +10,6 @@ import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 public record TeamInitDTO(
     String name,
     String abbreviation,
-    int wins,
-    int losses,
     String league,
     String division,
     String city,

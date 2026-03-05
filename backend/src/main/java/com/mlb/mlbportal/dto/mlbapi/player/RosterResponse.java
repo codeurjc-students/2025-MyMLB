@@ -3,6 +3,9 @@
  */
 package com.mlb.mlbportal.dto.mlbapi.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record RosterResponse(List<RosterEntry> roster) {}

@@ -2,8 +2,6 @@
   {
     "name": "Toronto Blue Jays",
     "abbreviation": "TOR",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "EAST",
     "city": "Toronto",
@@ -14,8 +12,6 @@
   {
     "name": "New York Yankees",
     "abbreviation": "NYY",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "EAST",
     "city": "New York",
@@ -30,8 +26,6 @@
   {
     "name": "Boston Red Sox",
     "abbreviation": "BOS",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "EAST",
     "city": "Boston",
@@ -42,8 +36,6 @@
   {
     "name": "Tampa Bay Rays",
     "abbreviation": "TB",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "EAST",
     "city": "St. Petersburg",
@@ -54,8 +46,6 @@
   {
     "name": "Baltimore Orioles",
     "abbreviation": "BAL",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "EAST",
     "city": "Baltimore",
@@ -67,8 +57,6 @@
   {
     "name": "Cleveland Guardians",
     "abbreviation": "CLE",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "CENTRAL",
     "city": "Cleveland",
@@ -79,8 +67,6 @@
   {
     "name": "Detroit Tigers",
     "abbreviation": "DET",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "CENTRAL",
     "city": "Detroit",
@@ -91,8 +77,6 @@
   {
     "name": "Kansas City Royals",
     "abbreviation": "KC",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "CENTRAL",
     "city": "Kansas City",
@@ -103,8 +87,6 @@
   {
     "name": "Minnesota Twins",
     "abbreviation": "MIN",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "CENTRAL",
     "city": "Minneapolis",
@@ -115,8 +97,6 @@
   {
     "name": "Chicago White Sox",
     "abbreviation": "CWS",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "CENTRAL",
     "city": "Chicago",
@@ -128,8 +108,6 @@
   {
     "name": "Seattle Mariners",
     "abbreviation": "SEA",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "WEST",
     "city": "Seattle",
@@ -140,8 +118,6 @@
   {
     "name": "Houston Astros",
     "abbreviation": "HOU",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "WEST",
     "city": "Houston",
@@ -152,8 +128,6 @@
   {
     "name": "Texas Rangers",
     "abbreviation": "TEX",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "WEST",
     "city": "Arlington",
@@ -164,8 +138,6 @@
   {
     "name": "Athletics",
     "abbreviation": "ATH",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "WEST",
     "city": "Sacramento",
@@ -176,8 +148,6 @@
   {
     "name": "Los Angeles Angels",
     "abbreviation": "LAA",
-    "wins": 0,
-    "losses": 0,
     "league": "AL",
     "division": "WEST",
     "city": "Anaheim",
@@ -189,8 +159,6 @@
   {
     "name": "Philadelphia Phillies",
     "abbreviation": "PHI",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "EAST",
     "city": "Philadelphia",
@@ -201,8 +169,6 @@
   {
     "name": "New York Mets",
     "abbreviation": "NYM",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "EAST",
     "city": "New York",
@@ -213,8 +179,6 @@
   {
     "name": "Atlanta Braves",
     "abbreviation": "ATL",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "EAST",
     "city": "Atlanta",
@@ -225,8 +189,6 @@
   {
     "name": "Miami Marlins",
     "abbreviation": "MIA",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "EAST",
     "city": "Miami",
@@ -237,8 +199,6 @@
   {
     "name": "Washington Nationals",
     "abbreviation": "WSH",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "EAST",
     "city": "Washington",
@@ -250,8 +210,6 @@
   {
     "name": "Milwaukee Brewers",
     "abbreviation": "MIL",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "CENTRAL",
     "city": "Milwaukee",
@@ -262,8 +220,6 @@
   {
     "name": "Chicago Cubs",
     "abbreviation": "CHC",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "CENTRAL",
     "city": "Chicago",
@@ -274,8 +230,6 @@
   {
     "name": "Cincinnati Reds",
     "abbreviation": "CIN",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "CENTRAL",
     "city": "Cincinnati",
@@ -286,8 +240,6 @@
   {
     "name": "St. Louis Cardinals",
     "abbreviation": "STL",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "CENTRAL",
     "city": "St. Louis",
@@ -298,8 +250,6 @@
   {
     "name": "Pittsburgh Pirates",
     "abbreviation": "PIT",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "CENTRAL",
     "city": "Pittsburgh",
@@ -311,8 +261,6 @@
   {
     "name": "Los Angeles Dodgers",
     "abbreviation": "LAD",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "WEST",
     "city": "Los Angeles",
@@ -323,8 +271,6 @@
   {
     "name": "San Diego Padres",
     "abbreviation": "SD",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "WEST",
     "city": "San Diego",
@@ -335,8 +281,6 @@
   {
     "name": "San Francisco Giants",
     "abbreviation": "SF",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "WEST",
     "city": "San Francisco",
@@ -347,8 +291,6 @@
   {
     "name": "Arizona Diamondbacks",
     "abbreviation": "AZ",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "WEST",
     "city": "Phoenix",
@@ -359,8 +301,6 @@
   {
     "name": "Colorado Rockies",
     "abbreviation": "COL",
-    "wins": 0,
-    "losses": 0,
     "league": "NL",
     "division": "WEST",
     "city": "Denver",

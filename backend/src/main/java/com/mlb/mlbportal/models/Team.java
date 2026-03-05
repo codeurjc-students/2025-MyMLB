@@ -37,9 +37,9 @@ public class Team {
 
     private int losses;
 
-    private double pct;
+    private String pct;
 
-    private double gamesBehind;
+    private String gamesBehind;
 
     private String lastTen;
 
@@ -98,36 +98,39 @@ public class Team {
         this.favoritedByUsers.clear();
     }
 
-    public Team(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships) {
+    public Team(String name, String abbreviation, String city, String info, List<Integer> championships) {
         this.name = name;
         this.abbreviation = abbreviation;
-        this.wins = wins;
-        this.losses = losses;
         this.city = city;
         this.generalInfo = info;
         this.championships = championships;
         this.lastTen = "0-0";
     }
 
-    public Team(String name, String abbreviation, int wins, int losses, League league, Division division) {
+    public Team(String name, String abbreviation, League league, Division division) {
         this.name = name;
         this.abbreviation = abbreviation;
-        this.wins = wins;
-        this.losses = losses;
         this.league = league;
         this.division = division;
         this.lastTen = "0-0";
     }
 
-    public Team(String name, String abbreviation, int wins, int losses, League league, Division division, String teamLogo) {
+    public Team(String name, String abbreviation, League league, Division division, String teamLogo) {
         this.name = name;
         this.abbreviation = abbreviation;
-        this.wins = wins;
-        this.losses = losses;
         this.league = league;
         this.division = division;
         this.teamLogo = teamLogo;
         this.lastTen = "0-0";
+    }
+
+    public void addTeamStats(int gamesPlayed, int wins, int losses, String gamesBehind, String pct, String lastTen) {
+        this.totalGames = gamesPlayed;
+        this.wins = wins;
+        this.losses = losses;
+        this.gamesBehind = gamesBehind;
+        this.pct = pct;
+        this.lastTen = lastTen;
     }
 
     public void updateWins() {

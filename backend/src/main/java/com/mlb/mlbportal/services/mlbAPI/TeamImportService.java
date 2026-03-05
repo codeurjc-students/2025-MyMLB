@@ -1,16 +1,18 @@
 package com.mlb.mlbportal.services.mlbAPI;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.dto.mlbapi.team.*;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
-import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -27,6 +29,7 @@ public class TeamImportService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map<Integer, TeamSummary> cache = new HashMap<>();
+    private final TeamRepository teamRepository;
 
     private static final Map<String, Division> TEAM_DIVISIONS = Map.ofEntries(
             Map.entry("BAL", Division.EAST),
@@ -146,5 +149,56 @@ public class TeamImportService {
     public Map<String, Integer> fallbackFindStatsAPiID(Throwable t) {
         log.error("Cannot obtain the stat API ID: {}", t.getMessage());
         return new HashMap<>();
+    }
+
+    @Transactional
+    @CircuitBreaker(name = "getTeamStats", fallbackMethod = "fallbackTeamStats")
+    @Retry(name = "getTeamStats")
+    public void getTeamStats() {
+        int currentYear = LocalDate.now().getYear();
+        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
+        StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
+        if (response == null) {
+            throw new IllegalArgumentException("TBD"); // TODO
+        }
+
+        if (response.records().isEmpty()) {
+            log.warn("No stats found for the {} season. Setting default stats", currentYear);
+            this.setEmptyStats();
+        }
+        else {
+            List<Team> teamsToSave = new ArrayList<>();
+            for (Records record : response.records()) {
+               for (TeamRecords teamRecord : record.teamRecords()) {
+                   Team team = this.updateTeamStats(teamRecord);
+                   teamsToSave.add(team);
+               }
+            }
+            this.teamRepository.saveAll(teamsToSave);
+            log.info("Team Stats and Rankings successfully updated!");
+        }
+    }
+
+    private Team updateTeamStats(TeamRecords teamRecord) {
+        Team team = this.teamRepository.findByNameOrThrow(teamRecord.team().name());
+        team.addTeamStats(
+                teamRecord.gamesPlayed(),
+                teamRecord.wins(),
+                teamRecord.losses(),
+                teamRecord.divisionGamesBehind(),
+                teamRecord.winningPercentage(),
+                teamRecord.getLastTenGames()
+        );
+        return team;
+    }
+
+    private void setEmptyStats() {
+        List<Team> teams = this.teamRepository.findAll();
+        teams.forEach(team -> team.addTeamStats(0, 0, 0, String.valueOf(0.0), ".000", "0-0"));
+        this.teamRepository.saveAll(teams);
+    }
+
+    public void fallbackTeamStats(Throwable throwable) {
+        log.error("getTeamStats: Error fetching the team stats: {} ", throwable.getMessage());
     }
 }
