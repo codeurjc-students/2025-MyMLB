@@ -2,6 +2,9 @@
 
 import com.mlb.mlbportal.handler.notFound.EventNotFoundException;
 import com.mlb.mlbportal.models.ticket.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,11 +14,15 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository&lt;Event, Long&gt; {
+    @Override
+    Page&lt;Event&gt; findAll(Pageable pageable);
+
     default Event findEventByIdOrElseThrow(Long eventId) {
-<span class="fc" id="L15">        return this.findById(eventId).orElseThrow(() -&gt; new EventNotFoundException(eventId));</span>
+<span class="fc" id="L21">        return this.findById(eventId).orElseThrow(() -&gt; new EventNotFoundException(eventId));</span>
     }
 
-    @Query(&quot;SELECT e FROM Event e JOIN FETCH e.match m WHERE m.id = :matchId AND m.date &gt; CURRENT_TIMESTAMP&quot;)
+    @EntityGraph(attributePaths = {&quot;match&quot;})
+    @Query(&quot;SELECT e FROM Event e WHERE e.match.id = :matchId AND e.match.date &gt; CURRENT_TIMESTAMP&quot;)
     Optional&lt;Event&gt; findEventByMatchId(@Param(&quot;matchId&quot;) Long matchId);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

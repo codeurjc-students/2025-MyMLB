@@ -151,6 +151,9 @@ public class TeamImportService {
         return new HashMap<>();
     }
 
+    /**
+     * Obtain the team stats from the API, and store it in the database.
+     */
     @Transactional
     @CircuitBreaker(name = "getTeamStats", fallbackMethod = "fallbackTeamStats")
     @Retry(name = "getTeamStats")
@@ -159,7 +162,7 @@ public class TeamImportService {
         String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
         StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
         if (response == null) {
-            throw new IllegalArgumentException("TBD"); // TODO
+            throw new NullPointerException("Error fetching the team stats from the API. The response came null");
         }
 
         if (response.records().isEmpty()) {
@@ -194,7 +197,7 @@ public class TeamImportService {
 
     private void setEmptyStats() {
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> team.addTeamStats(0, 0, 0, String.valueOf(0.0), ".000", "0-0"));
+        teams.forEach(team -> team.addTeamStats(0, 0, 0, 0.0, ".000", "0-0"));
         this.teamRepository.saveAll(teams);
     }
 

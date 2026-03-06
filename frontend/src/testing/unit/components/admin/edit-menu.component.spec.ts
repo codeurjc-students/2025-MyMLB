@@ -23,7 +23,7 @@ describe('Edit Menu Component Tests', () => {
 		162,
 		100,
 		62,
-		0.617,
+		'.617',
 		0,
 		'7-3'
 	);
@@ -128,7 +128,7 @@ describe('Edit Menu Component Tests', () => {
 			162,
 			80,
 			82,
-			0.494,
+			'.494',
 			10,
 			'5-5'
 		);

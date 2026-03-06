@@ -10,7 +10,7 @@ export type Team = {
 	totalGames: number,
 	wins: number,
 	losses: number,
-	pct: number,
+	pct: string,
 	gamesBehind: number,
 	lastTen: string
 }

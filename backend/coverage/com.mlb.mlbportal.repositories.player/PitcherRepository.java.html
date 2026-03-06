@@ -3,7 +3,8 @@
 import java.util.List;
 import java.util.Optional;
 
-import com.mlb.mlbportal.models.player.PositionPlayer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,16 +14,19 @@ import com.mlb.mlbportal.models.player.Pitcher;
 
 @Repository
 public interface PitcherRepository extends JpaRepository&lt;Pitcher, Long&gt; {
+    @Override
+    Page&lt;Pitcher&gt; findAll(Pageable pageable);
+
     Optional&lt;Pitcher&gt; findByStatsApiId(Integer id);
 
     Optional&lt;Pitcher&gt; findByName(String name);
 
     default Pitcher findByNameOrThrow(String name) {
-<span class="nc" id="L21">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+<span class="nc" id="L25">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
     }
 
     List&lt;Pitcher&gt; findByTeamOrderByNameAsc(Team team);
 
-    List&lt;Pitcher&gt; findByNameContainingIgnoreCase(String input);
+    Page&lt;Pitcher&gt; findByNameContainingIgnoreCase(String input, Pageable pageable);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

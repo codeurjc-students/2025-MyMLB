@@ -2,32 +2,49 @@
 
 import com.mlb.mlbportal.dto.ticket.SeatDTO;
 import com.mlb.mlbportal.models.ticket.Seat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-02-14T14:00:34+0100&quot;,
+    date = &quot;2026-03-06T21:03:20+0100&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
-<span class="fc" id="L14">public class SeatMapperImpl implements SeatMapper {</span>
+<span class="fc" id="L17">public class SeatMapperImpl implements SeatMapper {</span>
 
     @Override
     public SeatDTO toSeatDTO(Seat seat) {
-<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if ( seat == null ) {</span>
-<span class="nc" id="L19">            return null;</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if ( seat == null ) {</span>
+<span class="nc" id="L22">            return null;</span>
         }
 
-<span class="fc" id="L22">        Long id = null;</span>
-<span class="fc" id="L23">        String name = null;</span>
+<span class="fc" id="L25">        Long id = null;</span>
+<span class="fc" id="L26">        String name = null;</span>
 
-<span class="fc" id="L25">        id = seat.getId();</span>
-<span class="fc" id="L26">        name = seat.getName();</span>
+<span class="fc" id="L28">        id = seat.getId();</span>
+<span class="fc" id="L29">        name = seat.getName();</span>
 
-<span class="fc" id="L28">        SeatDTO seatDTO = new SeatDTO( id, name );</span>
+<span class="fc" id="L31">        SeatDTO seatDTO = new SeatDTO( id, name );</span>
 
-<span class="fc" id="L30">        return seatDTO;</span>
+<span class="fc" id="L33">        return seatDTO;</span>
+    }
+
+    @Override
+    public List&lt;SeatDTO&gt; toListSeatDTO(Collection&lt;Seat&gt; seats) {
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if ( seats == null ) {</span>
+<span class="nc" id="L39">            return null;</span>
+        }
+
+<span class="fc" id="L42">        List&lt;SeatDTO&gt; list = new ArrayList&lt;SeatDTO&gt;( seats.size() );</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for ( Seat seat : seats ) {</span>
+<span class="fc" id="L44">            list.add( toSeatDTO( seat ) );</span>
+<span class="fc" id="L45">        }</span>
+
+<span class="fc" id="L47">        return list;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

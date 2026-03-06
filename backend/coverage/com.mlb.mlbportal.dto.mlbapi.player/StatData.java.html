@@ -3,7 +3,10 @@
  */
 package com.mlb.mlbportal.dto.mlbapi.player;
 
-<span class="fc" id="L6">public record StatData(</span>
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L9">public record StatData(</span>
         // Player Stats
         Integer atBats,
         Integer hits,

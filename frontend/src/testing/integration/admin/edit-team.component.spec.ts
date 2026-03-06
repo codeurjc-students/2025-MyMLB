@@ -26,7 +26,7 @@ describe('Edit Team Component Integration Tests', () => {
 			totalGames: 162,
 			wins: 100,
 			losses: 62,
-			pct: 0.617,
+			pct: '.617',
 			gamesBehind: 0,
 			lastTen: '7-3',
 		},

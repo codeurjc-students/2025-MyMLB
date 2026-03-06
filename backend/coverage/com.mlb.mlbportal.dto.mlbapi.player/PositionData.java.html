@@ -16,5 +16,8 @@
  */
 package com.mlb.mlbportal.dto.mlbapi.player;
 
-<span class="fc" id="L19">public record PositionData(String code, String abbreviation) {}</span>
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L22">public record PositionData(String code, String abbreviation) {}</span>
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

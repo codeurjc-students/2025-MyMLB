@@ -1,3 +1,7 @@
+/**
+ * DTO that maps team stats from the API.
+ */
+
 package com.mlb.mlbportal.dto.mlbapi.team;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,7 +13,7 @@ public record TeamRecords(
         Integer wins,
         Integer losses,
         String winningPercentage,
-        String divisionGamesBehind,
+        Double divisionGamesBehind,
         RecordsWrapper records
 ) {
     public String getLastTenGames() {

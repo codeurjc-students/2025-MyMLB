@@ -3,9 +3,12 @@
  * */
 package com.mlb.mlbportal.dto.mlbapi.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
-<span class="fc" id="L8">public record PlayerDetailInfo(</span>
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L11">public record PlayerDetailInfo(</span>
         int id,
         String fullName,
         String primaryNumber,

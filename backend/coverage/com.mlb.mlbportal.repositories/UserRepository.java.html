@@ -2,6 +2,8 @@
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,10 +12,13 @@ import com.mlb.mlbportal.models.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository&lt;UserEntity, Long&gt; {
+    @Override
+    Page&lt;UserEntity&gt; findAll(Pageable pageable);
+
     Optional&lt;UserEntity&gt; findByUsername(String username);
 
     default UserEntity findByUsernameOrThrow(String username) {
-<span class="fc" id="L16">        return this.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
+<span class="fc" id="L21">        return this.findByUsername(username).orElseThrow(() -&gt; new UserNotFoundException(&quot;User Not Found&quot;));</span>
     }
     
     Optional&lt;UserEntity&gt; findByEmail(String email);

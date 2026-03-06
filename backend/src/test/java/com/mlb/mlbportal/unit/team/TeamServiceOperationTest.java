@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.unit.team;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -40,15 +41,20 @@ class TeamServiceOperationsTest {
     @SuppressWarnings("unused")
     void setUp() {
         this.teams = BuildMocksFactory.setUpTeamMocks();
-        this.team = this.teams.get(0);
+
+        this.team = this.teams.getFirst();
+        this.team.setWins(TEST_TEAM1_WINS);
+        this.team.setLosses(TEST_TEAM1_LOSSES);
+
         this.leader = this.teams.get(1);
+        this.leader.setWins(TEST_TEAM2_WINS);
+        this.leader.setLosses(TEST_TEAM2_LOSSES);
     }
 
     @Test
-    @DisplayName("Should enrich team stats using BuildMocksFactory teams")
-    void testEnrichTeamStatsWithMocks() {
-        when(this.teamRepository.findByLeagueAndDivision(this.team.getLeague(), this.team.getDivision()))
-            .thenReturn(Arrays.asList(this.leader, this.team));
+    @DisplayName("Should enrich team stats")
+    void testEnrichTeamStats() {
+        when(this.teamRepository.findByLeagueAndDivision(this.team.getLeague(), this.team.getDivision())).thenReturn(Arrays.asList(this.leader, this.team));
 
         Match win = new Match(this.team, this.leader, 6, 2, null, null);
         Match loss = new Match(this.leader, this.team, 5, 3, null, null);
@@ -57,9 +63,9 @@ class TeamServiceOperationsTest {
         TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
 
         assertThat(this.team.getTotalGames()).isEqualTo(this.team.getWins() + this.team.getLosses());
-        assertThat(this.team.getPct()).isGreaterThan(0.0);
+        assertThat(Double.parseDouble(this.team.getPct())).isGreaterThan(Double.parseDouble("0.0"));
         assertThat(this.team.getGamesBehind()).isGreaterThan(0.0);
-        assertThat(this.team.getLastTen()).isEqualTo("1 - 1");
+        assertThat(this.team.getLastTen()).isEqualTo("1-1");
 
         verify(this.teamRepository).save(this.team);
     }
@@ -67,8 +73,7 @@ class TeamServiceOperationsTest {
     @Test
     @DisplayName("Should handle empty last 10 matches")
     void testLastTenEmpty() {
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST))
-            .thenReturn(Arrays.asList(this.team));
+        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Arrays.asList(this.team));
         when(this.matchService.getLast10Matches(this.team)).thenReturn(List.of());
 
         TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
@@ -82,13 +87,12 @@ class TeamServiceOperationsTest {
         this.team.setWins(0);
         this.team.setLosses(0);
 
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST))
-            .thenReturn(Arrays.asList(this.team));
+        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Arrays.asList(this.team));
         when(this.matchService.getLast10Matches(this.team)).thenReturn(Collections.emptyList());
 
         TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
 
         assertThat(this.team.getTotalGames()).isZero();
-        assertThat(this.team.getPct()).isEqualTo(0.0);
+        assertThat(this.team.getPct()).isEqualTo(".000");
     }
 }

@@ -4,7 +4,10 @@
 
 package com.mlb.mlbportal.dto.mlbapi.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
-<span class="fc" id="L9">public record PlayerResponse(List&lt;PlayerDetailInfo&gt; people) {}</span>
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L12">public record PlayerResponse(List&lt;PlayerDetailInfo&gt; people) {}</span>
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

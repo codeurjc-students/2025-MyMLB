@@ -1,6 +1,7 @@
 package com.mlb.mlbportal.services.team;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
@@ -22,8 +23,13 @@ public class TeamServiceOperations {
         int totalGames = team.getWins() + team.getLosses();
         team.setTotalGames(totalGames);
         double pct = totalGames > 0 ? (double) team.getWins() / totalGames : 0.0;
-        String formatted = String.format("%.3f", pct).replace("0.", ".");
-        team.setPct(formatted.startsWith(".") ? formatted : "." + formatted);
+        String formatted = String.format(Locale.US, "%.3f", pct);
+        if (formatted.startsWith("0.")) {
+            team.setPct(formatted.substring(1));
+        }
+        else {
+            team.setPct(formatted);
+        }
     }
 
     private static void calculateGamesBehind(Team team, TeamRepository teamRepository) {
@@ -42,7 +48,7 @@ public class TeamServiceOperations {
 
         Team leader = divisionTeams.getFirst();
         double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;
-        team.setGamesBehind(String.valueOf(gamesBehind));
+        team.setGamesBehind(gamesBehind);
     }
 
     private static void calculateLast10Games(Team team, MatchService matchService) {

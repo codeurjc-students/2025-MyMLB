@@ -7,12 +7,14 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = &quot;T_Pitcher&quot;)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,33 +37,63 @@ public class Pitcher extends Player {
     private double whip;
 
     public Pitcher(String name, int number,Team team, PitcherPositions position, int games, int wins, int losses) {
-<span class="fc" id="L38">        super(name, number, team);</span>
-<span class="fc" id="L39">        this.position = position;</span>
-<span class="fc" id="L40">        this.games = games;</span>
-<span class="fc" id="L41">        this.wins = wins;</span>
-<span class="fc" id="L42">        this.losses = losses;</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L40">        super(name, number, team);</span>
+<span class="fc" id="L41">        this.position = position;</span>
+<span class="fc" id="L42">        this.games = games;</span>
+<span class="fc" id="L43">        this.wins = wins;</span>
+<span class="fc" id="L44">        this.losses = losses;</span>
+<span class="fc" id="L45">    }</span>
 
     public Pitcher(String name, int number, Team team, PictureInfo picture, PitcherPositions position, int games, int wins) {
-<span class="nc" id="L46">        super(name, number,  team, picture);</span>
-<span class="nc" id="L47">        this.position = position;</span>
-<span class="nc" id="L48">        this.games = games;</span>
-<span class="nc" id="L49">        this.wins = wins;</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L48">        super(name, number,  team, picture);</span>
+<span class="nc" id="L49">        this.position = position;</span>
+<span class="nc" id="L50">        this.games = games;</span>
+<span class="nc" id="L51">        this.wins = wins;</span>
+<span class="nc" id="L52">    }</span>
 
     public Pitcher(String name, int number, Team team, PitcherPositions position) {
-<span class="fc" id="L53">        super(name, number, team);</span>
-<span class="fc" id="L54">        this.position = position;</span>
-<span class="fc" id="L55">        this.games = 0;</span>
-<span class="fc" id="L56">        this.wins = 0;</span>
-<span class="fc" id="L57">        this.losses = 0;</span>
-<span class="fc" id="L58">        this.inningsPitched = 0.0;</span>
-<span class="fc" id="L59">        this.totalStrikeouts = 0;</span>
-<span class="fc" id="L60">        this.walks = 0;</span>
-<span class="fc" id="L61">        this.hitsAllowed = 0;</span>
-<span class="fc" id="L62">        this.runsAllowed = 0;</span>
-<span class="fc" id="L63">        this.saves = 0;</span>
-<span class="fc" id="L64">        this.saveOpportunities = 0;</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L55">        super(name, number, team);</span>
+<span class="fc" id="L56">        this.position = position;</span>
+<span class="fc" id="L57">        this.games = 0;</span>
+<span class="fc" id="L58">        this.wins = 0;</span>
+<span class="fc" id="L59">        this.losses = 0;</span>
+<span class="fc" id="L60">        this.inningsPitched = 0.0;</span>
+<span class="fc" id="L61">        this.totalStrikeouts = 0;</span>
+<span class="fc" id="L62">        this.walks = 0;</span>
+<span class="fc" id="L63">        this.hitsAllowed = 0;</span>
+<span class="fc" id="L64">        this.runsAllowed = 0;</span>
+<span class="fc" id="L65">        this.saves = 0;</span>
+<span class="fc" id="L66">        this.saveOpportunities = 0;</span>
+<span class="fc" id="L67">    }</span>
+
+    public void createWithStats(int games, int wins, int losses, double ip, int so, int walks, int ha, int ra, int saves, int saveO, double era, double whip) {
+<span class="fc" id="L70">        this.games = games;</span>
+<span class="fc" id="L71">        this.wins = wins;</span>
+<span class="fc" id="L72">        this.losses = losses;</span>
+<span class="fc" id="L73">        this.inningsPitched = ip;</span>
+<span class="fc" id="L74">        this.totalStrikeouts = so;</span>
+<span class="fc" id="L75">        this.walks = walks;</span>
+<span class="fc" id="L76">        this.hitsAllowed = ha;</span>
+<span class="fc" id="L77">        this.runsAllowed = ra;</span>
+<span class="fc" id="L78">        this.saves = saves;</span>
+<span class="fc" id="L79">        this.saveOpportunities = saveO;</span>
+<span class="fc" id="L80">        this.era = era;</span>
+<span class="fc" id="L81">        this.whip = whip;</span>
+<span class="fc" id="L82">    }</span>
+
+    public void createWithNoStats() {
+<span class="nc" id="L85">        this.games = 0;</span>
+<span class="nc" id="L86">        this.wins = 0;</span>
+<span class="nc" id="L87">        this.losses = 0;</span>
+<span class="nc" id="L88">        this.inningsPitched = 0.0;</span>
+<span class="nc" id="L89">        this.totalStrikeouts = 0;</span>
+<span class="nc" id="L90">        this.walks = 0;</span>
+<span class="nc" id="L91">        this.hitsAllowed = 0;</span>
+<span class="nc" id="L92">        this.runsAllowed = 0;</span>
+<span class="nc" id="L93">        this.era = 0.00;</span>
+<span class="nc" id="L94">        this.whip = 0.00;</span>
+<span class="nc" id="L95">        this.saves = 0;</span>
+<span class="nc" id="L96">        this.saveOpportunities = 0;</span>
+<span class="nc" id="L97">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

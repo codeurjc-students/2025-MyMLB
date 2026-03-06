@@ -1,6 +1,8 @@
 package com.mlb.mlbportal.unit.mlbApi;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,15 +12,18 @@ import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.dto.mlbapi.team.*;
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,8 +31,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbapi.match.LeagueInfo;
-import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
-import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
@@ -37,6 +40,9 @@ class TeamImportServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private TeamRepository teamRepository;
 
     @InjectMocks
     private TeamImportService teamImportService;
@@ -186,5 +192,61 @@ class TeamImportServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.containsKey(TEST_TEAM1_NAME)).isTrue();
         assertThat(result.get(TEST_TEAM1_NAME)).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Should obtain team stats from API")
+    void testGetTeamStats() {
+        int currentYear = LocalDate.now().getYear();
+        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
+
+        TeamRecordsGeneralInfo apiTeam = new TeamRecordsGeneralInfo(1L, TEST_TEAM1_NAME);
+        TeamRecords teamRecord = new TeamRecords(
+                apiTeam, 10, 6, 4, ".600", 2.0, new RecordsWrapper(new ArrayList<>())
+        );
+        Records record = new Records(List.of(teamRecord));
+        StandingsResponse response = new StandingsResponse(List.of(record));
+
+        Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+
+        when(this.restTemplate.getForObject(url, StandingsResponse.class)).thenReturn(response);
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(domainTeam);
+
+        this.teamImportService.getTeamStats();
+
+        assertThat(domainTeam.getWins()).isEqualTo(6);
+        assertThat(domainTeam.getPct()).isEqualTo(".600");
+        verify(this.teamRepository, times(1)).findByNameOrThrow(TEST_TEAM1_NAME);
+        verify(this.teamRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("Should handle empty records by setting empty stats")
+    void testGetTeamStatsEmptyRecords() {
+        int currentYear = LocalDate.now().getYear();
+        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
+
+        StandingsResponse response = new StandingsResponse(List.of());
+        Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+
+        when(this.restTemplate.getForObject(url, StandingsResponse.class)).thenReturn(response);
+        when(this.teamRepository.findAll()).thenReturn(List.of(domainTeam));
+
+        this.teamImportService.getTeamStats();
+
+        assertThat(domainTeam.getWins()).isZero();
+        assertThat(domainTeam.getPct()).isEqualTo(".000");
+        verify(this.teamRepository).findAll();
+        verify(this.teamRepository).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("Should throw NullPointerException when API response is null")
+    void testGetTeamStatsNullResponse() {
+        when(this.restTemplate.getForObject(anyString(), eq(StandingsResponse.class))).thenReturn(null);
+
+        assertThatThrownBy(() -> this.teamImportService.getTeamStats())
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Error fetching the team stats from the API. The response came null");
     }
 }

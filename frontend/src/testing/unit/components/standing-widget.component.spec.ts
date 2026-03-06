@@ -21,8 +21,8 @@ describe('Standings Component Tests', () => {
 					totalGames: 162,
 					wins: 90,
 					losses: 72,
-					pct: 0.556,
-					gamesBehind: 0,
+					pct: '.556',
+					gamesBehind: 0.0,
 					lastTen: '6-4'
 				},
 			],
@@ -37,8 +37,8 @@ describe('Standings Component Tests', () => {
 					totalGames: 162,
 					wins: 100,
 					losses: 62,
-					pct: 0.617,
-					gamesBehind: 0,
+					pct: '.617',
+					gamesBehind: 0.0,
 					lastTen: '8-2'
 				},
 			],
@@ -46,7 +46,7 @@ describe('Standings Component Tests', () => {
 	};
 
 	beforeEach(() => {
-		const teamServiceMock = jasmine.createSpyObj('TeamService', ['getStandings']);
+		const teamServiceMock = jasmine.createSpyObj('TeamService', ['getStandings', 'isGoodPct']);
 		const backgroundServiceMock = jasmine.createSpyObj('BackgroundColorService', [
 			'getBackgroundColor',
 		]);

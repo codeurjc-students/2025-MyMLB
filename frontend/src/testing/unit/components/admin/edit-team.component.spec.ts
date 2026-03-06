@@ -26,7 +26,7 @@ describe('Edit Team Component Tests', () => {
 		162,
 		100,
 		62,
-		0.617,
+		'.617',
 		0,
 		'7-3'
 	);

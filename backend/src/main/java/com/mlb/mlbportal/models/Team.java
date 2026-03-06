@@ -39,7 +39,7 @@ public class Team {
 
     private String pct;
 
-    private String gamesBehind;
+    private double gamesBehind;
 
     private String lastTen;
 
@@ -124,7 +124,7 @@ public class Team {
         this.lastTen = "0-0";
     }
 
-    public void addTeamStats(int gamesPlayed, int wins, int losses, String gamesBehind, String pct, String lastTen) {
+    public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, String pct, String lastTen) {
         this.totalGames = gamesPlayed;
         this.wins = wins;
         this.losses = losses;
