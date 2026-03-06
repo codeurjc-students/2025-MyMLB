@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
     @JsonCreator
     public static PitcherPositions fromLabel(String label) {
-<span class="nc bnc" id="L25" title="All 2 branches missed.">        for (PitcherPositions pos : values()) {</span>
-<span class="nc bnc" id="L26" title="All 4 branches missed.">            if (pos.name().equalsIgnoreCase(label) || pos.getLabel().equalsIgnoreCase(label)) {</span>
-<span class="nc" id="L27">                return pos;</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        for (PitcherPositions pos : values()) {</span>
+<span class="pc bpc" id="L26" title="1 of 4 branches missed.">            if (pos.name().equalsIgnoreCase(label) || pos.getLabel().equalsIgnoreCase(label)) {</span>
+<span class="fc" id="L27">                return pos;</span>
             }
         }
 <span class="nc" id="L30">        throw new IllegalArgumentException(&quot;Invalid player position: &quot; + label);</span>

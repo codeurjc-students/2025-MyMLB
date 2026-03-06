@@ -72,16 +72,17 @@ public class BuildMocksFactory {
     }
 
     private static Team buildTeam(String name, int id, String abbr, int wins, int losses, League league, Division division, String logo) {
-        Team team = new Team(name, abbr, wins, losses, league, division, logo);
+        Team team = new Team(name, abbr,  league, division, logo);
         team.setStatsApiId(id);
         int totalGames = wins + losses;
         team.setTotalGames(totalGames);
-        team.setPct((double) wins / totalGames);
+        double pct = ((double) wins / totalGames);
+        team.setPct(String.valueOf(pct));
         return team;
     }
 
     public static List<TeamDTO> buildTeamDTOMocks(List<Team> teams) {
-        Team team1 = teams.get(0);
+        Team team1 = teams.getFirst();
         Team team2 = teams.get(1);
         Team team3 = teams.get(2);
 

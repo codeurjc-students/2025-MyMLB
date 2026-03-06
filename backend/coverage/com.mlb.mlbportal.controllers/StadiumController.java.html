@@ -86,17 +86,29 @@ public class StadiumController {
 <span class="fc" id="L86">        return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));</span>
     }
 
-    @Operation(summary = &quot;Upload stadium picture&quot;, description = &quot;Uploads a new picture for a specific MLB stadium. Only .webp images are supported.&quot;)
+    @Operation(summary = &quot;Upload stadium picture&quot;, description = &quot;Uploads a new picture for a specific MLB stadium.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture uploaded successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid file format or request parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
-    @PostMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
+    @PostMapping(value = &quot;/{stadiumName}/pictures&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; uploadPicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;file&quot;) MultipartFile picturePath) throws IOException {
 <span class="fc" id="L99">        return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));</span>
+    }
+
+    @Operation(summary = &quot;Update stadium map picture&quot;, description = &quot;Updates the stadium map picture for a specific MLB stadium.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture uploaded successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid file format or request parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @PostMapping(value = &quot;/{stadiumName}/pictures/map&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;PictureInfo&gt; updateStadiumMapPicture(@PathVariable(&quot;stadiumName&quot;)String stadiumName, @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
+<span class="fc" id="L111">        return ResponseEntity.ok(this.stadiumService.editStadiumMapPicture(stadiumName, file));</span>
     }
 
     @Operation(summary = &quot;Delete stadium picture&quot;, description = &quot;Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.&quot;)
@@ -109,8 +121,8 @@ public class StadiumController {
     @DeleteMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; deletePicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;publicId&quot;) String publicId) {
-<span class="fc" id="L112">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
-<span class="fc" id="L113">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
+<span class="fc" id="L124">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
+<span class="fc" id="L125">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
     }
 
     @Operation(summary = &quot;Create a new stadium&quot;, description = &quot;Creates a new MLB stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.&quot;)
@@ -121,15 +133,15 @@ public class StadiumController {
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Stadium already exists&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
-    @PostMapping
+    @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;StadiumDTO&gt; createStadium(@Valid @RequestBody CreateStadiumRequest request) {
-<span class="fc" id="L126">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
+<span class="fc" id="L138">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L128">                .fromCurrentRequest()</span>
-<span class="fc" id="L129">                .path(&quot;/{name}&quot;)</span>
-<span class="fc" id="L130">                .buildAndExpand(newStadium.name())</span>
-<span class="fc" id="L131">                .toUri();</span>
-<span class="fc" id="L132">        return ResponseEntity.created(location).body(newStadium);</span>
+<span class="fc" id="L140">                .fromCurrentRequest()</span>
+<span class="fc" id="L141">                .path(&quot;/{name}&quot;)</span>
+<span class="fc" id="L142">                .buildAndExpand(newStadium.name())</span>
+<span class="fc" id="L143">                .toUri();</span>
+<span class="fc" id="L144">        return ResponseEntity.created(location).body(newStadium);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

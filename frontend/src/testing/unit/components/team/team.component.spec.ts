@@ -26,7 +26,7 @@ describe('Team Component Tests', () => {
     let paginationService: PaginationService<ShowMatch>;
 
     const mockTeamStats = MockFactory.buildTeamMocks(
-        'New York Yankees', 'NYY', 'AL', 'EAST', 162, 100, 62, 0.617, 0, '7-3'
+        'New York Yankees', 'NYY', 'AL', 'EAST', 162, 100, 62, '.617', 0, '7-3'
     );
 
     const mockStadium = MockFactory.buildStadiumMock('Yankee Stadium', 2009, [{ url: 'http://fake-url/image.png', publicId: 'image' }]);

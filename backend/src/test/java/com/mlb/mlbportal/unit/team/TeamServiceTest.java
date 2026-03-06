@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,11 +49,6 @@ import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_STADIUM;
-import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 
 @ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
@@ -215,18 +211,18 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should update stats and save both teams when updating ranking")
     void testUpdateRanking() {
-        this.team1.setWins(10);
-        team1.setLosses(5);
-        this.team2.setWins(8);
-        this.team2.setLosses(7);
+        this.team1.setWins(TEST_TEAM1_WINS);
+        this.team1.setLosses(TEST_TEAM1_LOSSES);
+        this.team2.setWins(TEST_TEAM2_WINS);
+        this.team2.setLosses(TEST_TEAM2_LOSSES);
 
         when(this.teamRepository.findByLeagueAndDivision(any(), any())).thenReturn(Arrays.asList(this.team1, this.team2));
 
         this.teamService.updateRanking(this.team1, this.team2);
 
-        assertThat(this.team1.getPct()).isEqualTo(0.666);
-        assertThat(this.team2.getPct()).isEqualTo(0.533);
-        assertThat(this.team2.getGamesBehind()).isEqualTo(2.0);
+        assertThat(this.team1.getPct()).isEqualTo(".470");
+        assertThat(this.team2.getPct()).isEqualTo(".564");
+        assertThat(this.team1.getGamesBehind()).isEqualTo(14.0);
 
         verify(this.teamRepository, times(1)).save(this.team1);
         verify(this.teamRepository, times(1)).save(this.team2);

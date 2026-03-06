@@ -3,8 +3,6 @@ package com.mlb.mlbportal.e2e;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.mlb.mlbportal.models.UserEntity;
-import com.mlb.mlbportal.repositories.ticket.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -13,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
@@ -26,7 +25,11 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
-
+import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
+import com.mlb.mlbportal.repositories.ticket.EventRepository;
+import com.mlb.mlbportal.repositories.ticket.SeatRepository;
+import com.mlb.mlbportal.repositories.ticket.SectorRepository;
+import com.mlb.mlbportal.repositories.ticket.TicketRepository;
 import static com.mlb.mlbportal.utils.TestConstants.BASE_URI;
 
 import io.restassured.RestAssured;
@@ -99,9 +102,9 @@ public abstract class BaseE2ETest {
         return this.userRepository.save(user);
     }
 
-    protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league,
+    protected Team saveTestTeam(String name, String abbreviation, String city, String info, List<Integer> championships, League league,
             Division division) {
-        Team team = new Team(name, abbreviation, wins, losses, city, info, championships);
+        Team team = new Team(name, abbreviation, city, info, championships);
         team.setLeague(league);
         team.setDivision(division);
         return this.teamRepository.save(team);

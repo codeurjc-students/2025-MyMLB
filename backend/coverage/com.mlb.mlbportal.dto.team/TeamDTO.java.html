@@ -40,10 +40,10 @@ import jakarta.validation.constraints.NotNull;
 
     @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Winning percentage cannot be negative&quot;)
     @DecimalMax(value = &quot;1.0&quot;, inclusive = true, message = &quot;Winning percentage cannot exceed 1.0&quot;)
-    double pct,
+    String pct,
 
     @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Games Behind cannot be negative&quot;)
-    double gamesBehind,
+    Double gamesBehind,
 
     @NotBlank(message = &quot;The record of the team in the last 10 games is required&quot;)
     String lastTen

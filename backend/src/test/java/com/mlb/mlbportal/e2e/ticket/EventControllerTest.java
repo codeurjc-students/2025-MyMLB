@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import com.mlb.mlbportal.repositories.TeamRepository;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,7 @@ import com.mlb.mlbportal.models.ticket.Seat;
 import com.mlb.mlbportal.models.ticket.Sector;
 import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.ticket.EventManagerRepository;
 import com.mlb.mlbportal.repositories.ticket.EventRepository;
 import com.mlb.mlbportal.repositories.ticket.SeatRepository;
@@ -44,8 +48,6 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -84,8 +86,8 @@ class EventControllerTest extends BaseE2ETest {
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        this.homeTeam = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, 10, 5, TEST_TEAM1_CITY, "Info1", Collections.emptyList(), League.AL, Division.EAST);
-        this.awayTeam = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, 8, 7, TEST_TEAM2_CITY, "Info2", Collections.emptyList(), League.NL, Division.WEST);
+        this.homeTeam = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, "Info1", Collections.emptyList(), League.AL, Division.EAST);
+        this.awayTeam = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, "Info2", Collections.emptyList(), League.NL, Division.WEST);
 
         Stadium stadium = new Stadium(STADIUM1_NAME, STADIUM1_YEAR, this.homeTeam);
         stadium = this.stadiumRepository.saveAndFlush(stadium);

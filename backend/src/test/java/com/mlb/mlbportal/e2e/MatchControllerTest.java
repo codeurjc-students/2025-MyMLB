@@ -5,8 +5,6 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-
-import com.mlb.mlbportal.repositories.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,19 +17,16 @@ import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.MatchRepository;
 import static com.mlb.mlbportal.utils.TestConstants.MATCHES_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -51,12 +46,8 @@ class MatchControllerTest extends BaseE2ETest {
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        this.team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES,
-                TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL,
-                Division.EAST);
-        this.team2 = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES,
-                TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL,
-                Division.EAST);
+        this.team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL, Division.EAST);
+        this.team2 = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL, Division.EAST);
 
         saveTestMatches(this.team1, this.team2, 2, 3, LocalDateTime.now(), MatchStatus.FINISHED);
         saveTestMatches(this.team2, this.team1, 0, 10, LocalDateTime.now().minusHours(1), MatchStatus.FINISHED);

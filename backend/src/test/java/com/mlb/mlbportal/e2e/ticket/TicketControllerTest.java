@@ -41,14 +41,10 @@ import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TICKET_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
@@ -97,8 +93,8 @@ class TicketControllerTest extends BaseE2ETest {
 
         saveTestUser(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD);
 
-        Team home = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, TEST_TEAM1_CITY, "Info", Collections.emptyList(), League.AL, Division.EAST);
-        Team away = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, TEST_TEAM2_CITY, "Info", Collections.emptyList(), League.NL, Division.WEST);
+        Team home = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, "Info", Collections.emptyList(), League.AL, Division.EAST);
+        Team away = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, "Info", Collections.emptyList(), League.NL, Division.WEST);
 
         Stadium stadium = this.stadiumRepository.save(new Stadium(STADIUM1_NAME, STADIUM1_YEAR, home));
 

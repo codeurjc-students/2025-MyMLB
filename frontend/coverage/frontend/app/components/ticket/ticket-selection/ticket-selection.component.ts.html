@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.24% </span>
+                <span class="strong">85.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>52/61</span>
+                <span class='fraction'>53/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/14</span>
+                <span class='fraction'>11/15</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">84.48% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>48/57</span>
+                <span class='fraction'>49/58</span>
             </div>
         
             
@@ -208,7 +208,31 @@
 <a name='L143'></a><a href='#L143'>143</a>
 <a name='L144'></a><a href='#L144'>144</a>
 <a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -329,11 +353,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -356,9 +382,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { EventService } from '../../../services/ticket/event.service';
-import { EventResponse } from '../../../models/ticket/event-response.model';
-import { Seat } from '../../../models/ticket/seat.model';
-import { EventManager } from '../../../models/ticket/event-manager.model';
+import { EventManager, EventResponse, Seat } from '../../../models/ticket/event.model';
 import { FormsModule } from '@angular/forms';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { ActivatedRoute } from '@angular/router';
@@ -366,10 +390,23 @@ import { TicketPurchaseComponent } from "../ticket-purchase/ticket-purchase.comp
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 &nbsp;
 @Component({
 	selector: 'app-ticket-selection',
-	imports: [CommonModule, FormsModule, ErrorModalComponent, TicketPurchaseComponent, NgxImageZoomModule, EscapeCloseDirective],
+	imports: [
+		CommonModule,
+		FormsModule,
+		ErrorModalComponent,
+		TicketPurchaseComponent,
+		NgxImageZoomModule,
+		EscapeCloseDirective,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatInputModule
+	],
 	standalone: true,
 	templateUrl: './ticket-selection.component.html',
 })
@@ -424,7 +461,7 @@ export class TicketSelectionComponent implements OnInit {
 	private loadAvailableSectors() {
 		this.eventService.getAvailableSectors(this.event?.id).subscribe({
 			next: (response) =&gt; {
-				this.availableSectors = response.content;
+				this.availableSectors = response;
 			},
 			error: <span class="fstat-no" title="function not covered" >(_</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >				this.error = true;</span>
@@ -436,7 +473,7 @@ export class TicketSelectionComponent implements OnInit {
 	private loadAvailableSeats() {
 		this.eventService.getAvailableSeats(this.event?.id, this.selectedSectorId).subscribe({
 			next: (response) =&gt; {
-				this.availableSeats = response.content;
+				this.availableSeats = response;
 			},
 			error: <span class="fstat-no" title="function not covered" >(_</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >				this.error = true;</span>
@@ -472,13 +509,15 @@ export class TicketSelectionComponent implements OnInit {
 	}
 &nbsp;
 	public addSeats(seat: Seat) {
-		const index = this.selectedSeats.findIndex(s =&gt; s.id === seat.id);
-		if (index !== -1) {
-			this.selectedSeats.splice(index, 1);
-		}
-		else {
-			if (this.selectedSeats.length &lt; this.ticketAmount) {
-				this.selectedSeats.push(seat);
+		if (seat) {
+			const index = this.selectedSeats.findIndex(s =&gt; s.id === seat.id);
+			if (index !== -1) {
+				this.selectedSeats.splice(index, 1);
+			}
+			else {
+				if (this.selectedSeats.length &lt; this.ticketAmount) {
+					this.selectedSeats.push(seat);
+				}
 			}
 		}
 	}
@@ -505,7 +544,7 @@ export class TicketSelectionComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-13T18:07:24.512Z
+                at 2026-03-06T18:56:48.080Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

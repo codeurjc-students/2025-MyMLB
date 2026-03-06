@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.mlb.mlbportal.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mlb.mlbportal.dto.team.TeamInfoDTO;
-import com.mlb.mlbportal.dto.team.TeamSummary;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mlb.mlbportal.dto.team.TeamDTO;
+import com.mlb.mlbportal.dto.team.TeamInfoDTO;
+import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
@@ -35,28 +37,8 @@ import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -86,15 +68,20 @@ class TeamServiceIntegrationTest {
         this.userRepository.deleteAll();
         this.stadiumRepository.deleteAll();
 
-        this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, League.AL,
-                Division.EAST, TEST_TEAM1_LOGO);
-        team1.setCity(TEST_TEAM1_CITY);
-        this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, League.AL,
-                Division.EAST, TEST_TEAM2_LOGO);
-        team2.setCity(TEST_TEAM2_CITY);
-        this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, League.NL,
-                Division.CENTRAL, TEST_TEAM3_LOGO);
-        team3.setCity(TEST_TEAM3_CITY);
+        this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+        this.team1.setCity(TEST_TEAM1_CITY);
+        this.team1.setWins(TEST_TEAM1_WINS);
+        this.team1.setLosses(TEST_TEAM1_LOSSES);
+
+        this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM2_LOGO);
+        this.team2.setWins(TEST_TEAM2_WINS);
+        this.team2.setLosses(TEST_TEAM2_LOSSES);
+        this.team2.setCity(TEST_TEAM2_CITY);
+
+        this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, League.NL, Division.CENTRAL, TEST_TEAM3_LOGO);
+        this.team3.setWins(TEST_TEAM3_WINS);
+        this.team3.setLosses(TEST_TEAM3_LOSSES);
+        this.team3.setCity(TEST_TEAM3_CITY);
 
         this.teamRepository.saveAll(List.of(this.team1, this.team2, this.team3));
 
@@ -106,8 +93,8 @@ class TeamServiceIntegrationTest {
         this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.FINISHED));
 
         // Prepare the PCT for the test Teams
-        this.teamService.updateRanking(team1, team2);
-        this.teamService.updateRanking(team2, team3);
+        this.teamService.updateRanking(this.team1, this.team2);
+        this.teamService.updateRanking(this.team2, this.team3);
     }
 
     @Test
@@ -120,7 +107,7 @@ class TeamServiceIntegrationTest {
         TeamInfoDTO teamDTO1 = result.stream().filter(team -> team.teamStats().abbreviation().equals(TEST_TEAM1_ABBREVIATION))
                 .findFirst().orElseThrow();
         assertThat(teamDTO1.teamStats().totalGames()).isEqualTo(149);
-        assertThat(teamDTO1.teamStats().pct()).isEqualTo(0.469);
+        assertThat(teamDTO1.teamStats().pct()).isEqualTo(".470");
     }
 
     @Test
@@ -145,7 +132,7 @@ class TeamServiceIntegrationTest {
         List<TeamDTO> alEast = standings.get(League.AL).get(Division.EAST);
         assertThat(alEast).hasSize(2);
 
-        assertThat(alEast.get(0).abbreviation()).isEqualTo(TEST_TEAM2_ABBREVIATION);
+        assertThat(alEast.getFirst().abbreviation()).isEqualTo(TEST_TEAM2_ABBREVIATION);
         assertThat(alEast.get(1).abbreviation()).isEqualTo(TEST_TEAM1_ABBREVIATION);
     }
 
@@ -153,7 +140,7 @@ class TeamServiceIntegrationTest {
     @DisplayName("Should prioritize divisions based on user's favorite teams")
     void testGetStandingsWithUserFavorites() {
         UserEntity user = BuildMocksFactory.setUpUsers().getFirst();
-        user.setFavTeams(Set.of(team1, team3));
+        user.setFavTeams(Set.of(this.team1, this.team3));
         this.userRepository.save(user);
 
         Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(USER1_USERNAME);
@@ -172,24 +159,20 @@ class TeamServiceIntegrationTest {
     @Test
     @DisplayName("Should update the ranking of the teams involve in a match")
     void testUpdateRanking() {
-        this.team1.setWins(10);
-        this.team1.setLosses(5);
-
-        this.team2.setWins(8);
-        this.team2.setLosses(7);
-
         this.teamService.updateRanking(this.team1, this.team2);
 
         Team storedTeam1 = this.teamRepository.findByNameOrThrow(this.team1.getName());
         Team storedTeam2 = this.teamRepository.findByNameOrThrow(this.team2.getName());
 
-        assertThat(storedTeam1.getWins()).isEqualTo(10);
-        assertThat(storedTeam1.getTotalGames()).isEqualTo(15);
+        int totalGames1 = TEST_TEAM1_WINS + TEST_TEAM1_LOSSES;
+        log.info("TEAM 1 WINS: {} ", storedTeam1.getWins());
+        assertThat(storedTeam1.getWins()).isEqualTo(TEST_TEAM1_WINS);
+        assertThat(storedTeam1.getTotalGames()).isEqualTo(totalGames1);
 
-        assertThat(storedTeam2.getWins()).isEqualTo(8);
-        assertThat(storedTeam2.getTotalGames()).isEqualTo(15);
+        assertThat(storedTeam2.getWins()).isEqualTo(TEST_TEAM2_WINS);
+        assertThat(storedTeam2.getTotalGames()).isEqualTo(TEST_TEAM2_WINS + TEST_TEAM2_LOSSES);
 
-        assertThat(storedTeam1.getPct()).isEqualTo(0.666);
+        assertThat(storedTeam1.getPct()).isEqualTo(".470");
     }
 
     @Test

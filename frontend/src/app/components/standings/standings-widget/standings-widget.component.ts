@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TeamService, StandingsResponse } from '../../../services/team.service';
 import { StandingsData } from '../../../models/standings-data.model';
@@ -13,11 +13,12 @@ import { BackgroundColorService } from '../../../services/background-color.servi
     templateUrl: './standings-widget.component.html',
 })
 export class StandingsWidgetComponent implements OnInit {
+	private teamService = inject(TeamService);
+	public backgroundService = inject(BackgroundColorService);
+
     standings: StandingsData[] = [];
     currentIndex = 0;
     errorMessage = '';
-
-    constructor(private teamService: TeamService, public backgroundService: BackgroundColorService) {}
 
     ngOnInit() {
         this.teamService.getStandings().subscribe({
@@ -51,5 +52,9 @@ export class StandingsWidgetComponent implements OnInit {
 		this.teamService.selectTeam(teamName).subscribe({
 			error: (err) => this.errorMessage = err.message
 		});
+	}
+
+	public isGoodPct(pct: string) {
+		return this.teamService.isGoodPct(pct);
 	}
 }

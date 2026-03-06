@@ -7,12 +7,14 @@ import com.mlb.mlbportal.models.others.PictureInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = &quot;T_Position_Player&quot;)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,30 +36,58 @@ public class PositionPlayer extends Player {
     private double slugging;
 
     public PositionPlayer(String name, int number, Team team, PlayerPositions position, int atBats, int walks, int hits) {
-<span class="fc" id="L37">        super(name, number, team);</span>
-<span class="fc" id="L38">        this.position = position;</span>
-<span class="fc" id="L39">        this.atBats = atBats;</span>
-<span class="fc" id="L40">        this.hits = hits;</span>
-<span class="fc" id="L41">        this.walks = walks;</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L39">        super(name, number, team);</span>
+<span class="fc" id="L40">        this.position = position;</span>
+<span class="fc" id="L41">        this.atBats = atBats;</span>
+<span class="fc" id="L42">        this.hits = hits;</span>
+<span class="fc" id="L43">        this.walks = walks;</span>
+<span class="fc" id="L44">    }</span>
 
     public PositionPlayer(String name, int number, Team team, PictureInfo picture, PlayerPositions position, int atBats, int walks) {
-<span class="nc" id="L45">        super(name, number, team, picture);</span>
-<span class="nc" id="L46">        this.position = position;</span>
-<span class="nc" id="L47">        this.atBats = atBats;</span>
-<span class="nc" id="L48">        this.walks = walks;</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L47">        super(name, number, team, picture);</span>
+<span class="nc" id="L48">        this.position = position;</span>
+<span class="nc" id="L49">        this.atBats = atBats;</span>
+<span class="nc" id="L50">        this.walks = walks;</span>
+<span class="nc" id="L51">    }</span>
 
     public PositionPlayer(String name, int number, Team team, PlayerPositions position) {
-<span class="fc" id="L52">        super(name, number, team);</span>
-<span class="fc" id="L53">        this.position = position;</span>
-<span class="fc" id="L54">        this.atBats = 0;</span>
-<span class="fc" id="L55">        this.walks = 0;</span>
-<span class="fc" id="L56">        this.hits = 0;</span>
-<span class="fc" id="L57">        this.doubles = 0;</span>
-<span class="fc" id="L58">        this.triples = 0;</span>
-<span class="fc" id="L59">        this.homeRuns = 0;</span>
-<span class="fc" id="L60">        this.rbis = 0;</span>
-<span class="fc" id="L61">    }</span>
+<span class="fc" id="L54">        super(name, number, team);</span>
+<span class="fc" id="L55">        this.position = position;</span>
+<span class="fc" id="L56">        this.atBats = 0;</span>
+<span class="fc" id="L57">        this.walks = 0;</span>
+<span class="fc" id="L58">        this.hits = 0;</span>
+<span class="fc" id="L59">        this.doubles = 0;</span>
+<span class="fc" id="L60">        this.triples = 0;</span>
+<span class="fc" id="L61">        this.homeRuns = 0;</span>
+<span class="fc" id="L62">        this.rbis = 0;</span>
+<span class="fc" id="L63">    }</span>
+
+    public void createWithStats(int ab, int walks, int hits, int doubles, int triples, int hr, int rbis, double avg, double ops, double obp, double slg) {
+<span class="fc" id="L66">        this.atBats = ab;</span>
+<span class="fc" id="L67">        this.hits = hits;</span>
+<span class="fc" id="L68">        this.walks = walks;</span>
+<span class="fc" id="L69">        this.doubles = doubles;</span>
+<span class="fc" id="L70">        this.triples = triples;</span>
+<span class="fc" id="L71">        this.homeRuns = hr;</span>
+<span class="fc" id="L72">        this.rbis = rbis;</span>
+<span class="fc" id="L73">        this.average = avg;</span>
+<span class="fc" id="L74">        this.obp = obp;</span>
+<span class="fc" id="L75">        this.ops = ops;</span>
+<span class="fc" id="L76">        this.slugging = slg;</span>
+<span class="fc" id="L77">    }</span>
+
+    public void createWithNoStats() {
+<span class="fc" id="L80">        this.atBats = 0;</span>
+<span class="fc" id="L81">        this.hits = 0;</span>
+<span class="fc" id="L82">        this.walks = 0;</span>
+<span class="fc" id="L83">        this.doubles = 0;</span>
+<span class="fc" id="L84">        this.triples = 0;</span>
+<span class="fc" id="L85">        this.homeRuns = 0;</span>
+<span class="fc" id="L86">        this.rbis = 0;</span>
+<span class="fc" id="L87">        this.average = 0.000;</span>
+<span class="fc" id="L88">        this.obp = 0.000;</span>
+<span class="fc" id="L89">        this.ops = 0.000;</span>
+<span class="fc" id="L90">        this.slugging = 0.000;</span>
+<span class="fc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

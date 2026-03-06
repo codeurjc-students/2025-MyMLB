@@ -112,7 +112,7 @@ public class PlayerServiceOperations {
 <span class="fc" id="L112">            pitcher.setEra(0.0);</span>
 <span class="fc" id="L113">            return;</span>
         }
-<span class="fc" id="L115">        double era = (double) (pitcher.getRunsAllowed() * 9) / innings;</span>
+<span class="fc" id="L115">        double era = (pitcher.getRunsAllowed() * 9) / innings;</span>
 <span class="fc" id="L116">        pitcher.setEra(truncateToTwoDecimals(era));</span>
 <span class="fc" id="L117">    }</span>
 
@@ -122,7 +122,7 @@ public class PlayerServiceOperations {
 <span class="fc" id="L122">            pitcher.setWhip(0.0);</span>
 <span class="fc" id="L123">            return;</span>
         }
-<span class="fc" id="L125">        double whip = (double) (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;</span>
+<span class="fc" id="L125">        double whip = (pitcher.getWalks() + pitcher.getHitsAllowed()) / innings;</span>
 <span class="fc" id="L126">        pitcher.setWhip(truncateToThreeDecimals(whip));</span>
 <span class="fc" id="L127">    }</span>
 

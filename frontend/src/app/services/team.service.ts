@@ -30,6 +30,11 @@ export class TeamService {
 		return this.http.get<StandingsResponse>(`${this.url}/standings`);
 	}
 
+	public isGoodPct(pct : string) {
+		const parseredPct = Number(pct);
+		return parseredPct >= 0.5;
+	}
+
 	public getTeamInfo(teamName: string): Observable<TeamInfo> {
 		return this.http.get<TeamInfo>(`${this.url}/${teamName}`);
 	}

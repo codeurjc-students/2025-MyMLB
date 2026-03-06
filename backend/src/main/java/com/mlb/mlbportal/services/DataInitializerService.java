@@ -59,8 +59,8 @@ public class DataInitializerService {
     private final MatchRepository matchRepository;
     private final StadiumRepository stadiumRepository;
 
-    private final MatchImportService mlbImportService;
-    private final TeamImportService teamLookupService;
+    private final MatchImportService matchImportService;
+    private final TeamImportService teamImportService;
     private final PlayerImportService playerImportService;
 
     private final EventRepository eventRepository;
@@ -117,22 +117,13 @@ public class DataInitializerService {
                         Team team = new Team(
                                 dto.name(),
                                 dto.abbreviation(),
-                                dto.wins(),
-                                dto.losses(),
                                 dto.city(),
                                 dto.generalInfo(),
                                 dto.championships() != null ? dto.championships() : new ArrayList<>()
                         );
                         team.setLeague(league);
                         team.setDivision(division);
-
-                        int totalGames = dto.wins() + dto.losses();
-                        team.setTotalGames(totalGames);
-                        team.setPct((double) dto.wins() / totalGames);
-                        team.setGamesBehind(0);
-                        team.setLastTen("0-0");
                         team.setTeamLogo(dto.abbreviation() + ".png");
-
                         return team;
                     }).collect(Collectors.toCollection(ArrayList::new ));
 
@@ -144,7 +135,7 @@ public class DataInitializerService {
 
     private void syncStatsApiIdWithTeams() {
         List<Team> teams = this.teamRepository.findAll();
-        Map<String, Integer> map = this.teamLookupService.findStatsApiId();
+        Map<String, Integer> map = this.teamImportService.findStatsApiId();
         for (Team team : teams) {
             Integer statApiId = map.get(team.getName());
             if (statApiId != null) {
@@ -155,6 +146,7 @@ public class DataInitializerService {
             }
         }
         this.teamRepository.saveAll(teams);
+        this.teamImportService.getTeamStats();
     }
 
     private List<Match> generateBalancedMatches(List<Team> teams) {
@@ -273,7 +265,7 @@ public class DataInitializerService {
         //this.addTestMatch(matches, allTeams);
         this.matchRepository.saveAll(matches);
 
-        this.mlbImportService.getOfficialMatches(
+        this.matchImportService.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)
         );

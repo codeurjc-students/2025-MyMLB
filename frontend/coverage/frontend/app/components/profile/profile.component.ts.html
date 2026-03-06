@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.39% </span>
+                <span class="strong">85.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>76/89</span>
+                <span class='fraction'>77/90</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.7% </span>
+                <span class="strong">84.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>72/85</span>
+                <span class='fraction'>73/86</span>
             </div>
         
             
@@ -250,7 +250,35 @@
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -293,6 +321,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
@@ -441,22 +471,35 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { RemoveConfirmationModalComponent } from '../remove-confirmation-modal/remove-confirmation-modal.component';
+import { RemoveConfirmationModalComponent } from '../modal/remove-confirmation-modal/remove-confirmation-modal.component';
 import { ProfileButtons } from './profile-buttons/profile-buttons.component';
 import { EditProfileRequest } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
-import { SuccessModalComponent } from "../success-modal/success-modal.component";
+import { SuccessModalComponent } from '../modal/success-modal/success-modal.component';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 import { LoadingModalComponent } from "../modal/loading-modal/loading-modal.component";
 import { Pictures } from '../../models/pictures.model';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 &nbsp;
 @Component({
 	selector: 'app-profile',
 	standalone: true,
 	templateUrl: './profile.component.html',
-	imports: [CommonModule, FormsModule, RemoveConfirmationModalComponent, ProfileButtons, SuccessModalComponent, ErrorModalComponent, LoadingModalComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		RemoveConfirmationModalComponent,
+		ProfileButtons, SuccessModalComponent,
+		ErrorModalComponent,
+		LoadingModalComponent,
+		MatInputModule,
+		MatFormFieldModule,
+		MatSlideToggleModule,
+	],
 })
 export class ProfileComponent implements OnInit {
 	private authService = inject(AuthService);
@@ -483,6 +526,8 @@ export class ProfileComponent implements OnInit {
 	public successMessage = '';
 &nbsp;
 	public loading = false;
+&nbsp;
+	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
 &nbsp;
 	ngOnInit(): void {
 		this.authService.getActiveUser().subscribe({
@@ -565,9 +610,9 @@ export class ProfileComponent implements OnInit {
 &nbsp;
 		if (input.files &amp;&amp; input.files.length &gt; 0) {
 			const file = input.files[0];
-			if (file.type !== 'image/webp') {
+			if (file.size &gt; this.maxPictureSize) {
 				this.error = true;
-				this.errorMessage = 'Only .webp images are allowed';
+				this.errorMessage = 'The picture must be less than 1MB';
 				this.loading = false;
 				input.value = '';
 				return;
@@ -585,9 +630,9 @@ export class ProfileComponent implements OnInit {
 	}
 &nbsp;
 	private changeProfilePicture(file: File) {
-		<span class="missing-if-branch" title="if path not taken" >I</span>if (file.type !== 'image/webp') {
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (file.size &gt; this.maxPictureSize) {
 <span class="cstat-no" title="statement not covered" >			this.error = true;</span>
-<span class="cstat-no" title="statement not covered" >			this.errorMessage = 'Only .webp images are allowed';</span>
+<span class="cstat-no" title="statement not covered" >			this.errorMessage = 'The picture must be less than 1MB';</span>
 <span class="cstat-no" title="statement not covered" >			return;</span>
 		}
 &nbsp;
@@ -631,7 +676,7 @@ export class ProfileComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-13T18:07:24.512Z
+                at 2026-03-06T18:56:48.080Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

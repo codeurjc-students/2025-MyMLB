@@ -4,9 +4,11 @@
 
 package com.mlb.mlbportal.dto.mlbapi.team;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mlb.mlbportal.dto.mlbapi.match.DivisionInfo;
 import com.mlb.mlbportal.dto.mlbapi.match.LeagueInfo;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record TeamDetails(
         int id,
         String name,

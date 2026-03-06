@@ -1,11 +1,10 @@
 package com.mlb.mlbportal.e2e;
 
+import java.util.Collections;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
-
-import java.util.Collections;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,25 @@ import org.springframework.test.context.ActiveProfiles;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM2_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM3_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
@@ -31,12 +47,9 @@ class SearchControllerTest extends BaseE2ETest {
     void setUp() {
         cleanDatabase();
 
-        Team team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES,
-                TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL, Division.EAST);
-        Team team2 = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES,
-                TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL, Division.EAST);
-        Team team3 = saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES,
-                TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), League.NL, Division.CENTRAL);
+        Team team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL, Division.EAST);
+        Team team2 = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL, Division.EAST);
+        Team team3 = saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), League.NL, Division.CENTRAL);
 
         saveTestStadiums(STADIUM1_NAME, STADIUM1_YEAR, team1);
         saveTestStadiums(STADIUM2_NAME, STADIUM2_YEAR, team2);

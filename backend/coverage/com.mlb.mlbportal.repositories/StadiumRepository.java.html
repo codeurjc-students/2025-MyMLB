@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +13,12 @@ import com.mlb.mlbportal.models.Stadium;
 
 @Repository
 public interface StadiumRepository extends JpaRepository&lt;Stadium, Long&gt; {
+    @Override
+    Page&lt;Stadium&gt; findAll(Pageable pageable);
+
     Optional&lt;Stadium&gt; findByName(String name);
     default Stadium findByNameOrThrow(String name) {
-<span class="fc" id="L16">        return this.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
+<span class="fc" id="L21">        return this.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
     }
     List&lt;Stadium&gt; findByNameContainingIgnoreCase(String input);
     List&lt;Stadium&gt; findByTeamIsNull();

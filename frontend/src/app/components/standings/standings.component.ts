@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { StandingsResponse, TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StandingsData } from '../../models/standings-data.model';
@@ -12,6 +12,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 	templateUrl: './standings.component.html',
 })
 export class StandingsComponent implements OnInit {
+	private teamService = inject(TeamService);
+	public backgroundService = inject(BackgroundColorService);
+
 	public standings: StandingsData[] = [];
 	public errorMessage = '';
 
@@ -23,8 +26,6 @@ export class StandingsComponent implements OnInit {
 		{ stat: 'GB', description: 'Games Behind: Game difference compared to the division leader' },
 		{ stat: 'L10', description: 'Last 10 Games: Performance of the team the last 10 games in the following format: Wins - Losses' }
 	];
-
-	constructor(private teamService: TeamService, public backgroundService: BackgroundColorService) {}
 
 	ngOnInit() {
 		this.teamService.getStandings().subscribe({
@@ -48,5 +49,9 @@ export class StandingsComponent implements OnInit {
 		this.teamService.selectTeam(teamName).subscribe({
 			error: (err) => this.errorMessage = err.message
 		});
+	}
+
+	public isGoodPct(pct: string) {
+		return this.teamService.isGoodPct(pct);
 	}
 }

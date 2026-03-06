@@ -17,7 +17,7 @@ describe('Team Component Integration Tests', () => {
 	let fixture: ComponentFixture<TeamComponent>;
 
 	const mockTeamInfo: TeamInfo = MockFactory.buildTeamInfoMock(
-		MockFactory.buildTeamMocks('New York Yankees', 'NYY', 'AL', 'East', 162, 100, 62, 0.617, 0, '7-3'),
+		MockFactory.buildTeamMocks('New York Yankees', 'NYY', 'AL', 'East', 162, 100, 62, '.617', 0, '7-3'),
 		'New York',
 		'Founded in 1901',
 		[1903, 1923, 1996, 2009],

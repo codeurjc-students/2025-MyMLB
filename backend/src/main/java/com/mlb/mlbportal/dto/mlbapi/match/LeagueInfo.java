@@ -4,4 +4,7 @@
 
 package com.mlb.mlbportal.dto.mlbapi.match;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record LeagueInfo(String name) {}
