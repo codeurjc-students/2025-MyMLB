@@ -102,7 +102,7 @@ public abstract class BaseE2ETest {
         return this.userRepository.save(user);
     }
 
-    protected Team saveTestTeam(String name, String abbreviation, int wins, int losses, String city, String info, List<Integer> championships, League league,
+    protected Team saveTestTeam(String name, String abbreviation, String city, String info, List<Integer> championships, League league,
             Division division) {
         Team team = new Team(name, abbreviation, city, info, championships);
         team.setLeague(league);

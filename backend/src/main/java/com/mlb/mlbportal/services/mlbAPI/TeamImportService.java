@@ -171,8 +171,8 @@ public class TeamImportService {
         }
         else {
             List<Team> teamsToSave = new ArrayList<>();
-            for (Records record : response.records()) {
-               for (TeamRecords teamRecord : record.teamRecords()) {
+            for (Records records : response.records()) {
+               for (TeamRecords teamRecord : records.teamRecords()) {
                    Team team = this.updateTeamStats(teamRecord);
                    teamsToSave.add(team);
                }
