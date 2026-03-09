@@ -263,8 +263,7 @@ class TicketServiceTest {
 
         byte[] pdf = this.ticketService.getTicketPdf(1L);
 
-        assertThat(pdf).isNotNull();
-        assertThat(pdf).isEqualTo(mockPdf);
+        assertThat(pdf).isNotNull().isEqualTo(mockPdf);
     }
 
     @Test
