@@ -5,7 +5,6 @@ import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +32,7 @@ import com.mlb.mlbportal.services.utilities.PdfGeneratorService;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -75,9 +75,11 @@ public class TicketService {
         this.paymentService.processPayment(request);
 
         List<Ticket> tickets = this.createTickets(user, request.ownerName(),eventManager, request.seats());
+        byte[] pdf = this.pdfGeneratorService.generateTicketsPdf(tickets);
+        tickets.forEach(ticket -> ticket.setPdf(pdf));
 
         this.userRepository.save(user);
-        this.sendEmailWithPdf(user, tickets);
+        this.sendEmailWithPdf(user, pdf);
 
         return this.paginationHandlerService.paginateAndMap(tickets, page, size, this.ticketMapper::toTicketDTO);
     }
@@ -135,9 +137,8 @@ public class TicketService {
     /**
      * Generates a PDF document and triggers an asynchronous email delivery to the purchaser.
      */
-    private void sendEmailWithPdf(UserEntity user, List<Ticket> tickets) {
+    private void sendEmailWithPdf(UserEntity user, byte[] pdf) {
         try {
-            byte[] pdfContent = this.pdfGeneratorService.generateTicketsPdf(tickets);
             String subject = "Game Tickets";
             String body = """
                     Hello %s, \n
@@ -151,12 +152,18 @@ public class TicketService {
                     user.getEmail(),
                     subject,
                     body,
-                    pdfContent,
+                    pdf,
                     "Tickets.pdf"
             );
         }
         catch (MessagingException e) {
             log.error("Failed to send the purchase confirmation email to the user: {}", user.getUsername());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getTicketPdf(Long ticketId) {
+        Ticket ticket = this.ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException(ticketId));
+        return ticket.getPdf();
     }
 }

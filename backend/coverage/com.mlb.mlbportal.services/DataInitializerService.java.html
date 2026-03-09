@@ -96,7 +96,7 @@ public class DataInitializerService {
 <span class="fc" id="L96">        UserEntity arminUser = new UserEntity(&quot;armin@gmail.com&quot;, &quot;armiin13&quot;,</span>
 <span class="fc" id="L97">                this.passwordEncoder.encode(this.arminPassword));</span>
 
-<span class="fc" id="L99">        fonssiUser.getRoles().add(&quot;ADMIN&quot;);</span>
+<span class="fc" id="L99">        fonssiUser.getRoles().add(&quot;USER&quot;);</span>
 <span class="fc" id="L100">        arminUser.getRoles().add(&quot;ADMIN&quot;);</span>
 
 <span class="fc" id="L102">        this.userRepository.save(fonssiUser);</span>
@@ -221,7 +221,7 @@ public class DataInitializerService {
 
     private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
 <span class="fc" id="L223">        LocalDateTime now = LocalDateTime.now();</span>
-<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
 <span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
 <span class="nc" id="L226">        return MatchStatus.IN_PROGRESS;</span>
     }

@@ -1,21 +1,29 @@
 package com.mlb.mlbportal.services.mlbAPI;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.dto.mlbapi.team.*;
-import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.repositories.TeamRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.mlb.mlbportal.dto.mlbapi.team.Records;
+import com.mlb.mlbportal.dto.mlbapi.team.StandingsResponse;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
+import com.mlb.mlbportal.dto.mlbapi.team.TeamRecords;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.repositories.TeamRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -139,7 +147,7 @@ public class TeamImportService {
                 ));
             }
         }
-        catch (Exception ex) {
+        catch (RestClientException ex) {
             log.error("Cannot obtain the id from Stats API for the teams: {}", ex.getMessage());
         }
         return new HashMap<>();
@@ -178,8 +186,8 @@ public class TeamImportService {
                }
             }
             this.teamRepository.saveAll(teamsToSave);
-            log.info("Team Stats and Rankings successfully updated!");
         }
+        log.info("Team Stats and Rankings successfully updated!");
     }
 
     private Team updateTeamStats(TeamRecords teamRecord) {

@@ -250,4 +250,30 @@ class TicketServiceTest {
         assertThat(this.ticketService.purchaseTicket(USER1_USERNAME, validRequest, 0, 10)).isNotNull();
         verify(this.emailService).sendTicketPurchaseEmail(any(), any(), any(), any(), any());
     }
+
+    @Test
+    @DisplayName("Should return the pdf with the ticket information")
+    void testGetTicketPdf() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        byte[] mockPdf = "fake.pdf".getBytes();
+        ticket.setPdf(mockPdf);
+
+        when(this.ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        byte[] pdf = this.ticketService.getTicketPdf(1L);
+
+        assertThat(pdf).isNotNull();
+        assertThat(pdf).isEqualTo(mockPdf);
+    }
+
+    @Test
+    @DisplayName("Should throw TicketNotFoundException when ticket does not exists")
+    void testInvalidGetTicketPdf() {
+        when(this.ticketRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> this.ticketService.getTicketPdf(99L))
+                .isInstanceOf(TicketNotFoundException.class)
+                .hasMessage("Ticket " + 99 + " Not Found");
+    }
 }

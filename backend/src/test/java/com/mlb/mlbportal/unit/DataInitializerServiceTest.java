@@ -82,9 +82,9 @@ class DataInitializerServiceTest {
         List<UserEntity> savedUsers = userCaptor.getAllValues();
 
         assertThat(savedUsers).hasSize(2);
-        assertThat(savedUsers.get(0).getRoles()).contains("ADMIN");
+        assertThat(savedUsers.getFirst().getRoles()).contains("USER");
         assertThat(savedUsers.get(1).getRoles()).contains("ADMIN");
-        assertThat(savedUsers.get(0).getPassword()).isEqualTo("hashed_password");
+        assertThat(savedUsers.getFirst().getPassword()).isEqualTo("hashed_password");
     }
 
     @Test

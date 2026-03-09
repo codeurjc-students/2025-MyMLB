@@ -1,14 +1,20 @@
 package com.mlb.mlbportal.controllers.support;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.mlb.mlbportal.dto.support.ReplyRequest;
 import com.mlb.mlbportal.dto.support.SupportMessageDTO;
 import com.mlb.mlbportal.dto.support.SupportTicketDTO;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.SupportService;
-import jakarta.mail.MessagingException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,8 +22,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.util.List;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "AdminSupport", description = "Receives all the issues from the users and reply to each one of them")
 @RestController

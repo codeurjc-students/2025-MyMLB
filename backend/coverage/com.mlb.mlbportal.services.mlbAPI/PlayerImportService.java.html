@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.models.player.Player;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +19,7 @@ import com.mlb.mlbportal.models.enums.PitcherPositions;
 import com.mlb.mlbportal.models.enums.PlayerPositions;
 import com.mlb.mlbportal.models.others.PictureInfo;
 import com.mlb.mlbportal.models.player.Pitcher;
+import com.mlb.mlbportal.models.player.Player;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.player.PitcherRepository;

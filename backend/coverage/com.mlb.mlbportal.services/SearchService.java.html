@@ -4,7 +4,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
-import org.springframework.data.domain.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
@@ -43,38 +48,38 @@ public class SearchService {
 
     @Transactional(readOnly = true)
     public Page&lt;StadiumInitDTO&gt; searchStadiums(String input, int page, int size) {
-<span class="fc" id="L46">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByNameContainingIgnoreCase(input);</span>
-<span class="fc" id="L47">        return this.paginateAndMap(stadiums, this.stadiumMapper::toStadiumInitDTO, page, size);</span>
+<span class="fc" id="L51">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByNameContainingIgnoreCase(input);</span>
+<span class="fc" id="L52">        return this.paginateAndMap(stadiums, this.stadiumMapper::toStadiumInitDTO, page, size);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;TeamInfoDTO&gt; searchTeams(String input, int page, int size) {
-<span class="fc" id="L52">        List&lt;Team&gt; teams = this.teamRepository.findByNameContainingIgnoreCase(input);</span>
-<span class="fc" id="L53">        return this.paginateAndMap(teams, this.teamMapper::toTeamInfoDTO, page, size);</span>
+<span class="fc" id="L57">        List&lt;Team&gt; teams = this.teamRepository.findByNameContainingIgnoreCase(input);</span>
+<span class="fc" id="L58">        return this.paginateAndMap(teams, this.teamMapper::toTeamInfoDTO, page, size);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PositionPlayerDTO&gt; searchPositionPlayers(String input, int page, int size) {
-<span class="fc" id="L58">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
-<span class="fc" id="L59">        Page&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByNameContainingIgnoreCase(input, pageable);</span>
-<span class="fc" id="L60">        return players.map(this.positionPlayerMapper::toPositionPlayerDTO);</span>
+<span class="fc" id="L63">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
+<span class="fc" id="L64">        Page&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByNameContainingIgnoreCase(input, pageable);</span>
+<span class="fc" id="L65">        return players.map(this.positionPlayerMapper::toPositionPlayerDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PitcherDTO&gt; searchPitchers(String input, int page, int size) {
-<span class="fc" id="L65">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
-<span class="fc" id="L66">        Page&lt;Pitcher&gt; players = this.pitcherRepository.findByNameContainingIgnoreCase(input, pageable);</span>
-<span class="fc" id="L67">        return players.map(this.pitcherMapper::toPitcherDTO);</span>
+<span class="fc" id="L70">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
+<span class="fc" id="L71">        Page&lt;Pitcher&gt; players = this.pitcherRepository.findByNameContainingIgnoreCase(input, pageable);</span>
+<span class="fc" id="L72">        return players.map(this.pitcherMapper::toPitcherDTO);</span>
     }
 
     private &lt;E, D&gt; Page&lt;D&gt; paginateAndMap(List&lt;E&gt; entities, Function&lt;E, D&gt; mapper, int page, int size) {
-<span class="fc" id="L71">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L72">        int start = Math.min((int) pageable.getOffset(), entities.size());</span>
-<span class="fc" id="L73">        int end = Math.min(start + pageable.getPageSize(), entities.size());</span>
+<span class="fc" id="L76">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L77">        int start = Math.min((int) pageable.getOffset(), entities.size());</span>
+<span class="fc" id="L78">        int end = Math.min(start + pageable.getPageSize(), entities.size());</span>
 
-<span class="fc" id="L75">        List&lt;D&gt; result = entities.subList(start, end).stream().map(mapper).toList();</span>
+<span class="fc" id="L80">        List&lt;D&gt; result = entities.subList(start, end).stream().map(mapper).toList();</span>
 
-<span class="fc" id="L77">        return new PageImpl&lt;&gt;(result, pageable, entities.size());</span>
+<span class="fc" id="L82">        return new PageImpl&lt;&gt;(result, pageable, entities.size());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
