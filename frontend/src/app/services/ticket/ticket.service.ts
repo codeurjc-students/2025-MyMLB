@@ -18,6 +18,9 @@ export class TicketService {
 	}
 
 	public downloadPdf(ticketId: number): Observable<Blob> {
-		return this.http.get(`${this.apiUrl}/${ticketId}/download`, { responseType: 'blob' });
+		return this.http.get(`${this.apiUrl}/${ticketId}/download`, {
+			responseType: 'blob',
+			withCredentials: true
+		});
 	}
 }

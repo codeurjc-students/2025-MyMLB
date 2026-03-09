@@ -1,6 +1,6 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TicketService } from "../../../../app/services/ticket/ticket.service";
-import { TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { provideHttpClient, withFetch } from "@angular/common/http";
 import { MockFactory } from "../../../utils/mock-factory";
 
@@ -38,6 +38,19 @@ describe('Ticket Service Tests', () => {
 		expect(request.request.method).toBe('POST');
 		expect(request.request.body).toBe(mockRequest);
 		expect(request.request.withCredentials).toBeTrue;
+		request.flush(mockResponse);
+	});
+
+	it('should download the pdf of a ticket', () => {
+		const mockResponse = new Blob(['fakePdf'], { type: 'application/pdf' });
+		service.downloadPdf(ticketId).subscribe((response) => {
+			expect(response).toEqual(mockResponse);
+		});
+
+		const url = `${apiUrl}/${ticketId}/download`;
+		const request = httpMock.expectOne(url);
+		expect(request.request.method).toBe('GET');
+		expect(request.request.withCredentials).toBeTrue();
 		request.flush(mockResponse);
 	});
 });

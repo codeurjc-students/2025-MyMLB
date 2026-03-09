@@ -100,7 +100,7 @@ public class PdfGeneratorService {
 
         // Subtitle
         Font subFont = FontFactory.getFont(FontFactory.HELVETICA, 18, RED);
-        Paragraph subtitle = new Paragraph("OFFICIAL DIGITAL TICKETS", subFont);
+        Paragraph subtitle = new Paragraph("DIGITAL TICKETS", subFont);
         subtitle.setAlignment(Element.ALIGN_CENTER);
         pdf.add(subtitle);
         this.addEmptyLine(pdf, 2);
@@ -110,13 +110,6 @@ public class PdfGeneratorService {
         pdf.add(line);
 
         this.addEmptyLine(pdf, 8);
-
-        // Footer
-        Font footerFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 12, BaseColor.GRAY);
-        Paragraph footer = new Paragraph("This pdf contains " + "verified digital access for the selected events.", footerFont);
-        footer.setAlignment(Element.ALIGN_CENTER);
-        pdf.add(footer);
-
         pdf.newPage();
     }
 
