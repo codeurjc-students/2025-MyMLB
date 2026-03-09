@@ -42,6 +42,7 @@ class AdminSupportControllerTest extends BaseE2ETest {
     private SupportTicket savedTicket;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         this.supportMessageRepository.deleteAll();
         this.supportTicketRepository.deleteAll();

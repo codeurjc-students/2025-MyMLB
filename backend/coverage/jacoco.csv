@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-MLBPortal,com.mlb.mlbportal.models.ticket,Ticket,166,302,27,39,0,0,27,35,4,25
+MLBPortal,com.mlb.mlbportal.models.ticket,Ticket,158,356,26,46,0,0,26,41,3,28
 MLBPortal,com.mlb.mlbportal.models.ticket,Sector,186,455,48,64,3,6,42,47,3,30
 MLBPortal,com.mlb.mlbportal.models.ticket,Event,94,414,30,60,0,7,28,46,2,27
 MLBPortal,com.mlb.mlbportal.models.ticket,EventManager,146,533,40,78,0,7,34,59,2,32
@@ -22,9 +22,10 @@ MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,RosterEntry,0,9,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,StatData,0,66,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,PlayerResponse,0,6,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.others,PictureInfo,66,59,9,7,0,0,10,6,2,6
-MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService,4,169,0,2,2,27,0,4,0,3
+MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService,15,370,2,6,5,79,2,9,0,7
 MLBPortal,com.mlb.mlbportal.services.utilities,PaginationHandlerService,0,40,0,0,0,8,0,2,0,2
 MLBPortal,com.mlb.mlbportal.services.utilities,SeatBatchGenerationService.new BatchPreparedStatementSetter() {...},0,36,0,0,0,7,0,3,0,3
+MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService.HeaderLayout,12,129,2,4,4,27,2,4,0,3
 MLBPortal,com.mlb.mlbportal.services.utilities,SeatBatchGenerationService,0,14,0,0,0,3,0,1,0,1
 MLBPortal,com.mlb.mlbportal.configuration,TimeConfig,7,0,0,0,2,0,2,0,2,0
 MLBPortal,com.mlb.mlbportal.configuration,CloudinaryConfig,30,0,0,0,6,0,2,0,2,0
@@ -40,7 +41,7 @@ MLBPortal,com.mlb.mlbportal.controllers.support,SupportController,0,13,0,0,0,2,0
 MLBPortal,com.mlb.mlbportal.controllers.support,AdminSupportController,0,29,0,0,0,5,0,4,0,4
 MLBPortal,com.mlb.mlbportal.services.ticket,EventService,7,328,3,13,1,56,3,18,0,13
 MLBPortal,com.mlb.mlbportal.services.ticket,PaymentService,2,107,3,23,1,25,3,14,0,4
-MLBPortal,com.mlb.mlbportal.services.ticket,TicketService,0,239,0,8,0,51,0,14,0,10
+MLBPortal,com.mlb.mlbportal.services.ticket,TicketService,0,264,0,8,0,54,0,17,0,13
 MLBPortal,com.mlb.mlbportal.dto.ticket,PurchaseRequest,0,24,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.ticket,EventManagerDTO,0,21,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.ticket,SeatDTO,0,9,0,0,0,1,0,1,0,1
@@ -74,7 +75,7 @@ MLBPortal,com.mlb.mlbportal.models.support,SupportTicket,158,517,40,74,0,0,36,56
 MLBPortal,com.mlb.mlbportal.services.mlbAPI,TeamImportService,30,450,7,22,10,88,10,16,3,8
 MLBPortal,com.mlb.mlbportal.services.mlbAPI,PlayerImportService,57,435,13,21,11,89,12,17,1,11
 MLBPortal,com.mlb.mlbportal.services.mlbAPI,MatchImportService,13,452,12,21,6,96,12,18,0,13
-MLBPortal,com.mlb.mlbportal.controllers.ticket,TicketController,0,36,0,0,0,7,0,2,0,2
+MLBPortal,com.mlb.mlbportal.controllers.ticket,TicketController,0,62,0,0,0,12,0,3,0,3
 MLBPortal,com.mlb.mlbportal.controllers.ticket,EventController,0,75,0,0,0,14,0,9,0,9
 MLBPortal,com.mlb.mlbportal.schedulers,PlayerScheduler,0,8,0,0,0,3,0,2,0,2
 MLBPortal,com.mlb.mlbportal.schedulers,TeamScheduler,0,8,0,0,0,3,0,2,0,2
@@ -147,7 +148,7 @@ MLBPortal,com.mlb.mlbportal.services,SearchService,0,123,0,0,0,15,0,5,0,5
 MLBPortal,com.mlb.mlbportal.services,MatchService,5,309,3,23,1,54,4,19,1,9
 MLBPortal,com.mlb.mlbportal.services,StadiumService,0,167,0,4,0,31,0,11,0,9
 MLBPortal,com.mlb.mlbportal.services,EmailService,7,300,6,12,2,68,6,16,0,13
-MLBPortal,com.mlb.mlbportal.services,DataInitializerService,359,450,27,25,71,104,25,22,8,13
+MLBPortal,com.mlb.mlbportal.services,DataInitializerService,357,452,26,26,71,104,24,23,8,13
 MLBPortal,com.mlb.mlbportal.services,UserService,10,360,6,20,3,76,6,22,0,15
 MLBPortal,com.mlb.mlbportal.models.enums,SupportTicketStatus,0,21,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,League,0,15,0,0,0,3,0,1,0,1
@@ -166,7 +167,6 @@ MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,GameEntry,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,LeagueInfo,0,6,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,DivisionInfo,6,0,0,0,1,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,DateEntry,0,6,0,0,0,1,0,1,0,1
-MLBPortal,com.mlb.mlbportal.controllers,MlbImportController,9,0,0,0,2,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,37,23,6,2,6,3,4,2,0,1
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,46,1,1,0,9,1,5,0,5
 MLBPortal,com.mlb.mlbportal.controllers,AuthController,22,73,2,2,3,13,3,7,1,7

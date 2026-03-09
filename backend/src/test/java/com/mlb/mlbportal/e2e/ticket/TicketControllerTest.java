@@ -5,9 +5,6 @@ import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +48,9 @@ import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.*;
+
 import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -141,6 +141,29 @@ class TicketControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("ownerName", is(this.ticket.getOwner()));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/tickets/{ticketId}/download should return the pdf with the ticket information")
+    void testDownloadPdf() {
+        byte[] mockPdf = "mock.pdf".getBytes();
+        this.ticket.setPdf(mockPdf);
+        this.ticketRepository.save(this.ticket);
+        String url = TICKET_PATH + "/" + this.ticket.getId() + "/download";
+
+        byte[] response = given()
+                .header("X-Mock-User", USER1_USERNAME)
+                .contentType("application/pdf")
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .header("Content-Disposition", containsString("attachment"))
+                .header("Content-Disposition", containsString("MLB_Portal_Ticket.pdf"))
+                .extract()
+                .asByteArray();
+
+        assertThat(response).isEqualTo(mockPdf);
     }
 
     @Test

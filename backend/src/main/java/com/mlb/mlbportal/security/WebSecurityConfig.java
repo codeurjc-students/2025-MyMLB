@@ -114,6 +114,7 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.DELETE, "/api/v1/events/**").hasRole("ADMIN")
 
                     .requestMatchers(HttpMethod.GET, "/api/v1/tickets/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/tickets/*/download").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/tickets/**").hasAnyRole("USER", "ADMIN")
 
                     // Search Endpoints

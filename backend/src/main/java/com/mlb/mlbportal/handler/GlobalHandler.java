@@ -6,9 +6,6 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
-import com.mlb.mlbportal.handler.badRequest.SeatSelectionMismatchException;
-import com.mlb.mlbportal.handler.conflict.*;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +15,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.mlb.mlbportal.handler.badRequest.EventRequestMissMatchException;
 import com.mlb.mlbportal.handler.badRequest.MaxiumPicturesExceededException;
+import com.mlb.mlbportal.handler.badRequest.SeatSelectionMismatchException;
+import com.mlb.mlbportal.handler.conflict.InsufficientStockException;
+import com.mlb.mlbportal.handler.conflict.ResourceAlreadyExistsException;
 import com.mlb.mlbportal.handler.notFound.ResourceNotFoundException;
 
 @RestControllerAdvice

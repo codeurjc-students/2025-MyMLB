@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminSupportController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers.support</a> &gt; <span class="el_source">AdminSupportController.java</span></div><h1>AdminSupportController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers.support;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.mlb.mlbportal.dto.support.ReplyRequest;
 import com.mlb.mlbportal.dto.support.SupportMessageDTO;
 import com.mlb.mlbportal.dto.support.SupportTicketDTO;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.SupportService;
-import jakarta.mail.MessagingException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,8 +22,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.util.List;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = &quot;AdminSupport&quot;, description = &quot;Receives all the issues from the users and reply to each one of them&quot;)
 @RestController
@@ -33,7 +39,7 @@ public class AdminSupportController {
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;SupportTicketDTO&gt;&gt; getOpenTickets() {
-<span class="fc" id="L36">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
+<span class="fc" id="L42">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
     }
 
     @Operation(summary = &quot;Get the conversation of a given ticket&quot;, description = &quot;Returns all messages between the admin and the user of a certain ticket.&quot;)
@@ -43,7 +49,7 @@ public class AdminSupportController {
     })
     @GetMapping(value = &quot;/{ticketId}/conversation&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;SupportMessageDTO&gt;&gt; getConversation(@PathVariable(&quot;ticketId&quot;) Long ticketId) {
-<span class="fc" id="L46">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
+<span class="fc" id="L52">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
     }
 
     @Operation(summary = &quot;Reply to a given ticket&quot;, description = &quot;Allows the admins to answer a ticket from the user.&quot;)
@@ -55,7 +61,7 @@ public class AdminSupportController {
     })
     @PostMapping(value = &quot;/{ticketId}/reply&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;SupportMessageDTO&gt; reply(@PathVariable(&quot;ticketId&quot;)Long ticketId, @RequestBody ReplyRequest request) throws MessagingException {
-<span class="fc" id="L58">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
+<span class="fc" id="L64">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
     }
 
     @Operation(summary = &quot;Close the given ticket&quot;, description = &quot;Allows the admins to close the given ticket, ending the issue of the user.&quot;)
@@ -67,8 +73,8 @@ public class AdminSupportController {
     })
     @PostMapping(value = &quot;/{ticketId}/close&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; closeTicket(@PathVariable(&quot;ticketId&quot;)Long ticketId) {
-<span class="fc" id="L70">        this.supportService.closeTicket(ticketId);</span>
-<span class="fc" id="L71">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
+<span class="fc" id="L76">        this.supportService.closeTicket(ticketId);</span>
+<span class="fc" id="L77">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

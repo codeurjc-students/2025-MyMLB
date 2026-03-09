@@ -4,6 +4,10 @@ import java.net.URI;
 import java.security.Principal;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +49,22 @@ public class TicketController {
         return ResponseEntity.ok(this.ticketService.getTicket(ticketId));
     }
 
+    @Operation(summary = "Download the ticket pdf", description = "Download the pdf with the ticket information.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF successfully downloaded", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Ticket Not Found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/{ticketId}/download", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable("ticketId")Long ticketId) {
+        byte[] pdf = this.ticketService.getTicketPdf(ticketId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("MLB_Portal_Ticket.pdf").build());
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
     @Operation(summary = "Purchase ticket(s)", description = "Allows the user to purchase one or more tickets")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully purchased and created the ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketDTO.class))),
@@ -56,7 +76,6 @@ public class TicketController {
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Page<TicketDTO>> purchaseTicket(Principal principal, @Valid @RequestBody PurchaseRequest request, @RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size) {
-
         Page<TicketDTO> newTickets = this.ticketService.purchaseTicket(principal.getName(), request, page, size);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
