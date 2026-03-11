@@ -33,4 +33,10 @@ public class StatsController {
         this.statsService.increaseRegistrations();
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Registrations successfully updated"));
     }
+
+    @PostMapping(value = "/visibility/losses", produces = "application/json")
+    public ResponseEntity<AuthResponse> updateLosses() {
+        this.statsService.increaseLosses();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Losses successfully updated"));
+    }
 }

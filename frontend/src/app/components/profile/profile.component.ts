@@ -15,6 +15,7 @@ import { Pictures } from '../../models/pictures.model';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { StatsService } from '../../services/stats.service';
 
 @Component({
 	selector: 'app-profile',
@@ -36,6 +37,7 @@ export class ProfileComponent implements OnInit {
 	private authService = inject(AuthService);
 	private router = inject(Router);
 	private userService = inject(UserService);
+	private statsService = inject(StatsService);
 
 	public username = '';
 
@@ -189,6 +191,7 @@ export class ProfileComponent implements OnInit {
 				this.successMessage = 'Profile Picture Successfully Deleted';
 				this.pictureSrc = null;
 				this.userService.setProfilePicture('');
+				this.statsService.updateLosses().subscribe();
 			},
 			error: (_) => {
 				this.error = true;

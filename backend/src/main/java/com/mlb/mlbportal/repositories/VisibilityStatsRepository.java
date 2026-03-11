@@ -16,19 +16,27 @@ public interface VisibilityStatsRepository extends JpaRepository<VisibilityStats
     @Query("SELECT vS FROM VisibilityStats vS WHERE (vS.date >= :dateFrom AND vS.date <= :dateTo) ORDER BY vS.date ASC")
     List<VisibilityStats> findStatsByRange(@Param("dateFrom")LocalDate dateFrom, @Param("dateTo")LocalDate dateTo);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value =
-            "INSERT INTO t_visibility_stats (date, visualizations, registrations) " +
-                    "VALUES (:date, 1, 0) " +
+            "INSERT INTO t_visibility_stats (date, visualizations, registrations, losses) " +
+                    "VALUES (:date, 1, 0, 0) " +
                     "ON CONFLICT (date) DO UPDATE SET visualizations = t_visibility_stats.visualizations + 1"
     )
     void increaseVisualizations(@Param("date")LocalDate date);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value =
-            "INSERT INTO t_visibility_stats (date, visualizations, registrations) " +
-                    "VALUES (:date, 0, 1) " +
+            "INSERT INTO t_visibility_stats (date, visualizations, registrations, losses) " +
+                    "VALUES (:date, 0, 1, 0) " +
                     "ON CONFLICT (date) DO UPDATE SET registrations = t_visibility_stats.registrations + 1"
     )
     void increaseRegistrations(@Param("date")LocalDate date);
+
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value =
+            "INSERT INTO t_visibility_stats (date, visualizations, registrations, losses) " +
+                    "VALUES (:date, 0, 0, 1) " +
+                    "ON CONFLICT (date) DO UPDATE SET losses = t_visibility_stats.losses + 1"
+    )
+    void increaseLosses(@Param("date")LocalDate date);
 }
