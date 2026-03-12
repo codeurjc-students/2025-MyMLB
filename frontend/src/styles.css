@@ -297,3 +297,8 @@ html {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Stats */
+.stats-card-container {
+	@apply bg-white/80 dark:bg-gray-800/50 backdrop-blur-md p-6 rounded-[2rem] shadow-xl border border-white/20 flex items-center gap-4 hover:scale-[1.02] transition-transform duration-300;
+}

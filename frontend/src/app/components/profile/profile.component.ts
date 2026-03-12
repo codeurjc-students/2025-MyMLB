@@ -191,7 +191,7 @@ export class ProfileComponent implements OnInit {
 				this.successMessage = 'Profile Picture Successfully Deleted';
 				this.pictureSrc = null;
 				this.userService.setProfilePicture('');
-				this.statsService.updateLosses().subscribe();
+				this.statsService.updateChurnUsers().subscribe();
 			},
 			error: (_) => {
 				this.error = true;

@@ -21,6 +21,6 @@ public class VisibilityStats {
     private LocalDate date;
 
     private long visualizations = 0;
-    private long registrations = 0;
-    private long losses = 0;
+    private long newUsers = 0;
+    private long churnUsers = 0;
 }

@@ -29,14 +29,14 @@ public class StatsController {
     }
 
     @PostMapping(value = "/visibility/registrations", produces = "application/json")
-    public ResponseEntity<AuthResponse> updateRegistrations() {
-        this.statsService.increaseRegistrations();
-        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Registrations successfully updated"));
+    public ResponseEntity<AuthResponse> updateNewUsers() {
+        this.statsService.increaseNewUsers();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "New Users successfully updated"));
     }
 
     @PostMapping(value = "/visibility/losses", produces = "application/json")
-    public ResponseEntity<AuthResponse> updateLosses() {
-        this.statsService.increaseLosses();
-        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Losses successfully updated"));
+    public ResponseEntity<AuthResponse> updateChurnUsers() {
+        this.statsService.increaseChurnUsers();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Churn Users successfully updated"));
     }
 }

@@ -7,6 +7,7 @@ import flatpickr from 'flatpickr';
 import { StatsService } from '../../../services/stats.service';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
+import { ExportService } from '../../../services/utilities/export.service';
 
 @Component({
     selector: 'app-visibility',
@@ -17,6 +18,7 @@ import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.c
 })
 export class VisibilityComponent implements OnInit, AfterViewInit {
     private statsService = inject(StatsService);
+	private exportService = inject(ExportService);
     @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
     public chartData: ChartData<'line'> = {
@@ -248,12 +250,12 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
             next: (stats) => {
                 this.chartData.labels = stats.map(s => s.date);
                 this.chartData.datasets[0].data = stats.map(s => s.visualizations);
-                this.chartData.datasets[1].data = stats.map(s => s.registrations);
-                this.chartData.datasets[2].data = stats.map(s => s.losses);
+                this.chartData.datasets[1].data = stats.map(s => s.newUsers);
+                this.chartData.datasets[2].data = stats.map(s => s.churnUsers);
 
-                this.totalVisualizations = stats.reduce((acc, s) => acc + s.visualizations, 0);
-                this.totalRegistrations = stats.reduce((acc, s) => acc + s.registrations, 0);
-                this.totalLosses = stats.reduce((acc, s) => acc + s.losses, 0);
+                this.totalVisualizations = stats.reduce((acc, stat) => acc + stat.visualizations, 0);
+                this.totalRegistrations = stats.reduce((acc, stat) => acc + stat.newUsers, 0);
+                this.totalLosses = stats.reduce((acc, stat) => acc + stat.churnUsers, 0);
 
                 this.growthPercentage = this.totalVisualizations > 0 ? (this.totalRegistrations / this.totalVisualizations) * 100 : 0;
                 this.usersChurnPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
@@ -268,4 +270,13 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
             }
         });
     }
+
+	public downloadChartAsPNG() {
+		const canvas = this.chart?.chart?.canvas;
+		if (canvas) {
+			const downloadDate = this.getDateRange().replace(/ /g, '_').replace(/, /g, '');
+			const fileName = `Application_Visibility_Analytics_${downloadDate}`;
+			this.exportService.downloadPNG(canvas, fileName);
+		}
+	}
 }

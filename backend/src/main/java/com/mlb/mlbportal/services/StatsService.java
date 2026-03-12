@@ -31,12 +31,12 @@ public class StatsService {
     }
 
     @Transactional
-    public void increaseRegistrations() {
-        this.visibilityStatsRepository.increaseRegistrations(LocalDate.now());
+    public void increaseNewUsers() {
+        this.visibilityStatsRepository.increaseNewUsers(LocalDate.now());
     }
 
     @Transactional
-    public void increaseLosses() {
-        this.visibilityStatsRepository.increaseLosses(LocalDate.now());
+    public void increaseChurnUsers() {
+        this.visibilityStatsRepository.increaseChurnUsers(LocalDate.now());
     }
 }

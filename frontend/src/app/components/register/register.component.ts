@@ -71,7 +71,7 @@ export class RegisterComponent {
 				if (response.status ===  "SUCCESS") {
 					this.showSuccess = true;
 					this.successMessage = response.message;
-					this.statsService.updateRegistrations().subscribe();
+					this.statsService.updateNewUsers().subscribe();
 				}
 				else {
 					this.errorMessage = response.message;

@@ -20,11 +20,11 @@ export class StatsService {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/visibility/visualizations`, {});
 	}
 
-	public updateRegistrations(): Observable<AuthResponse> {
+	public updateNewUsers(): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/visibility/registrations`, {});
 	}
 
-	public updateLosses(): Observable<AuthResponse> {
+	public updateChurnUsers(): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/visibility/losses`, {});
 	}
 
