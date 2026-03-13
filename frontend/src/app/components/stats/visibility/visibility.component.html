@@ -1,10 +1,21 @@
 <div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center">
+    <section class="w-full max-w-7xl flex flex-col md:grid md:grid-cols-3 items-center gap-4 md:gap-0">
+		<div class="flex justify-start">
+			<button (click)="goBackToDashboard()"
+				class="group flex items-center gap-2 text-gray-400 hover:text-indigo-500 transition-all font-black uppercase text-[10px] tracking-[0.3em] cursor-pointer"
+			>
+				<mat-icon class="transition-transform group-hover:-translate-x-1 scale-75">arrow_back</mat-icon>
+				Back to Dashboard
+			</button>
+		</div>
 
-    <section class="w-full flex justify-center text-center overflow-visible">
-        <h1 class="app-page-titles">
-            Application Analytics
-        </h1>
-    </section>
+		<div class="flex justify-center">
+			<h1 class="app-page-titles !mb-0 whitespace-nowrap">
+				Visibility Analytics
+			</h1>
+		</div>
+		<div class="hidden md:block"></div>
+	</section>
 
 	<!-- Stats Cards -->
     <section class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 animate-fadeIn">
@@ -37,7 +48,7 @@
                 <mat-icon class="scale-110">person_remove</mat-icon>
             </div>
             <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">User Churn</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Churn Users</p>
                 <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">
                     {{ totalLosses | number }}
                 </h3>
@@ -73,33 +84,37 @@
     <section class="w-full max-w-7xl animate-fadeInUpSmooth space-y-6">
         <div class="bg-white/50 dark:bg-gray-800/30 backdrop-blur-md p-4 rounded-[1.5rem] border border-white/20 flex flex-wrap items-center justify-between gap-4">
             <div class="flex flex-wrap items-center gap-4">
-                <div class="relative">
-                    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 scale-75">event</mat-icon>
-                    <input
-						#dateFrom
-						type="text"
-						placeholder="Start Date"
-						class="bg-white dark:bg-gray-900/50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none w-40 cursor-pointer shadow-sm"
-					>
-                </div>
-                <div class="text-gray-400 font-black">→</div>
-                <div class="relative">
-                    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 scale-75">event</mat-icon>
-                    <input
-						#dateTo
-						type="text"
-						placeholder="End Date"
-                        class="bg-white dark:bg-gray-900/50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none w-40 cursor-pointer shadow-sm"
-					>
-                </div>
-            </div>
+				<div class="flex items-center gap-3">
+					<div class="relative">
+						<mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 scale-75">event</mat-icon>
+						<input
+							#dateFrom
+							type="text"
+							placeholder="Start Date"
+							class="bg-white dark:bg-gray-900/50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none w-40 cursor-pointer shadow-sm"
+						>
+					</div>
 
-			<!-- Reset Date Filter Button -->
-            <button (click)="resetDateFilter()"
-                class="flex items-center cursor-pointer gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-200 px-5 py-2 rounded-xl text-xs font-black uppercase transition-all active:scale-95">
-                <mat-icon class="scale-75">restart_alt</mat-icon>
-                Reset Dates
-            </button>
+					<div class="text-gray-400 font-black">→</div>
+
+					<div class="relative">
+						<mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 scale-75">event</mat-icon>
+						<input
+							#dateTo
+							type="text"
+							placeholder="End Date"
+							class="bg-white dark:bg-gray-900/50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none w-40 cursor-pointer shadow-sm"
+						>
+					</div>
+				</div>
+
+				<!-- Reset Date Filter Button -->
+				<button (click)="resetDateFilter()"
+					class="flex items-center cursor-pointer gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-200 px-5 py-2 rounded-xl text-xs font-black uppercase transition-all active:scale-95">
+					<mat-icon class="scale-75">restart_alt</mat-icon>
+					Reset Dates
+				</button>
+            </div>
 
 			<!-- Download PNG Button -->
 			<button (click)="downloadChartAsPNG()"
@@ -115,15 +130,15 @@
 
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div>
-                    <h2 class="text-2xl font-black tracking-tight uppercase">Activity Overview</h2>
+                    <h2 class="text-2xl font-black tracking-tight uppercase">Visibility Overview</h2>
                     <p class="text-gray-500 dark:text-gray-400 font-medium">Monitoring application visibility and growth rate</p>
                 </div>
 
                 <div class="flex gap-2">
-                    <span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 px-4 py-2 rounded-xl text-xs font-black uppercase">
-                        <mat-icon class="inline-block scale-50 -mt-1 mr-1">calendar_today</mat-icon>
-        				{{ getDateRange() }}
-                    </span>
+                    <span class="flex items-center bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 px-4 py-2 rounded-xl text-xs font-black uppercase">
+						<mat-icon class="scale-75 mr-2">calendar_today</mat-icon>
+						<span class="leading-none">{{ getDateRange() }}</span>
+					</span>
                 </div>
             </div>
 

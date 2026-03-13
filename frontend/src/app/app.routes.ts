@@ -65,7 +65,7 @@ export const routes: Routes = [
 		path: 'statistics',
 		canActivate: [AdminGuard],
 		loadComponent: () =>
-			import('./components/stats/visibility/visibility.component').then((m) => m.VisibilityComponent)
+			import('./components/stats/stats-dashboard/stats-dashboard.component').then((m) => m.StatsDashboardComponent)
 	},
 	{
 		path: 'inbox',

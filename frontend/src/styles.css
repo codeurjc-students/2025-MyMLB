@@ -3,7 +3,7 @@
 @import 'tailwindcss';
 @import "flatpickr/dist/flatpickr.min.css";
 @import "flatpickr/dist/plugins/monthSelect/style.css";
-@plugin "@midudev/tailwind-animations";
+@import 'tailwind-animations';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

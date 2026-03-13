@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -19,6 +19,8 @@ import { ExportService } from '../../../services/utilities/export.service';
 export class VisibilityComponent implements OnInit, AfterViewInit {
     private statsService = inject(StatsService);
 	private exportService = inject(ExportService);
+
+	@Output() backToStatsDashboard = new EventEmitter<void>();
     @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
     public chartData: ChartData<'line'> = {
@@ -37,13 +39,13 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
             {
                 data: [],
                 label: 'Registrations',
-                borderColor: '#FFA726',
-                backgroundColor: 'rgba(255, 167, 38, 0.2)',
+                borderColor: '#10B981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 fill: 'origin',
                 tension: 0.4,
                 borderWidth: 2,
                 pointRadius: 2,
-                pointBackgroundColor: '#FFA726'
+                pointBackgroundColor: '#10B981'
             },
             {
                 data: [],
@@ -278,5 +280,9 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
 			const fileName = `Application_Visibility_Analytics_${downloadDate}`;
 			this.exportService.downloadPNG(canvas, fileName);
 		}
+	}
+
+	public goBackToDashboard() {
+		this.backToStatsDashboard.emit();
 	}
 }
