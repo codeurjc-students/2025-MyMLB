@@ -125,7 +125,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
         this.selectedDateFrom = from.toISOString().split('T')[0];
         this.selectedDateTo = to.toISOString().split('T')[0];
 
-        this.fillWithMockData();
+        this.fetchData();
     }
 
     ngAfterViewInit() {
@@ -166,8 +166,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
     public onDateFilterChange() {
         this.loading = true;
         setTimeout(() => {
-            // this.fetchData();
-            this.fillWithMockData();
+            this.fetchData();
             this.loading = false;
         }, 400);
     }
@@ -202,48 +201,6 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
 		const to = new Date(this.selectedDateTo + 'T00:00:00');
 		return `${from.toLocaleDateString('en-US', options)} - ${to.toLocaleDateString('en-US', options)}`;
 	}
-
-    private fillWithMockData() {
-        const start = new Date(this.selectedDateFrom);
-        const end = new Date(this.selectedDateTo);
-
-        const diffTime = Math.abs(end.getTime() - start.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-        const mockStats = [];
-
-        for (let i = 0; i < diffDays; i++) {
-            const currentDate = new Date(start);
-            currentDate.setDate(start.getDate() + i);
-
-            const visualizations = Math.floor(Math.random() * 40) + 15;
-            const registrations = Math.floor(visualizations * (0.1 + Math.random() * 0.1));
-            const losses = Math.floor(Math.random() * (registrations * 0.3));
-
-            mockStats.push({
-                date: currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-                visualizations,
-                registrations,
-                losses
-            });
-        }
-
-        this.chartData.labels = mockStats.map(s => s.date);
-        this.chartData.datasets[0].data = mockStats.map(s => s.visualizations);
-        this.chartData.datasets[1].data = mockStats.map(s => s.registrations);
-        this.chartData.datasets[2].data = mockStats.map(s => s.losses);
-
-        this.totalVisualizations = mockStats.reduce((acc, s) => acc + s.visualizations, 0);
-        this.totalRegistrations = mockStats.reduce((acc, s) => acc + s.registrations, 0);
-        this.totalLosses = mockStats.reduce((acc, s) => acc + s.losses, 0);
-
-        this.growthPercentage = this.totalVisualizations > 0 ? (this.totalRegistrations / this.totalVisualizations) * 100 : 0;
-        this.deletedUsersPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
-
-        if (this.chart) {
-            this.chart.chart?.update();
-        }
-    }
 
     private fetchData() {
         this.loading = true;
