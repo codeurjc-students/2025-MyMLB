@@ -24,7 +24,7 @@ export class StatsService {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/visibility/registrations`, {});
 	}
 
-	public updateChurnUsers(): Observable<AuthResponse> {
+	public updateDeletedUsers(): Observable<AuthResponse> {
 		return this.http.post<AuthResponse>(`${this.apiUrl}/visibility/losses`, {});
 	}
 

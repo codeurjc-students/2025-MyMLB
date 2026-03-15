@@ -18,6 +18,8 @@ tags:
 - name: Tickets
   description: "Operations for ticket purchasing, inventory management, and digital\
     \ ticket retrieval"
+- name: Application Analytics
+  description: Endpoints related to analytical data of the application
 - name: UserSupport
   description: Allows the user to contact the admins of the applications regarding
     any issue they might have
@@ -88,10 +90,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -100,6 +98,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the events
           content:
@@ -145,10 +147,6 @@ paths:
           description: Event or Sector Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -157,6 +155,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully modified the event
           content:
@@ -201,10 +203,6 @@ paths:
           description: Match Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -213,6 +211,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "201":
           description: Successfully created the event
           content:
@@ -260,16 +262,16 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -317,10 +319,6 @@ paths:
           description: User not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -329,6 +327,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
@@ -373,10 +375,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -385,6 +383,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Team successfully added
           content:
@@ -428,10 +430,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -440,6 +438,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Team successfully removed
           content:
@@ -495,12 +497,12 @@ paths:
           description: Ticket Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Invalid Credit Card Data
+          content:
+            application/json: {}
+        "500":
+          description: Internal server error
           content:
             application/json: {}
         "201":
@@ -555,10 +557,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -567,8 +565,186 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully created the email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/stats/visibility/visualizations:
+    post:
+      tags:
+      - Application Analytics
+      summary: Increase Visualizations
+      description: Register a new visualization.
+      operationId: updateVisualizations
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully update the visualizations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/stats/visibility/registrations:
+    post:
+      tags:
+      - Application Analytics
+      summary: Increase New Users
+      description: Increase the number of registered users.
+      operationId: updateNewUsers
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully update the number of registered users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/stats/visibility/losses:
+    post:
+      tags:
+      - Application Analytics
+      summary: Increase Deleted Users
+      description: Increase the number of deleted users.
+      operationId: updateDeletedUsers
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully update the number of deleted users
           content:
             application/json:
               schema:
@@ -629,10 +805,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -641,6 +813,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of stadiums
           content:
@@ -685,10 +861,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -697,6 +869,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "201":
           description: Stadium created successfully
           content:
@@ -746,10 +922,6 @@ paths:
           description: Stadium not found or no pictures available
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -758,6 +930,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved stadium pictures
           content:
@@ -812,10 +988,6 @@ paths:
           description: Stadium not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -824,6 +996,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture uploaded successfully
           content:
@@ -873,10 +1049,6 @@ paths:
           description: Stadium or picture not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -885,6 +1057,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
@@ -940,10 +1116,6 @@ paths:
           description: Stadium not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -952,6 +1124,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Picture uploaded successfully
           content:
@@ -1005,16 +1181,16 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1083,10 +1259,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1095,6 +1267,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of position players
           content:
@@ -1131,16 +1307,16 @@ paths:
         "404":
           description: Team not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1208,10 +1384,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1220,6 +1392,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of pitchers
           content:
@@ -1256,16 +1432,16 @@ paths:
         "404":
           description: Team not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1318,16 +1494,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1377,16 +1553,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1443,16 +1619,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1508,16 +1684,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1573,16 +1749,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1633,16 +1809,16 @@ paths:
                   type: object
         "404":
           description: There is no user registered with this email
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -1703,10 +1879,6 @@ paths:
           description: Ticket not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1715,6 +1887,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully reply to the user
           content:
@@ -1761,10 +1937,6 @@ paths:
           description: Ticket not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1773,6 +1945,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully closes the ticket
           content:
@@ -1834,10 +2010,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1846,6 +2018,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of users
           content:
@@ -1886,10 +2062,6 @@ paths:
           description: User not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1898,6 +2070,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Profile successfully updated
           content:
@@ -1948,10 +2124,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1960,6 +2132,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved team info
           content:
@@ -2010,10 +2186,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2022,6 +2194,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Team successfully updated
           content:
@@ -2070,16 +2246,16 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -2134,16 +2310,16 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -2193,10 +2369,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2205,6 +2377,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved tickets
           content:
@@ -2248,10 +2424,6 @@ paths:
           description: User not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2260,6 +2432,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the information
           content:
@@ -2302,10 +2478,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2314,6 +2486,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved favorite teams
           content:
@@ -2363,10 +2539,6 @@ paths:
           description: Ticket Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2375,6 +2547,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the ticket
           content:
@@ -2424,10 +2600,6 @@ paths:
           description: Ticket Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2436,6 +2608,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: PDF successfully downloaded
           content:
@@ -2496,10 +2672,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2508,6 +2680,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of teams
           content:
@@ -2556,10 +2732,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2568,6 +2740,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved standings
           content:
@@ -2630,10 +2806,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2642,12 +2814,88 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of teams
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamSummary"
+  /api/v1/stats/visibility:
+    get:
+      tags:
+      - Application Analytics
+      summary: Return Visibility Stats
+      description: Obtain the visibility stats of the application within a period
+        of time.
+      operationId: getVisibilityStats
+      parameters:
+      - name: dateFrom
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: dateTo
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "200":
+          description: Successfully retrieved the stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VisibilityStats"
   /api/v1/stadiums/{name}:
     get:
       tags:
@@ -2691,10 +2939,6 @@ paths:
           description: Stadium not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2703,6 +2947,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved stadium info
           content:
@@ -2762,16 +3010,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -2850,10 +3098,6 @@ paths:
           description: "Invalid search type (not stadium, team, or player)"
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2862,6 +3106,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved search results
           content:
@@ -2924,10 +3172,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2936,6 +3180,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved list of players
           content:
@@ -2985,10 +3233,6 @@ paths:
           description: Player not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -2997,6 +3241,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved player info
           content:
@@ -3060,10 +3308,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3072,6 +3316,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved position players of the team
           content:
@@ -3135,10 +3383,6 @@ paths:
           description: Team not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3147,6 +3391,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved pitchers of the team
           content:
@@ -3196,10 +3444,6 @@ paths:
           description: Match Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3208,6 +3452,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the match
           content:
@@ -3270,10 +3518,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3282,6 +3526,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the matches
           content:
@@ -3346,10 +3594,6 @@ paths:
           description: Team not found or no matches available
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3358,6 +3602,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved matches
           content:
@@ -3419,10 +3667,6 @@ paths:
           description: Team not found or no matches available for the given month
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3431,6 +3675,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved matches
           content:
@@ -3480,10 +3728,6 @@ paths:
           description: Event Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3492,6 +3736,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the event
           content:
@@ -3540,10 +3788,6 @@ paths:
           description: Event Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3552,6 +3796,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully deleted the event
           content:
@@ -3615,10 +3863,6 @@ paths:
           description: Event Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3627,6 +3871,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the tickets
           content:
@@ -3676,10 +3924,6 @@ paths:
           description: Event Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3688,6 +3932,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the sectors
           content:
@@ -3743,10 +3991,6 @@ paths:
           description: Event or Sector Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3755,6 +3999,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the seats
           content:
@@ -3804,10 +4052,6 @@ paths:
           description: Match Not Found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3816,6 +4060,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the event
           content:
@@ -3856,16 +4104,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -3922,10 +4170,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -3934,6 +4178,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the list of open tickets
           content:
@@ -3988,10 +4236,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -4000,6 +4244,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Successfully retrieved the conversation
           content:
@@ -4047,16 +4295,16 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
@@ -4101,10 +4349,6 @@ paths:
           description: User not found
           content:
             application/json: {}
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -4113,6 +4357,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
         "200":
           description: Account successfully removed
           content:
@@ -4909,6 +5157,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PitcherSummaryDTO"
+    VisibilityStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        visualizations:
+          type: integer
+          format: int64
+        newUsers:
+          type: integer
+          format: int64
+        deletedUsers:
+          type: integer
+          format: int64
     StadiumInitDTO:
       type: object
       properties:

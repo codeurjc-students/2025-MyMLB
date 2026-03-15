@@ -38,7 +38,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
             },
             {
                 data: [],
-                label: 'Registrations',
+                label: 'New Users',
                 borderColor: '#10B981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 fill: 'origin',
@@ -49,7 +49,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
             },
             {
                 data: [],
-                label: 'Losses',
+                label: 'Deleted Users',
                 borderColor: '#E53935',
                 backgroundColor: 'rgba(229, 57, 53, 0.1)',
                 fill: 'origin',
@@ -105,7 +105,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
     public totalRegistrations = 0;
     public totalLosses = 0;
     public growthPercentage = 0.0;
-    public usersChurnPercentage = 0.0;
+    public deletedUsersPercentage = 0.0;
 
     @ViewChild('dateFrom') dateFrom!: ElementRef;
     @ViewChild('dateTo') dateTo!: ElementRef;
@@ -238,7 +238,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
         this.totalLosses = mockStats.reduce((acc, s) => acc + s.losses, 0);
 
         this.growthPercentage = this.totalVisualizations > 0 ? (this.totalRegistrations / this.totalVisualizations) * 100 : 0;
-        this.usersChurnPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
+        this.deletedUsersPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
 
         if (this.chart) {
             this.chart.chart?.update();
@@ -253,14 +253,14 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
                 this.chartData.labels = stats.map(s => s.date);
                 this.chartData.datasets[0].data = stats.map(s => s.visualizations);
                 this.chartData.datasets[1].data = stats.map(s => s.newUsers);
-                this.chartData.datasets[2].data = stats.map(s => s.churnUsers);
+                this.chartData.datasets[2].data = stats.map(s => s.deletedUsers);
 
                 this.totalVisualizations = stats.reduce((acc, stat) => acc + stat.visualizations, 0);
                 this.totalRegistrations = stats.reduce((acc, stat) => acc + stat.newUsers, 0);
-                this.totalLosses = stats.reduce((acc, stat) => acc + stat.churnUsers, 0);
+                this.totalLosses = stats.reduce((acc, stat) => acc + stat.deletedUsers, 0);
 
                 this.growthPercentage = this.totalVisualizations > 0 ? (this.totalRegistrations / this.totalVisualizations) * 100 : 0;
-                this.usersChurnPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
+                this.deletedUsersPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
 
                 this.chart?.chart?.update();
                 this.loading = false;

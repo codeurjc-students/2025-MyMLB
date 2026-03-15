@@ -105,7 +105,10 @@ export class ProfileComponent implements OnInit {
 		}
 
 		if (this.activeAction === 'delete') {
-			this.authService.deleteAccount().subscribe(() => this.router.navigate(['/']));
+			this.authService.deleteAccount().subscribe(() => {
+				this.statsService.updateDeletedUsers().subscribe();
+				this.router.navigate(['/'])
+			});
 		}
 
 		this.activeAction = null;
@@ -191,7 +194,6 @@ export class ProfileComponent implements OnInit {
 				this.successMessage = 'Profile Picture Successfully Deleted';
 				this.pictureSrc = null;
 				this.userService.setProfilePicture('');
-				this.statsService.updateChurnUsers().subscribe();
 			},
 			error: (_) => {
 				this.error = true;

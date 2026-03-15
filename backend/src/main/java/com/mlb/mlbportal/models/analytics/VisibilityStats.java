@@ -1,4 +1,4 @@
-package com.mlb.mlbportal.models;
+package com.mlb.mlbportal.models.analytics;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

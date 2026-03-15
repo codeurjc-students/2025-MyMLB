@@ -5,27 +5,37 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { StatsService } from '../../../app/services/stats.service';
 
 describe('Register Component Tests', () => {
 	let fixture: ComponentFixture<RegisterComponent>;
 	let registerComponent: RegisterComponent;
 	let authServiceSpy: jasmine.SpyObj<AuthService>;
+	let statsServiceSpy: jasmine.SpyObj<StatsService>;
 	let routerSpy: jasmine.SpyObj<Router>;
 
 	beforeEach(() => {
 		authServiceSpy = jasmine.createSpyObj('AuthService', ['registerUser']);
+		statsServiceSpy = jasmine.createSpyObj('StatsService', ['updateNewUsers']);
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 		TestBed.configureTestingModule({
 			providers: [
 				FormBuilder,
 				{ provide: AuthService, useValue: authServiceSpy },
+				{ provide: StatsService, useValue: statsServiceSpy },
 				{ provide: Router, useValue: routerSpy },
 			],
 		});
 
 		fixture = TestBed.createComponent(RegisterComponent);
 		registerComponent = fixture.componentInstance;
+
+		const response: AuthResponse = {
+			status: 'SUCCESS',
+			message: 'Successfully updated the new users'
+		}
+		statsServiceSpy.updateNewUsers.and.returnValue(of(response));
 		fixture.detectChanges();
 	});
 
@@ -53,6 +63,7 @@ describe('Register Component Tests', () => {
 
 		expect(registerComponent.showSuccess).toBeTrue();
 		expect(registerComponent.successMessage).toBe(mockResponse.message);
+		expect(statsServiceSpy.updateNewUsers).toHaveBeenCalled();
 		expect(registerComponent.errorMessage).toBe('');
 	});
 
