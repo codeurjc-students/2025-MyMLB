@@ -16,6 +16,7 @@ describe('Register Component Integration Test', () => {
 	const apiUrl = 'https://localhost:8443/api/v1/auth';
 	const registerUrl = `${apiUrl}/register`;
 	const meUrl = `${apiUrl}/me`;
+	const statsUrl = 'https://localhost:8443/api/v1/stats';
 	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {
@@ -64,8 +65,16 @@ describe('Register Component Integration Test', () => {
 			status: 'SUCCESS',
 			message: 'User registered successfully',
 		};
-
 		req.flush(mockResponse);
+
+		const mockStatsResponse: AuthResponse = {
+			status: 'SUCCESS',
+			message: 'Successfully updated the new users'
+		}
+
+		const statsReq = httpMock.expectOne(`${statsUrl}/visibility/registrations`);
+		expect(statsReq.request.method).toBe('POST');
+		statsReq.flush(mockStatsResponse);
 
 		expect(registerComponent.showSuccess).toBeTrue();
 		expect(registerComponent.successMessage).toBe(mockResponse.message);

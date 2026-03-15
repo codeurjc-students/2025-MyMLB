@@ -62,6 +62,12 @@ export const routes: Routes = [
 			import('./components/admin/create-player/create-player.component').then((m) => m.CreatePlayerComponent)
 	},
 	{
+		path: 'statistics',
+		canActivate: [AdminGuard],
+		loadComponent: () =>
+			import('./components/stats/stats-dashboard/stats-dashboard.component').then((m) => m.StatsDashboardComponent)
+	},
+	{
 		path: 'inbox',
 		canActivate: [AdminGuard],
 		loadComponent: () =>

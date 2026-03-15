@@ -100,7 +100,7 @@ import lombok.extern.slf4j.Slf4j;
 
         // Subtitle
 <span class="fc" id="L102">        Font subFont = FontFactory.getFont(FontFactory.HELVETICA, 18, RED);</span>
-<span class="fc" id="L103">        Paragraph subtitle = new Paragraph(&quot;OFFICIAL DIGITAL TICKETS&quot;, subFont);</span>
+<span class="fc" id="L103">        Paragraph subtitle = new Paragraph(&quot;DIGITAL TICKETS&quot;, subFont);</span>
 <span class="fc" id="L104">        subtitle.setAlignment(Element.ALIGN_CENTER);</span>
 <span class="fc" id="L105">        pdf.add(subtitle);</span>
 <span class="fc" id="L106">        this.addEmptyLine(pdf, 2);</span>
@@ -110,15 +110,8 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L110">        pdf.add(line);</span>
 
 <span class="fc" id="L112">        this.addEmptyLine(pdf, 8);</span>
-
-        // Footer
-<span class="fc" id="L115">        Font footerFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 12, BaseColor.GRAY);</span>
-<span class="fc" id="L116">        Paragraph footer = new Paragraph(&quot;This pdf contains &quot; + &quot;verified digital access for the selected events.&quot;, footerFont);</span>
-<span class="fc" id="L117">        footer.setAlignment(Element.ALIGN_CENTER);</span>
-<span class="fc" id="L118">        pdf.add(footer);</span>
-
-<span class="fc" id="L120">        pdf.newPage();</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L113">        pdf.newPage();</span>
+<span class="fc" id="L114">    }</span>
 
     /**
      * Render the ticket information in the pdf file.
@@ -129,34 +122,34 @@ import lombok.extern.slf4j.Slf4j;
      */
     private void addTicketContent(Document document, Ticket ticket) throws DocumentException {
         // Main Table
-<span class="fc" id="L132">        PdfPTable table = new PdfPTable(2);</span>
-<span class="fc" id="L133">        table.setWidthPercentage(100);</span>
-<span class="fc" id="L134">        table.setSpacingBefore(10f);</span>
+<span class="fc" id="L125">        PdfPTable table = new PdfPTable(2);</span>
+<span class="fc" id="L126">        table.setWidthPercentage(100);</span>
+<span class="fc" id="L127">        table.setSpacingBefore(10f);</span>
 
         // Event Title
-<span class="fc" id="L137">        String matchName = ticket.getEventManager().getEvent().getMatch().getAwayTeam().getName() +</span>
+<span class="fc" id="L130">        String matchName = ticket.getEventManager().getEvent().getMatch().getAwayTeam().getName() +</span>
                 &quot; @ &quot; +
-<span class="fc" id="L139">                ticket.getEventManager().getEvent().getMatch().getHomeTeam().getName();</span>
+<span class="fc" id="L132">                ticket.getEventManager().getEvent().getMatch().getHomeTeam().getName();</span>
 
-<span class="fc" id="L141">        PdfPCell eventCell = new PdfPCell(new Phrase(matchName.toUpperCase(), FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.WHITE)));</span>
-<span class="fc" id="L142">        eventCell.setBackgroundColor(BLUE);</span>
-<span class="fc" id="L143">        eventCell.setPadding(12);</span>
-<span class="fc" id="L144">        eventCell.setColspan(2);</span>
-<span class="fc" id="L145">        eventCell.setHorizontalAlignment(Element.ALIGN_CENTER);</span>
-<span class="fc" id="L146">        eventCell.setBorder(Rectangle.NO_BORDER);</span>
-<span class="fc" id="L147">        table.addCell(eventCell);</span>
+<span class="fc" id="L134">        PdfPCell eventCell = new PdfPCell(new Phrase(matchName.toUpperCase(), FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.WHITE)));</span>
+<span class="fc" id="L135">        eventCell.setBackgroundColor(BLUE);</span>
+<span class="fc" id="L136">        eventCell.setPadding(12);</span>
+<span class="fc" id="L137">        eventCell.setColspan(2);</span>
+<span class="fc" id="L138">        eventCell.setHorizontalAlignment(Element.ALIGN_CENTER);</span>
+<span class="fc" id="L139">        eventCell.setBorder(Rectangle.NO_BORDER);</span>
+<span class="fc" id="L140">        table.addCell(eventCell);</span>
 
         // Ticket Details
-<span class="fc" id="L150">        Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.DARK_GRAY);</span>
-<span class="fc" id="L151">        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 11, BaseColor.BLACK);</span>
+<span class="fc" id="L143">        Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.DARK_GRAY);</span>
+<span class="fc" id="L144">        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 11, BaseColor.BLACK);</span>
 
-<span class="fc" id="L153">        this.addInfoRow(table, &quot;DATE &amp; TIME&quot;, ticket.getEventManager().getEvent().getMatch().getDate().format(DATE_FORMATTER), labelFont, valueFont);</span>
-<span class="fc" id="L154">        this.addInfoRow(table, &quot;STADIUM&quot;, ticket.getEventManager().getEvent().getMatch().getStadium().getName(), labelFont, valueFont);</span>
-<span class="fc" id="L155">        this.addInfoRow(table, &quot;LOCATION&quot;, &quot;Sector: &quot; + ticket.getSeat().getSector().getName() + &quot; | Seat: &quot; + ticket.getSeat().getName(), labelFont, valueFont);</span>
-<span class="fc" id="L156">        this.addInfoRow(table, &quot;HOLDER&quot;, ticket.getOwnerName(), labelFont, valueFont);</span>
+<span class="fc" id="L146">        this.addInfoRow(table, &quot;DATE &amp; TIME&quot;, ticket.getEventManager().getEvent().getMatch().getDate().format(DATE_FORMATTER), labelFont, valueFont);</span>
+<span class="fc" id="L147">        this.addInfoRow(table, &quot;STADIUM&quot;, ticket.getEventManager().getEvent().getMatch().getStadium().getName(), labelFont, valueFont);</span>
+<span class="fc" id="L148">        this.addInfoRow(table, &quot;LOCATION&quot;, &quot;Sector: &quot; + ticket.getSeat().getSector().getName() + &quot; | Seat: &quot; + ticket.getSeat().getName(), labelFont, valueFont);</span>
+<span class="fc" id="L149">        this.addInfoRow(table, &quot;HOLDER&quot;, ticket.getOwnerName(), labelFont, valueFont);</span>
 
-<span class="fc" id="L158">        document.add(table);</span>
-<span class="fc" id="L159">    }</span>
+<span class="fc" id="L151">        document.add(table);</span>
+<span class="fc" id="L152">    }</span>
 
     /**
      * Add a row to the table following the (key, value) structure.
@@ -168,79 +161,79 @@ import lombok.extern.slf4j.Slf4j;
      * @param vFont Font for the value.
      */
     private void addInfoRow(PdfPTable table, String label, String value, Font lFont, Font vFont) {
-<span class="fc" id="L171">        PdfPCell cellLabel = new PdfPCell(new Phrase(label, lFont));</span>
-<span class="fc" id="L172">        cellLabel.setPadding(10);</span>
-<span class="fc" id="L173">        cellLabel.setBackgroundColor(LIGHT_GRAY);</span>
-<span class="fc" id="L174">        cellLabel.setBorderColor(BaseColor.WHITE);</span>
-<span class="fc" id="L175">        table.addCell(cellLabel);</span>
+<span class="fc" id="L164">        PdfPCell cellLabel = new PdfPCell(new Phrase(label, lFont));</span>
+<span class="fc" id="L165">        cellLabel.setPadding(10);</span>
+<span class="fc" id="L166">        cellLabel.setBackgroundColor(LIGHT_GRAY);</span>
+<span class="fc" id="L167">        cellLabel.setBorderColor(BaseColor.WHITE);</span>
+<span class="fc" id="L168">        table.addCell(cellLabel);</span>
 
-<span class="fc" id="L177">        PdfPCell cellValue = new PdfPCell(new Phrase(value, vFont));</span>
-<span class="fc" id="L178">        cellValue.setPadding(10);</span>
-<span class="fc" id="L179">        cellValue.setBorderColor(BaseColor.WHITE);</span>
-<span class="fc" id="L180">        table.addCell(cellValue);</span>
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L170">        PdfPCell cellValue = new PdfPCell(new Phrase(value, vFont));</span>
+<span class="fc" id="L171">        cellValue.setPadding(10);</span>
+<span class="fc" id="L172">        cellValue.setBorderColor(BaseColor.WHITE);</span>
+<span class="fc" id="L173">        table.addCell(cellValue);</span>
+<span class="fc" id="L174">    }</span>
 
     private void addEmptyLine(Document document, int number) throws DocumentException {
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        for (int i = 0; i &lt; number; i++) {</span>
-<span class="fc" id="L185">            document.add(new Paragraph(&quot; &quot;));</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        for (int i = 0; i &lt; number; i++) {</span>
+<span class="fc" id="L178">            document.add(new Paragraph(&quot; &quot;));</span>
         }
-<span class="fc" id="L187">    }</span>
+<span class="fc" id="L180">    }</span>
 
     /**
      * Inner class to manage Header, Footer line and Page Numbers
      */
-<span class="fc" id="L192">    @Slf4j</span>
+<span class="fc" id="L185">    @Slf4j</span>
     private static class HeaderLayout extends PdfPageEventHelper {
         private Image headerLogo;
 
-<span class="fc" id="L196">        public HeaderLayout() {</span>
+<span class="fc" id="L189">        public HeaderLayout() {</span>
             try {
-<span class="fc" id="L198">                URL imageUrl = PdfGeneratorService.class.getResource(LOGO_PATH);</span>
-<span class="pc bpc" id="L199" title="1 of 2 branches missed.">                if (imageUrl != null) {</span>
-<span class="fc" id="L200">                    this.headerLogo = Image.getInstance(imageUrl);</span>
-<span class="fc" id="L201">                    this.headerLogo.scaleToFit(30, 30);</span>
+<span class="fc" id="L191">                URL imageUrl = PdfGeneratorService.class.getResource(LOGO_PATH);</span>
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">                if (imageUrl != null) {</span>
+<span class="fc" id="L193">                    this.headerLogo = Image.getInstance(imageUrl);</span>
+<span class="fc" id="L194">                    this.headerLogo.scaleToFit(30, 30);</span>
                 }
             }
-<span class="nc" id="L204">            catch (BadElementException | IOException ex) {</span>
-<span class="nc" id="L205">                log.error(&quot;Error rendering the logo in the header: {}&quot;, ex.getMessage());</span>
-<span class="fc" id="L206">            }</span>
-<span class="fc" id="L207">        }</span>
+<span class="nc" id="L197">            catch (BadElementException | IOException ex) {</span>
+<span class="nc" id="L198">                log.error(&quot;Error rendering the logo in the header: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L199">            }</span>
+<span class="fc" id="L200">        }</span>
 
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
             // Skip the cover page
-<span class="fc bfc" id="L212" title="All 2 branches covered.">            if (writer.getPageNumber() != 1) {</span>
-<span class="fc" id="L213">                PdfContentByte cb = writer.getDirectContent();</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">            if (writer.getPageNumber() != 1) {</span>
+<span class="fc" id="L206">                PdfContentByte cb = writer.getDirectContent();</span>
                 try {
-<span class="pc bpc" id="L215" title="1 of 2 branches missed.">                    if (this.headerLogo != null) {</span>
-<span class="fc" id="L216">                        this.headerLogo.setAbsolutePosition(36, writer.getPageSize().getTop() - 45);</span>
-<span class="fc" id="L217">                        cb.addImage(this.headerLogo);</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">                    if (this.headerLogo != null) {</span>
+<span class="fc" id="L209">                        this.headerLogo.setAbsolutePosition(36, writer.getPageSize().getTop() - 45);</span>
+<span class="fc" id="L210">                        cb.addImage(this.headerLogo);</span>
                     }
 
                     // Text align to the right
-<span class="fc" id="L221">                    ColumnText.showTextAligned(cb, Element.ALIGN_RIGHT,</span>
-<span class="fc" id="L222">                            new Phrase(&quot;TICKETS - MLB PORTAL&quot;, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BLUE)),</span>
-<span class="fc" id="L223">                            writer.getPageSize().getRight() - 36, writer.getPageSize().getTop() - 35, 0);</span>
+<span class="fc" id="L214">                    ColumnText.showTextAligned(cb, Element.ALIGN_RIGHT,</span>
+<span class="fc" id="L215">                            new Phrase(&quot;TICKETS - MLB PORTAL&quot;, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BLUE)),</span>
+<span class="fc" id="L216">                            writer.getPageSize().getRight() - 36, writer.getPageSize().getTop() - 35, 0);</span>
 
                     // Horizontal delimiter
-<span class="fc" id="L226">                    cb.setLineWidth(1f);</span>
-<span class="fc" id="L227">                    cb.setRGBColorStrokeF(0.8f, 0.8f, 0.8f);</span>
-<span class="fc" id="L228">                    cb.moveTo(36, writer.getPageSize().getTop() - 55);</span>
-<span class="fc" id="L229">                    cb.lineTo(writer.getPageSize().getRight() - 36, writer.getPageSize().getTop() - 55);</span>
-<span class="fc" id="L230">                    cb.stroke();</span>
+<span class="fc" id="L219">                    cb.setLineWidth(1f);</span>
+<span class="fc" id="L220">                    cb.setRGBColorStrokeF(0.8f, 0.8f, 0.8f);</span>
+<span class="fc" id="L221">                    cb.moveTo(36, writer.getPageSize().getTop() - 55);</span>
+<span class="fc" id="L222">                    cb.lineTo(writer.getPageSize().getRight() - 36, writer.getPageSize().getTop() - 55);</span>
+<span class="fc" id="L223">                    cb.stroke();</span>
 
                     // Page Number
-<span class="fc" id="L233">                    String pageNum = String.valueOf(writer.getPageNumber() - 1);</span>
-<span class="fc" id="L234">                    ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,</span>
-<span class="fc" id="L235">                            new Phrase(&quot;Page &quot; + pageNum, FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.GRAY)),</span>
-<span class="fc" id="L236">                            (writer.getPageSize().getLeft() + writer.getPageSize().getRight()) / 2, 25, 0);</span>
+<span class="fc" id="L226">                    String pageNum = String.valueOf(writer.getPageNumber() - 1);</span>
+<span class="fc" id="L227">                    ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,</span>
+<span class="fc" id="L228">                            new Phrase(&quot;Page &quot; + pageNum, FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.GRAY)),</span>
+<span class="fc" id="L229">                            (writer.getPageSize().getLeft() + writer.getPageSize().getRight()) / 2, 25, 0);</span>
 
                 }
-<span class="nc" id="L239">                catch (DocumentException ex) {</span>
-<span class="nc" id="L240">                    log.error(&quot;Error in the Header Layout: {}&quot;, ex.getMessage());</span>
-<span class="fc" id="L241">                }</span>
+<span class="nc" id="L232">                catch (DocumentException ex) {</span>
+<span class="nc" id="L233">                    log.error(&quot;Error in the Header Layout: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L234">                }</span>
             }
-<span class="fc" id="L243">        }</span>
+<span class="fc" id="L236">        }</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

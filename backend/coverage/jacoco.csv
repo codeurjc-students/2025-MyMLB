@@ -22,7 +22,7 @@ MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,RosterEntry,0,9,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,StatData,0,66,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.player,PlayerResponse,0,6,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.others,PictureInfo,66,59,9,7,0,0,10,6,2,6
-MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService,15,370,2,6,5,79,2,9,0,7
+MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService,15,352,2,6,5,75,2,9,0,7
 MLBPortal,com.mlb.mlbportal.services.utilities,PaginationHandlerService,0,40,0,0,0,8,0,2,0,2
 MLBPortal,com.mlb.mlbportal.services.utilities,SeatBatchGenerationService.new BatchPreparedStatementSetter() {...},0,36,0,0,0,7,0,3,0,3
 MLBPortal,com.mlb.mlbportal.services.utilities,PdfGeneratorService.HeaderLayout,12,129,2,4,4,27,2,4,0,3
@@ -124,7 +124,7 @@ MLBPortal,com.mlb.mlbportal.security,CSRFHandlerInterceptor,13,6,3,1,3,3,2,2,0,2
 MLBPortal,com.mlb.mlbportal.security,MockAuthenticationFilter,0,24,0,2,0,7,0,3,0,2
 MLBPortal,com.mlb.mlbportal.security,TestSecurityConfig,0,66,0,0,0,14,0,5,0,5
 MLBPortal,com.mlb.mlbportal.security,SecurityUserDetails,5,44,0,2,0,9,1,3,1,2
-MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,629,19,0,0,60,5,4,3,4,3
+MLBPortal,com.mlb.mlbportal.security,WebSecurityConfig,693,19,0,0,65,5,4,3,4,3
 MLBPortal,com.mlb.mlbportal.security,CSRFHandlerConfiguration,0,10,0,0,0,3,0,2,0,2
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.team,Records,0,6,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.team,SplitRecords,12,0,0,0,1,0,1,0,1,0
@@ -148,14 +148,16 @@ MLBPortal,com.mlb.mlbportal.services,SearchService,0,123,0,0,0,15,0,5,0,5
 MLBPortal,com.mlb.mlbportal.services,MatchService,5,309,3,23,1,54,4,19,1,9
 MLBPortal,com.mlb.mlbportal.services,StadiumService,0,167,0,4,0,31,0,11,0,9
 MLBPortal,com.mlb.mlbportal.services,EmailService,7,300,6,12,2,68,6,16,0,13
-MLBPortal,com.mlb.mlbportal.services,DataInitializerService,357,452,26,26,71,104,24,23,8,13
+MLBPortal,com.mlb.mlbportal.services,DataInitializerService,359,450,27,25,71,104,25,22,8,13
 MLBPortal,com.mlb.mlbportal.services,UserService,10,360,6,20,3,76,6,22,0,15
+MLBPortal,com.mlb.mlbportal.services,StatsService,49,57,5,5,9,15,4,7,0,5
 MLBPortal,com.mlb.mlbportal.models.enums,SupportTicketStatus,0,21,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,League,0,15,0,0,0,3,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,Division,0,21,0,0,0,4,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,PlayerPositions,0,111,1,5,0,18,1,6,0,4
 MLBPortal,com.mlb.mlbportal.models.enums,MatchStatus,0,21,0,0,0,4,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.enums,PitcherPositions,6,70,2,4,1,12,2,5,0,4
+MLBPortal,com.mlb.mlbportal.models.analytics,VisibilityStats,119,175,16,18,0,0,17,25,5,20
 MLBPortal,com.mlb.mlbportal.dto.match,MatchDTO,0,27,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumDTO,0,12,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.stadium,StadiumPicturesDTO,9,0,0,0,1,0,1,0,1,0
@@ -167,6 +169,7 @@ MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,GameEntry,0,15,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,LeagueInfo,0,6,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,DivisionInfo,6,0,0,0,1,0,1,0,1,0
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.match,DateEntry,0,6,0,0,0,1,0,1,0,1
+MLBPortal,com.mlb.mlbportal.controllers,StatsController,37,0,0,0,7,0,4,0,4,0
 MLBPortal,com.mlb.mlbportal.controllers,SearchController,37,23,6,2,6,3,4,2,0,1
 MLBPortal,com.mlb.mlbportal.controllers,TeamController,3,46,1,1,0,9,1,5,0,5
 MLBPortal,com.mlb.mlbportal.controllers,AuthController,22,73,2,2,3,13,3,7,1,7
