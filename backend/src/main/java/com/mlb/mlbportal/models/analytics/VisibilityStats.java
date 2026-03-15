@@ -22,5 +22,5 @@ public class VisibilityStats {
 
     private long visualizations = 0;
     private long newUsers = 0;
-    private long churnUsers = 0;
+    private long deletedUsers = 0;
 }
