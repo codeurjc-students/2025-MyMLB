@@ -31,7 +31,7 @@ public class StatsController {
     })
     @GetMapping(value = &quot;/visibility&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;VisibilityStats&gt;&gt; getVisibilityStats(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
-<span class="nc" id="L34">        return ResponseEntity.ok(this.statsService.getVisibilityStats(dateFrom, dateTo));</span>
+<span class="fc" id="L34">        return ResponseEntity.ok(this.statsService.getVisibilityStats(dateFrom, dateTo));</span>
     }
 
     @Operation(summary = &quot;Increase Visualizations&quot;, description = &quot;Register a new visualization.&quot;)
@@ -41,8 +41,8 @@ public class StatsController {
     })
     @PostMapping(value = &quot;/visibility/visualizations&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateVisualizations() {
-<span class="nc" id="L44">        this.statsService.increaseVisualizations();</span>
-<span class="nc" id="L45">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Visualizations successfully updated&quot;));</span>
+<span class="fc" id="L44">        this.statsService.increaseVisualizations();</span>
+<span class="fc" id="L45">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Visualizations successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Increase New Users&quot;, description = &quot;Increase the number of registered users.&quot;)
@@ -52,8 +52,8 @@ public class StatsController {
     })
     @PostMapping(value = &quot;/visibility/registrations&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateNewUsers() {
-<span class="nc" id="L55">        this.statsService.increaseNewUsers();</span>
-<span class="nc" id="L56">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;New Users successfully updated&quot;));</span>
+<span class="fc" id="L55">        this.statsService.increaseNewUsers();</span>
+<span class="fc" id="L56">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;New Users successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Increase Deleted Users&quot;, description = &quot;Increase the number of deleted users.&quot;)
@@ -63,8 +63,8 @@ public class StatsController {
     })
     @PostMapping(value = &quot;/visibility/losses&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateDeletedUsers() {
-<span class="nc" id="L66">        this.statsService.increaseDeletedUsers();</span>
-<span class="nc" id="L67">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Deleted Users successfully updated&quot;));</span>
+<span class="fc" id="L66">        this.statsService.increaseDeletedUsers();</span>
+<span class="fc" id="L67">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Deleted Users successfully updated&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

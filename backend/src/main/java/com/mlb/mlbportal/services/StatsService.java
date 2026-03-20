@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +49,9 @@ public class StatsService {
      * @param repositoryFunc The repository increment function.
      * @param type The metric type to initialize if record is new.
      */
-    private void manageUpdate(Function<LocalDate, Integer> repositoryFunc, String type) {
+    private void manageUpdate(ToIntFunction<LocalDate> repositoryFunc, String type) {
         LocalDate today = LocalDate.now();
-        int rowsUpdated = repositoryFunc.apply(today);
+        int rowsUpdated = repositoryFunc.applyAsInt(today);
         if (rowsUpdated == 0) {
             try {
                 switch (type) {
@@ -61,7 +61,7 @@ public class StatsService {
                 }
             }
             catch (DataIntegrityViolationException ex) {
-                repositoryFunc.apply(today);
+                repositoryFunc.applyAsInt(today);
             }
         }
     }
