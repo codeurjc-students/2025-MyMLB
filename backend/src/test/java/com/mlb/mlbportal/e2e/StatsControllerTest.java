@@ -16,8 +16,6 @@ import java.time.LocalDate;
 import static com.mlb.mlbportal.utils.TestConstants.STATS_PATH;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 
