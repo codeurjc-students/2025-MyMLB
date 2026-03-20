@@ -16,6 +16,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { RefreshInterceptor } from './interceptors/refresh.interceptor';
 import { environment } from '../environments/environment';
 import { AuthService } from './services/auth.service';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -44,6 +45,6 @@ export const appConfig: ApplicationConfig = {
                     }
                 });
             });
-        })
+        }), provideCharts(withDefaultRegisterables())
 	],
 };

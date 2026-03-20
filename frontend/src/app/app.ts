@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ThemeService } from './services/theme.service';
 import { ViewportScroller } from '@angular/common';
 import { Footer } from "./components/footer/footer.component";
+import { StatsService } from './services/stats.service';
 
 @Component({
 	selector: 'app-root',
@@ -13,7 +14,7 @@ import { Footer } from "./components/footer/footer.component";
 	templateUrl: './app.html',
 })
 export class AppComponent implements OnInit {
-	title = 'web-app';
+	private statsService = inject(StatsService);
 	public hideNavbar = false;
 	public isDarkMode = false;
 
@@ -21,7 +22,6 @@ export class AppComponent implements OnInit {
 		this.router.events.subscribe((event) => {
 			const url = this.router.url;
 			this.hideNavbar = url.startsWith('/auth') || url.startsWith('/recovery') || url.startsWith('/error') || url.startsWith('/coming-soon');
-
 			if (event instanceof NavigationEnd) {
 				this.viewportScroller.scrollToPosition([0, 0]);
 			}
@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
 		initFlowbite();
 		this.themeService.initTheme();
 		this.isDarkMode = document.documentElement.classList.contains('dark');
+		this.statsService.trackVisitor();
 	}
 
 	public toggleDarkMode(): void {

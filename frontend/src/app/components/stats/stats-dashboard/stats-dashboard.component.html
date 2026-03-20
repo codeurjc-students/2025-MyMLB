@@ -1,0 +1,35 @@
+@if (!currentView) {
+	<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-20 flex flex-col items-center">
+		<div class="text-center mb-16 animate-fadeIn">
+			<h1 class="app-page-titles">Application Analytics</h1>
+		</div>
+
+		<div class="w-full max-w-2xl space-y-6 animate-fade-in-up">
+			@for (card of options; track card.label) {
+				<button (click)="switchView(card.view)" class="w-full cursor-pointer flex items-center gap-6 p-6 bg-white/80 dark:bg-gray-800/50 backdrop-blur-md border border-white/20 rounded-[2rem] shadow-xl hover:scale-[1.02] hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 group">
+					<div
+						class="w-16 h-16 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform"
+						[ngClass]="card.iconStyles"
+					>
+						<mat-icon class="scale-[1.5]">{{ card.iconName }}</mat-icon>
+					</div>
+					<div class="text-left">
+						<h3 class="text-xl font-black uppercase tracking-tight">{{ card.label }}</h3>
+						<p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+							{{ card.subtitle }}
+						</p>
+					</div>
+					<mat-icon class="ml-auto text-gray-300 transition-colors" [ngClass]="card.arrowStyles">
+						chevron_right
+					</mat-icon>
+				</button>
+			}
+		</div>
+	</div>
+}
+
+@else {
+	@if (currentView === 'visibility') {
+		<app-visibility (backToStatsDashboard)="currentView = null"></app-visibility>
+	}
+}

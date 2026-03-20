@@ -133,7 +133,6 @@ class TicketControllerTest extends BaseE2ETest {
         String url = TICKET_PATH + "/" + this.ticket.getId();
 
         given()
-                .header("X-Mock-User", USER1_USERNAME)
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
@@ -152,7 +151,6 @@ class TicketControllerTest extends BaseE2ETest {
         String url = TICKET_PATH + "/" + this.ticket.getId() + "/download";
 
         byte[] response = given()
-                .header("X-Mock-User", USER1_USERNAME)
                 .contentType("application/pdf")
                 .when()
                 .get(url)

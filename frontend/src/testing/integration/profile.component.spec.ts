@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileComponent } from '../../app/components/profile/profile.component';
 import { AuthService } from '../../app/services/auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { UserRole } from '../../app/models/auth.model';
+import { AuthResponse, UserRole } from '../../app/models/auth.model';
 import { Router } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { UserService } from '../../app/services/user.service';
@@ -16,6 +16,7 @@ describe('Profile Component Integration Test', () => {
 
     const authUrl = 'https://localhost:8443/api/v1/auth';
     const usersUrl = 'https://localhost:8443/api/v1/users';
+	const statsUrl = 'https://localhost:8443/api/v1/stats';
 
     const mockUser: UserRole = {
         username: 'testUser',
@@ -31,6 +32,11 @@ describe('Profile Component Integration Test', () => {
         email: 'test@example.com',
         picture: mockPicture
     };
+
+	const mockStatsResponse: AuthResponse = {
+		status: 'SUCCESS',
+		message: 'Successfully updated the deleted users'
+	}
 
     beforeEach(() => {
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -86,6 +92,10 @@ describe('Profile Component Integration Test', () => {
         const deleteReq = httpMock.expectOne(authUrl);
         expect(deleteReq.request.method).toBe('DELETE');
         deleteReq.flush({ status: 'SUCCESS', message: 'Account deleted' });
+
+		const statsReq = httpMock.expectOne(`${statsUrl}/visibility/losses`);
+		expect(statsReq.request.method).toBe('POST');
+		statsReq.flush(mockStatsResponse);
 
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
     });

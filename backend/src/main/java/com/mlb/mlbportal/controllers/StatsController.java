@@ -1,0 +1,69 @@
+package com.mlb.mlbportal.controllers;
+
+import com.mlb.mlbportal.models.analytics.VisibilityStats;
+import com.mlb.mlbportal.security.jwt.AuthResponse;
+import com.mlb.mlbportal.services.StatsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Tag(name = "Application Analytics", description = "Endpoints related to analytical data of the application")
+@RestController
+@RequestMapping("/api/v1/stats")
+@AllArgsConstructor
+public class StatsController {
+    private final StatsService statsService;
+
+    @Operation(summary = "Return Visibility Stats", description = "Obtain the visibility stats of the application within a period of time.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the stats", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/visibility", produces = "application/json")
+    public ResponseEntity<List<VisibilityStats>> getVisibilityStats(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
+        return ResponseEntity.ok(this.statsService.getVisibilityStats(dateFrom, dateTo));
+    }
+
+    @Operation(summary = "Increase Visualizations", description = "Register a new visualization.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully update the visualizations", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping(value = "/visibility/visualizations", produces = "application/json")
+    public ResponseEntity<AuthResponse> updateVisualizations() {
+        this.statsService.increaseVisualizations();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Visualizations successfully updated"));
+    }
+
+    @Operation(summary = "Increase New Users", description = "Increase the number of registered users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully update the number of registered users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping(value = "/visibility/registrations", produces = "application/json")
+    public ResponseEntity<AuthResponse> updateNewUsers() {
+        this.statsService.increaseNewUsers();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "New Users successfully updated"));
+    }
+
+    @Operation(summary = "Increase Deleted Users", description = "Increase the number of deleted users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully update the number of deleted users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping(value = "/visibility/losses", produces = "application/json")
+    public ResponseEntity<AuthResponse> updateDeletedUsers() {
+        this.statsService.increaseDeletedUsers();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Deleted Users successfully updated"));
+    }
+}
