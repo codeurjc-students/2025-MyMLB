@@ -153,9 +153,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 			case 'stats':
 				this.router.navigate(['statistics']);
 				break;
-			default:
-				this.router.navigate(['coming-soon']);
-				break;
 		}
 	}
 
