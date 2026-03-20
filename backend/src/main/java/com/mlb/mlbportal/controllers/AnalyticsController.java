@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Application Analytics", description = "Endpoints related to analytical data of the application")
 @RestController
@@ -65,5 +66,10 @@ public class StatsController {
     public ResponseEntity<AuthResponse> updateDeletedUsers() {
         this.statsService.increaseDeletedUsers();
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Deleted Users successfully updated"));
+    }
+
+    @GetMapping(value = "/fav-teams", produces = "application/json")
+    public ResponseEntity<Map<String, Long>> getFavTeamsAnalytics() {
+        return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());
     }
 }
