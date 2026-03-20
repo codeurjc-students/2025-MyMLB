@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-class StatsControllerTest extends BaseE2ETest {
+class AnalyticsControllerTest extends BaseE2ETest {
 
     @Autowired
     private VisibilityStatsRepository visibilityStatsRepository;

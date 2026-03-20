@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mlb.mlbportal.services.AnalyticsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
-import com.mlb.mlbportal.services.StatsService;
 
 import jakarta.transaction.Transactional;
 
@@ -26,7 +27,7 @@ class StatsServiceIntegrationTest {
     private VisibilityStatsRepository visibilityStatsRepository;
 
     @Autowired
-    private StatsService statsService;
+    private AnalyticsService statsService;
 
     private final LocalDate now = LocalDate.now();
 

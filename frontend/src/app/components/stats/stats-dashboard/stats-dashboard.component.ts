@@ -2,12 +2,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { VisibilityComponent } from "../visibility/visibility.component";
+import { FavTeamsAnalyticsComponent } from "../fav-teams-analytics/fav-teams-analytics.component";
 
 type StatsView = 'visibility' | 'activity' | 'favTeams' | 'api' | null;
 
 @Component({
 	selector: 'app-stats-dashboard',
-	imports: [CommonModule, MatIconModule, VisibilityComponent],
+	imports: [CommonModule, MatIconModule, VisibilityComponent, FavTeamsAnalyticsComponent],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './stats-dashboard.component.html'

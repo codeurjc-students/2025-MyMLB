@@ -37,4 +37,8 @@ export class StatsService {
 			});
 		}
 	}
+
+	public getFavTeamsAnalytics(): Observable<Map<String, Number>> {
+		return this.http.get<Map<String, Number>>(`${this.apiUrl}/fav-teams`);
+	}
 }

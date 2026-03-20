@@ -2,7 +2,7 @@ package com.mlb.mlbportal.controllers;
 
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
-import com.mlb.mlbportal.services.StatsService;
+import com.mlb.mlbportal.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,12 +22,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/stats")
 @AllArgsConstructor
-public class StatsController {
-    private final StatsService statsService;
+public class AnalyticsController {
+    private final AnalyticsService statsService;
 
-    @Operation(summary = "Return Visibility Stats", description = "Obtain the visibility stats of the application within a period of time.")
+    @Operation(summary = "Return Visibility Analytics", description = "Obtain the visibility analytics of the application within a period of time.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved the stats", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/visibility", produces = "application/json")
@@ -68,6 +68,11 @@ public class StatsController {
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Deleted Users successfully updated"));
     }
 
+    @Operation(summary = "Return Favorite Team Analytics", description = "Get analytical data related to the number of fans a team has.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/fav-teams", produces = "application/json")
     public ResponseEntity<Map<String, Long>> getFavTeamsAnalytics() {
         return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());

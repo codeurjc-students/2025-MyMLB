@@ -3,6 +3,7 @@ package com.mlb.mlbportal.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,6 @@ import com.mlb.mlbportal.models.enums.League;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    Optional<Team> findByStatsApiId(Long id);
 
     List<Team> findByLeagueAndDivision(League league, Division division);
 
@@ -24,10 +24,13 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
         return this.findByName(name).orElseThrow(TeamNotFoundException::new);
     }
 
-    Optional<Team> findByAbbreviation(String abbreviation);
-
     List<Team> findByNameContainingIgnoreCase(String input);
 
     @Query("SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) < 24")
     List<Team> findAvailableTeams();
+
+    @Query("SELECT new com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO(t.name, COUNT(u)) FROM Team  t " +
+            "JOIN t.favoritedByUsers u GROUP BY t.name"
+    )
+    List<FavTeamAnalyticsDTO> findAllFavoriteTeamsCounter();
 }

@@ -17,7 +17,7 @@ import java.util.function.ToIntFunction;
 
 @Service
 @RequiredArgsConstructor
-public class StatsService {
+public class AnalyticsService {
     private final VisibilityStatsRepository visibilityStatsRepository;
     private final TeamRepository teamRepository;
 

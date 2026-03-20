@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
-import com.mlb.mlbportal.services.StatsService;
+import com.mlb.mlbportal.services.AnalyticsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ class StatsServiceTest {
     private VisibilityStatsRepository visibilityStatsRepository;
 
     @InjectMocks
-    private StatsService statsService;
+    private AnalyticsService statsService;
 
     private final LocalDate now = LocalDate.now();
 

@@ -8,11 +8,21 @@ import { StatsService } from '../../../services/stats.service';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { ExportService } from '../../../services/utilities/export.service';
+import { DonwloadButtonComponent } from "../donwload-button/donwload-button.component";
+import { BackToDashboardButtonComponent } from "../back-to-dashboard-button/back-to-dashboard-button.component";
 
 @Component({
     selector: 'app-visibility',
     standalone: true,
-    imports: [CommonModule, BaseChartDirective, MatIconModule, ErrorModalComponent, LoadingModalComponent],
+    imports: [
+		CommonModule,
+		BaseChartDirective,
+		MatIconModule,
+		ErrorModalComponent,
+		LoadingModalComponent,
+		DonwloadButtonComponent,
+		BackToDashboardButtonComponent
+	],
     changeDetection: ChangeDetectionStrategy.Default,
     templateUrl: './visibility.component.html',
 })
@@ -72,12 +82,34 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
                     autoSkip: true,
                     maxTicksLimit: 7,
                     font: { size: 11 }
-                }
+                },
+				title: {
+					display: true,
+					text: 'Date',
+					color: '#6B7280',
+					font: {
+						size: 14,
+						weight: 'bold',
+						family: 'system-ui'
+					},
+					padding: { top: 10 }
+				}
             },
             y: {
                 beginAtZero: true,
                 border: { display: false },
                 grid: { color: 'rgba(255,255,255,0.05)' },
+				title: {
+					display: true,
+					text: 'Users',
+					color: '#6B7280',
+					font: {
+						size: 14,
+						weight: 'bold',
+						family: 'sytem-ui'
+					},
+					padding: { bottom: 10 }
+				}
             },
         },
         plugins: {
@@ -219,7 +251,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
                 this.growthPercentage = this.totalVisualizations > 0 ? (this.totalRegistrations / this.totalVisualizations) * 100 : 0;
                 this.deletedUsersPercentage = this.totalRegistrations > 0 ? (this.totalLosses / this.totalRegistrations) * 100 : 0;
 
-                this.chart?.chart?.update();
+                this.chart?.update();
                 this.loading = false;
             },
             error: (err) => {
