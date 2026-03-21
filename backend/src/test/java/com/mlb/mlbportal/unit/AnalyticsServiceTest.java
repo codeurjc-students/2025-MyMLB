@@ -13,8 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -60,6 +66,40 @@ class AnalyticsServiceTest {
 
         assertThat(result).isNotNull().hasSize(1);
         assertThat(result.getFirst().getVisualizations()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("Should update visualizations when record already exists for today")
+    void testIncreaseVisualizationsUpdate() {
+        when(this.visibilityStatsRepository.increaseVisualizations(now)).thenReturn(1);
+
+        this.statsService.increaseVisualizations();
+
+        verify(this.visibilityStatsRepository, times(1)).increaseVisualizations(now);
+        verify(this.visibilityStatsRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should create new record when no stats exist for today")
+    void testIncreaseNewUsersCreate() {
+        when(this.visibilityStatsRepository.increaseNewUsers(now)).thenReturn(0);
+
+        this.statsService.increaseNewUsers();
+
+        verify(this.visibilityStatsRepository).increaseNewUsers(now);
+        verify(this.visibilityStatsRepository).save(any(VisibilityStats.class));
+    }
+
+    @Test
+    @DisplayName("Should handle race condition during record creation")
+    void testIncreaseDeletedUsersRaceCondition() {
+        when(this.visibilityStatsRepository.increaseDeletedUsers(now)).thenReturn(0).thenReturn(1);
+        when(this.visibilityStatsRepository.save(any(VisibilityStats.class))).thenThrow(new DataIntegrityViolationException("Duplicate key"));
+
+        this.statsService.increaseDeletedUsers();
+
+        verify(this.visibilityStatsRepository, times(2)).increaseDeletedUsers(now);
+        verify(this.visibilityStatsRepository, times(1)).save(any(VisibilityStats.class));
     }
 
     @Test
