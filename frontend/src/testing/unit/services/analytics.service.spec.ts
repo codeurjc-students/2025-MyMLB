@@ -1,24 +1,24 @@
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { provideHttpClient, withFetch } from "@angular/common/http";
-import { StatsService } from "../../../app/services/stats.service";
 import { VisibilityStats } from "../../../app/models/stats.model";
 import { AuthResponse } from "../../../app/models/auth.model";
+import { AnalyticsService } from "../../../app/services/analytics.service";
 
 describe('Stats Service Tests', () => {
-    let service: StatsService;
+    let service: AnalyticsService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'https://localhost:8443/api/v1/stats';
+    const apiUrl = 'https://localhost:8443/api/v1/analytics';
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                StatsService,
+                AnalyticsService,
                 provideHttpClient(withFetch()),
                 provideHttpClientTesting()
             ]
         });
-        service = TestBed.inject(StatsService);
+        service = TestBed.inject(AnalyticsService);
         httpMock = TestBed.inject(HttpTestingController);
 
         sessionStorage.clear();
@@ -93,4 +93,18 @@ describe('Stats Service Tests', () => {
 
         expect(sessionStorage.getItem('newVisitor')).toBe('true');
     });
+
+	it('should return the favorite teams analytics', () => {
+		const mockResponse: Map<string, number> = new Map([
+			['Team1', 2],
+		]);
+
+		service.getFavTeamsAnalytics().subscribe((response) => {
+			expect(response).toEqual(mockResponse);
+		});
+
+		const req = httpMock.expectOne(`${apiUrl}/fav-teams`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockResponse);
+	});
 });

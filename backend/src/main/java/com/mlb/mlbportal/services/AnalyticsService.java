@@ -1,6 +1,8 @@
 package com.mlb.mlbportal.services;
 
+import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,14 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.ToIntFunction;
 
 @Service
 @RequiredArgsConstructor
-public class StatsService {
+public class AnalyticsService {
     private final VisibilityStatsRepository visibilityStatsRepository;
+    private final TeamRepository teamRepository;
 
+    // --------- Visibility Analytics ----------------------------------
     @Transactional(readOnly = true)
     public List<VisibilityStats> getVisibilityStats(LocalDate dateFrom, LocalDate dateTo) {
         if (dateFrom == null) {
@@ -64,5 +70,14 @@ public class StatsService {
                 repositoryFunc.applyAsInt(today);
             }
         }
+    }
+
+    // --------- Fav Teams Analytics ----------------------------------
+    @Transactional(readOnly = true)
+    public Map<String, Long> getFavTeamsAnalytics() {
+        List<FavTeamAnalyticsDTO> queryResult = this.teamRepository.findAllFavoriteTeamsCounter();
+        Map<String, Long> result = new HashMap<>();
+        queryResult.forEach(dto -> result.put(dto.teamName(), dto.counter()));
+        return result;
     }
 }

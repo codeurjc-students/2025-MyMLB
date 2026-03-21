@@ -127,9 +127,7 @@ public class WebSecurityConfig {
 
                     // Stats Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/stats/visibility").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/v1/stats/visibility/visualizations").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/v1/stats/visibility/registrations").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/v1/stats/visibility/losses").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/stats/fav-teams").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

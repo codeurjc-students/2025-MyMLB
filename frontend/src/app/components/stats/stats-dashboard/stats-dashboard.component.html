@@ -32,4 +32,7 @@
 	@if (currentView === 'visibility') {
 		<app-visibility (backToStatsDashboard)="currentView = null"></app-visibility>
 	}
+	@if (currentView === 'favTeams') {
+		<app-fav-teams-analytics (backToStatsDashboard)="currentView = null"></app-fav-teams-analytics>
+	}
 }

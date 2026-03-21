@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnalyticsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">AnalyticsService.java</span></div><h1>AnalyticsService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
+
+import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
+import com.mlb.mlbportal.models.analytics.VisibilityStats;
+import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.ToIntFunction;
+
+@Service
+@RequiredArgsConstructor
+public class AnalyticsService {
+    private final VisibilityStatsRepository visibilityStatsRepository;
+    private final TeamRepository teamRepository;
+
+    // --------- Visibility Analytics ----------------------------------
+    @Transactional(readOnly = true)
+    public List&lt;VisibilityStats&gt; getVisibilityStats(LocalDate dateFrom, LocalDate dateTo) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (dateFrom == null) {</span>
+<span class="fc" id="L28">            dateFrom = LocalDate.now().minusMonths(1);</span>
+        }
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (dateTo == null) {</span>
+<span class="fc" id="L31">            dateTo = LocalDate.now();</span>
+        }
+<span class="fc" id="L33">       return this.visibilityStatsRepository.findStatsByRange(dateFrom, dateTo);</span>
+    }
+
+    @Transactional
+    public void increaseVisualizations() {
+<span class="fc" id="L38">        this.manageUpdate(this.visibilityStatsRepository::increaseVisualizations, &quot;visualizations&quot;);</span>
+<span class="fc" id="L39">    }</span>
+
+    @Transactional
+    public void increaseNewUsers() {
+<span class="fc" id="L43">        this.manageUpdate(this.visibilityStatsRepository::increaseNewUsers, &quot;newUsers&quot;);</span>
+<span class="fc" id="L44">    }</span>
+
+    @Transactional
+    public void increaseDeletedUsers() {
+<span class="fc" id="L48">        this.manageUpdate(this.visibilityStatsRepository::increaseDeletedUsers, &quot;deletedUsers&quot;);</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Updates the existing record or creates a new one for today.Catches race conditions to ensure data consistency.
+     * Encapsulates the common modification logic of the previous methods (DRY principle).
+     *
+     * @param repositoryFunc The repository increment function.
+     * @param type The metric type to initialize if record is new.
+     */
+    private void manageUpdate(ToIntFunction&lt;LocalDate&gt; repositoryFunc, String type) {
+<span class="fc" id="L59">        LocalDate today = LocalDate.now();</span>
+<span class="fc" id="L60">        int rowsUpdated = repositoryFunc.applyAsInt(today);</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (rowsUpdated == 0) {</span>
+            try {
+<span class="nc bnc" id="L63" title="All 4 branches missed.">                switch (type) {</span>
+<span class="nc" id="L64">                    case &quot;visualizations&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 1, 0, 0));</span>
+<span class="nc" id="L65">                    case &quot;newUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 1, 0));</span>
+<span class="nc" id="L66">                    case &quot;deletedUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 0, 1));</span>
+                }
+            }
+<span class="nc" id="L69">            catch (DataIntegrityViolationException ex) {</span>
+<span class="nc" id="L70">                repositoryFunc.applyAsInt(today);</span>
+<span class="nc" id="L71">            }</span>
+        }
+<span class="fc" id="L73">    }</span>
+
+    // --------- Fav Teams Analytics ----------------------------------
+    @Transactional(readOnly = true)
+    public Map&lt;String, Long&gt; getFavTeamsAnalytics() {
+<span class="fc" id="L78">        List&lt;FavTeamAnalyticsDTO&gt; queryResult = this.teamRepository.findAllFavoriteTeamsCounter();</span>
+<span class="fc" id="L79">        Map&lt;String, Long&gt; result = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L80">        queryResult.forEach(dto -&gt; result.put(dto.teamName(), dto.counter()));</span>
+<span class="fc" id="L81">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

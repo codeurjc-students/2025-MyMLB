@@ -49,7 +49,7 @@ public final class TestConstants {
     public static final String EVENT_PATH = "/api/v1/events";
     public static final String TICKET_PATH = "/api/v1/tickets";
 
-    public static final String STATS_PATH = "/api/v1/stats";
+    public static final String ANALYTICS_PATH = "/api/v1/analytics";
 
     public static final String SUCCESS = "SUCCESS";
 

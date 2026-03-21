@@ -15,7 +15,7 @@ import { Pictures } from '../../models/pictures.model';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { StatsService } from '../../services/stats.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
 	selector: 'app-profile',
@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
 	private authService = inject(AuthService);
 	private router = inject(Router);
 	private userService = inject(UserService);
-	private statsService = inject(StatsService);
+	private analyticsService = inject(AnalyticsService);
 
 	public username = '';
 
@@ -106,7 +106,7 @@ export class ProfileComponent implements OnInit {
 
 		if (this.activeAction === 'delete') {
 			this.authService.deleteAccount().subscribe(() => {
-				this.statsService.updateDeletedUsers().subscribe();
+				this.analyticsService.updateDeletedUsers().subscribe();
 				this.router.navigate(['/'])
 			});
 		}

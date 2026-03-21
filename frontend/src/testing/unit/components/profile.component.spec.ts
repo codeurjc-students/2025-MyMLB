@@ -7,14 +7,14 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../app/services/user.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { User } from '../../../app/models/user.model';
-import { StatsService } from '../../../app/services/stats.service';
+import { AnalyticsService } from '../../../app/services/analytics.service';
 
 describe('Profile Component Tests', () => {
     let component: ProfileComponent;
     let fixture: ComponentFixture<ProfileComponent>;
     let authServiceSpy: jasmine.SpyObj<AuthService>;
     let userServiceSpy: jasmine.SpyObj<UserService>;
-	let statsServiceSpy: jasmine.SpyObj<StatsService>;
+	let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
     let routerSpy: jasmine.SpyObj<Router>;
 
     beforeEach(() => {
@@ -39,7 +39,7 @@ describe('Profile Component Tests', () => {
             providers: [
                 { provide: UserService, useValue: userServiceMock },
                 { provide: AuthService, useValue: authServiceMock },
-                { provide: StatsService, useValue: statsServiceMock },
+                { provide: AnalyticsService, useValue: statsServiceMock },
                 { provide: Router, useValue: routerMock }
             ],
         });
@@ -49,7 +49,7 @@ describe('Profile Component Tests', () => {
 
         authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
         userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
-		statsServiceSpy = TestBed.inject(StatsService) as jasmine.SpyObj<StatsService>;
+		analyticsServiceSpy = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
         routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
         const mockUser: UserRole = { username: 'testUser', roles: ['USER'] };
@@ -59,7 +59,7 @@ describe('Profile Component Tests', () => {
 			status: 'SUCCESS',
 			message: 'Successfully updated the deleted users'
 		}
-		statsServiceSpy.updateDeletedUsers.and.returnValue(of(response));
+		analyticsServiceSpy.updateDeletedUsers.and.returnValue(of(response));
     });
 
     it('should retrieve the active user on init', () => {
@@ -88,7 +88,7 @@ describe('Profile Component Tests', () => {
         component.activeAction = 'delete';
         component.confirm();
 
-		expect(statsServiceSpy.updateDeletedUsers).toHaveBeenCalled();
+		expect(analyticsServiceSpy.updateDeletedUsers).toHaveBeenCalled();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
         expect(component.activeAction).toBeNull();
     });

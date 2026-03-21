@@ -16,7 +16,7 @@ describe('Profile Component Integration Test', () => {
 
     const authUrl = 'https://localhost:8443/api/v1/auth';
     const usersUrl = 'https://localhost:8443/api/v1/users';
-	const statsUrl = 'https://localhost:8443/api/v1/stats';
+	const statsUrl = 'https://localhost:8443/api/v1/analytics';
 
     const mockUser: UserRole = {
         username: 'testUser',

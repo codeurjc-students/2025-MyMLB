@@ -15,7 +15,7 @@ describe('Visibility Analytics E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getActiveUser');
 
-        cy.intercept('GET', '**/api/v1/stats/visibility*', {
+        cy.intercept('GET', '**/api/v1/analytics/visibility*', {
             body: [
                 { date: '2026-03-01', visualizations: 150, newUsers: 15, deletedUsers: 2 },
                 { date: '2026-03-02', visualizations: 250, newUsers: 25, deletedUsers: 5 }

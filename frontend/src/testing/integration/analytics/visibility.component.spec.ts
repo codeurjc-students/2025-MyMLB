@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { VisibilityComponent } from '../../../app/components/stats/visibility/visibility.component';
-import { StatsService } from '../../../app/services/stats.service';
 import { ExportService } from '../../../app/services/utilities/export.service';
 import { Chart, registerables } from 'chart.js';
+import { AnalyticsService } from '../../../app/services/analytics.service';
 
 Chart.register(...registerables);
 
@@ -13,7 +13,7 @@ describe('Visibility Component Integration Test', () => {
     let component: VisibilityComponent;
     let httpMock: HttpTestingController;
 
-    const apiUrl = 'https://localhost:8443/api/v1/stats/visibility';
+    const apiUrl = 'https://localhost:8443/api/v1/analytics/visibility';
 
     const mockStatsResponse = [
         { date: '2026-03-01', visualizations: 100, newUsers: 20, deletedUsers: 5 },
@@ -24,7 +24,7 @@ describe('Visibility Component Integration Test', () => {
         TestBed.configureTestingModule({
             imports: [VisibilityComponent],
             providers: [
-                StatsService,
+                AnalyticsService,
                 ExportService,
                 provideHttpClient(),
                 provideHttpClientTesting(),

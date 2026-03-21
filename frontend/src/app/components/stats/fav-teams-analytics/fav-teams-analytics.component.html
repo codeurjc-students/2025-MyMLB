@@ -1,0 +1,47 @@
+<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center">
+    <section class="w-full max-w-7xl flex flex-col md:grid md:grid-cols-3 items-center gap-4 md:gap-0">
+        <div class="flex justify-start">
+            <app-back-to-dashboard-button (backToStatsDashboard)="goBackToDashboard()"></app-back-to-dashboard-button>
+        </div>
+
+        <div class="flex justify-center">
+            <h1 class="app-page-titles !mb-0 whitespace-nowrap">
+                Favorite Teams Analytics
+            </h1>
+        </div>
+        <div class="hidden md:block"></div>
+    </section>
+
+    <section class="w-full max-w-6xl animate-fadeInUpSmooth">
+        <div class="bg-white dark:bg-gray-800/80 p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[80px]"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-600/10 rounded-full blur-[80px]"></div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 relative z-10">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase italic">Fanbase Distribution</h2>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">Ranking teams by user favorites count</p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <app-donwload-button (downloadFunc)="downloadChartAsPNG()"></app-donwload-button>
+                </div>
+            </div>
+
+            <div class="relative h-[500px] w-full bg-gray-50/50 dark:bg-gray-900/20 rounded-[2rem] p-6 border border-gray-100 dark:border-white/5">
+                <canvas baseChart
+                    [data]="barChartData"
+                    [options]="barChartOptions"
+                    [type]="barChartType">
+                </canvas>
+            </div>
+        </div>
+    </section>
+
+    @if (error) {
+        <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+    }
+
+    @if (loading) {
+        <app-loading-modal [message]="'Loading Chart...'"></app-loading-modal>
+    }
+</div>
