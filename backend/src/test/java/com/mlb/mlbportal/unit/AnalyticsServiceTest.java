@@ -71,6 +71,6 @@ class AnalyticsServiceTest {
         Map<String, Long> expectedResult = this.statsService.getFavTeamsAnalytics();
 
         assertThat(expectedResult.entrySet()).hasSize(1);
-        assertThat(expectedResult.get(TEST_TEAM1_NAME)).isEqualTo(10);
+        assertThat(expectedResult).containsEntry(TEST_TEAM1_NAME, 10L);
     }
 }

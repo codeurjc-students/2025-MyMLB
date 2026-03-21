@@ -31,9 +31,6 @@ import com.mlb.mlbportal.repositories.ticket.SeatRepository;
 import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.repositories.ticket.TicketRepository;
 import static com.mlb.mlbportal.utils.TestConstants.BASE_URI;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 
 import io.restassured.RestAssured;
 
