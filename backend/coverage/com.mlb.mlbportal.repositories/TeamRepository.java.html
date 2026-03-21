@@ -3,6 +3,7 @@
 import java.util.List;
 import java.util.Optional;
 
+import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,6 @@ import com.mlb.mlbportal.models.enums.League;
 
 @Repository
 public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
-    Optional&lt;Team&gt; findByStatsApiId(Long id);
 
     List&lt;Team&gt; findByLeagueAndDivision(League league, Division division);
 
@@ -24,11 +24,14 @@ public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
 <span class="fc" id="L24">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
     }
 
-    Optional&lt;Team&gt; findByAbbreviation(String abbreviation);
-
     List&lt;Team&gt; findByNameContainingIgnoreCase(String input);
 
     @Query(&quot;SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) &lt; 24&quot;)
     List&lt;Team&gt; findAvailableTeams();
+
+    @Query(&quot;SELECT new com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO(t.name, COUNT(u)) FROM Team  t &quot; +
+            &quot;JOIN t.favoritedByUsers u GROUP BY t.name&quot;
+    )
+    List&lt;FavTeamAnalyticsDTO&gt; findAllFavoriteTeamsCounter();
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

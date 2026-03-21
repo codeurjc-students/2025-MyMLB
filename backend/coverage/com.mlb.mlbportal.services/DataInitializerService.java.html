@@ -221,9 +221,9 @@ public class DataInitializerService {
 
     private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
 <span class="fc" id="L223">        LocalDateTime now = LocalDateTime.now();</span>
-<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
-<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
-<span class="fc" id="L226">        return MatchStatus.IN_PROGRESS;</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;</span>
+<span class="nc" id="L226">        return MatchStatus.IN_PROGRESS;</span>
     }
 
     // DELETE

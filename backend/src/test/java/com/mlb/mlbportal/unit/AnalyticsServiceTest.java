@@ -1,8 +1,11 @@
 package com.mlb.mlbportal.unit;
 
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
 import com.mlb.mlbportal.services.AnalyticsService;
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-class StatsServiceTest {
+class AnalyticsServiceTest {
     @Mock
     private VisibilityStatsRepository visibilityStatsRepository;
+
+    @Mock
+    private TeamRepository teamRepository;
 
     @InjectMocks
     private AnalyticsService statsService;
@@ -53,5 +60,17 @@ class StatsServiceTest {
 
         assertThat(result).isNotNull().hasSize(1);
         assertThat(result.getFirst().getVisualizations()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("Should return the favorite teams with their number of fans")
+    void testFavTeamsAnalytics() {
+        FavTeamAnalyticsDTO dto = new FavTeamAnalyticsDTO(TEST_TEAM1_NAME, 10L);
+        when(this.teamRepository.findAllFavoriteTeamsCounter()).thenReturn(List.of(dto));
+
+        Map<String, Long> expectedResult = this.statsService.getFavTeamsAnalytics();
+
+        assertThat(expectedResult.entrySet()).hasSize(1);
+        assertThat(expectedResult.get(TEST_TEAM1_NAME)).isEqualTo(10);
     }
 }

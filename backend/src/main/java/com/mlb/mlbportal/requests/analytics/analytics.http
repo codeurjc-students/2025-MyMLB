@@ -1,0 +1,7 @@
+### Obtain Visibility Analytics whithin a date range
+GET https://localhost:8443/api/v1/analytics/visibility?dateFrom=2026-03-19&dateTo=2026-03-21
+Accept:application/json
+
+### Obtain Favorite Teams with their fans Analytics
+GET https://localhost:8443/api/v1/analytics/fav-teams
+Accept: application/json

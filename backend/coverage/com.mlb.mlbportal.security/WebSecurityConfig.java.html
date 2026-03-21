@@ -127,34 +127,32 @@ public class WebSecurityConfig {
 
                     // Stats Endpoints
 <span class="nc" id="L129">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/stats/visibility&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L130">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stats/visibility/visualizations&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L131">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stats/visibility/registrations&quot;).hasRole(&quot;ADMIN&quot;)</span>
-<span class="nc" id="L132">                    .requestMatchers(HttpMethod.POST, &quot;/api/v1/stats/visibility/losses&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="nc" id="L130">                    .requestMatchers(HttpMethod.GET, &quot;/api/v1/stats/fav-teams&quot;).hasRole(&quot;ADMIN&quot;)</span>
                     
                     // API Docs Endpoints
-<span class="nc" id="L135">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
-<span class="nc" id="L136">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="nc" id="L137">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
+<span class="nc" id="L133">                    .requestMatchers(&quot;/v3/api-docs*/**&quot;).permitAll()</span>
+<span class="nc" id="L134">                    .requestMatchers(&quot;/swagger-ui.html&quot;).permitAll()</span>
+<span class="nc" id="L135">                    .requestMatchers(&quot;/swagger-ui/**&quot;).permitAll()</span>
 
                     // PUBLIC ENDPOINTS:
-<span class="nc" id="L140">                    .anyRequest().permitAll());</span>
+<span class="nc" id="L138">                    .anyRequest().permitAll());</span>
 
         // Disable Form login Authentication
-<span class="nc" id="L143">        http.formLogin(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L141">        http.formLogin(AbstractHttpConfigurer::disable);</span>
 
         // Disable CSRF protection.
-<span class="nc" id="L146">        http.csrf(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L144">        http.csrf(AbstractHttpConfigurer::disable);</span>
 
         // Disable Basic Authentication.
-<span class="nc" id="L149">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
+<span class="nc" id="L147">        http.httpBasic(AbstractHttpConfigurer::disable);</span>
 
         // Stateless session.
-<span class="nc" id="L152">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="nc" id="L150">        http.sessionManagement(management -&gt; management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
 
         // Add JWT Token filter
-<span class="nc" id="L155">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="nc" id="L153">        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);</span>
 
-<span class="nc" id="L157">        return http.build();</span>
+<span class="nc" id="L155">        return http.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

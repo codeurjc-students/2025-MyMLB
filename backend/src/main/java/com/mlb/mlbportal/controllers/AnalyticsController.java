@@ -20,10 +20,12 @@ import java.util.Map;
 
 @Tag(name = "Application Analytics", description = "Endpoints related to analytical data of the application")
 @RestController
-@RequestMapping("/api/v1/stats")
+@RequestMapping("/api/v1/analytics")
 @AllArgsConstructor
 public class AnalyticsController {
     private final AnalyticsService statsService;
+
+    // --------- Visibility Analytics ----------------------------------
 
     @Operation(summary = "Return Visibility Analytics", description = "Obtain the visibility analytics of the application within a period of time.")
     @ApiResponses(value = {
@@ -67,6 +69,8 @@ public class AnalyticsController {
         this.statsService.increaseDeletedUsers();
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Deleted Users successfully updated"));
     }
+
+    // --------- Fav Teams Analytics ----------------------------------
 
     @Operation(summary = "Return Favorite Team Analytics", description = "Get analytical data related to the number of fans a team has.")
     @ApiResponses(value = {

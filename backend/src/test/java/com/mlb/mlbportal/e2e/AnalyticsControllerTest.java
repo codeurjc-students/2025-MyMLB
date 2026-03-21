@@ -1,6 +1,11 @@
 package com.mlb.mlbportal.e2e;
 
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +17,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static com.mlb.mlbportal.utils.TestConstants.STATS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.ANALYTICS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -27,6 +41,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
     @Autowired
     private VisibilityStatsRepository visibilityStatsRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void setUp() {
         cleanDatabase();
@@ -37,14 +54,22 @@ class AnalyticsControllerTest extends BaseE2ETest {
         statsToday.setNewUsers(5);
         statsToday.setDeletedUsers(1);
         this.visibilityStatsRepository.save(statsToday);
+
+        UserEntity user = saveTestUser(USER1_EMAIL, USER1_USERNAME, USER1_PASSWORD);
+        Team team = saveTestTeam("Team1", TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, TEST_TEAM1_INFO, List.of(2009), League.AL, Division.EAST);
+
+        Set<Team> favTeams = new HashSet<>();
+        favTeams.add(team);
+        user.setFavTeams(favTeams);
+        this.userRepository.save(user);
     }
 
     @Test
-    @DisplayName("GET /api/v1/stats/visibility should return list of stats for a date range")
+    @DisplayName("GET /api/v1/analytics/visibility should return list of stats for a date range")
     void testGetVisibilityStats() {
         String dateFrom = LocalDate.now().minusDays(1).toString();
         String dateTo = LocalDate.now().plusDays(1).toString();
-        String url = STATS_PATH + "/visibility";
+        String url = ANALYTICS_PATH + "/visibility";
 
         given()
                 .queryParam("dateFrom", dateFrom)
@@ -59,9 +84,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/stats/visibility/visualizations should increment visualization count")
+    @DisplayName("POST /api/v1/analytics/visibility/visualizations should increment visualization count")
     void testUpdateVisualizations() {
-        String url = STATS_PATH + "/visibility/visualizations";
+        String url = ANALYTICS_PATH + "/visibility/visualizations";
 
         given()
                 .contentType(ContentType.JSON)
@@ -74,9 +99,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/stats/visibility/registrations should increment new users count")
+    @DisplayName("POST /api/v1/analytics/visibility/registrations should increment new users count")
     void testUpdateNewUsers() {
-        String url = STATS_PATH + "/visibility/registrations";
+        String url = ANALYTICS_PATH + "/visibility/registrations";
 
         given()
                 .contentType(ContentType.JSON)
@@ -89,9 +114,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/stats/visibility/losses should increment deleted users count")
+    @DisplayName("POST /api/v1/analytics/visibility/losses should increment deleted users count")
     void testUpdateDeletedUsers() {
-        String url = STATS_PATH + "/visibility/losses";
+        String url = ANALYTICS_PATH + "/visibility/losses";
 
         given()
                 .contentType(ContentType.JSON)
@@ -101,5 +126,19 @@ class AnalyticsControllerTest extends BaseE2ETest {
                 .statusCode(200)
                 .body("status", is("SUCCESS"))
                 .body("message", containsString("Deleted Users successfully updated"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/analytics/fav-teams should return the favorite teams with their number of fans")
+    void testGetFavTeamsAnalytics() {
+        String url = ANALYTICS_PATH + "/fav-teams";
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("Team1 ", is(1));
     }
 }

@@ -73,6 +73,7 @@ public class AnalyticsService {
     }
 
     // --------- Fav Teams Analytics ----------------------------------
+    @Transactional(readOnly = true)
     public Map<String, Long> getFavTeamsAnalytics() {
         List<FavTeamAnalyticsDTO> queryResult = this.teamRepository.findAllFavoriteTeamsCounter();
         Map<String, Long> result = new HashMap<>();
