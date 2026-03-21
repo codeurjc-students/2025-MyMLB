@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
-import { StatsService } from '../../../services/stats.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { ExportService } from '../../../services/utilities/export.service';
 import { ErrorModalComponent } from "../../modal/error-modal/error-modal.component";
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
@@ -26,7 +26,7 @@ import { DonwloadButtonComponent } from '../donwload-button/donwload-button.comp
 	templateUrl: './fav-teams-analytics.component.html'
 })
 export class FavTeamsAnalyticsComponent implements OnInit {
-	private analyticsService = inject(StatsService);
+	private analyticsService = inject(AnalyticsService);
 	private exportService = inject(ExportService);
 
 	@Output() backToStatsDashboard = new EventEmitter<void>();
@@ -108,12 +108,9 @@ export class FavTeamsAnalyticsComponent implements OnInit {
 	private fetchData() {
 		this.loading = true;
 		this.analyticsService.getFavTeamsAnalytics().subscribe({
-			next: (data) => {
-				const teamNames = Object.keys(data);
-				const counters = Object.values(data);
-
-				this.barChartData.labels = teamNames;
-				this.barChartData.datasets[0].data = counters;
+			next: (data: Map<string, number>) => {
+				this.barChartData.labels = Array.from(data.keys());
+            	this.barChartData.datasets[0].data = Array.from(data.values());
 
 				this.chart?.update();
 				this.loading = false;
@@ -129,7 +126,7 @@ export class FavTeamsAnalyticsComponent implements OnInit {
 	public downloadChartAsPNG() {
 		const canvas = this.chart?.chart?.canvas;
 		if (canvas) {
-			const date = new Date().getDate();
+			const date = new Date().toISOString().split('T')[0];
 			const fileName = `Favorite_Teams_Analytics_${date}`;
 			this.exportService.downloadPNG(canvas, fileName);
 		}

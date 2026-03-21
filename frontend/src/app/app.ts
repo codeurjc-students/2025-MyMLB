@@ -5,7 +5,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { ThemeService } from './services/theme.service';
 import { ViewportScroller } from '@angular/common';
 import { Footer } from "./components/footer/footer.component";
-import { StatsService } from './services/stats.service';
+import { AnalyticsService } from './services/analytics.service';
 
 @Component({
 	selector: 'app-root',
@@ -14,7 +14,7 @@ import { StatsService } from './services/stats.service';
 	templateUrl: './app.html',
 })
 export class AppComponent implements OnInit {
-	private statsService = inject(StatsService);
+	private analyticsService = inject(AnalyticsService);
 	public hideNavbar = false;
 	public isDarkMode = false;
 
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
 		initFlowbite();
 		this.themeService.initTheme();
 		this.isDarkMode = document.documentElement.classList.contains('dark');
-		this.statsService.trackVisitor();
+		this.analyticsService.trackVisitor();
 	}
 
 	public toggleDarkMode(): void {

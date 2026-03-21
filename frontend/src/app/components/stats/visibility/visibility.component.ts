@@ -4,7 +4,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
 import flatpickr from 'flatpickr';
-import { StatsService } from '../../../services/stats.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { ExportService } from '../../../services/utilities/export.service';
@@ -27,7 +27,7 @@ import { BackToDashboardButtonComponent } from "../back-to-dashboard-button/back
     templateUrl: './visibility.component.html',
 })
 export class VisibilityComponent implements OnInit, AfterViewInit {
-    private statsService = inject(StatsService);
+    private analyticsService = inject(AnalyticsService);
 	private exportService = inject(ExportService);
 
 	@Output() backToStatsDashboard = new EventEmitter<void>();
@@ -237,7 +237,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
     private fetchData() {
         this.loading = true;
         this.error = false;
-        this.statsService.getVisibilityStats(this.selectedDateFrom, this.selectedDateTo).subscribe({
+        this.analyticsService.getVisibilityStats(this.selectedDateFrom, this.selectedDateTo).subscribe({
             next: (stats) => {
                 this.chartData.labels = stats.map(s => s.date);
                 this.chartData.datasets[0].data = stats.map(s => s.visualizations);

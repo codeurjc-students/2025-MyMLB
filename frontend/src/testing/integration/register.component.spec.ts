@@ -16,7 +16,7 @@ describe('Register Component Integration Test', () => {
 	const apiUrl = 'https://localhost:8443/api/v1/auth';
 	const registerUrl = `${apiUrl}/register`;
 	const meUrl = `${apiUrl}/me`;
-	const statsUrl = 'https://localhost:8443/api/v1/stats';
+	const statsUrl = 'https://localhost:8443/api/v1/analytics';
 	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {

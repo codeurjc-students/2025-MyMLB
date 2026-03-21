@@ -4,19 +4,19 @@ import { Router, NavigationEnd } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { ThemeService } from '../../../app/services/theme.service';
-import { StatsService } from '../../../app/services/stats.service';
+import { AnalyticsService } from '../../../app/services/analytics.service';
 import { AuthResponse } from '../../../app/models/auth.model';
 
 describe('App Component Tests', () => {
 	let fixture: ComponentFixture<AppComponent>;
 	let appComponent: AppComponent;
 	let routerEvents$: Subject<any>;
-	let statsServiceSpy: jasmine.SpyObj<StatsService>;
+	let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
 	let mockRouter: any;
 
 	beforeEach(() => {
 		routerEvents$ = new Subject();
-		statsServiceSpy = jasmine.createSpyObj('StatsService', ['updateVisualizations']);
+		analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['updateVisualizations']);
 
 		mockRouter = {
 			url: '',
@@ -32,7 +32,7 @@ describe('App Component Tests', () => {
 			imports: [AppComponent],
 			providers: [
 				{ provide: Router, useValue: mockRouter },
-				{ provide: StatsService, useValue: statsServiceSpy },
+				{ provide: AnalyticsService, useValue: analyticsServiceSpy },
 				{ provide: ThemeService, useValue: mockThemeService },
 				{ provide: ChangeDetectorRef, useValue: { detectChanges: () => {} } },
 			],
@@ -44,7 +44,7 @@ describe('App Component Tests', () => {
 			status: 'SUCCESS',
 			message: 'Successfully updated the visualizations'
 		}
-		statsServiceSpy.updateVisualizations.and.returnValue(of(response));
+		analyticsServiceSpy.updateVisualizations.and.returnValue(of(response));
 	});
 
 	it('should hide navbar for /auth route', () => {

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { StatsService } from '../../services/stats.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
 	selector: 'app-register',
@@ -18,7 +18,7 @@ export class RegisterComponent {
 	@Output() toggleForm = new EventEmitter<void>();
 
 	private authService = inject(AuthService);
-	private statsService = inject(StatsService);
+	private analyticsService = inject(AnalyticsService);
 
 	public registerForm: FormGroup;
 	public errorMessage = "";
@@ -71,7 +71,7 @@ export class RegisterComponent {
 				if (response.status ===  "SUCCESS") {
 					this.showSuccess = true;
 					this.successMessage = response.message;
-					this.statsService.updateNewUsers().subscribe();
+					this.analyticsService.updateNewUsers().subscribe();
 				}
 				else {
 					this.errorMessage = response.message;

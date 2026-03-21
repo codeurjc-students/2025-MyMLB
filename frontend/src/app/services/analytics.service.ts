@@ -8,9 +8,9 @@ import { AuthResponse } from '../models/auth.model';
 @Injectable({
 	providedIn: 'root',
 })
-export class StatsService {
+export class AnalyticsService {
 	private http = inject(HttpClient);
-	private apiUrl = `${environment.apiUrl}/stats`;
+	private apiUrl = `${environment.apiUrl}/analytics`;
 
 	public getVisibilityStats(dateFrom: string, dateTo: string):Observable<VisibilityStats[]> {
 		return this.http.get<VisibilityStats[]>(`${this.apiUrl}/visibility?dateFrom=${dateFrom}&dateTo=${dateTo}`);
@@ -38,7 +38,7 @@ export class StatsService {
 		}
 	}
 
-	public getFavTeamsAnalytics(): Observable<Map<String, Number>> {
-		return this.http.get<Map<String, Number>>(`${this.apiUrl}/fav-teams`);
+	public getFavTeamsAnalytics(): Observable<Map<string, number>> {
+		return this.http.get<Map<string, number>>(`${this.apiUrl}/fav-teams`);
 	}
 }
