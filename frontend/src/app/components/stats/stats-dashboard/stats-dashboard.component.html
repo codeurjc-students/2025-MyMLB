@@ -35,4 +35,7 @@
 	@if (currentView === 'favTeams') {
 		<app-fav-teams-analytics (backToStatsDashboard)="currentView = null"></app-fav-teams-analytics>
 	}
+	@if (currentView === 'api') {
+		<app-api-performance (backToStatsDashboard)="currentView = null"></app-api-performance>
+	}
 }

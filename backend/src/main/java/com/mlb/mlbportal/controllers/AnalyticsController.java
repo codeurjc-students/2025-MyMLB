@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.controllers;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.AnalyticsService;
@@ -80,5 +81,18 @@ public class AnalyticsController {
     @GetMapping(value = "/fav-teams", produces = "application/json")
     public ResponseEntity<Map<String, Long>> getFavTeamsAnalytics() {
         return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());
+    }
+
+    // --------- API Analytics ----------------------------------
+
+    // DELETE
+    @GetMapping(value = "/api-performance/live", produces = "application/json")
+    public ResponseEntity<APIAnalyticsDTO> getAPIPerformanceAnalytics() {
+        return ResponseEntity.ok(this.statsService.getAPIPerformanceAnalytics());
+    }
+
+    @GetMapping(value = "/api-performance/history", produces = "application/json")
+    public ResponseEntity<List<APIAnalyticsDTO>> getAPIPerformanceHistory(@RequestParam(defaultValue = "1h") String dateRange) {
+        return ResponseEntity.ok(this.statsService.getAPIPerformanceHistory(dateRange));
     }
 }

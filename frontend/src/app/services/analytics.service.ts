@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { VisibilityStats } from '../models/stats.model';
 import { AuthResponse } from '../models/auth.model';
+import { APIAnalytics, TimeRange } from '../models/analytics.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -40,5 +41,9 @@ export class AnalyticsService {
 
 	public getFavTeamsAnalytics(): Observable<Map<string, number>> {
 		return this.http.get<Map<string, number>>(`${this.apiUrl}/fav-teams`);
+	}
+
+	public getAPIPerformanceHistory(dateRange: TimeRange): Observable<APIAnalytics[]> {
+		return this.http.get<APIAnalytics[]>(`${this.apiUrl}/api-performance/history?dateRange=${dateRange}`);
 	}
 }
