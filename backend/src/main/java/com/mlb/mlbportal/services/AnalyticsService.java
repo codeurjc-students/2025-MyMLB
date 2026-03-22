@@ -97,21 +97,26 @@ public class AnalyticsService {
     public APIAnalyticsDTO getAPIPerformanceAnalytics() {
         var requestsSearch = this.meterRegistry.find("http.server.requests");
 
-        long totalRequests = requestsSearch.timers().stream().mapToLong(Timer::count).sum();
+        var filteredTimers = requestsSearch.timers().stream().filter(t -> {
+            String uri = t.getId().getTag("uri");
+            return uri != null && !uri.contains("actuator") && !uri.equals("/**") && !uri.equals("/error");
+        }).toList();
 
-        long totalErrors = requestsSearch.timers().stream().filter(timer -> {
+        long totalRequests = filteredTimers.stream().mapToLong(Timer::count).sum();
+
+        long totalErrors = filteredTimers.stream().filter(timer -> {
            String status = timer.getId().getTag("status");
            return status != null && (status.startsWith("4") || status.startsWith("5"));
         }).mapToLong(Timer::count).sum();
 
         long totalSuccess = totalRequests - totalErrors;
 
-        double totalTime = requestsSearch.timers().stream().mapToDouble(timer -> timer.totalTime(TimeUnit.MILLISECONDS)).sum();
+        double totalTime = filteredTimers.stream().mapToDouble(timer -> timer.totalTime(TimeUnit.MILLISECONDS)).sum();
 
         double averageTime = (totalRequests > 0) ? (totalTime / totalRequests) : 0.0;
 
-        List<EndpointAnalyticsDTO> topEndpoints = requestsSearch.timers().stream().map(timer -> new EndpointAnalyticsDTO(timer.getId().getTag("uri"), timer.count()))
-                .filter(e -> !e.uri().contains("actuator"))
+        List<EndpointAnalyticsDTO> topEndpoints = filteredTimers.stream().map(timer -> new EndpointAnalyticsDTO(timer.getId().getTag("uri"), timer.count()))
+                .filter(end -> !end.uri().equals("/**"))
                 .sorted((e1, e2) -> Long.compare(e2.count(), e1.count()))
                 .limit(10)
                 .toList();

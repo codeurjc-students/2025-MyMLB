@@ -23,9 +23,4 @@ public class Endpoint {
 
     private String uri;
     private long count;
-
-    public Endpoint(String uri, long count) {
-        this.uri = uri;
-        this.count = count;
-    }
 }

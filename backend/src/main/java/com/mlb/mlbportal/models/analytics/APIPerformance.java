@@ -44,11 +44,4 @@ public class APIPerformance {
     protected void onCreate() {
         this.timeStamp = LocalDateTime.now();
     }
-
-    public APIPerformance(long totalRequests, long totalErrors, long totalSuccesses, double averageResponseTime) {
-        this.totalRequests = totalRequests;
-        this.totalErrors = totalErrors;
-        this.totalSuccesses = totalSuccesses;
-        this.averageResponseTime = averageResponseTime;
-    }
 }
