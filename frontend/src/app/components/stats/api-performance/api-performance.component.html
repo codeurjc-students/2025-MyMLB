@@ -102,8 +102,13 @@
 			<h2 class="text-xl font-black uppercase tracking-tighter mb-6 text-emerald-500 flex items-center gap-2">
 				<mat-icon>security</mat-icon> Health Ratio
 			</h2>
+			<mat-checkbox
+				[(ngModel)]="selectedChartsToDownload.errorChart"
+				(change)="updateAllSelectedState()">
+			</mat-checkbox>
 			<div class="relative flex-grow h-[300px]">
 				<canvas
+					#errorChart="base-chart"
 					baseChart
 					[data]="errorsChartData"
 					[options]="pieOptions"
@@ -126,9 +131,14 @@
 				<h2 class="text-xl font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
 					<mat-icon>timeline</mat-icon> Performance History
 				</h2>
+				<mat-checkbox
+					[(ngModel)]="selectedChartsToDownload.perfChart"
+					(change)="updateAllSelectedState()">
+				</mat-checkbox>
 			</div>
 			<div class="relative h-[350px]">
 				<canvas
+					#perfChart="base-chart"
 					baseChart
 					[data]="performanceChartData"
 					[options]="lineOptions"
@@ -143,12 +153,17 @@
 				<h2 class="text-xl font-black uppercase tracking-tighter text-purple-500 flex items-center gap-2">
 					<mat-icon>hub</mat-icon> Endpoint Traffic Usage
 				</h2>
+				<mat-checkbox
+					[(ngModel)]="selectedChartsToDownload.endpointChart"
+					(change)="updateAllSelectedState()">
+				</mat-checkbox>
 				<span class="bg-purple-500/10 text-purple-500 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
 					Top 5 Most Demanded Endpoints
 				</span>
 			</div>
 			<div class="relative h-[400px]">
 				<canvas
+					#endpointChart="base-chart"
 					baseChart
 					[data]="endpointsChartData"
 					[options]="barOptions"

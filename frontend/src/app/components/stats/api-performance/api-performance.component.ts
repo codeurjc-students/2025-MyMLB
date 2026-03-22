@@ -13,6 +13,7 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 import { take } from 'rxjs';
 import JSZip from 'jszip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'app-api-performance',
@@ -20,6 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
         CommonModule,
+		FormsModule,
         BaseChartDirective,
         MatIconModule,
 		MatCheckboxModule,
@@ -323,9 +325,14 @@ export class ApiPerformanceComponent implements OnInit {
 
 	public toggleSelectedCharts() {
 		this.allChartsSelected = !this.allChartsSelected;
-		this.selectedChartsToDownload.perfChart = this.allChartsSelected
-		this.selectedChartsToDownload.errorChart = this.allChartsSelected
-		this.selectedChartsToDownload.endpointChart = this.allChartsSelected
+		Object.keys(this.selectedChartsToDownload).forEach(key => {
+			this.selectedChartsToDownload[key as keyof typeof this.selectedChartsToDownload] = this.allChartsSelected;
+		});
+	}
+
+	public updateAllSelectedState() {
+		const values = Object.values(this.selectedChartsToDownload);
+		this.allChartsSelected = values.every(v => v);
 	}
 
 	async downloadChartAsPNG() {
