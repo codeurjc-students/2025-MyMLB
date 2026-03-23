@@ -154,4 +154,14 @@ public final class TestConstants {
     public static final Long EVENT_ID = 100L;
     public static final Long SECTOR_ID = 1L;
     public static final Long SEAT_ID = 20L;
+
+    public static final Long TOTAL_REQUESTS1 = 100L;
+    public static final Long TOTAL_ERRORS1 = 10L;
+    public static final Long TOTAL_SUCCESSES1 = 90L;
+    public static final double AVG_TIME1 = 50.0;
+
+    public static final Long TOTAL_REQUESTS2 = 150L;
+    public static final Long TOTAL_ERRORS2 = 15L;
+    public static final Long TOTAL_SUCCESSES2 = 135L;
+    public static final double AVG_TIME2 = 55.0;
 }

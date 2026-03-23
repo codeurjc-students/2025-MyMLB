@@ -44,4 +44,12 @@ public class APIPerformance {
     protected void onCreate() {
         this.timeStamp = LocalDateTime.now();
     }
+
+    public APIPerformance(LocalDateTime timeStamp, Long requests, Long errors, Long successes, Double avg, List<Endpoint> endpoints) {
+        this.timeStamp = timeStamp;
+        this.totalRequests = requests;
+        this.totalErrors = errors;
+        this.totalSuccesses = successes;
+        this.mostDemandedEndpoints = endpoints;
+    }
 }

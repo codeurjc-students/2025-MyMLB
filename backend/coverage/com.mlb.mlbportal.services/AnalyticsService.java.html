@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnalyticsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.services</a> &gt; <span class="el_source">AnalyticsService.java</span></div><h1>AnalyticsService.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.services;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
+import com.mlb.mlbportal.dto.analytics.EndpointAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
+import com.mlb.mlbportal.mappers.analytics.APIAnalyticsMapper;
+import com.mlb.mlbportal.models.analytics.APIPerformance;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.analytics.APIPerformanceRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.ToIntFunction;
 
 @Service
@@ -20,33 +29,36 @@ import java.util.function.ToIntFunction;
 public class AnalyticsService {
     private final VisibilityStatsRepository visibilityStatsRepository;
     private final TeamRepository teamRepository;
+    private final APIPerformanceRepository apiPerformanceRepository;
+    private final MeterRegistry meterRegistry;
+    private final APIAnalyticsMapper apiAnalyticsMapper;
 
     // --------- Visibility Analytics ----------------------------------
     @Transactional(readOnly = true)
     public List&lt;VisibilityStats&gt; getVisibilityStats(LocalDate dateFrom, LocalDate dateTo) {
-<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (dateFrom == null) {</span>
-<span class="fc" id="L28">            dateFrom = LocalDate.now().minusMonths(1);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (dateFrom == null) {</span>
+<span class="fc" id="L40">            dateFrom = LocalDate.now().minusMonths(1);</span>
         }
-<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (dateTo == null) {</span>
-<span class="fc" id="L31">            dateTo = LocalDate.now();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (dateTo == null) {</span>
+<span class="fc" id="L43">            dateTo = LocalDate.now();</span>
         }
-<span class="fc" id="L33">       return this.visibilityStatsRepository.findStatsByRange(dateFrom, dateTo);</span>
+<span class="fc" id="L45">       return this.visibilityStatsRepository.findStatsByRange(dateFrom, dateTo);</span>
     }
 
     @Transactional
     public void increaseVisualizations() {
-<span class="fc" id="L38">        this.manageUpdate(this.visibilityStatsRepository::increaseVisualizations, &quot;visualizations&quot;);</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L50">        this.manageUpdate(this.visibilityStatsRepository::increaseVisualizations, &quot;visualizations&quot;);</span>
+<span class="fc" id="L51">    }</span>
 
     @Transactional
     public void increaseNewUsers() {
-<span class="fc" id="L43">        this.manageUpdate(this.visibilityStatsRepository::increaseNewUsers, &quot;newUsers&quot;);</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L55">        this.manageUpdate(this.visibilityStatsRepository::increaseNewUsers, &quot;newUsers&quot;);</span>
+<span class="fc" id="L56">    }</span>
 
     @Transactional
     public void increaseDeletedUsers() {
-<span class="fc" id="L48">        this.manageUpdate(this.visibilityStatsRepository::increaseDeletedUsers, &quot;deletedUsers&quot;);</span>
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L60">        this.manageUpdate(this.visibilityStatsRepository::increaseDeletedUsers, &quot;deletedUsers&quot;);</span>
+<span class="fc" id="L61">    }</span>
 
     /**
      * Updates the existing record or creates a new one for today.Catches race conditions to ensure data consistency.
@@ -56,29 +68,84 @@ public class AnalyticsService {
      * @param type The metric type to initialize if record is new.
      */
     private void manageUpdate(ToIntFunction&lt;LocalDate&gt; repositoryFunc, String type) {
-<span class="fc" id="L59">        LocalDate today = LocalDate.now();</span>
-<span class="fc" id="L60">        int rowsUpdated = repositoryFunc.applyAsInt(today);</span>
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (rowsUpdated == 0) {</span>
+<span class="fc" id="L71">        LocalDate today = LocalDate.now();</span>
+<span class="fc" id="L72">        int rowsUpdated = repositoryFunc.applyAsInt(today);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (rowsUpdated == 0) {</span>
             try {
-<span class="nc bnc" id="L63" title="All 4 branches missed.">                switch (type) {</span>
-<span class="nc" id="L64">                    case &quot;visualizations&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 1, 0, 0));</span>
-<span class="nc" id="L65">                    case &quot;newUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 1, 0));</span>
-<span class="nc" id="L66">                    case &quot;deletedUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 0, 1));</span>
+<span class="pc bpc" id="L75" title="3 of 4 branches missed.">                switch (type) {</span>
+<span class="nc" id="L76">                    case &quot;visualizations&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 1, 0, 0));</span>
+<span class="fc" id="L77">                    case &quot;newUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 1, 0));</span>
+<span class="nc" id="L78">                    case &quot;deletedUsers&quot; -&gt; this.visibilityStatsRepository.save(new VisibilityStats(today, 0, 0, 1));</span>
                 }
             }
-<span class="nc" id="L69">            catch (DataIntegrityViolationException ex) {</span>
-<span class="nc" id="L70">                repositoryFunc.applyAsInt(today);</span>
-<span class="nc" id="L71">            }</span>
+<span class="fc" id="L81">            catch (DataIntegrityViolationException ex) {</span>
+<span class="fc" id="L82">                repositoryFunc.applyAsInt(today);</span>
+<span class="fc" id="L83">            }</span>
         }
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L85">    }</span>
 
     // --------- Fav Teams Analytics ----------------------------------
     @Transactional(readOnly = true)
     public Map&lt;String, Long&gt; getFavTeamsAnalytics() {
-<span class="fc" id="L78">        List&lt;FavTeamAnalyticsDTO&gt; queryResult = this.teamRepository.findAllFavoriteTeamsCounter();</span>
-<span class="fc" id="L79">        Map&lt;String, Long&gt; result = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L80">        queryResult.forEach(dto -&gt; result.put(dto.teamName(), dto.counter()));</span>
-<span class="fc" id="L81">        return result;</span>
+<span class="fc" id="L90">        List&lt;FavTeamAnalyticsDTO&gt; queryResult = this.teamRepository.findAllFavoriteTeamsCounter();</span>
+<span class="fc" id="L91">        Map&lt;String, Long&gt; result = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L92">        queryResult.forEach(dto -&gt; result.put(dto.teamName(), dto.counter()));</span>
+<span class="fc" id="L93">        return result;</span>
+    }
+
+    // --------- API Analytics ----------------------------------
+    public APIAnalyticsDTO getAPIPerformanceAnalytics() {
+<span class="fc" id="L98">        var requestsSearch = this.meterRegistry.find(&quot;http.server.requests&quot;);</span>
+
+<span class="fc" id="L100">        var filteredTimers = requestsSearch.timers().stream().filter(t -&gt; {</span>
+<span class="fc" id="L101">            String uri = t.getId().getTag(&quot;uri&quot;);</span>
+<span class="pc bpc" id="L102" title="3 of 8 branches missed.">            return uri != null &amp;&amp; !uri.contains(&quot;actuator&quot;) &amp;&amp; !uri.equals(&quot;/**&quot;) &amp;&amp; !uri.equals(&quot;/error&quot;);</span>
+<span class="fc" id="L103">        }).toList();</span>
+
+<span class="fc" id="L105">        long totalRequests = filteredTimers.stream().mapToLong(Timer::count).sum();</span>
+
+<span class="fc" id="L107">        long totalErrors = filteredTimers.stream().filter(timer -&gt; {</span>
+<span class="fc" id="L108">           String status = timer.getId().getTag(&quot;status&quot;);</span>
+<span class="pc bpc" id="L109" title="2 of 6 branches missed.">           return status != null &amp;&amp; (status.startsWith(&quot;4&quot;) || status.startsWith(&quot;5&quot;));</span>
+<span class="fc" id="L110">        }).mapToLong(Timer::count).sum();</span>
+
+<span class="fc" id="L112">        long totalSuccess = totalRequests - totalErrors;</span>
+
+<span class="fc" id="L114">        double totalTime = filteredTimers.stream().mapToDouble(timer -&gt; timer.totalTime(TimeUnit.MILLISECONDS)).sum();</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        double averageTime = (totalRequests &gt; 0) ? (totalTime / totalRequests) : 0.0;</span>
+
+<span class="fc" id="L118">        List&lt;EndpointAnalyticsDTO&gt; topEndpoints = filteredTimers.stream().map(timer -&gt; new EndpointAnalyticsDTO(timer.getId().getTag(&quot;uri&quot;), timer.count()))</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                .filter(end -&gt; !end.uri().equals(&quot;/**&quot;))</span>
+<span class="fc" id="L120">                .sorted((e1, e2) -&gt; Long.compare(e2.count(), e1.count()))</span>
+<span class="fc" id="L121">                .limit(10)</span>
+<span class="fc" id="L122">                .toList();</span>
+
+<span class="fc" id="L124">        return new APIAnalyticsDTO(</span>
+<span class="fc" id="L125">                LocalDateTime.now(),</span>
+<span class="fc" id="L126">                totalRequests,</span>
+<span class="fc" id="L127">                totalErrors,</span>
+<span class="fc" id="L128">                totalSuccess,</span>
+<span class="fc" id="L129">                Math.round(averageTime * 100.0) / 100.0,</span>
+                topEndpoints
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;APIAnalyticsDTO&gt; getAPIPerformanceHistory(String dateRange) {
+<span class="fc" id="L136">        LocalDateTime dateFrom = this.getDateFrom(dateRange);</span>
+<span class="fc" id="L137">        List&lt;APIPerformance&gt; queryResult = this.apiPerformanceRepository.findAllByTimeStampAfterOrderByTimeStampAsc(dateFrom);</span>
+<span class="fc" id="L138">        return this.apiAnalyticsMapper.toListAPIDTO(queryResult);</span>
+    }
+
+    private LocalDateTime getDateFrom(String dateRange) {
+<span class="fc" id="L142">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="pc bpc" id="L143" title="2 of 4 branches missed.">        return switch (dateRange) {</span>
+<span class="nc" id="L144">            case &quot;1d&quot; -&gt; now.minusDays(1);</span>
+<span class="fc" id="L145">            case &quot;1w&quot; -&gt; now.minusWeeks(1);</span>
+<span class="nc" id="L146">            case &quot;1m&quot; -&gt; now.minusMonths(1);</span>
+<span class="fc" id="L147">            default -&gt; now.minusHours(1);</span>
+        };
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

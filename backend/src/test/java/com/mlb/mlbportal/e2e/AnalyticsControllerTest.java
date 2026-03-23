@@ -2,10 +2,12 @@ package com.mlb.mlbportal.e2e;
 
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
+import com.mlb.mlbportal.models.analytics.APIPerformance;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.UserRepository;
+import com.mlb.mlbportal.repositories.analytics.APIPerformanceRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,14 +19,20 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static com.mlb.mlbportal.utils.TestConstants.ANALYTICS_PATH;
+import static com.mlb.mlbportal.utils.TestConstants.AVG_TIME1;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_INFO;
+import static com.mlb.mlbportal.utils.TestConstants.TOTAL_ERRORS1;
+import static com.mlb.mlbportal.utils.TestConstants.TOTAL_REQUESTS1;
+import static com.mlb.mlbportal.utils.TestConstants.TOTAL_SUCCESSES1;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_EMAIL;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_PASSWORD;
 import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
@@ -44,6 +52,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private APIPerformanceRepository apiPerformanceRepository;
+
     @BeforeEach
     void setUp() {
         cleanDatabase();
@@ -62,6 +73,9 @@ class AnalyticsControllerTest extends BaseE2ETest {
         favTeams.add(team);
         user.setFavTeams(favTeams);
         this.userRepository.save(user);
+
+        APIPerformance apiPerformance = new APIPerformance(LocalDateTime.now(), TOTAL_REQUESTS1, TOTAL_ERRORS1, TOTAL_SUCCESSES1, AVG_TIME1, Collections.emptyList());
+        this.apiPerformanceRepository.save(apiPerformance);
     }
 
     @Test
@@ -140,5 +154,20 @@ class AnalyticsControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .body("Team1 ", is(1));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/analytics/api-performance should return the api analytics in the given date range")
+    void testGetAPIPerformanceAnalytics() {
+        String url = ANALYTICS_PATH + "/api-performance";
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("[0].totalRequests", is(100));
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>APIPerformance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.models.analytics</a> &gt; <span class="el_source">APIPerformance.java</span></div><h1>APIPerformance.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.models.analytics;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;T_API_Performance_Analytics&quot;)
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class APIPerformance {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    private LocalDateTime timeStamp;
+    private long totalRequests;
+    private long totalErrors;
+    private long totalSuccesses;
+    private double averageResponseTime;
+
+<span class="fc" id="L39">    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    @JoinColumn(name = &quot;performance_id&quot;)
+    private List&lt;Endpoint&gt; mostDemandedEndpoints = new LinkedList&lt;&gt;();
+
+    @PrePersist
+    protected void onCreate() {
+<span class="fc" id="L45">        this.timeStamp = LocalDateTime.now();</span>
+<span class="fc" id="L46">    }</span>
+
+<span class="fc" id="L48">    public APIPerformance(LocalDateTime timeStamp, Long requests, Long errors, Long successes, Double avg, List&lt;Endpoint&gt; endpoints) {</span>
+<span class="fc" id="L49">        this.timeStamp = timeStamp;</span>
+<span class="fc" id="L50">        this.totalRequests = requests;</span>
+<span class="fc" id="L51">        this.totalErrors = errors;</span>
+<span class="fc" id="L52">        this.totalSuccesses = successes;</span>
+<span class="fc" id="L53">        this.mostDemandedEndpoints = endpoints;</span>
+<span class="fc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

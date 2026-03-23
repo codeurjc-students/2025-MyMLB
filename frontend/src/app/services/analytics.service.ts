@@ -44,6 +44,6 @@ export class AnalyticsService {
 	}
 
 	public getAPIPerformanceHistory(dateRange: TimeRange): Observable<APIAnalytics[]> {
-		return this.http.get<APIAnalytics[]>(`${this.apiUrl}/api-performance/history?dateRange=${dateRange}`);
+		return this.http.get<APIAnalytics[]>(`${this.apiUrl}/api-performance?dateRange=${dateRange}`);
 	}
 }

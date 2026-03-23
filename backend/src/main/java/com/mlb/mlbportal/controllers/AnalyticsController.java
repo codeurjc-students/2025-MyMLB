@@ -28,7 +28,7 @@ public class AnalyticsController {
 
     // --------- Visibility Analytics ----------------------------------
 
-    @Operation(summary = "Return Visibility Analytics", description = "Obtain the visibility analytics of the application within a period of time.")
+    @Operation(summary = "Return Visibility Analytics", description = "Retrieve the visibility analytics of the application within a period of time.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -73,7 +73,7 @@ public class AnalyticsController {
 
     // --------- Fav Teams Analytics ----------------------------------
 
-    @Operation(summary = "Return Favorite Team Analytics", description = "Get analytical data related to the number of fans a team has.")
+    @Operation(summary = "Return Favorite Team Analytics", description = "Retrieve analytical data related to the number of fans a team has.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -85,13 +85,12 @@ public class AnalyticsController {
 
     // --------- API Analytics ----------------------------------
 
-    // DELETE
-    @GetMapping(value = "/api-performance/live", produces = "application/json")
-    public ResponseEntity<APIAnalyticsDTO> getAPIPerformanceAnalytics() {
-        return ResponseEntity.ok(this.statsService.getAPIPerformanceAnalytics());
-    }
-
-    @GetMapping(value = "/api-performance/history", produces = "application/json")
+    @Operation(summary = "Return API Performance Analytics", description = "Retrieve real-time API performance metrics, including total requests, error counts, and average response times.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieve the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIAnalyticsDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/api-performance", produces = "application/json")
     public ResponseEntity<List<APIAnalyticsDTO>> getAPIPerformanceHistory(@RequestParam(defaultValue = "1h") String dateRange) {
         return ResponseEntity.ok(this.statsService.getAPIPerformanceHistory(dateRange));
     }

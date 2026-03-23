@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnalyticsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">AnalyticsController.java</span></div><h1>AnalyticsController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.AnalyticsService;
@@ -27,14 +28,14 @@ public class AnalyticsController {
 
     // --------- Visibility Analytics ----------------------------------
 
-    @Operation(summary = &quot;Return Visibility Analytics&quot;, description = &quot;Obtain the visibility analytics of the application within a period of time.&quot;)
+    @Operation(summary = &quot;Return Visibility Analytics&quot;, description = &quot;Retrieve the visibility analytics of the application within a period of time.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the analytics&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = VisibilityStats.class))),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/visibility&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;VisibilityStats&gt;&gt; getVisibilityStats(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
-<span class="fc" id="L37">        return ResponseEntity.ok(this.statsService.getVisibilityStats(dateFrom, dateTo));</span>
+<span class="fc" id="L38">        return ResponseEntity.ok(this.statsService.getVisibilityStats(dateFrom, dateTo));</span>
     }
 
     @Operation(summary = &quot;Increase Visualizations&quot;, description = &quot;Register a new visualization.&quot;)
@@ -44,8 +45,8 @@ public class AnalyticsController {
     })
     @PostMapping(value = &quot;/visibility/visualizations&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateVisualizations() {
-<span class="fc" id="L47">        this.statsService.increaseVisualizations();</span>
-<span class="fc" id="L48">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Visualizations successfully updated&quot;));</span>
+<span class="fc" id="L48">        this.statsService.increaseVisualizations();</span>
+<span class="fc" id="L49">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Visualizations successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Increase New Users&quot;, description = &quot;Increase the number of registered users.&quot;)
@@ -55,8 +56,8 @@ public class AnalyticsController {
     })
     @PostMapping(value = &quot;/visibility/registrations&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateNewUsers() {
-<span class="fc" id="L58">        this.statsService.increaseNewUsers();</span>
-<span class="fc" id="L59">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;New Users successfully updated&quot;));</span>
+<span class="fc" id="L59">        this.statsService.increaseNewUsers();</span>
+<span class="fc" id="L60">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;New Users successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Increase Deleted Users&quot;, description = &quot;Increase the number of deleted users.&quot;)
@@ -66,20 +67,32 @@ public class AnalyticsController {
     })
     @PostMapping(value = &quot;/visibility/losses&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateDeletedUsers() {
-<span class="fc" id="L69">        this.statsService.increaseDeletedUsers();</span>
-<span class="fc" id="L70">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Deleted Users successfully updated&quot;));</span>
+<span class="fc" id="L70">        this.statsService.increaseDeletedUsers();</span>
+<span class="fc" id="L71">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Deleted Users successfully updated&quot;));</span>
     }
 
     // --------- Fav Teams Analytics ----------------------------------
 
-    @Operation(summary = &quot;Return Favorite Team Analytics&quot;, description = &quot;Get analytical data related to the number of fans a team has.&quot;)
+    @Operation(summary = &quot;Return Favorite Team Analytics&quot;, description = &quot;Retrieve analytical data related to the number of fans a team has.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the analytics&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/fav-teams&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Map&lt;String, Long&gt;&gt; getFavTeamsAnalytics() {
-<span class="fc" id="L82">        return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());</span>
+<span class="fc" id="L83">        return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());</span>
+    }
+
+    // --------- API Analytics ----------------------------------
+
+    @Operation(summary = &quot;Return API Performance Analytics&quot;, description = &quot;Retrieve real-time API performance metrics, including total requests, error counts, and average response times.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieve the analytics&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = APIAnalyticsDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/api-performance&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;APIAnalyticsDTO&gt;&gt; getAPIPerformanceHistory(@RequestParam(defaultValue = &quot;1h&quot;) String dateRange) {
+<span class="fc" id="L95">        return ResponseEntity.ok(this.statsService.getAPIPerformanceHistory(dateRange));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
