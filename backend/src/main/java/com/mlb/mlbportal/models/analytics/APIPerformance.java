@@ -50,6 +50,7 @@ public class APIPerformance {
         this.totalRequests = requests;
         this.totalErrors = errors;
         this.totalSuccesses = successes;
+        this.averageResponseTime = avg;
         this.mostDemandedEndpoints = endpoints;
     }
 }
