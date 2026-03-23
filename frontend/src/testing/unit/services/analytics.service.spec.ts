@@ -4,6 +4,7 @@ import { provideHttpClient, withFetch } from "@angular/common/http";
 import { VisibilityStats } from "../../../app/models/stats.model";
 import { AuthResponse } from "../../../app/models/auth.model";
 import { AnalyticsService } from "../../../app/services/analytics.service";
+import { APIAnalytics } from "../../../app/models/analytics.model";
 
 describe('Analytics Service Tests', () => {
     let service: AnalyticsService;
@@ -104,6 +105,27 @@ describe('Analytics Service Tests', () => {
 		});
 
 		const req = httpMock.expectOne(`${apiUrl}/fav-teams`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockResponse);
+	});
+
+	it('should return the api performance analytics', () => {
+		const mockResponse: APIAnalytics[] = [
+			{
+				timeStamp: '2026-03-22',
+				totalRequests: 100,
+				totalErrors: 10,
+				totalSuccesses: 90,
+				averageResponseTime: 25.4,
+				mostDemandedEndpoints: []
+			}
+		];
+
+		service.getAPIPerformanceHistory('1h').subscribe((response) => {
+			expect(response).toEqual(mockResponse);
+		});
+
+		const req = httpMock.expectOne(`${apiUrl}/api-performance?dateRange=1h`);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
 	});

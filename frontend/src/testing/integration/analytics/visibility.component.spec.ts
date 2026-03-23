@@ -40,10 +40,10 @@ describe('Visibility Component Integration Test', () => {
         httpMock.verify();
     });
 
-	it('should fetch stats from API correctly', () => {
+	it('should fetch metrics from API correctly', () => {
         fixture.detectChanges();
 
-        const req = httpMock.expectOne((request) => request.url.startsWith(apiUrl));
+        const req = httpMock.expectOne(`${apiUrl}?dateFrom=2026-02-23&dateTo=2026-03-23`);
 
         expect(req.request.method).toBe('GET');
 
