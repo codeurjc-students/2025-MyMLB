@@ -2,6 +2,7 @@
 
 describe('Visibility Analytics E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth';
+	const ANALYTICS_API_URL = '/api/v1/analytics/visibility*';
 
     beforeEach(() => {
 		cy.intercept('GET', `${AUTH_API_URL}/me`, {
@@ -15,16 +16,16 @@ describe('Visibility Analytics E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getActiveUser');
 
-        cy.intercept('GET', '**/api/v1/analytics/visibility*', {
+        cy.intercept('GET', ANALYTICS_API_URL, {
             body: [
                 { date: '2026-03-01', visualizations: 150, newUsers: 15, deletedUsers: 2 },
                 { date: '2026-03-02', visualizations: 250, newUsers: 25, deletedUsers: 5 }
             ]
-        }).as('getStats');
+        }).as('getAnalytics');
 
 		cy.visit('/statistics');
         cy.contains('button', /Visibility/i).click();
-        cy.wait('@getStats');
+        cy.wait('@getAnalytics');
     });
 
     it('should display statistics cards', () => {

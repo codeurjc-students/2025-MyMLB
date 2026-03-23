@@ -2,6 +2,7 @@
 
 describe('Fav Teams Analytics E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth';
+	const ANALYTICS_API_URL = '/api/v1/analytics/fav-teams';
 
 	beforeEach(() => {
 		cy.intercept('GET', `${AUTH_API_URL}/me`, {
@@ -15,17 +16,17 @@ describe('Fav Teams Analytics E2E Tests', () => {
 		cy.visit('/');
 		cy.wait('@getActiveUser');
 
-        cy.intercept('GET', '**/api/v1/analytics/fav-teams', {
+        cy.intercept('GET', ANALYTICS_API_URL, {
             body: {
 				'New York Yankees': 15,
 				'Boston Red Sox': 10,
 				'Los Angeles Dodgers': 5
 			}
-        }).as('getStats');
+        }).as('getAnalytics');
 
 		cy.visit('/statistics');
         cy.contains('button', /Favorite/i).click();
-        cy.wait('@getStats');
+        cy.wait('@getAnalytics');
 	});
 
 	it('should render the page correctly', () => {

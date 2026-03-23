@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>APIAnalyticsMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.mappers.analytics</a> &gt; <span class="el_source">APIAnalyticsMapperImpl.java</span></div><h1>APIAnalyticsMapperImpl.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.mappers.analytics;
+
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
+import com.mlb.mlbportal.dto.analytics.EndpointAnalyticsDTO;
+import com.mlb.mlbportal.models.analytics.APIPerformance;
+import com.mlb.mlbportal.models.analytics.Endpoint;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-03-23T21:31:06+0100&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
+)
+@Component
+<span class="fc" id="L21">public class APIAnalyticsMapperImpl implements APIAnalyticsMapper {</span>
+
+    @Autowired
+    private EndpointMapper endpointMapper;
+
+    @Override
+    public APIAnalyticsDTO toAPIDTO(APIPerformance apiPerformance) {
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if ( apiPerformance == null ) {</span>
+<span class="nc" id="L29">            return null;</span>
+        }
+
+<span class="fc" id="L32">        LocalDateTime timeStamp = null;</span>
+<span class="fc" id="L33">        Long totalRequests = null;</span>
+<span class="fc" id="L34">        Long totalErrors = null;</span>
+<span class="fc" id="L35">        Long totalSuccesses = null;</span>
+<span class="fc" id="L36">        Double averageResponseTime = null;</span>
+<span class="fc" id="L37">        List&lt;EndpointAnalyticsDTO&gt; mostDemandedEndpoints = null;</span>
+
+<span class="fc" id="L39">        timeStamp = apiPerformance.getTimeStamp();</span>
+<span class="fc" id="L40">        totalRequests = apiPerformance.getTotalRequests();</span>
+<span class="fc" id="L41">        totalErrors = apiPerformance.getTotalErrors();</span>
+<span class="fc" id="L42">        totalSuccesses = apiPerformance.getTotalSuccesses();</span>
+<span class="fc" id="L43">        averageResponseTime = apiPerformance.getAverageResponseTime();</span>
+<span class="fc" id="L44">        mostDemandedEndpoints = endpointMapper.toListEndpointDTO( apiPerformance.getMostDemandedEndpoints() );</span>
+
+<span class="fc" id="L46">        APIAnalyticsDTO aPIAnalyticsDTO = new APIAnalyticsDTO( timeStamp, totalRequests, totalErrors, totalSuccesses, averageResponseTime, mostDemandedEndpoints );</span>
+
+<span class="fc" id="L48">        return aPIAnalyticsDTO;</span>
+    }
+
+    @Override
+    public APIPerformance toDomain(APIAnalyticsDTO dto) {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L54">            return null;</span>
+        }
+
+<span class="fc" id="L57">        APIPerformance aPIPerformance = new APIPerformance();</span>
+
+<span class="fc" id="L59">        aPIPerformance.setTimeStamp( dto.timeStamp() );</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if ( dto.totalRequests() != null ) {</span>
+<span class="fc" id="L61">            aPIPerformance.setTotalRequests( dto.totalRequests() );</span>
+        }
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if ( dto.totalErrors() != null ) {</span>
+<span class="fc" id="L64">            aPIPerformance.setTotalErrors( dto.totalErrors() );</span>
+        }
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if ( dto.totalSuccesses() != null ) {</span>
+<span class="fc" id="L67">            aPIPerformance.setTotalSuccesses( dto.totalSuccesses() );</span>
+        }
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if ( dto.averageResponseTime() != null ) {</span>
+<span class="fc" id="L70">            aPIPerformance.setAverageResponseTime( dto.averageResponseTime() );</span>
+        }
+<span class="fc" id="L72">        aPIPerformance.setMostDemandedEndpoints( endpointAnalyticsDTOListToEndpointList( dto.mostDemandedEndpoints() ) );</span>
+
+<span class="fc" id="L74">        return aPIPerformance;</span>
+    }
+
+    @Override
+    public List&lt;APIAnalyticsDTO&gt; toListAPIDTO(Collection&lt;APIPerformance&gt; list) {
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L80">            return null;</span>
+        }
+
+<span class="fc" id="L83">        List&lt;APIAnalyticsDTO&gt; list1 = new ArrayList&lt;APIAnalyticsDTO&gt;( list.size() );</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for ( APIPerformance aPIPerformance : list ) {</span>
+<span class="fc" id="L85">            list1.add( toAPIDTO( aPIPerformance ) );</span>
+<span class="fc" id="L86">        }</span>
+
+<span class="fc" id="L88">        return list1;</span>
+    }
+
+    protected Endpoint endpointAnalyticsDTOToEndpoint(EndpointAnalyticsDTO endpointAnalyticsDTO) {
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if ( endpointAnalyticsDTO == null ) {</span>
+<span class="nc" id="L93">            return null;</span>
+        }
+
+<span class="fc" id="L96">        Endpoint endpoint = new Endpoint();</span>
+
+<span class="fc" id="L98">        endpoint.setUri( endpointAnalyticsDTO.uri() );</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if ( endpointAnalyticsDTO.count() != null ) {</span>
+<span class="fc" id="L100">            endpoint.setCount( endpointAnalyticsDTO.count() );</span>
+        }
+
+<span class="fc" id="L103">        return endpoint;</span>
+    }
+
+    protected List&lt;Endpoint&gt; endpointAnalyticsDTOListToEndpointList(List&lt;EndpointAnalyticsDTO&gt; list) {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L108">            return null;</span>
+        }
+
+<span class="fc" id="L111">        List&lt;Endpoint&gt; list1 = new ArrayList&lt;Endpoint&gt;( list.size() );</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for ( EndpointAnalyticsDTO endpointAnalyticsDTO : list ) {</span>
+<span class="fc" id="L113">            list1.add( endpointAnalyticsDTOToEndpoint( endpointAnalyticsDTO ) );</span>
+<span class="fc" id="L114">        }</span>
+
+<span class="fc" id="L116">        return list1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

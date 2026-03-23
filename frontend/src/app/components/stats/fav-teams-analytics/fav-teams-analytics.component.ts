@@ -108,9 +108,9 @@ export class FavTeamsAnalyticsComponent implements OnInit {
 	private fetchData() {
 		this.loading = true;
 		this.analyticsService.getFavTeamsAnalytics().subscribe({
-			next: (data: Map<string, number>) => {
-				this.barChartData.labels = Array.from(data.keys());
-            	this.barChartData.datasets[0].data = Array.from(data.values());
+			next: (data: Record<string, number>) => {
+				this.barChartData.labels = Object.keys(data);
+            	this.barChartData.datasets[0].data = Object.values(data);
 
 				this.chart?.update();
 				this.loading = false;

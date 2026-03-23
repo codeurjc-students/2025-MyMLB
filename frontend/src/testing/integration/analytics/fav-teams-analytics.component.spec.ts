@@ -15,11 +15,11 @@ describe('FavTeams Analytics Component Integration Test', () => {
 
     const apiUrl = 'https://localhost:8443/api/v1/analytics/fav-teams';
 
-    const mockFavTeamsData: Map<string, number> = new Map([
-		['New York Yankees', 10],
-		['Los Angeles Dodgers', 8],
-		['Boston Red Sox', 5],
-	]);
+    const mockFavTeamsData: Record<string, number> = {
+		'New York Yankees': 10,
+		'Los Angeles Dodgers': 8,
+		'Boston Red Sox': 5
+	};
 
     beforeEach(() => {
         TestBed.configureTestingModule({

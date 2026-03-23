@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
 import com.mlb.mlbportal.dto.match.MatchDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
@@ -285,5 +286,11 @@ public class BuildMocksFactory {
 
     public static EditEventRequest buildEditEventRequest(List<Long> sectorIds, List<Double> prices) {
         return new EditEventRequest(EVENT_ID, sectorIds, prices);
+    }
+
+    public static List<APIAnalyticsDTO> buildAPIAnalyticsDTO() {
+        APIAnalyticsDTO dto1 = new APIAnalyticsDTO(LocalDateTime.now(), TOTAL_REQUESTS1, TOTAL_ERRORS1, TOTAL_SUCCESSES1, AVG_TIME1, List.of());
+        APIAnalyticsDTO dto2 = new APIAnalyticsDTO(LocalDateTime.now(), TOTAL_REQUESTS2, TOTAL_ERRORS2, TOTAL_SUCCESSES2, AVG_TIME2, List.of());
+        return Arrays.asList(dto1, dto2);
     }
 }

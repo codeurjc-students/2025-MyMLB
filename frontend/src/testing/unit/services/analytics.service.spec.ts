@@ -4,8 +4,9 @@ import { provideHttpClient, withFetch } from "@angular/common/http";
 import { VisibilityStats } from "../../../app/models/stats.model";
 import { AuthResponse } from "../../../app/models/auth.model";
 import { AnalyticsService } from "../../../app/services/analytics.service";
+import { APIAnalytics } from "../../../app/models/analytics.model";
 
-describe('Stats Service Tests', () => {
+describe('Analytics Service Tests', () => {
     let service: AnalyticsService;
     let httpMock: HttpTestingController;
     const apiUrl = 'https://localhost:8443/api/v1/analytics';
@@ -95,15 +96,36 @@ describe('Stats Service Tests', () => {
     });
 
 	it('should return the favorite teams analytics', () => {
-		const mockResponse: Map<string, number> = new Map([
-			['Team1', 2],
-		]);
+		const mockResponse: Record<string, number> = {
+			'team1': 1
+		}
 
 		service.getFavTeamsAnalytics().subscribe((response) => {
 			expect(response).toEqual(mockResponse);
 		});
 
 		const req = httpMock.expectOne(`${apiUrl}/fav-teams`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockResponse);
+	});
+
+	it('should return the api performance analytics', () => {
+		const mockResponse: APIAnalytics[] = [
+			{
+				timeStamp: '2026-03-22',
+				totalRequests: 100,
+				totalErrors: 10,
+				totalSuccesses: 90,
+				averageResponseTime: 25.4,
+				mostDemandedEndpoints: []
+			}
+		];
+
+		service.getAPIPerformanceHistory('1h').subscribe((response) => {
+			expect(response).toEqual(mockResponse);
+		});
+
+		const req = httpMock.expectOne(`${apiUrl}/api-performance?dateRange=1h`);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
 	});

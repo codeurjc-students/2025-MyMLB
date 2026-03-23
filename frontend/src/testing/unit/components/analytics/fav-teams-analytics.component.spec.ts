@@ -14,11 +14,11 @@ describe('FavTeams Analytics Component Tests', () => {
     let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
     let exportServiceSpy: jasmine.SpyObj<ExportService>;
 
-    const mockFavTeamsData: Map<string, number> = new Map([
-		['New York Yankees', 10],
-		['Los Angeles Dodgers', 8],
-		['Boston Red Sox', 5],
-	]);
+    const mockFavTeamsData: Record<string, number> = {
+		'New York Yankees': 10,
+		'Los Angeles Dodgers': 8,
+		'Boston Red Sox': 5
+	};
 
     beforeEach(() => {
         analyticsServiceSpy = jasmine.createSpyObj('AnalyticsService', ['getFavTeamsAnalytics']);

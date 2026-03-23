@@ -3,11 +3,19 @@ package com.mlb.mlbportal.unit;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
+import com.mlb.mlbportal.mappers.analytics.APIAnalyticsMapper;
+import com.mlb.mlbportal.models.analytics.APIPerformance;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.repositories.TeamRepository;
+import com.mlb.mlbportal.repositories.analytics.APIPerformanceRepository;
 import com.mlb.mlbportal.repositories.analytics.VisibilityStatsRepository;
 import com.mlb.mlbportal.services.AnalyticsService;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.search.Search;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,8 +32,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
 class AnalyticsServiceTest {
@@ -33,6 +45,15 @@ class AnalyticsServiceTest {
 
     @Mock
     private TeamRepository teamRepository;
+
+    @Mock
+    private MeterRegistry meterRegistry;
+
+    @Mock
+    private APIPerformanceRepository apiPerformanceRepository;
+
+    @Mock
+    private APIAnalyticsMapper apiAnalyticsMapper;
 
     @InjectMocks
     private AnalyticsService statsService;
@@ -112,5 +133,70 @@ class AnalyticsServiceTest {
 
         assertThat(expectedResult.entrySet()).hasSize(1);
         assertThat(expectedResult).containsEntry(TEST_TEAM1_NAME, 10L);
+    }
+
+    @Test
+    @DisplayName("Should obtain API metrics from the actuator")
+    void testGetAPIPerformanceAnalytics() {
+        Timer successTimer = mock(Timer.class);
+        Timer errorTimer = mock(Timer.class);
+        Timer actuatorTimer = mock(Timer.class);
+
+        Timer.Id idSuccess = mock(Timer.Id.class);
+        when(idSuccess.getTag("uri")).thenReturn("/api/data");
+        when(idSuccess.getTag("status")).thenReturn("200");
+        when(successTimer.getId()).thenReturn(idSuccess);
+        when(successTimer.count()).thenReturn(10L);
+        when(successTimer.totalTime(TimeUnit.MILLISECONDS)).thenReturn(1000.0);
+
+        Timer.Id idError = mock(Timer.Id.class);
+        when(idError.getTag("uri")).thenReturn("/api/data");
+        when(idError.getTag("status")).thenReturn("500");
+        when(errorTimer.getId()).thenReturn(idError);
+        when(errorTimer.count()).thenReturn(2L);
+        when(errorTimer.totalTime(TimeUnit.MILLISECONDS)).thenReturn(500.0);
+
+        Timer.Id idActuator = mock(Timer.Id.class);
+        when(idActuator.getTag("uri")).thenReturn("/actuator/health");
+        when(actuatorTimer.getId()).thenReturn(idActuator);
+
+        // Simulate the search in the MaterRegistry
+        Search search = mock(Search.class);
+        when(meterRegistry.find("http.server.requests")).thenReturn(search);
+        when(search.timers()).thenReturn(List.of(successTimer, errorTimer, actuatorTimer));
+
+        APIAnalyticsDTO result = this.statsService.getAPIPerformanceAnalytics();
+
+        assertThat(result.totalRequests()).isEqualTo(12L); // 10 + 2 (filtered actuator)
+        assertThat(result.totalErrors()).isEqualTo(2L);
+        assertThat(result.totalSuccesses()).isEqualTo(10L);
+        // Avg ---> (1000 + 500) / 12 = 125.0
+        assertThat(result.averageResponseTime()).isEqualTo(125.0);
+        assertThat(result.mostDemandedEndpoints()).hasSize(2);
+        assertThat(result.mostDemandedEndpoints().getFirst().uri()).isEqualTo("/api/data");
+    }
+
+    @Test
+    @DisplayName("Should obtain API performance history for a certain date range")
+    void testGetAPIPerformanceHistoryWeeks() {
+        String range = "1w";
+        APIPerformance perf = new APIPerformance();
+        APIAnalyticsDTO dto = BuildMocksFactory.buildAPIAnalyticsDTO().getFirst();
+
+        when(this.apiPerformanceRepository.findAllByTimeStampAfterOrderByTimeStampAsc(any(LocalDateTime.class))).thenReturn(List.of(perf));
+        when(this.apiAnalyticsMapper.toListAPIDTO(any())).thenReturn(List.of(dto));
+
+        List<APIAnalyticsDTO> result = this.statsService.getAPIPerformanceHistory(range);
+
+        assertThat(result).hasSize(1);
+        verify(this.apiPerformanceRepository).findAllByTimeStampAfterOrderByTimeStampAsc(any(LocalDateTime.class));
+    }
+
+    @Test
+    @DisplayName("Should set default date range (1 hour) when invalid range")
+    void testGetAPIPerformanceHistoryDefault() {
+        when(this.apiPerformanceRepository.findAllByTimeStampAfterOrderByTimeStampAsc(any(LocalDateTime.class))).thenReturn(Collections.emptyList());
+        this.statsService.getAPIPerformanceHistory("invalid-range");
+        verify(this.apiPerformanceRepository).findAllByTimeStampAfterOrderByTimeStampAsc(any(LocalDateTime.class));
     }
 }

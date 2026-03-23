@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.controllers;
 
+import com.mlb.mlbportal.dto.analytics.APIAnalyticsDTO;
 import com.mlb.mlbportal.models.analytics.VisibilityStats;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.AnalyticsService;
@@ -27,7 +28,7 @@ public class AnalyticsController {
 
     // --------- Visibility Analytics ----------------------------------
 
-    @Operation(summary = "Return Visibility Analytics", description = "Obtain the visibility analytics of the application within a period of time.")
+    @Operation(summary = "Return Visibility Analytics", description = "Retrieve the visibility analytics of the application within a period of time.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -72,7 +73,7 @@ public class AnalyticsController {
 
     // --------- Fav Teams Analytics ----------------------------------
 
-    @Operation(summary = "Return Favorite Team Analytics", description = "Get analytical data related to the number of fans a team has.")
+    @Operation(summary = "Return Favorite Team Analytics", description = "Retrieve analytical data related to the number of fans a team has.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -80,5 +81,17 @@ public class AnalyticsController {
     @GetMapping(value = "/fav-teams", produces = "application/json")
     public ResponseEntity<Map<String, Long>> getFavTeamsAnalytics() {
         return ResponseEntity.ok(this.statsService.getFavTeamsAnalytics());
+    }
+
+    // --------- API Analytics ----------------------------------
+
+    @Operation(summary = "Return API Performance Analytics", description = "Retrieve real-time API performance metrics, including total requests, error counts, and average response times.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieve the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIAnalyticsDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/api-performance", produces = "application/json")
+    public ResponseEntity<List<APIAnalyticsDTO>> getAPIPerformanceHistory(@RequestParam(defaultValue = "1h") String dateRange) {
+        return ResponseEntity.ok(this.statsService.getAPIPerformanceHistory(dateRange));
     }
 }
