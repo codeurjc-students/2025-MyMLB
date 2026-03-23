@@ -1,111 +1,65 @@
 <div class="app-background min-h-screen text-white px-6 py-12 space-y-10 flex flex-col items-center">
     <!-- Header Section -->
-	<section class="w-full max-w-7xl flex justify-between items-center bg-gray-900/20 p-6 rounded-[2rem] border border-white/5 backdrop-blur-sm">
-        <app-back-to-dashboard-button (backToStatsDashboard)="goBackToDashboard()"></app-back-to-dashboard-button>
+	<section class="w-full max-w-7xl flex justify-between items-start p-8 rounded-[2rem] border backdrop-blur-sm transition-colors bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-white/5">
+		<div class="mt-2.5">
+			<app-back-to-dashboard-button (backToStatsDashboard)="goBackToDashboard()"></app-back-to-dashboard-button>
+		</div>
 
-		<!-- Date Range Filter -->
-        <div class="flex flex-col items-center">
-            <h1 class="app-page-titles !mb-2">API Control Center</h1>
-            <div class="flex bg-black/40 p-1 rounded-xl border border-white/10 shadow-inner">
-                @for (range of ['1h', '1d', '1w', '1m']; track range) {
-                    <button
-                        (click)="onDateRangeChange(range)"
-                        [class.bg-indigo-600]="selectedDateRange === range"
-                        [class.text-white]="selectedDateRange === range"
-                        [class.shadow-lg]="selectedDateRange === range"
-                        [class.scale-105]="selectedDateRange === range"
-                        [class.text-gray-400]="selectedDateRange !== range"
-                        class="px-5 py-1.5 cursor-pointer rounded-lg text-xs font-black transition-all duration-300 uppercase tracking-widest hover:text-white">
-                        {{ range }}
-                    </button>
-                }
-            </div>
-        </div>
-		<div class="flex items-center gap-4">
-            <mat-checkbox
-                class="download-checkbox"
-                [checked]="allChartsSelected"
-                (change)="toggleSelectedCharts()">
-                <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Select All</span>
-            </mat-checkbox>
-            <app-donwload-button (downloadFunc)="downloadChartAsPNG()"></app-donwload-button>
-        </div>
-    </section>
+		<div class="flex flex-col items-center">
+			<h1 class="app-page-titles !mb-4 text-gray-900 dark:text-white">API Analytics</h1>
+			<div class="flex p-1 rounded-xl shadow-inner border transition-colors
+						bg-white border-gray-200
+						dark:bg-black/40 dark:border-white/10">
+				@for (range of ['1h', '1d', '1w', '1m']; track range) {
+					<button
+						(click)="onDateRangeChange(range)"
+						[class.bg-indigo-600]="selectedDateRange === range"
+						[class.text-white]="selectedDateRange === range"
+						[class.shadow-lg]="selectedDateRange === range"
+						[class.scale-105]="selectedDateRange === range"
+						[class.text-gray-600]="selectedDateRange !== range"
+						[class.dark:text-gray-400]="selectedDateRange !== range"
+						class="px-5 py-1.5 cursor-pointer rounded-lg text-xs font-black transition-all duration-300 uppercase tracking-widest hover:text-indigo-600 dark:hover:text-white">
+						{{ range }}
+					</button>
+				}
+			</div>
+		</div>
 
-	<!-- Stats Cards Section -->
-    <section class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 animate-fadeIn">
-        <div class="stats-card-container group">
-            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-inner">
-                <mat-icon class="scale-110">lan</mat-icon>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Requests</p>
-                <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">
-                    {{ totalRequests | number }}
-                </h3>
-            </div>
-        </div>
+		<div class="flex items-center gap-4 mt-1.5">
+			<mat-checkbox
+				class="download-checkbox"
+				[checked]="allChartsSelected"
+				(change)="toggleSelectedCharts()">
+				<span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-400">
+					Select All
+				</span>
+			</mat-checkbox>
+			<app-donwload-button (downloadFunc)="downloadChartAsPNG()"></app-donwload-button>
+		</div>
+	</section>
 
-        <div class="stats-card-container group">
-            <div class="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
-                <mat-icon class="scale-110">task_alt</mat-icon>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Successes</p>
-                <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-                    {{ totalSuccesses | number }}
-                </h3>
-            </div>
-        </div>
-
-        <div class="stats-card-container group">
-            <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center text-red-600 dark:text-red-400 shadow-inner">
-                <mat-icon class="scale-110">error_outline</mat-icon>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Errors</p>
-                <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">
-                    {{ totalErrors | number }}
-                </h3>
-            </div>
-        </div>
-
-        <div class="stats-card-container group">
-            <div class="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-inner">
-                <mat-icon class="scale-110">health_and_safety</mat-icon>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Success Rate</p>
-                <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-500">
-                    {{ successRate | number:'1.1-1' }}%
-                </h3>
-            </div>
-        </div>
-
-        <div class="stats-card-container group">
-            <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-inner">
-                <mat-icon class="scale-110">running_with_errors</mat-icon>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Error Rate</p>
-                <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-500">
-                    {{ totalErrorRate | number:'1.1-1' }}%
-                </h3>
-            </div>
-        </div>
-    </section>
+	<!-- Cards Section -->
+	<section class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 animate-fadeIn">
+		<app-analytics-cards [data]="analyticsCardsContent"></app-analytics-cards>
+	</section>
 
 	<!-- Charts Section -->
-    <section class="w-full max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
-		<!-- Errors Chart (Pie Chart) -->
+	<section class="w-full max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
+		<!-- Health Rate Chart -->
 		<div class="lg:col-span-1 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl flex flex-col">
-			<h2 class="text-xl font-black uppercase tracking-tighter mb-6 text-emerald-500 flex items-center gap-2">
-				<mat-icon>security</mat-icon> Health Ratio
-			</h2>
-			<mat-checkbox
-				[(ngModel)]="selectedChartsToDownload.errorChart"
-				(change)="updateAllSelectedState()">
-			</mat-checkbox>
+			<div class="flex justify-between items-center mb-6">
+				<h2 class="text-xl font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
+					<mat-icon>security</mat-icon> Health Ratio
+				</h2>
+				<mat-checkbox
+					[(ngModel)]="selectedChartsToDownload.errorChart"
+					(change)="updateAllSelectedState()"
+					class="download-checkbox">
+					<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+				</mat-checkbox>
+			</div>
+
 			<div class="relative flex-grow h-[300px]">
 				<canvas
 					#errorChart="base-chart"
@@ -115,17 +69,9 @@
 					type="pie">
 				</canvas>
 			</div>
-			<div class="mt-6 pt-6 border-t border-white/5 text-center">
-				<p class="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">Avg. Error Rate ({{selectedDateRange}})</p>
-				<p [class.text-red-500]="totalErrorRate > 5"
-				[class.text-emerald-500]="totalErrorRate <= 5"
-				class="text-3xl font-black">
-					{{ totalErrorRate | number:'1.1-2' }}%
-				</p>
-			</div>
 		</div>
 
-		<!-- Performance Chart (Line Chart) -->
+		<!-- Performance Chart -->
 		<div class="lg:col-span-2 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl">
 			<div class="flex justify-between items-center mb-6">
 				<h2 class="text-xl font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
@@ -133,7 +79,9 @@
 				</h2>
 				<mat-checkbox
 					[(ngModel)]="selectedChartsToDownload.perfChart"
-					(change)="updateAllSelectedState()">
+					(change)="updateAllSelectedState()"
+					class="download-checkbox">
+					<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
 				</mat-checkbox>
 			</div>
 			<div class="relative h-[350px]">
@@ -147,19 +95,23 @@
 			</div>
 		</div>
 
-		<!-- Endpoint Chart (Bar Chart) -->
+		<!-- Endpoints Chart -->
 		<div class="lg:col-span-3 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl">
 			<div class="flex justify-between items-center mb-8">
 				<h2 class="text-xl font-black uppercase tracking-tighter text-purple-500 flex items-center gap-2">
 					<mat-icon>hub</mat-icon> Endpoint Traffic Usage
 				</h2>
-				<mat-checkbox
-					[(ngModel)]="selectedChartsToDownload.endpointChart"
-					(change)="updateAllSelectedState()">
-				</mat-checkbox>
-				<span class="bg-purple-500/10 text-purple-500 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
-					Top 5 Most Demanded Endpoints
-				</span>
+				<div class="flex items-center gap-6">
+					<span class="bg-purple-500/10 text-purple-500 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
+						Top 5 Most Demanded Endpoints
+					</span>
+					<mat-checkbox
+						[(ngModel)]="selectedChartsToDownload.endpointChart"
+						(change)="updateAllSelectedState()"
+						class="download-checkbox">
+						<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					</mat-checkbox>
+				</div>
 			</div>
 			<div class="relative h-[400px]">
 				<canvas

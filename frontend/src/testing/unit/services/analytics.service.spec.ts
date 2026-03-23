@@ -5,7 +5,7 @@ import { VisibilityStats } from "../../../app/models/stats.model";
 import { AuthResponse } from "../../../app/models/auth.model";
 import { AnalyticsService } from "../../../app/services/analytics.service";
 
-describe('Stats Service Tests', () => {
+describe('Analytics Service Tests', () => {
     let service: AnalyticsService;
     let httpMock: HttpTestingController;
     const apiUrl = 'https://localhost:8443/api/v1/analytics';
@@ -95,9 +95,9 @@ describe('Stats Service Tests', () => {
     });
 
 	it('should return the favorite teams analytics', () => {
-		const mockResponse: Map<string, number> = new Map([
-			['Team1', 2],
-		]);
+		const mockResponse: Record<string, number> = {
+			'team1': 1
+		}
 
 		service.getFavTeamsAnalytics().subscribe((response) => {
 			expect(response).toEqual(mockResponse);

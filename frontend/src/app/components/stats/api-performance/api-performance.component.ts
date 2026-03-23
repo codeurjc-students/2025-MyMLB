@@ -8,28 +8,30 @@ import { BackToDashboardButtonComponent } from '../back-to-dashboard-button/back
 import { DonwloadButtonComponent } from '../donwload-button/donwload-button.component';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { ExportService } from '../../../services/utilities/export.service';
-import { APIAnalytics, TimeRange } from '../../../models/analytics.model';
+import { AnalyticsCards, APIAnalytics, TimeRange } from '../../../models/analytics.model';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { take } from 'rxjs';
 import JSZip from 'jszip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { AnalyticsCardsComponent } from "../analytics-cards/analytics-cards.component";
 
 @Component({
 	selector: 'app-api-performance',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	imports: [
-        CommonModule,
-		FormsModule,
-        BaseChartDirective,
-        MatIconModule,
-		MatCheckboxModule,
-        ErrorModalComponent,
-        LoadingModalComponent,
-        BackToDashboardButtonComponent,
-        DonwloadButtonComponent
-    ],
+    CommonModule,
+    FormsModule,
+    BaseChartDirective,
+    MatIconModule,
+    MatCheckboxModule,
+    ErrorModalComponent,
+    LoadingModalComponent,
+    BackToDashboardButtonComponent,
+    DonwloadButtonComponent,
+    AnalyticsCardsComponent
+],
 	templateUrl: './api-performance.component.html'
 })
 export class ApiPerformanceComponent implements OnInit {
@@ -218,6 +220,51 @@ export class ApiPerformanceComponent implements OnInit {
 		this.fetchData();
 	}
 
+	get analyticsCardsContent(): AnalyticsCards[] {
+		return [
+			{
+				iconName: 'lan',
+				iconStyles: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+				label: 'Total Requests',
+				textStyles: 'from-blue-600 to-indigo-500',
+				value: this.totalRequests,
+				isRate: false
+			},
+			{
+				iconName: 'task_alt',
+				iconStyles: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+				label: 'Total Successes',
+				textStyles: 'from-emerald-600 to-teal-500',
+				value: this.totalSuccesses,
+				isRate: false
+			},
+			{
+				iconName: 'error_outline',
+				iconStyles: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+				label: 'Total Errors',
+				textStyles: 'from-red-600 to-rose-500',
+				value: this.totalErrors,
+				isRate: false
+			},
+			{
+				iconName: 'health_and_safety',
+				iconStyles: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400',
+				label: 'Success Rate',
+				textStyles: 'from-indigo-600 to-purple-500',
+				value: this.successRate,
+				isRate: true
+			},
+			{
+				iconName: 'running_with_errors',
+				iconStyles: 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400',
+				label: 'Error Rate',
+				textStyles: 'from-rose-600 to-orange-500',
+				value: this.totalErrorRate,
+				isRate: true
+			},
+		];
+	}
+
 	public onDateRangeChange(range: string) {
 		const formattedRange = range as TimeRange;
 		this.selectedDateRange = formattedRange;
@@ -230,6 +277,7 @@ export class ApiPerformanceComponent implements OnInit {
 			next: (data : APIAnalytics[]) => {
 				if (data && data.length > 0) {
 					this.updateAllCharts(data);
+					this.analyticsCardsContent;
 				}
 				this.loading = false;
 			},
@@ -332,9 +380,13 @@ export class ApiPerformanceComponent implements OnInit {
 
 	public updateAllSelectedState() {
 		const values = Object.values(this.selectedChartsToDownload);
-		this.allChartsSelected = values.every(v => v);
+		this.allChartsSelected = values.every(value => value);
 	}
 
+	/**
+	 * Export the chart as PNG files.
+	 * If more than 1 chart are selected to export, it downloads a zip file with the png inside of it.
+	 */
 	async downloadChartAsPNG() {
 		const { isOnlyOne, chartId, count } = this.getSelectedChartsInfo();
 
@@ -366,14 +418,17 @@ export class ApiPerformanceComponent implements OnInit {
 				zip.file(`${chart.name}.png`, base64Data, { base64: true });
 			}
 		}
-
-		const zipContent = await zip.generateAsync({ type: 'blob' });
-		const link = document.createElement('a');
-		link.href = URL.createObjectURL(zipContent);
-		link.download = `API_Analytics_${downloadDate}.zip`;
-		link.click();
+		await this.exportService.downloadZip(zip, downloadDate);
 	}
 
+	/**
+	 * Obtain the charts to export.
+	 *
+	 * @returns An object with the following information:
+	 * - If there are only one chart to export.
+	 * - The id of the chart to export (if is only one)
+	 * - The amount of charts to download
+	 */
 	private getSelectedChartsInfo() {
 		const selectedEntries = Object.entries(this.selectedChartsToDownload).filter(([_, isSelected]) => isSelected);
 
