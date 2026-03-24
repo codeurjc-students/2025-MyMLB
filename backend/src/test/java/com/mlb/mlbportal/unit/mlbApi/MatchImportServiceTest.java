@@ -246,22 +246,6 @@ class MatchImportServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw NoSuchElementException when no games are scheduled for today")
-    void testVerifyMatchStatusNoGamesScheduled() {
-        LocalDate today = LocalDate.of(2026, 3, 1);
-
-        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
-        when(this.clock.instant()).thenReturn(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-        ScheduleResponse emptyResponse = new ScheduleResponse(null);
-        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(emptyResponse);
-
-        assertThatThrownBy(() -> this.mlbImportService.verifyMatchStatus())
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("No games scheduled for today");
-    }
-
-    @Test
     @DisplayName("Should not update ranking if status has not yet changed to FINISHED")
     void testVerifyMatchStatusNoStatusChange() {
         LocalDate today = LocalDate.of(2026, 3, 1);

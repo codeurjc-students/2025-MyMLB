@@ -3,13 +3,12 @@ package com.mlb.mlbportal.services.mlbAPI;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +32,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class MatchImportService {
@@ -64,6 +64,7 @@ public class MatchImportService {
             return List.of();
         }
 
+        log.info("Matches successfully retrieved!");
         return response.dates().stream()
                 .flatMap(d -> d.games().stream())
                 .map(this::toMatchDTO)
@@ -81,36 +82,40 @@ public class MatchImportService {
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackMatches")
     @Retry(name = "verifyMatchStatus")
     public void verifyMatchStatus() {
-        LocalDate today = LocalDate.now(this.clock);
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
-        String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" +
-                "&startDate=" + startOfDay + "&endDate=" + endOfDay;
+        try {
+            LocalDate today = LocalDate.now(this.clock);
+            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" +
+                    "&startDate=" + today + "&endDate=" + today;
 
-        ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
+            ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
 
-        if (response == null || response.dates() == null) {
-            throw new NoSuchElementException("No games scheduled for today");
-        }
-
-        for (DateEntry dateEntry : response.dates()) {
-            for (GameEntry gameEntry : dateEntry.games()) {
-                MatchDTO apiMatch = this.toMatchDTO(gameEntry);
-                this.matchRepository.findById(apiMatch.id()).ifPresent(match -> {
-                    MatchStatus oldStatus = match.getStatus();
-                    MatchStatus newStatus = apiMatch.status();
-                    match.setHomeScore(apiMatch.homeScore());
-                    match.setAwayScore(apiMatch.awayScore());
-
-                    if (!oldStatus.equals(newStatus)) {
-                        match.setStatus(newStatus);
-                        this.matchRepository.save(match);
-                        if (!oldStatus.equals(MatchStatus.FINISHED) && newStatus.equals(MatchStatus.FINISHED)) {
-                            this.updateStatus(match);
-                        }
-                    }
-                });
+            if (response == null || response.dates() == null) {
+                log.info("No matches found for {}", today);
+                return;
             }
+            for (DateEntry dateEntry : response.dates()) {
+                for (GameEntry gameEntry : dateEntry.games()) {
+                    MatchDTO apiMatch = this.toMatchDTO(gameEntry);
+                    this.matchRepository.findById(apiMatch.id()).ifPresent(match -> {
+                        MatchStatus oldStatus = match.getStatus();
+                        MatchStatus newStatus = apiMatch.status();
+                        match.setHomeScore(apiMatch.homeScore());
+                        match.setAwayScore(apiMatch.awayScore());
+
+                        if (!oldStatus.equals(newStatus)) {
+                            match.setStatus(newStatus);
+                            this.matchRepository.save(match);
+                            if (!oldStatus.equals(MatchStatus.FINISHED) && newStatus.equals(MatchStatus.FINISHED)) {
+                                this.updateStatus(match);
+                            }
+                        }
+                    });
+                }
+            }
+            log.info("Successfully updated the match for the {} games", today);
+        }
+        catch (Exception ex) {
+            log.error("An error occur updating the status of the matches: {}", ex.getMessage());
         }
     }
 
