@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'spring-backend'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['mlb-portal.up.railway.app:8080']
+      - targets: ['2025-mymlb.railway.internal:8080']
