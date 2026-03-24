@@ -6,8 +6,9 @@
 - [Tools](#-tools)
 - [Execution Environments (Profiles)](#-execution-environments-profiles)
 - [Architecture](#️-architecture)
-- [Deployment with Docker](#-deployment-with-docker)
 - [Quality Control](#-quality-control)
+- [Deployment with Docker](#-deployment-with-docker)
+- [Grafana](#-grafana)
 - [Development Process](#-development-process)
 
 ## 📖 Introduction
@@ -86,6 +87,10 @@ As it can be seen, the architecture of the application is `monolithic` divided i
     <td>Development Process</td>
     <td>Iterative and incremental, version control with Git and CI/CD with GitHub Actions</td>
   </tr>
+    <tr>
+      <td>Metrics and Analytics</td>
+      <td>Grafana</td>
+    </tr>
   </tbody>
 </table>
 
@@ -456,6 +461,17 @@ docker compose -f oci://fonssi29/mlb-portal-compose:tag up
 
 > [!NOTE]
 > Alternatively, you can run the services in the background by adding the `-d` flag.
+
+---
+## 📊 Grafana
+TBD
+[https://mlb-portal-grafana.up.railway.app/?orgId=1&from=now-6h&to=now&timezone=browser](https://mlb-portal-grafana.up.railway.app/?orgId=1&from=now-6h&to=now&timezone=browser)
+Mencionar:
+- Motivo
+- Config
+- Prometheus
+- Dashboards
+- Etc
 
 ---
 ## 🔄 Development Process
