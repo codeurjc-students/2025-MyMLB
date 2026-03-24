@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.naming.ServiceUnavailableException;

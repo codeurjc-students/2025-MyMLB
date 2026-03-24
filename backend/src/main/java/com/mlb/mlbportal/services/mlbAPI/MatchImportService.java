@@ -84,11 +84,9 @@ public class MatchImportService {
     public void verifyMatchStatus() {
         try {
             LocalDate today = LocalDate.now(this.clock);
-            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1" +
-                    "&startDate=" + today + "&endDate=" + today;
-
+            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=" + today + "&endDate=" + today;
             ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
-
+            
             if (response == null || response.dates() == null) {
                 log.info("No matches found for {}", today);
                 return;
