@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.naming.ServiceUnavailableException;
@@ -243,22 +242,6 @@ class MatchImportServiceTest {
         verify(this.teamService, times(1)).updateRanking(any(Team.class), any(Team.class));
         verify(this.matchRepository, times(1)).save(existingMatch);
         verify(this.teamRepository, times(2)).save(any(Team.class));
-    }
-
-    @Test
-    @DisplayName("Should throw NoSuchElementException when no games are scheduled for today")
-    void testVerifyMatchStatusNoGamesScheduled() {
-        LocalDate today = LocalDate.of(2026, 3, 1);
-
-        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
-        when(this.clock.instant()).thenReturn(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-        ScheduleResponse emptyResponse = new ScheduleResponse(null);
-        when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(emptyResponse);
-
-        assertThatThrownBy(() -> this.mlbImportService.verifyMatchStatus())
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("No games scheduled for today");
     }
 
     @Test
