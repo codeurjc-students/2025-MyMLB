@@ -79,7 +79,7 @@ public class MatchImportService {
      * It manages the change of status a match could have, for example, from "IN PROGRESS" to "FINISHED"
      */
     @Async
-    @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackMatches")
+    @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
     public void verifyMatchStatus() {
         try {
@@ -175,33 +175,13 @@ public class MatchImportService {
 
     @SuppressWarnings("unused")
     private List<MatchDTO> fallbackMatches(LocalDate start, LocalDate end, Throwable t) throws ServiceUnavailableException {
-        List<Match> cachedMatches = this.matchRepository.findByDateBetween(start.atStartOfDay(), end.atTime(23,59));
+        log.error("Error loading the matches from {} to {}: {}", start, end, t.getMessage());
+        return List.of();
+    }
 
-        if (!cachedMatches.isEmpty()) {
-            return cachedMatches.stream()
-                    .map(m -> new MatchDTO(
-                            m.getId(),
-                            new TeamSummary(
-                                m.getHomeTeam().getName(),
-                                m.getHomeTeam().getAbbreviation(),
-                                m.getHomeTeam().getLeague(),
-                                m.getHomeTeam().getDivision()
-                            ),
-                            new TeamSummary(
-                                m.getAwayTeam().getName(),
-                                m.getAwayTeam().getAbbreviation(),
-                                m.getAwayTeam().getLeague(),
-                                m.getAwayTeam().getDivision()
-                            ),
-                            m.getHomeScore(),
-                            m.getAwayScore(),
-                            m.getDate(),
-                            m.getStatus(),
-                            m.getStadium().getName()
-                    ))
-                    .toList();
-        }
-        throw new ServiceUnavailableException("MLB API not available and without cached data");
+    @SuppressWarnings("unused")
+    private void fallbackVerifyStatus(Throwable t) {
+        log.error("verifyMatchStatus Failed{}", t.getMessage());
     }
 
     /**
@@ -236,7 +216,7 @@ public class MatchImportService {
         if (stadiumName.equals("Rate Field")) {
             stadiumName = "Guaranteed Rate Field";
         }
-        return new MatchDTO(null, home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
+        return new MatchDTO(game.gamePk(), home, away, Objects.requireNonNullElse(game.teams().home().score(), 0),
                 Objects.requireNonNullElse(game.teams().away().score(), 0), date, status, stadiumName);
     }
 

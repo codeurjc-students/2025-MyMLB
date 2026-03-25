@@ -6,8 +6,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
-import javax.naming.ServiceUnavailableException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -19,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
@@ -50,7 +49,11 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class MatchImportServiceTest {
@@ -111,7 +114,7 @@ class MatchImportServiceTest {
         String expectedStadiumName = this.mockStadiums.getFirst().getName();
         Venue venue = new Venue(1, expectedStadiumName);
 
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
+        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
         ScheduleResponse scheduleResponse = new ScheduleResponse(List.of(dateEntry));
 
@@ -149,7 +152,7 @@ class MatchImportServiceTest {
         Status status = new Status("Final");
         Venue venue = new Venue(1, STADIUM1_NAME);
 
-        GameEntry gameEntry = new GameEntry("2026-03-01T18:05:00", status, teams, venue);
+        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
 
         return new ScheduleResponse(List.of(dateEntry));
@@ -174,41 +177,6 @@ class MatchImportServiceTest {
         assertThatThrownBy(() -> this.mlbImportService.getOfficialMatches(startDate, endDate))
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessage("Team Not Found");
-    }
-
-    @Test
-    @DisplayName("Should return cached matches when API fails")
-    void testFallbackMatchesReturnsCachedMatches() throws Exception {
-        Team homeTeam = mockTeams.getFirst();
-        Team awayTeam = mockTeams.get(1);
-
-        Match cachedMatch = new Match(
-                awayTeam,
-                homeTeam,
-                2,
-                5,
-                LocalDate.of(2026, 3, 1).atStartOfDay(),
-                MatchStatus.FINISHED);
-        cachedMatch.setStadium(this.mockStadiums.getFirst());
-
-        when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of(cachedMatch));
-
-        var method = MatchImportService.class.getDeclaredMethod(
-                "fallbackMatches", LocalDate.class, LocalDate.class, Throwable.class);
-        method.setAccessible(true);
-
-        @SuppressWarnings("unchecked")
-        List<MatchDTO> matches = (List<MatchDTO>) method.invoke(
-                this.mlbImportService,
-                LocalDate.of(2026, 3, 1),
-                LocalDate.of(2026, 3, 1),
-                new RuntimeException("API MLB down")
-        );
-
-        assertThat(matches).hasSize(1);
-        assertThat(matches.getFirst().homeTeam().name()).isEqualTo(homeTeam.getName());
-        assertThat(matches.getFirst().awayTeam().name()).isEqualTo(awayTeam.getName());
-        assertThat(matches.getFirst().status()).isEqualTo(MatchStatus.FINISHED);
     }
 
     @Test
@@ -265,24 +233,5 @@ class MatchImportServiceTest {
 
         verify(this.teamService, never()).updateRanking(any(), any());
         verify(this.matchRepository, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("Should throw ServiceUnavailableException when API fails and no cache is available")
-    void testFallbackMatchesThrowsServiceUnavailableWhenNoCache() throws Exception {
-        when(this.matchRepository.findByDateBetween(any(), any())).thenReturn(List.of());
-
-        var method = MatchImportService.class.getDeclaredMethod(
-                "fallbackMatches", LocalDate.class, LocalDate.class, Throwable.class);
-        method.setAccessible(true);
-
-        assertThatThrownBy(() -> method.invoke(
-                this.mlbImportService,
-                LocalDate.of(2026, 3, 1),
-                LocalDate.of(2026, 3, 1),
-                new RuntimeException("API MLB down")
-        )).satisfies(throwable -> assertThat(throwable.getCause())
-                .isInstanceOf(ServiceUnavailableException.class)
-                .hasMessageContaining("MLB API not available and without cached data"));
     }
 }

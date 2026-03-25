@@ -41,9 +41,15 @@ describe('Visibility Component Integration Test', () => {
     });
 
 	it('should fetch metrics from API correctly', () => {
+		const dateFrom = new Date();
+		dateFrom.setMonth(dateFrom.getMonth() - 1);
+		const dateTo = new Date();
+
+		const formattedDateFrom = dateFrom.toISOString().split('T')[0];
+		const formattedDateTo = dateTo.toISOString().split('T')[0];
         fixture.detectChanges();
 
-        const req = httpMock.expectOne(`${apiUrl}?dateFrom=2026-02-24&dateTo=2026-03-24`);
+        const req = httpMock.expectOne(`${apiUrl}?dateFrom=${formattedDateFrom}&dateTo=${formattedDateTo}`);
 
         expect(req.request.method).toBe('GET');
 
