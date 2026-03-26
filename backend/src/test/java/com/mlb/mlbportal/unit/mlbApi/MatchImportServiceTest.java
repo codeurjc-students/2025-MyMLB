@@ -199,7 +199,7 @@ class MatchImportServiceTest {
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(response);
         when(this.teamLookupService.getTeamSummary(1)).thenReturn(this.mockTeamSummaries.getFirst());
         when(this.teamLookupService.getTeamSummary(2)).thenReturn(this.mockTeamSummaries.get(1));
-        when(this.matchRepository.findById(any())).thenReturn(Optional.of(existingMatch));
+        when(this.matchRepository.findByStatsApiId(any())).thenReturn(Optional.of(existingMatch));
 
         this.mlbImportService.verifyMatchStatus();
 
@@ -227,7 +227,7 @@ class MatchImportServiceTest {
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(this.buildResponse());
         when(this.teamLookupService.getTeamSummary(anyInt())).thenReturn(this.mockTeamSummaries.getFirst());
-        when(this.matchRepository.findById(any())).thenReturn(Optional.of(existingMatch));
+        when(this.matchRepository.findByStatsApiId(any())).thenReturn(Optional.of(existingMatch));
 
         this.mlbImportService.verifyMatchStatus();
 

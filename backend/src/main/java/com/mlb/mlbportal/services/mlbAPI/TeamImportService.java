@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
@@ -167,40 +168,66 @@ public class TeamImportService {
     @Retry(name = "getTeamStats")
     public void getTeamStats() {
         int currentYear = LocalDate.now().getYear();
-        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
-        StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
-        if (response == null) {
-            throw new NullPointerException("Error fetching the team stats from the API. The response came null");
-        }
+        String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season="
+                + currentYear + "&standingsTypes=regularSeason";
 
-        if (response.records().isEmpty()) {
-            log.warn("No stats found for the {} season. Setting default stats", currentYear);
-            this.setEmptyStats();
-        }
-        else {
+        try {
+            StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
+
+            if (response == null || response.records() == null || response.records().isEmpty()) {
+                log.warn("No stats found for the {} season. Applying empty values", currentYear);
+                this.setEmptyStats();
+                return;
+            }
+
             List<Team> teamsToSave = new ArrayList<>();
             for (Records records : response.records()) {
-               for (TeamRecords teamRecord : records.teamRecords()) {
-                   Team team = this.updateTeamStats(teamRecord);
-                   teamsToSave.add(team);
-               }
+                if (records.teamRecords() != null) {
+                    for (TeamRecords teamRecord : records.teamRecords()) {
+                        Team team = this.updateTeamStats(teamRecord);
+                        teamsToSave.add(team);
+                    }
+                }
             }
             this.teamRepository.saveAll(teamsToSave);
+            log.info("Rankings and Team Stats successfully updated!");
         }
-        log.info("Team Stats and Rankings successfully updated!");
+        catch (Exception e) {
+            log.error("Error obtaining the stats from the API: {}", e.getMessage());
+            this.setEmptyStats();
+        }
     }
 
     private Team updateTeamStats(TeamRecords teamRecord) {
-        Team team = this.teamRepository.findByNameOrThrow(teamRecord.team().name());
+        log.info("Team: {}", teamRecord.team().name());
+        Team team = this.teamRepository.findByStatsApiIdOrThrow(teamRecord.team().id());
         team.addTeamStats(
-                teamRecord.gamesPlayed(),
-                teamRecord.wins(),
-                teamRecord.losses(),
-                teamRecord.divisionGamesBehind(),
-                teamRecord.winningPercentage(),
+                Objects.requireNonNullElse(teamRecord.gamesPlayed(), 0),
+                Objects.requireNonNullElse(teamRecord.wins(), 0),
+                Objects.requireNonNullElse(teamRecord.losses(), 0),
+                this.parseGamesBehindAsDouble(teamRecord.divisionGamesBack()),
+                Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"),
                 teamRecord.getLastTenGames()
         );
         return team;
+    }
+
+    /**
+     * Obtain the gamesBehind value from the API as a String, and Map it to a double value.
+     *
+     * @param value gamesBehind value as a String.
+     * @return gamesBehind value as a double.
+     */
+    private double parseGamesBehindAsDouble(String value) {
+        if (value == null || value.equals("-")) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(value);
+        }
+        catch (Exception ex) {
+            return 0.0;
+        }
     }
 
     private void setEmptyStats() {

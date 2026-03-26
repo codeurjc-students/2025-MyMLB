@@ -11,6 +11,7 @@ import javax.naming.ServiceUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.match.MatchDTO;
@@ -52,6 +53,7 @@ public class MatchImportService {
      *
      * @return the list of matches obtained for that period of time.
      */
+    @Transactional
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
     @Retry(name = "mlbApi")
     public List<MatchDTO> getOfficialMatches(LocalDate start, LocalDate end) {
@@ -79,6 +81,7 @@ public class MatchImportService {
      * It manages the change of status a match could have, for example, from "IN PROGRESS" to "FINISHED"
      */
     @Async
+    @Transactional
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
     public void verifyMatchStatus() {
@@ -94,7 +97,7 @@ public class MatchImportService {
             for (DateEntry dateEntry : response.dates()) {
                 for (GameEntry gameEntry : dateEntry.games()) {
                     MatchDTO apiMatch = this.toMatchDTO(gameEntry);
-                    this.matchRepository.findById(apiMatch.id()).ifPresent(match -> {
+                    this.matchRepository.findByStatsApiId(apiMatch.id()).ifPresent(match -> {
                         MatchStatus oldStatus = match.getStatus();
                         MatchStatus newStatus = apiMatch.status();
                         match.setHomeScore(apiMatch.homeScore());
@@ -159,6 +162,7 @@ public class MatchImportService {
 
         Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
         match.setStadium(stadium);
+        match.setStatsApiId(dto.id());
 
         Match savedMatch = this.matchRepository.save(match);
         return new MatchDTO(

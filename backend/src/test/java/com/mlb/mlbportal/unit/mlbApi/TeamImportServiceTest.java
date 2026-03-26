@@ -8,7 +8,12 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -198,11 +203,12 @@ class TeamImportServiceTest {
     @DisplayName("Should obtain team stats from API")
     void testGetTeamStats() {
         int currentYear = LocalDate.now().getYear();
-        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
+        String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season="
+                + currentYear + "&standingsTypes=regularSeason";
 
         TeamRecordsGeneralInfo apiTeam = new TeamRecordsGeneralInfo(1L, TEST_TEAM1_NAME);
         TeamRecords teamRecord = new TeamRecords(
-                apiTeam, 10, 6, 4, ".600", 2.0, new RecordsWrapper(new ArrayList<>())
+                apiTeam, 10, 6, 4, ".600", "2.0", new RecordsWrapper(new ArrayList<>())
         );
         Records records = new Records(List.of(teamRecord));
         StandingsResponse response = new StandingsResponse(List.of(records));
@@ -210,13 +216,13 @@ class TeamImportServiceTest {
         Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
 
         when(this.restTemplate.getForObject(url, StandingsResponse.class)).thenReturn(response);
-        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(domainTeam);
+        when(this.teamRepository.findByStatsApiIdOrThrow(1L)).thenReturn(domainTeam);
 
         this.teamImportService.getTeamStats();
 
         assertThat(domainTeam.getWins()).isEqualTo(6);
         assertThat(domainTeam.getPct()).isEqualTo(".600");
-        verify(this.teamRepository, times(1)).findByNameOrThrow(TEST_TEAM1_NAME);
+        verify(this.teamRepository, times(1)).findByStatsApiIdOrThrow(1L);
         verify(this.teamRepository, times(1)).saveAll(anyList());
     }
 
@@ -224,7 +230,8 @@ class TeamImportServiceTest {
     @DisplayName("Should handle empty records by setting empty stats")
     void testGetTeamStatsEmptyRecords() {
         int currentYear = LocalDate.now().getYear();
-        String url = "https://statsapi.mlb.com/api/v1/standings?sportId=1&season=" + currentYear + "&standingsTypes=regularSeason";
+        String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season="
+                + currentYear + "&standingsTypes=regularSeason";
 
         StandingsResponse response = new StandingsResponse(List.of());
         Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
@@ -241,12 +248,18 @@ class TeamImportServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw NullPointerException when API response is null")
-    void testGetTeamStatsNullResponse() {
-        when(this.restTemplate.getForObject(anyString(), eq(StandingsResponse.class))).thenReturn(null);
+    @DisplayName("Should parse games behind string to double correctly")
+    void testParseGamesBehindAsDouble() throws Exception {
+        Method method = TeamImportService.class.getDeclaredMethod("parseGamesBehindAsDouble", String.class);
+        method.setAccessible(true);
 
-        assertThatThrownBy(() -> this.teamImportService.getTeamStats())
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("Error fetching the team stats from the API. The response came null");
+        double validResult = (double) method.invoke(this.teamImportService, "2.5");
+        assertThat(validResult).isEqualTo(2.5);
+
+        double dashResult = (double) method.invoke(this.teamImportService, "-");
+        assertThat(dashResult).isZero();
+
+        double nullResult = (double) method.invoke(this.teamImportService, (String) null);
+        assertThat(nullResult).isZero();
     }
 }
