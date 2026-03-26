@@ -110,8 +110,6 @@ class DataInitializerServiceTest {
 
         ReflectionTestUtils.invokeMethod(this.dataInitializerService, "setUpMatches");
 
-        verify(this.matchRepository, times(1)).saveAll(anyList());
-
         verify(this.teamRepository, times(1)).saveAll(mockTeams);
     }
 }

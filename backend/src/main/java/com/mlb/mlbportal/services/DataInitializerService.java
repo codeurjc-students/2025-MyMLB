@@ -4,16 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,23 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInitDTO;
-import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
-import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.models.ticket.Event;
-import com.mlb.mlbportal.models.ticket.EventManager;
-import com.mlb.mlbportal.models.ticket.Seat;
-import com.mlb.mlbportal.models.ticket.Sector;
-import com.mlb.mlbportal.repositories.MatchRepository;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
-import com.mlb.mlbportal.repositories.ticket.EventRepository;
-import com.mlb.mlbportal.repositories.ticket.SectorRepository;
 import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
 import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
@@ -56,17 +42,11 @@ public class DataInitializerService {
     private final PasswordEncoder passwordEncoder;
 
     private final TeamRepository teamRepository;
-    private final MatchRepository matchRepository;
     private final StadiumRepository stadiumRepository;
 
     private final MatchImportService matchImportService;
     private final TeamImportService teamImportService;
     private final PlayerImportService playerImportService;
-
-    private final EventRepository eventRepository;
-    private final SectorRepository sectorRepository;
-
-    private static final Random RANDOM = new Random();
 
     @Value("${init.user1.password}")
     private String fonssiPassword;
@@ -83,7 +63,6 @@ public class DataInitializerService {
         this.setUpStadiums();
         this.setUpMatches();
         this.playerImportService.getTeamRoster();
-        this.setUpEventsForTodayMatches();
     }
 
     public boolean isDBEmpty() {
@@ -149,122 +128,8 @@ public class DataInitializerService {
         this.teamImportService.getTeamStats();
     }
 
-    private List<Match> generateBalancedMatches(List<Team> teams) {
-        List<Match> matches = new ArrayList<>();
-        Set<String> usedPairs = new HashSet<>();
-
-        List<Team> shuffled = new ArrayList<>(teams);
-        Collections.shuffle(shuffled);
-
-        int totalDays = 5;
-        LocalDateTime baseDate = LocalDateTime.now().minusDays(2);
-
-        for (int day = 0; day < totalDays; day++) {
-            generateDailyMatches(matches, shuffled, usedPairs, baseDate, day);
-        }
-        return matches;
-    }
-
-    private void generateDailyMatches(List<Match> matches, List<Team> teams, Set<String> usedPairs, LocalDateTime baseDate, int day) {
-        List<Team> available = new ArrayList<>(teams);
-
-        while (available.size() >= 2) {
-            Team teamA = available.remove(0);
-            Team opponent = findOpponent(teamA, available, usedPairs);
-
-            if (opponent == null) continue;
-            available.remove(opponent);
-
-            Match match = createMatch(teamA, opponent, baseDate, day);
-            matches.add(match);
-        }
-    }
-
-    private Team findOpponent(Team teamA, List<Team> available, Set<String> usedPairs) {
-        for (Team candidate : available) {
-            String key1 = teamA.getAbbreviation() + "-" + candidate.getAbbreviation();
-            String key2 = candidate.getAbbreviation() + "-" + teamA.getAbbreviation();
-
-            if (!usedPairs.contains(key1) && !usedPairs.contains(key2)) {
-                usedPairs.add(key1);
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    private Match createMatch(Team teamA, Team opponent, LocalDateTime baseDate, int day) {
-        boolean homeToday = (day % 2 == 0);
-        Team home = homeToday ? teamA : opponent;
-        Team away = homeToday ? opponent : teamA;
-
-        LocalDateTime matchDate = generateRandomMatchDate(baseDate, day);
-        MatchStatus status = determineMatchStatus(matchDate);
-
-        Match match = new Match(
-                away,
-                home,
-                RANDOM.nextInt(10),
-                RANDOM.nextInt(10),
-                matchDate,
-                status
-        );
-        match.setStadium(home.getStadium());
-        return match;
-    }
-
-    private LocalDateTime generateRandomMatchDate(LocalDateTime baseDate, int day) {
-        int randomHour = 10 + RANDOM.nextInt(13);
-        int randomMinute = RANDOM.nextInt(60);
-        return baseDate.plusDays(day).withHour(randomHour).withMinute(randomMinute);
-    }
-
-    private MatchStatus determineMatchStatus(LocalDateTime matchDate) {
-        LocalDateTime now = LocalDateTime.now();
-        if (matchDate.isAfter(now)) return MatchStatus.SCHEDULED;
-        if (matchDate.plusHours(3).isBefore(now)) return MatchStatus.FINISHED;
-        return MatchStatus.IN_PROGRESS;
-    }
-
-    // DELETE
-    private void addTestMatch(List<Match> matches, List<Team> allTeams) {
-        if (allTeams.size() < 2) return;
-
-        Team home = allTeams.get(0);
-        Team away = allTeams.get(1);
-
-        Team aux1 = allTeams.get(3);
-        Team aux2 = allTeams.get(4);
-
-        LocalDateTime matchDate = LocalDateTime.now().plusMinutes(15);
-
-        Match testMatch = new Match(
-                home,
-                away,
-                0,
-                0,
-                matchDate,
-                MatchStatus.SCHEDULED
-        );
-
-        Match match2 = new Match(
-                aux1,
-                aux2,
-                0,
-                0,
-                matchDate,
-                MatchStatus.SCHEDULED
-        );
-        matches.add(testMatch);
-        matches.add(match2);
-    }
-
     private void setUpMatches() {
         List<Team> allTeams = this.teamRepository.findAll();
-        List<Match> matches = this.generateBalancedMatches(allTeams);
-        //this.addTestMatch(matches, allTeams);
-        this.matchRepository.saveAll(matches);
-
         this.matchImportService.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)
@@ -308,60 +173,6 @@ public class DataInitializerService {
 
         } catch (IOException e) {
             throw new UncheckedIOException("Error loading stadium data from JSON", e);
-        }
-    }
-
-    private void setUpEventsForTodayMatches() {
-        List<Match> todayMatches = this.matchRepository.findAll().stream()
-                .filter(m -> m.getDate().toLocalDate().isEqual(LocalDate.now()))
-                //.filter(m -> m.getStatus() == MatchStatus.SCHEDULED)
-                .toList();
-
-        List<Event> eventsToSave = new ArrayList<>();
-
-        for (Match match : todayMatches) {
-            Stadium stadium = match.getStadium();
-            if (stadium == null) continue;
-
-            Event event = new Event();
-            event.setMatch(match);
-
-            List<Sector> eventSectors = this.createSectorsForStadium(stadium);
-
-            for (Sector sector : eventSectors) {
-                double basePrice = sector.getName().contains("VIP") ? 150.0 : 35.0;
-                double finalPrice = basePrice + RANDOM.nextInt(20);
-
-                EventManager em = new EventManager(event, sector, finalPrice);
-                event.addEventManager(em);
-            }
-            eventsToSave.add(event);
-        }
-        this.eventRepository.saveAll(eventsToSave);
-    }
-
-    private List<Sector> createSectorsForStadium(Stadium stadium) {
-        List<Sector> sectors = Arrays.asList(
-                new Sector(0, "North Bleacher", stadium, new ArrayList<>(), 100),
-                new Sector(0, "South Bleacher", stadium, new ArrayList<>(), 100),
-                new Sector(0, "Preference", stadium, new ArrayList<>(), 50),
-                new Sector(0, "VIP", stadium, new ArrayList<>(), 20)
-        );
-        for (Sector sector : sectors) {
-            this.createSeatsForSector(sector);
-        }
-        return this.sectorRepository.saveAll(sectors);
-    }
-
-    private void createSeatsForSector(Sector sector) {
-        int capacity = sector.getTotalCapacity();
-        String prefix = sector.getName().substring(0, 1).toUpperCase();
-
-        for (int i = 1; i <= capacity; i++) {
-            Seat seat = new Seat();
-            seat.setName(prefix + "-" + i);
-            seat.setOccupied(false);
-            sector.addSeat(seat);
         }
     }
 }
