@@ -246,4 +246,20 @@ class TeamImportServiceTest {
         verify(this.teamRepository).findAll();
         verify(this.teamRepository).saveAll(anyList());
     }
+
+    @Test
+    @DisplayName("Should parse games behind string to double correctly")
+    void testParseGamesBehindAsDouble() throws Exception {
+        Method method = TeamImportService.class.getDeclaredMethod("parseGamesBehindAsDouble", String.class);
+        method.setAccessible(true);
+
+        double validResult = (double) method.invoke(this.teamImportService, "2.5");
+        assertThat(validResult).isEqualTo(2.5);
+
+        double dashResult = (double) method.invoke(this.teamImportService, "-");
+        assertThat(dashResult).isZero();
+
+        double nullResult = (double) method.invoke(this.teamImportService, (String) null);
+        assertThat(nullResult).isZero();
+    }
 }
