@@ -20,6 +20,8 @@ public class Match {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    private long statsApiId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "home_team_id")
     private Team homeTeam;

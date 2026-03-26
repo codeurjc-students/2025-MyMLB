@@ -13,7 +13,7 @@ public record TeamRecords(
         Integer wins,
         Integer losses,
         String winningPercentage,
-        Double divisionGamesBehind,
+        String divisionGamesBack,
         RecordsWrapper records
 ) {
     public String getLastTenGames() {
