@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/pagination.model';
 import { environment } from '../../environments/environment';
 import { ShowMatch } from '../models/match.model';
+import { AuthResponse } from '../models/auth.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,5 +27,9 @@ export class MatchService {
 
 	public getMatchesOfTeamByMonth(teamName: string, year: number, month: number): Observable<ShowMatch[]> {
 		return this.http.get<ShowMatch[]>(`${this.apiUrl}/team/${teamName}?year=${year}&month=${month}`);
+	}
+
+	public refreshMatches(scope: string): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.apiUrl}/sync?scope=${scope}`, {});
 	}
 }

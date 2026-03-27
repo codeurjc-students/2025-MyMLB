@@ -6,16 +6,36 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +58,10 @@ import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
 
-@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class TeamServiceIntegrationTest {
     @Autowired
     private TeamRepository teamRepository;
@@ -165,7 +185,6 @@ class TeamServiceIntegrationTest {
         Team storedTeam2 = this.teamRepository.findByNameOrThrow(this.team2.getName());
 
         int totalGames1 = TEST_TEAM1_WINS + TEST_TEAM1_LOSSES;
-        log.info("TEAM 1 WINS: {} ", storedTeam1.getWins());
         assertThat(storedTeam1.getWins()).isEqualTo(TEST_TEAM1_WINS);
         assertThat(storedTeam1.getTotalGames()).isEqualTo(totalGames1);
 

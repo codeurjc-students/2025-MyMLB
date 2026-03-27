@@ -17,7 +17,7 @@ public class MatchScheduler {
     private final MatchImportService matchImportService;
     private final MatchService matchService;
 
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "0 0 3 * * *", zone = "Europe/Madrid")
     public void preloadMatches() {
         LocalDate now = LocalDate.now();
         LocalDate currentStart = now.withDayOfMonth(1);
@@ -31,8 +31,8 @@ public class MatchScheduler {
     }
 
     @Schedules({
-            @Scheduled(cron = "0 0 19-23 * * *"),
-            @Scheduled(cron = "0 0 0-4 * * *")
+            @Scheduled(cron = "0 */20 19-23 * * *", zone = "Europe/Madrid"),
+            @Scheduled(cron = "0 */20 0-4 * * *", zone = "Europe/Madrid")
     })
     public void updateStandings() {
         log.info("Starting synchronization of the matches status");
@@ -44,7 +44,7 @@ public class MatchScheduler {
         }
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */10 * * * *", zone = "Europe/Madrid")
     public void checkSendingEmailNotification() {
         this.matchService.notificateMatchStart();
     }

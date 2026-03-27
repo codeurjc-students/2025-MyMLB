@@ -5,3 +5,7 @@ Accept:application/json
 ### Obtain Favorite Teams with their fans Analytics
 GET https://localhost:8443/api/v1/analytics/fav-teams
 Accept: application/json
+
+### Obtain API Performance Analytics
+GET https://localhost:8443/api/v1/analytics/api-performance
+Accept: application/json

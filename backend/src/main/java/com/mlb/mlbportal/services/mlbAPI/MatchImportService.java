@@ -3,12 +3,16 @@ package com.mlb.mlbportal.services.mlbAPI;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +23,6 @@ import com.mlb.mlbportal.dto.mlbapi.match.DateEntry;
 import com.mlb.mlbportal.dto.mlbapi.match.GameEntry;
 import com.mlb.mlbportal.dto.mlbapi.match.ScheduleResponse;
 import com.mlb.mlbportal.dto.team.TeamSummary;
-import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
@@ -31,11 +34,10 @@ import com.mlb.mlbportal.services.team.TeamService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import lombok.AllArgsConstructor;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MatchImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TeamImportService teamLookupService;
@@ -44,6 +46,13 @@ public class MatchImportService {
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
     private final Clock clock;
+
+    private MatchImportService self;
+
+    @Autowired
+    public void setSelf(@Lazy MatchImportService self) {
+        this.self = self;
+    }
 
     /**
      * Obtain the matches for the current season in a period of time.
@@ -80,14 +89,14 @@ public class MatchImportService {
      * Verify the status of a match periodically.
      * It manages the change of status a match could have, for example, from "IN PROGRESS" to "FINISHED"
      */
-    @Async
     @Transactional
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
     public void verifyMatchStatus() {
         try {
             LocalDate today = LocalDate.now(this.clock);
-            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=" + today + "&endDate=" + today;
+            LocalDate endDate = today.plusDays(1);
+            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=" + today + "&endDate=" + endDate;
             ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
             
             if (response == null || response.dates() == null) {
@@ -155,26 +164,29 @@ public class MatchImportService {
      * @return the match with the id after storing in the database.
      */
     private MatchDTO saveMatch(MatchDTO dto) {
-        Team homeEntity = this.teamRepository.findByName(dto.homeTeam().name()).orElseThrow(TeamNotFoundException::new);
-        Team awayEntity = this.teamRepository.findByName(dto.awayTeam().name()).orElseThrow(TeamNotFoundException::new);
-
-        Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());
-
-        Match match = new Match(awayEntity, homeEntity, dto.awayScore(), dto.homeScore(), dto.date(), dto.status());
-        match.setStadium(stadium);
-        match.setStatsApiId(dto.id());
-
-        Match savedMatch = this.matchRepository.save(match);
-        return new MatchDTO(
-                savedMatch.getId(),
-                dto.homeTeam(),
-                dto.awayTeam(),
-                dto.homeScore(),
-                dto.awayScore(),
-                dto.date(),
-                dto.status(),
-                dto.stadiumName()
-        );
+        return this.matchRepository.findByStatsApiId(dto.id()).map(existingMatch -> {
+            existingMatch.setHomeScore(dto.homeScore());
+            existingMatch.setAwayScore(dto.awayScore());
+            existingMatch.setStatus(dto.status());
+            Match updated = this.matchRepository.save(existingMatch);
+            return this.toMatchDTO(updated);
+        }).orElseGet(() -> {
+            Team homeEntity = this.teamRepository.findByNameOrThrow(dto.homeTeam().name());
+            Team awayEntity = this.teamRepository.findByNameOrThrow(dto.awayTeam().name());
+            Stadium stadium = this.stadiumRepository.findByNameOrThrow(dto.stadiumName());
+            Match newMatch = new Match(
+                    awayEntity,
+                    homeEntity,
+                    dto.awayScore(),
+                    dto.homeScore(),
+                    dto.date(),
+                    dto.status()
+            );
+            newMatch.setStadium(stadium);
+            newMatch.setStatsApiId(dto.id());
+            Match saved = this.matchRepository.save(newMatch);
+            return this.toMatchDTO(saved);
+        });
     }
 
     @SuppressWarnings("unused")
@@ -225,6 +237,38 @@ public class MatchImportService {
     }
 
     /**
+     * Map the match data from the APi to the match data of the application.
+     *
+     * @param match the match entity to map.
+     *
+     * @return match data of the application (mapped).
+     */
+    private MatchDTO toMatchDTO(Match match) {
+        TeamSummary home = new TeamSummary(
+                match.getHomeTeam().getName(),
+                match.getHomeTeam().getAbbreviation(),
+                match.getHomeTeam().getLeague(),
+                match.getHomeTeam().getDivision()
+        );
+        TeamSummary away = new TeamSummary(
+                match.getAwayTeam().getName(),
+                match.getAwayTeam().getAbbreviation(),
+                match.getAwayTeam().getLeague(),
+                match.getAwayTeam().getDivision()
+        );
+        return new MatchDTO(
+                match.getId(),
+                home,
+                away,
+                match.getHomeScore(),
+                match.getAwayScore(),
+                match.getDate(),
+                match.getStatus(),
+                match.getStadium().getName()
+        );
+    }
+
+    /**
      * Auxiliary method that map the status from the API to the status of the application
      *
      * @param apiStatus status from the API.
@@ -237,5 +281,14 @@ public class MatchImportService {
             case "Final" -> MatchStatus.FINISHED;
             default -> MatchStatus.SCHEDULED;
         };
+    }
+
+    @Async
+    @Transactional
+    public void updateSeasonMatches() {
+        this.self.getOfficialMatches(
+                LocalDate.of(2026, Month.MARCH, 1),
+                LocalDate.of(2026, Month.OCTOBER, 20)
+        );
     }
 }

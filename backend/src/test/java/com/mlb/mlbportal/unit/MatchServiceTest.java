@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2026. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.mlb.mlbportal.unit;
 
 import java.time.Clock;
@@ -158,12 +150,7 @@ class MatchServiceTest {
     private void mockClockAndRepository() {
         when(this.clock.instant()).thenReturn(this.fixedNow.atZone(ZoneId.of("Europe/Madrid")).toInstant());
         when(this.clock.getZone()).thenReturn(ZoneId.of("Europe/Madrid"));
-
-        LocalDateTime now = LocalDateTime.now(clock);
-        LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = now.toLocalDate().atTime(LocalTime.MAX);
-
-        when(this.matchRepository.findByDateBetween(startOfDay, endOfDay)).thenReturn(this.matches);
+        when(this.matchRepository.findByDateBetween(any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(this.matches);
     }
 
     private void mockMatchMapper() {

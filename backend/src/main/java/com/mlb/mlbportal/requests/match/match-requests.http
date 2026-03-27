@@ -21,3 +21,11 @@ Content-Type: application/json
 ### Get match by id
 GET https://localhost:8443/api/v1/matches/1
 Content-Type: application/json
+
+### Refresh the matches of the current season
+POST https://localhost:8443/api/v1/matches/sync?scope=season
+Content-Type: application/json
+
+### Refresh the matches of the current day
+POST https://localhost:8443/api/v1/matches/sync?scope=today
+Content-Type: application/json

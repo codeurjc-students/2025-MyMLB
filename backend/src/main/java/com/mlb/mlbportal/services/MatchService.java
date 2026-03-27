@@ -43,12 +43,11 @@ public class MatchService {
         return this.matchMapper.toMatchDTO(this.matchRepository.findById(id).orElseThrow(MatchNotFoundException::new));
     }
 
-    // TODO - Revisar
     @Transactional
     public Page<MatchDTO> getMatchesOfTheDay(String username, int page, int size) {
         LocalDate today = LocalDate.now(this.clock);
         LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX).plusHours(4);
 
         List<Match> matchesOfTheDay = this.matchRepository.findByDateBetween(startOfDay, endOfDay);
         matchesOfTheDay.forEach(this::updateMatches);

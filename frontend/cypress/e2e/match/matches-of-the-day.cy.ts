@@ -30,7 +30,7 @@ describe('Matches Of The Day Component E2E Tests', () => {
 			page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
 		});
 		cy.visit(baseUrl);
-		cy.contains("📅 Today's Schedule").should('be.visible');
+		cy.contains("Today's Schedule").should('be.visible');
 	});
 
 	it('should show no matches message when matches is empty', () => {

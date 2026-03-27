@@ -8,6 +8,7 @@ import { UserService } from '../../../app/services/user.service';
 import { Pictures } from '../../../app/models/pictures.model';
 import { User } from '../../../app/models/user.model';
 import { AnalyticsService } from '../../../app/services/analytics.service';
+import { MatchService } from '../../../app/services/match.service';
 
 describe('Profile Component Tests', () => {
     let component: ProfileComponent;
@@ -15,6 +16,7 @@ describe('Profile Component Tests', () => {
     let authServiceSpy: jasmine.SpyObj<AuthService>;
     let userServiceSpy: jasmine.SpyObj<UserService>;
 	let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
+	let matchServiceSpy: jasmine.SpyObj<MatchService>;
     let routerSpy: jasmine.SpyObj<Router>;
 
     beforeEach(() => {
@@ -32,6 +34,7 @@ describe('Profile Component Tests', () => {
         ]);
 
 		const statsServiceMock = jasmine.createSpyObj('StatsService', ['updateDeletedUsers']);
+		const matchServiceMock = jasmine.createSpyObj('MatchService', ['refreshMatches']);
         const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
         TestBed.configureTestingModule({
@@ -40,6 +43,7 @@ describe('Profile Component Tests', () => {
                 { provide: UserService, useValue: userServiceMock },
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: AnalyticsService, useValue: statsServiceMock },
+                { provide: MatchService, useValue: matchServiceMock },
                 { provide: Router, useValue: routerMock }
             ],
         });
@@ -50,6 +54,7 @@ describe('Profile Component Tests', () => {
         authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
         userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
 		analyticsServiceSpy = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
+		matchServiceSpy = TestBed.inject(MatchService) as jasmine.SpyObj<MatchService>;
         routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
         const mockUser: UserRole = { username: 'testUser', roles: ['USER'] };
