@@ -9,7 +9,10 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +34,10 @@ import com.mlb.mlbportal.services.team.TeamService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import lombok.AllArgsConstructor;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MatchImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TeamImportService teamLookupService;
@@ -45,6 +47,13 @@ public class MatchImportService {
     private final StadiumRepository stadiumRepository;
     private final Clock clock;
 
+    private MatchImportService self;
+
+    @Autowired
+    public void setSelf(@Lazy MatchImportService self) {
+        this.self = self;
+    }
+
     /**
      * Obtain the matches for the current season in a period of time.
      *
@@ -53,7 +62,6 @@ public class MatchImportService {
      *
      * @return the list of matches obtained for that period of time.
      */
-    @Async
     @Transactional
     @CircuitBreaker(name = "mlbApi", fallbackMethod = "fallbackMatches")
     @Retry(name = "mlbApi")
@@ -278,7 +286,7 @@ public class MatchImportService {
     @Async
     @Transactional
     public void updateSeasonMatches() {
-        this.getOfficialMatches(
+        this.self.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)
         );
