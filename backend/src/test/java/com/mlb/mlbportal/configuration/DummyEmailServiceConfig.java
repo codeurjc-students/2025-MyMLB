@@ -5,8 +5,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import com.mlb.mlbportal.services.EmailService;
+import org.springframework.context.annotation.Profile;
 
 @TestConfiguration
+@Profile("test")
 public class DummyEmailServiceConfig  {
 
     @Bean

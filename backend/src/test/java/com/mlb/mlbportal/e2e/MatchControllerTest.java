@@ -3,6 +3,7 @@ package com.mlb.mlbportal.e2e;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,5 +131,19 @@ class MatchControllerTest extends BaseE2ETest {
                 .body("size()", is(2))
                 .body("homeTeam.name", hasItems(this.team1.getName(), this.team2.getName()))
                 .body("awayTeam.name", hasItems(this.team1.getName(), this.team2.getName()));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/matches/refresh should update the matches of the current season")
+    void testRefreshMatches() {
+        String url = MATCHES_PATH + "refresh";
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(202)
+                .body("status", is(SUCCESS));
     }
 }
