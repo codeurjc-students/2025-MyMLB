@@ -214,10 +214,12 @@ export class ProfileComponent implements OnInit {
 		this.loading = true;
 		this.matchService.refreshMatches("season").subscribe({
 			next: (_) => {
+				this.loading = false;
 				this.sucess = true;
 				this.successMessage = 'Updating the Matches';
 			},
 			error: (err) => {
+				this.loading = false;
 				this.error = true;
 				this.errorMessage = `An error occur updating the matches: ${err.message}`;
 			}
