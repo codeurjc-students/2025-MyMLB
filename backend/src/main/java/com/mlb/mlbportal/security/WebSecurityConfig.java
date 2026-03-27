@@ -106,6 +106,7 @@ public class WebSecurityConfig {
 
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/matches/refresh").hasRole("ADMIN")
 
                     // Ticket Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
@@ -126,9 +127,9 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/v1/admin/support/tickets/**").hasRole("ADMIN")
 
                     // Analytics Endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/v1/stats/visibility").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/v1/stats/fav-teams").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/v1/stats/api-performance").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/analytics/visibility").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/analytics/fav-teams").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/analytics/api-performance").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

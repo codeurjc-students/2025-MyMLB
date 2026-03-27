@@ -1,3 +1,4 @@
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
@@ -16,6 +17,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AnalyticsService } from '../../services/analytics.service';
+import { MatchService } from '../../services/match.service';
 
 @Component({
 	selector: 'app-profile',
@@ -31,6 +33,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 		MatInputModule,
 		MatFormFieldModule,
 		MatSlideToggleModule,
+		MatIconModule
 	],
 })
 export class ProfileComponent implements OnInit {
@@ -38,6 +41,7 @@ export class ProfileComponent implements OnInit {
 	private router = inject(Router);
 	private userService = inject(UserService);
 	private analyticsService = inject(AnalyticsService);
+	private matchService = inject(MatchService);
 
 	public username = '';
 
@@ -59,12 +63,16 @@ export class ProfileComponent implements OnInit {
 	public successMessage = '';
 
 	public loading = false;
+	public isAdmin = false;
+
+	public currentYear = new Date().getFullYear();
 
 	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
 
 	ngOnInit(): void {
 		this.authService.getActiveUser().subscribe({
 			next: (response) => {
+				this.isAdmin = response.roles.includes('ADMIN');
 				this.username = response.username;
 			},
 			error: () => {
@@ -198,6 +206,20 @@ export class ProfileComponent implements OnInit {
 			error: (_) => {
 				this.error = true;
 				this.errorMessage = 'An error ocurr while deleting the profile picture';
+			}
+		});
+	}
+
+	public refreshMatches() {
+		this.loading = true;
+		this.matchService.refreshMatches().subscribe({
+			next: (_) => {
+				this.sucess = true;
+				this.successMessage = 'Updating the Matches';
+			},
+			error: (err) => {
+				this.error = true;
+				this.errorMessage = `An error occur updating the matches: ${err.message}`;
 			}
 		});
 	}

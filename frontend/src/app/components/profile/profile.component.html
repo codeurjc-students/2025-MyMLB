@@ -123,6 +123,18 @@
 		></app-profile-buttons>
 	</div>
 
+	@if (isAdmin) {
+		<div class="w-full max-w-lg flex flex-col gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+			<button class="w-full app-button group" (click)="refreshMatches()">
+				<span class="app-button-bright"></span>
+				<div class="app-button-texts flex items-center justify-center gap-2">
+					<mat-icon>sync</mat-icon>
+					<span>Refresh {{ currentYear }} Season Matches</span>
+				</div>
+			</button>
+		</div>
+	}
+
     <!-- Modals -->
     @if (activeAction) {
         <app-remove-confirmation-modal
