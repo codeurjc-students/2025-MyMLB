@@ -89,14 +89,14 @@ public class MatchImportService {
      * Verify the status of a match periodically.
      * It manages the change of status a match could have, for example, from "IN PROGRESS" to "FINISHED"
      */
-    @Async
     @Transactional
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
     public void verifyMatchStatus() {
         try {
             LocalDate today = LocalDate.now(this.clock);
-            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=" + today + "&endDate=" + today;
+            LocalDate endDate = today.plusDays(1);
+            String url = "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=" + today + "&endDate=" + endDate;
             ScheduleResponse response = this.restTemplate.getForObject(url, ScheduleResponse.class);
             
             if (response == null || response.dates() == null) {

@@ -7,7 +7,9 @@ import java.util.List;
 import com.mlb.mlbportal.security.jwt.AuthResponse;
 import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -97,14 +99,27 @@ public class MatchController {
 		return ResponseEntity.ok(this.matchService.getMatchesOfTeamBetweenDates(teamName, start, end));
 	}
 
-	@Operation(summary = "Refresh Matches", description = "Refresh the matches of the current season.")
+	@Operation(summary = "Synchronize Matches", description = "Synchronize the matches of the full current season or just today ones.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "202", description = "Matches Successfully refreshed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
 	})
-	@PostMapping(value = "/refresh", produces = "application/json")
-	public ResponseEntity<AuthResponse> refreshMatches() {
-		this.matchImportService.updateSeasonMatches();
-		return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, "Matches Successfully Updated!"));
+	@PostMapping(value = "/sync", produces = "application/json")
+	public ResponseEntity<AuthResponse> refreshSeasonMatches(@RequestParam(defaultValue = "today")String scope, Authentication auth) {
+		if ("season".equalsIgnoreCase(scope)) {
+			if (auth == null) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, "Access denied"));
+			}
+			boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+			if (!isAdmin) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, "Access denied"));
+			}
+			this.matchImportService.updateSeasonMatches();
+		}
+		else {
+			this.matchImportService.verifyMatchStatus();
+		}
+		String message = ("season".equalsIgnoreCase(scope)) ? "Matches Successfully Synchronized for the current season" : "Matches Successfully Synchronized for the current day";
+		return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, message));
 	}
 }

@@ -134,9 +134,9 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/matches/refresh should update the matches of the current season")
+    @DisplayName("POST /api/v1/matches/sync?scope={scope} should update the matches of the current season or day (depending of the scope")
     void testRefreshMatches() {
-        String url = MATCHES_PATH + "refresh";
+        String url = MATCHES_PATH + "sync?scope=today";
 
         given()
                 .accept(ContentType.JSON)

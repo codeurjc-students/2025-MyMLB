@@ -29,7 +29,7 @@ export class MatchService {
 		return this.http.get<ShowMatch[]>(`${this.apiUrl}/team/${teamName}?year=${year}&month=${month}`);
 	}
 
-	public refreshMatches(): Observable<AuthResponse> {
-		return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, {});
+	public refreshMatches(scope: string): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.apiUrl}/sync?scope=${scope}`, {});
 	}
 }

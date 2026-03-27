@@ -212,7 +212,7 @@ export class ProfileComponent implements OnInit {
 
 	public refreshMatches() {
 		this.loading = true;
-		this.matchService.refreshMatches().subscribe({
+		this.matchService.refreshMatches("season").subscribe({
 			next: (_) => {
 				this.sucess = true;
 				this.successMessage = 'Updating the Matches';

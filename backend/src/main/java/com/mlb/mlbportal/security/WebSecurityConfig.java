@@ -106,7 +106,6 @@ public class WebSecurityConfig {
 
                     // Matches Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/matches/today").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/matches/refresh").hasRole("ADMIN")
 
                     // Ticket Endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
