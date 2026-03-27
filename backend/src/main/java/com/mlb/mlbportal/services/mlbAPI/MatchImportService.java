@@ -286,6 +286,7 @@ public class MatchImportService {
     @Async
     @Transactional
     public void updateSeasonMatches() {
+        this.matchRepository.deleteAll();
         this.self.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)
