@@ -1,19 +1,40 @@
-import { Injectable } from '@angular/core';
-import { CreatePlayerRequest, EditPositionPlayerRequest, PositionPlayerGlobal } from '../models/position-player.model';
+import { inject, Injectable } from '@angular/core';
+import { CreatePlayerRequest, EditPositionPlayerRequest, PlayerRanking, PositionPlayerGlobal } from '../models/position-player.model';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { EditPitcherRequest, PitcherGlobal } from '../models/pitcher.model';
 import { Pictures } from '../models/pictures.model';
 import { AuthResponse } from '../models/auth.model';
 import { environment } from '../../environments/environment';
+import { PaginatedResponse } from '../models/pagination.model';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlayerService {
+	private httpMock = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/players`;
 
-	constructor(private httpMock: HttpClient) {}
+	public getPlayersRankings(page: number, size: number, playerType: string, stat: string, teamNames?: string[], league?: string, division?: string): Observable<PaginatedResponse<PlayerRanking>> {
+		let params = new HttpParams()
+			.set('page', page.toString())
+			.set('size', size.toString())
+			.set('playerType', playerType)
+			.set('stat', stat);
+
+		if (teamNames && teamNames.length > 0) {
+			teamNames.forEach(team => {
+				params = params.append('teamNames', team);
+			});
+		}
+		if (league) {
+			params.set('league', league);
+		}
+		if (division) {
+			params.set('division', division);
+		}
+		return this.httpMock.get<PaginatedResponse<PlayerRanking>>(`${this.apiUrl}/ranking`, { params });
+	}
 
 	public createPositionPlayer(request: CreatePlayerRequest): Observable<PositionPlayerGlobal> {
 		return this.httpMock.post<PositionPlayerGlobal>(`${this.apiUrl}/position-players`, request);

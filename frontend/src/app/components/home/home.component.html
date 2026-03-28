@@ -96,8 +96,21 @@
 		<app-matches-of-the-day></app-matches-of-the-day>
 	</section>
 
-	<!-- Standings Widget -->
-	<section class="w-full max-w-md">
-		<app-standings></app-standings>
-	</section>
+	<!-- Widgets -->
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full max-w-7xl mx-auto px-4">
+		<!-- Position Player Rankings -->
+		<div class="flex flex-col h-full">
+			<app-player-rankings-widget [playerType]="'position'"></app-player-rankings-widget>
+		</div>
+
+		<!-- Standings -->
+		<div class="flex flex-col h-full">
+			<app-standings></app-standings>
+		</div>
+
+		<!-- Pitcher Rankings -->
+		<div class="flex flex-col h-full">
+			<app-player-rankings-widget [playerType]="'pitcher'"></app-player-rankings-widget>
+		</div>
+	</div>
 </div>

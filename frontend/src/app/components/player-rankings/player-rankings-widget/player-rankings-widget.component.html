@@ -1,0 +1,82 @@
+<section class="bg-gradient-to-b from-blue-800 via-blue-900 to-gray-900 rounded-2xl p-5 w-full max-w-lg mx-auto shadow-xl ring-1 ring-white/10 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-950">
+    <div class="flex flex-col items-center justify-center text-center gap-3 mb-6">
+        <h2 class="text-3xl font-black text-white tracking-tighter uppercase leading-none">
+            @if (isPitcher) {
+				Pitcher Leaders
+			}
+			@else {
+				Player Leaders
+			}
+        </h2>
+
+        <div class="h-9">
+            <mat-form-field class="stats-select-compact" appearance="fill">
+                <mat-select [(value)]="selectedStat" (selectionChange)="onStatFilterChange($event.value)">
+					@if (isPitcher) {
+						@for (stat of Object.keys(availablePitcherStats); track stat) {
+							<mat-option [value]="stat" class="uppercase font-bold text-xs">{{ stat }}</mat-option>
+						}
+					}
+					@else {
+						@for (stat of Object.keys(availablePositionPlayerStats); track stat) {
+							<mat-option [value]="stat" class="uppercase font-bold text-xs">{{ stat }}</mat-option>
+						}
+					}
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-900/80 shadow-inner min-h-[320px] relative border border-white/5">
+
+        @if (loading) {
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm z-10">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+        }
+
+        <table class="w-full text-sm">
+            <thead class="bg-slate-200/50 dark:bg-black/40 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-[0.2em] border-b border-slate-200 dark:border-white/5">
+                <tr>
+                    <th class="px-4 py-3 text-left font-bold">#</th>
+                    <th class="px-2 py-3 text-left font-bold">Player</th>
+                    <th class="px-4 py-3 text-right font-bold">{{ selectedStat }}</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-200 dark:divide-white/5">
+                @for (player of ranking; track player.name; let i = $index) {
+                    <tr class="hover:bg-blue-500/10 transition-colors duration-200 group dark:bg-transparent">
+                        <td class="px-4 py-4 font-black text-slate-400 dark:text-slate-500 text-base">
+                            {{ i + 1 }}
+                        </td>
+
+                        <td class="px-2 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
+                                    <img [src]="player.picture" [alt]="player.name" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-400 transition-colors">
+                                    {{ player.name }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="px-4 py-4 text-right font-black text-blue-800 dark:text-blue-400 text-lg tracking-tight">
+                            {{ statFormatter(player.stat, selectedStat) }}
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-8 flex justify-center">
+        <button class="app-button group !w-auto px-10 py-3" (click)="goToFullRankings()">
+            <span class="app-button-bright"></span>
+            <div class="app-button-texts flex items-center justify-center gap-2">
+                <span class="text-xs font-black uppercase tracking-widest text-white">See All Rankings</span>
+            </div>
+        </button>
+    </div>
+</section>
