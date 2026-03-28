@@ -51,6 +51,9 @@ export class MatchesOfTheDayComponent implements OnInit {
 		this.matchService.refreshMatches('today').subscribe({
 			next: (_) => {
 				this.loading = false;
+				this.currentPage = 0;
+				this.matches = [];
+				this.loadMoreGames(0);
 			},
 			error: (err) => {
 				this.loading = false;

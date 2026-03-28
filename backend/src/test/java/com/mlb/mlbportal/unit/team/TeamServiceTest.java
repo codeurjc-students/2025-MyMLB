@@ -6,7 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_STADIUM;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -159,8 +168,7 @@ class TeamServiceTest {
 
         this.assertCommonStandingsStructure(standings);
 
-        assertThat(standings.get(this.team1.getLeague()).get(this.team1.getDivision())).containsExactly(this.mockTeamDTOs.getFirst());
-        assertThat(standings.get(this.team2.getLeague()).get(this.team2.getDivision())).containsExactly(this.mockTeamDTOs.get(1));
+        assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.getFirst(), this.mockTeamDTOs.get(1));
         assertThat(standings.get(this.team3.getLeague()).get(this.team3.getDivision())).containsExactly(this.mockTeamDTOs.get(2));
 
         verify(this.userService).getUser(TEST_USER_USERNAME);
@@ -175,9 +183,29 @@ class TeamServiceTest {
 
         this.assertCommonStandingsStructure(standings);
 
-        assertThat(standings.get(this.team1.getLeague()).get(this.team1.getDivision())).containsExactly(this.mockTeamDTOs.getFirst());
-        assertThat(standings.get(this.team2.getLeague()).get(this.team2.getDivision())).containsExactly(this.mockTeamDTOs.get(1));
+        assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.getFirst(), this.mockTeamDTOs.get(1));
         assertThat(standings.get(this.team3.getLeague()).get(this.team3.getDivision())).containsExactly(this.mockTeamDTOs.get(2));
+
+        verify(this.userService, never()).getUser(any());
+    }
+
+    @Test
+    @DisplayName("Should sort by wins if pct are equal")
+    void testGetRankingsSortedByWins() {
+        this.team1.setWins(80);
+        this.team1.setLosses(20);
+        this.team1.setPct("0.800");
+
+        this.team2.setWins(90);
+        this.team2.setLosses(22);
+        this.team2.setPct("0.800");
+        this.mockTeamRepositoryAndMapper();
+
+        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(null);
+
+        this.assertCommonStandingsStructure(standings);
+
+        assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.get(1), this.mockTeamDTOs.getFirst());
 
         verify(this.userService, never()).getUser(any());
     }
@@ -191,9 +219,7 @@ class TeamServiceTest {
 
     private void assertCommonStandingsStructure(Map<League, Map<Division, List<TeamDTO>>> standings) {
         assertThat(standings).isNotNull().containsKeys(League.AL, League.NL);
-
         assertThat(standings.get(League.AL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
-
         assertThat(standings.get(League.NL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
     }
 
@@ -220,9 +246,9 @@ class TeamServiceTest {
 
         this.teamService.updateRanking(this.team1, this.team2);
 
-        assertThat(this.team1.getPct()).isEqualTo(".470");
-        assertThat(this.team2.getPct()).isEqualTo(".564");
-        assertThat(this.team1.getGamesBehind()).isEqualTo(14.0);
+        assertThat(this.team1.getPct()).isEqualTo(".564");
+        assertThat(this.team2.getPct()).isEqualTo(".470");
+        assertThat(this.team2.getGamesBehind()).isEqualTo(14.0);
 
         verify(this.teamRepository, times(1)).save(this.team1);
         verify(this.teamRepository, times(1)).save(this.team2);
