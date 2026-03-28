@@ -2,7 +2,11 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -115,6 +119,31 @@ public class PlayerController {
             @RequestParam(defaultValue = "10") int size) {
 
         return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));
+    }
+
+    @Operation(summary = "Get Player Rankings", description = "Returns a page of players (position or pitchers) sorted by a specific statistic.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved pitchers of the team", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerRankingsDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/ranking", produces = "application/json")
+    public ResponseEntity<Page<PlayerRankingsDTO>> getPlayerRankings(@RequestParam(defaultValue = "0")int page,
+                                                                     @RequestParam(defaultValue = "20")int size,
+                                                                     @RequestParam String playerType,
+                                                                     @RequestParam String stat,
+                                                                     @RequestParam(required = false)List<String> teamNames,
+                                                                     @RequestParam(required = false)League league,
+                                                                     @RequestParam(required = false)Division division) {
+
+        return ResponseEntity.ok(this.playerService.getTopPlayersRanking(
+                page,
+                size,
+                playerType,
+                stat,
+                teamNames,
+                league,
+                division)
+        );
     }
 
     @Operation(summary = "Create a position player", description = "Creates a new MLB position player and assigns them to a team.")

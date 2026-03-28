@@ -45,3 +45,15 @@ Accept: application/json
 ### Get All Pitchers of a Non Existent Team
 GET https://localhost:8443/api/v1/players/pitchers/Team1
 Accept: application/json
+
+### Get Top Position Players based on Average
+GET https://localhost:8443/api/v1/players/ranking?playerType=position&stat=average
+Accept: application/json
+
+### Get Top Position Players based on Home Runs of the New York Yankees
+GET https://localhost:8443/api/v1/players/ranking?playerType=position&stat=homeRuns&teamNames=New York Yankees
+Accept: application/json
+
+### Get Top Position Players based on Average of the American League
+GET https://localhost:8443/api/v1/players/ranking?playerType=position&stat=average&league=AL
+Accept: application/json
