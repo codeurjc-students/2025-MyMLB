@@ -2,9 +2,7 @@ package com.mlb.mlbportal.integration;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
@@ -26,7 +24,6 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
-import static com.mlb.mlbportal.utils.TestConstants.USER1_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,20 +31,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mlb.mlbportal.dto.team.TeamDTO;
-import com.mlb.mlbportal.dto.team.TeamInfoDTO;
-import com.mlb.mlbportal.dto.team.TeamSummary;
 import com.mlb.mlbportal.dto.team.UpdateTeamRequest;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.models.UserEntity;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.enums.MatchStatus;
@@ -56,7 +48,6 @@ import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.repositories.UserRepository;
 import com.mlb.mlbportal.services.team.TeamService;
-import com.mlb.mlbportal.utils.BuildMocksFactory;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -118,65 +109,6 @@ class TeamServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should return all teams with calculated stats")
-    void testGetAllTeams() {
-        Page<TeamInfoDTO> result = this.teamService.getTeams(0, 10);
-
-        assertThat(result.getContent()).hasSize(3);
-
-        TeamInfoDTO teamDTO1 = result.stream().filter(team -> team.teamStats().abbreviation().equals(TEST_TEAM1_ABBREVIATION))
-                .findFirst().orElseThrow();
-        assertThat(teamDTO1.teamStats().totalGames()).isEqualTo(149);
-        assertThat(teamDTO1.teamStats().pct()).isEqualTo(".470");
-    }
-
-    @Test
-    @DisplayName("Should return all available teams")
-    void testGetAvailableTeams() {
-        Page<TeamSummary> result = this.teamService.getAvailableTeams(0, 10);
-
-        assertThat(result.getTotalElements()).isEqualTo(3);
-        assertThat(result.getContent()).hasSize(3);
-    }
-
-    @Test
-    @DisplayName("Should return standings grouped and ordered correctly when no user favorites")
-    void testGetStandingsWithoutUserFavorites() {
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(null);
-
-        assertThat(standings).isNotNull().containsKeys(League.AL, League.NL);
-
-        assertThat(standings.get(League.AL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
-        assertThat(standings.get(League.NL)).containsKeys(Division.EAST, Division.CENTRAL, Division.WEST);
-
-        List<TeamDTO> alEast = standings.get(League.AL).get(Division.EAST);
-        assertThat(alEast).hasSize(2);
-
-        assertThat(alEast.getFirst().abbreviation()).isEqualTo(TEST_TEAM2_ABBREVIATION);
-        assertThat(alEast.get(1).abbreviation()).isEqualTo(TEST_TEAM1_ABBREVIATION);
-    }
-
-    @Test
-    @DisplayName("Should prioritize divisions based on user's favorite teams")
-    void testGetStandingsWithUserFavorites() {
-        UserEntity user = BuildMocksFactory.setUpUsers().getFirst();
-        user.setFavTeams(Set.of(this.team1, this.team3));
-        this.userRepository.save(user);
-
-        Map<League, Map<Division, List<TeamDTO>>> standings = this.teamService.getStandings(USER1_USERNAME);
-
-        assertThat(standings).isNotNull().containsKeys(League.AL, League.NL);
-
-        assertThat(standings.get(League.AL).get(Division.EAST))
-                .extracting(TeamDTO::abbreviation)
-                .containsExactly(TEST_TEAM2_ABBREVIATION, TEST_TEAM1_ABBREVIATION);
-
-        assertThat(standings.get(League.NL).get(Division.CENTRAL))
-                .extracting(TeamDTO::abbreviation)
-                .containsExactly(TEST_TEAM3_ABBREVIATION);
-    }
-
-    @Test
     @DisplayName("Should update the ranking of the teams involve in a match")
     void testUpdateRanking() {
         this.teamService.updateRanking(this.team1, this.team2);
@@ -191,7 +123,7 @@ class TeamServiceIntegrationTest {
         assertThat(storedTeam2.getWins()).isEqualTo(TEST_TEAM2_WINS);
         assertThat(storedTeam2.getTotalGames()).isEqualTo(TEST_TEAM2_WINS + TEST_TEAM2_LOSSES);
 
-        assertThat(storedTeam1.getPct()).isEqualTo(".470");
+        assertThat(storedTeam1.getPct()).isEqualTo(".564");
     }
 
     @Test

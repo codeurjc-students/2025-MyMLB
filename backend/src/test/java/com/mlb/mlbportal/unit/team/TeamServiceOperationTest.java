@@ -33,20 +33,19 @@ class TeamServiceOperationsTest {
     @Mock
     private MatchService matchService;
 
-    private List<Team> teams;
     private Team team;
     private Team leader;
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
-        this.teams = BuildMocksFactory.setUpTeamMocks();
+        List<Team> teams = BuildMocksFactory.setUpTeamMocks();
 
-        this.team = this.teams.getFirst();
+        this.team = teams.getFirst();
         this.team.setWins(TEST_TEAM1_WINS);
         this.team.setLosses(TEST_TEAM1_LOSSES);
 
-        this.leader = this.teams.get(1);
+        this.leader = teams.get(1);
         this.leader.setWins(TEST_TEAM2_WINS);
         this.leader.setLosses(TEST_TEAM2_LOSSES);
     }
@@ -64,7 +63,7 @@ class TeamServiceOperationsTest {
 
         assertThat(this.team.getTotalGames()).isEqualTo(this.team.getWins() + this.team.getLosses());
         assertThat(Double.parseDouble(this.team.getPct())).isGreaterThan(Double.parseDouble("0.0"));
-        assertThat(this.team.getGamesBehind()).isGreaterThan(0.0);
+        assertThat(this.team.getGamesBehind()).isEqualTo(0.0);
         assertThat(this.team.getLastTen()).isEqualTo("1-1");
 
         verify(this.teamRepository).save(this.team);
@@ -73,7 +72,7 @@ class TeamServiceOperationsTest {
     @Test
     @DisplayName("Should handle empty last 10 matches")
     void testLastTenEmpty() {
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Arrays.asList(this.team));
+        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Collections.singletonList(this.team));
         when(this.matchService.getLast10Matches(this.team)).thenReturn(List.of());
 
         TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
@@ -87,7 +86,7 @@ class TeamServiceOperationsTest {
         this.team.setWins(0);
         this.team.setLosses(0);
 
-        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Arrays.asList(this.team));
+        when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Collections.singletonList(this.team));
         when(this.matchService.getLast10Matches(this.team)).thenReturn(Collections.emptyList());
 
         TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);

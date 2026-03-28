@@ -32,7 +32,7 @@ public class MatchScheduler {
 
     @Schedules({
             @Scheduled(cron = "0 */20 19-23 * * *", zone = "Europe/Madrid"),
-            @Scheduled(cron = "0 */20 0-4 * * *", zone = "Europe/Madrid")
+            @Scheduled(cron = "0 */20 0-8 * * *", zone = "Europe/Madrid")
     })
     public void updateStandings() {
         log.info("Starting synchronization of the matches status");

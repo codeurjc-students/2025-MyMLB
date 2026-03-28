@@ -118,7 +118,11 @@ public class TeamService {
                     .sorted((t1, t2) -> {
                         Double pct1 = TeamServiceOperations.parseSafePct(t1.getPct());
                         Double pct2 = TeamServiceOperations.parseSafePct(t2.getPct());
-                        return Double.compare(pct2, pct1);
+                        int pctCompare = Double.compare(pct2, pct1);
+                        if (pctCompare == 0) {
+                            return Integer.compare(t2.getWins(), t1.getWins());
+                        }
+                        return pctCompare;
                     }).map(this.teamMapper::toTeamDTO).toList();
 
             standings.computeIfAbsent(league, l -> new LinkedHashMap<>()).put(division, sorted);

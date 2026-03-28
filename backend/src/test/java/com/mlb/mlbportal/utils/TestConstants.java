@@ -62,8 +62,8 @@ public final class TestConstants {
     public static final String TEST_TEAM1_NAME = "City1 Team1";
     public static final Integer TEST_TEAM1_STATS_API_ID = 1;
     public static final String TEST_TEAM1_ABBREVIATION = "T1";
-    public static final int TEST_TEAM1_WINS = 70;
-    public static final int TEST_TEAM1_LOSSES = 79;
+    public static final int TEST_TEAM1_WINS = 84;
+    public static final int TEST_TEAM1_LOSSES = 65;
     public static final String TEST_TEAM1_LOGO = "Team1.png";
     public static final String TEST_TEAM1_CITY = "City1";
     public static final String TEST_TEAM1_INFO = "Information1";
@@ -71,8 +71,8 @@ public final class TestConstants {
     public static final String TEST_TEAM2_NAME = "City2 Team2";
     public static final Integer TEST_TEAM2_STATS_API_ID = 1;
     public static final String TEST_TEAM2_ABBREVIATION = "T2";
-    public static final int TEST_TEAM2_WINS = 84;
-    public static final int TEST_TEAM2_LOSSES = 65;
+    public static final int TEST_TEAM2_WINS = 70;
+    public static final int TEST_TEAM2_LOSSES = 79;
     public static final String TEST_TEAM2_LOGO = "Team2.png";
     public static final String TEST_TEAM2_CITY = "City2";
     public static final String TEST_TEAM2_INFO = "Information2";
