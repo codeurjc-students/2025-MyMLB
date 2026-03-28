@@ -71,7 +71,7 @@ class MatchSchedulerTest {
         this.matchScheduler.updateStandings();
 
         assertThat(scheduled).hasSize(2);
-        assertThat(crons).containsExactlyInAnyOrder("0 */20 19-23 * * *", "0 */20 0-4 * * *");
+        assertThat(crons).containsExactlyInAnyOrder("0 */20 19-23 * * *", "0 */20 0-8 * * *");
         verify(this.mlbImportService, times(1)).verifyMatchStatus();
     }
 
