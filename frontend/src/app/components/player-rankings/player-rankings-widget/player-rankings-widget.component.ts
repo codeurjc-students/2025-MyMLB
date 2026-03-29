@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-player-rankings-widget',
@@ -17,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class PlayerRankingsWidgetComponent implements OnInit {
 	private playerService = inject(PlayerService);
+	private router = inject(Router);
 	public Object = Object;
 
 	@Input() playerType!: string;
@@ -65,7 +67,7 @@ export class PlayerRankingsWidgetComponent implements OnInit {
 	private loadRanking() {
 		this.loading = true;
 		const statDBValue = (this.isPitcher) ? this.availablePitcherStats[this.selectedStat] : this.availablePositionPlayerStats[this.selectedStat];
-		this.playerService.getPlayersRankings(0, 5, this.playerType, statDBValue).subscribe({
+		this.playerService.getPlayerSingleStatRankings(0, 5, this.playerType, statDBValue).subscribe({
 			next: (response) => {
 				this.ranking = response.content;
 				this.loading = false;
@@ -99,6 +101,10 @@ export class PlayerRankingsWidgetComponent implements OnInit {
 	}
 
 	public goToFullRankings() {
-
+		this.router.navigate(['player-rankings'], {
+			queryParams: {
+				playerType: this.playerType
+			}
+		});
 	}
 }

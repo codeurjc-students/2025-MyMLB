@@ -158,4 +158,36 @@ public class QueryBuilder {
         }
         throw new IllegalArgumentException("The provided player type is not valid");
     }
+
+    public static List<String> getPlayerStats(String playerType) {
+        if ("position".equals(playerType)) {
+            return List.of(
+                    "atBats",
+                    "hits",
+                    "walks",
+                    "homeRuns",
+                    "rbis",
+                    "average",
+                    "obp",
+                    "ops",
+                    "doubles",
+                    "triples",
+                    "slugging"
+            );
+        }
+        return List.of(
+                "games",
+                "era",
+                "wins",
+                "losses",
+                "inningsPitched",
+                "totalStrikeouts",
+                "walks",
+                "hitsAllowed",
+                "runsAllowed",
+                "saves",
+                "saveOpportunities",
+                "whip"
+        );
+    }
 }

@@ -135,6 +135,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 			case 'standings':
 				this.router.navigate(['standings']);
 				break;
+			case 'player-rankings':
+				this.router.navigate(['player-rankings']);
+				break;
 			case 'edit-menu':
 				this.router.navigate(['edit-menu']);
 				break;

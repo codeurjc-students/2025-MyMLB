@@ -3,6 +3,7 @@ package com.mlb.mlbportal.controllers;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
 import com.mlb.mlbportal.models.enums.Division;
@@ -123,10 +124,10 @@ public class PlayerController {
 
     @Operation(summary = "Get Player Rankings", description = "Returns a page of players (position or pitchers) sorted by a specific statistic.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved pitchers of the team", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerRankingsDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the ranking", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerRankingsDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
-    @GetMapping(value = "/ranking", produces = "application/json")
+    @GetMapping(value = "/rankings", produces = "application/json")
     public ResponseEntity<Page<PlayerRankingsDTO>> getPlayerRankings(@RequestParam(defaultValue = "0")int page,
                                                                      @RequestParam(defaultValue = "20")int size,
                                                                      @RequestParam String playerType,
@@ -144,6 +145,20 @@ public class PlayerController {
                 league,
                 division)
         );
+    }
+
+    // TODO
+    @Operation(summary = "Get All Player Rankings", description = "Returns all player rankings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all rankings", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/rankings/all", produces = "application/json")
+    public ResponseEntity<Map<String , List<PlayerRankingsDTO>>> getAllPlayerRankings(@RequestParam String playerType,
+                                                                                      @RequestParam(required = false)List<String> teamNames,
+                                                                                      @RequestParam(required = false)League league,
+                                                                                      @RequestParam(required = false)Division division) {
+        return ResponseEntity.ok(this.playerService.getAllStatsRankings(playerType, teamNames, league, division));
     }
 
     @Operation(summary = "Create a position player", description = "Creates a new MLB position player and assigns them to a team.")

@@ -15,7 +15,7 @@ export class PlayerService {
 	private httpMock = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/players`;
 
-	public getPlayersRankings(page: number, size: number, playerType: string, stat: string, teamNames?: string[], league?: string, division?: string): Observable<PaginatedResponse<PlayerRanking>> {
+	public getPlayerSingleStatRankings(page: number, size: number, playerType: string, stat: string, teamNames?: string[], league?: string, division?: string): Observable<PaginatedResponse<PlayerRanking>> {
 		let params = new HttpParams()
 			.set('page', page.toString())
 			.set('size', size.toString())
@@ -33,7 +33,24 @@ export class PlayerService {
 		if (division) {
 			params.set('division', division);
 		}
-		return this.httpMock.get<PaginatedResponse<PlayerRanking>>(`${this.apiUrl}/ranking`, { params });
+		return this.httpMock.get<PaginatedResponse<PlayerRanking>>(`${this.apiUrl}/rankings`, { params });
+	}
+
+	public getPlayerAllStatsRankings(playerType: string, teamNames?: string[], league?: string, division?: string): Observable<Record<string, PlayerRanking[]>> {
+		let params = new HttpParams().set('playerType', playerType);
+
+		if (teamNames && teamNames.length > 0) {
+			teamNames.forEach(team => {
+				params = params.append('teamNames', team);
+			});
+		}
+		if (league) {
+			params = params.set('league', league);
+		}
+		if (division) {
+			params = params.set('division', division);
+		}
+		return this.httpMock.get<Record<string, PlayerRanking[]>>(`${this.apiUrl}/rankings/all`, { params });
 	}
 
 	public createPositionPlayer(request: CreatePlayerRequest): Observable<PositionPlayerGlobal> {

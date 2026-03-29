@@ -31,10 +31,11 @@
 
 			@if (!roles.includes("ADMIN")) {
 				<li class="relative group">
-				<a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
-				<app-dropdown-menu></app-dropdown-menu>
+					<a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
+					<app-dropdown-menu></app-dropdown-menu>
 				</li>
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/player-rankings'), itemsHover()]" (click)="redirect('player-rankings')">Player Rankings</a></li>
 			}
 			@else if (roles.includes("ADMIN")) {
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Menu</a></li>

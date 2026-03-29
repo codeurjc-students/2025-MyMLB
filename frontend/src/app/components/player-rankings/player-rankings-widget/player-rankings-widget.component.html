@@ -10,7 +10,7 @@
         </h2>
 
         <div class="h-9">
-            <mat-form-field class="stats-select-compact" appearance="fill">
+            <mat-form-field class="admin-input-fields" appearance="fill">
                 <mat-select [(value)]="selectedStat" (selectionChange)="onStatFilterChange($event.value)">
 					@if (isPitcher) {
 						@for (stat of Object.keys(availablePitcherStats); track stat) {

@@ -3,7 +3,10 @@ package com.mlb.mlbportal.services.player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
@@ -12,6 +15,7 @@ import com.mlb.mlbportal.models.enums.League;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -119,6 +123,7 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "single-stat-player-rankings", key = "{#stat, #playerType, #teamNames, #league, #division, #page, #size}")
     public Page<PlayerRankingsDTO> getTopPlayersRanking(int page, int size, String playerType, String stat, List<String> teamNames, League league, Division division) {
         String tableName = QueryBuilder.getTableName(playerType);
         if (!QueryBuilder.isValidStat(stat, playerType)) {
@@ -145,6 +150,20 @@ public class PlayerService {
         Long totalElements = countQuery.getSingleResult();
 
         return new PageImpl<>(content, pageable, totalElements);
+    }
+
+    @Cacheable(value = "all-stats-player-rankings", key = "{#playerType, #teamNames, #league, #division}")
+    public Map<String, List<PlayerRankingsDTO>> getAllStatsRankings(String playerType, List<String> teamNames, League league, Division division) {
+        List<String> allStats = QueryBuilder.getPlayerStats(playerType);
+        Map<String, List<PlayerRankingsDTO>> result = new ConcurrentHashMap<>();
+
+        List<CompletableFuture<Void>> futureTask = allStats.stream().map(stat -> CompletableFuture.runAsync(() -> {
+            List<PlayerRankingsDTO> rankings = this.getTopPlayersRanking(0, 20, playerType, stat, teamNames, league, division).getContent();
+            result.put(stat, rankings);
+        })).toList();
+
+        CompletableFuture.allOf(futureTask.toArray(new CompletableFuture[0])).join();
+        return result;
     }
 
     /**
