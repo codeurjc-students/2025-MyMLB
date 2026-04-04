@@ -18,10 +18,10 @@ describe('Edit Player Component E2E Tests', () => {
 		cy.intercept('GET', '/api/v1/searchs/player*', { fixture: 'player.json' }).as('searchPlayer');
 
 		cy.get('mat-select').first().click();
-		cy.get('mat-option').contains('Player').click();
+		cy.contains('mat-option', 'Player', { timeout: 10000 }).should('be.visible').click();
 
 		cy.get('#player-type').first().click();
-		cy.get('mat-option').contains('Position').click();
+		cy.contains('mat-option', 'Position', { timeout: 10000 }).should('be.visible').click();
 		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Aaron Judge');
 		cy.wait('@searchPlayer');
 
