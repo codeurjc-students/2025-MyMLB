@@ -190,7 +190,7 @@ public class BuildMocksFactory {
         p1.setHomeRuns(PLAYER1_HOME_RUNS);
         p1.setRbis(PLAYER1_RBIS);
 
-        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, 32, teamList.get(0), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS);
+        PositionPlayer p2 = new PositionPlayer(PLAYER2_NAME, 32, teamList.getFirst(), PlayerPositions.SS, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS);
         p2.setDoubles(PLAYER2_DOUBLES);
         p2.setTriples(PLAYER2_TRIPLES);
         p2.setHomeRuns(PLAYER2_HOME_RUNS);

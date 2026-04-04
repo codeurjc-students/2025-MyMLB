@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
@@ -32,49 +33,49 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-<span class="fc" id="L35">@Slf4j</span>
+<span class="fc" id="L36">@Slf4j</span>
 public class TeamImportService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map&lt;Integer, TeamSummary&gt; cache = new HashMap&lt;&gt;();
     private final TeamRepository teamRepository;
 
-<span class="fc" id="L42">    private static final Map&lt;String, Division&gt; TEAM_DIVISIONS = Map.ofEntries(</span>
-<span class="fc" id="L43">            Map.entry(&quot;BAL&quot;, Division.EAST),</span>
-<span class="fc" id="L44">            Map.entry(&quot;BOS&quot;, Division.EAST),</span>
-<span class="fc" id="L45">            Map.entry(&quot;NYY&quot;, Division.EAST),</span>
-<span class="fc" id="L46">            Map.entry(&quot;TB&quot;, Division.EAST),</span>
-<span class="fc" id="L47">            Map.entry(&quot;TOR&quot;, Division.EAST),</span>
+<span class="fc" id="L43">    private static final Map&lt;String, Division&gt; TEAM_DIVISIONS = Map.ofEntries(</span>
+<span class="fc" id="L44">            Map.entry(&quot;BAL&quot;, Division.EAST),</span>
+<span class="fc" id="L45">            Map.entry(&quot;BOS&quot;, Division.EAST),</span>
+<span class="fc" id="L46">            Map.entry(&quot;NYY&quot;, Division.EAST),</span>
+<span class="fc" id="L47">            Map.entry(&quot;TB&quot;, Division.EAST),</span>
+<span class="fc" id="L48">            Map.entry(&quot;TOR&quot;, Division.EAST),</span>
 
-<span class="fc" id="L49">            Map.entry(&quot;DET&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L50">            Map.entry(&quot;CLE&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L51">            Map.entry(&quot;MIN&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L52">            Map.entry(&quot;KC&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L53">            Map.entry(&quot;CWS&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L50">            Map.entry(&quot;DET&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L51">            Map.entry(&quot;CLE&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L52">            Map.entry(&quot;MIN&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L53">            Map.entry(&quot;KC&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L54">            Map.entry(&quot;CWS&quot;, Division.CENTRAL),</span>
 
-<span class="fc" id="L55">            Map.entry(&quot;LAA&quot;, Division.WEST),</span>
-<span class="fc" id="L56">            Map.entry(&quot;OAK&quot;, Division.WEST),</span>
-<span class="fc" id="L57">            Map.entry(&quot;SEA&quot;, Division.WEST),</span>
-<span class="fc" id="L58">            Map.entry(&quot;HOU&quot;, Division.WEST),</span>
-<span class="fc" id="L59">            Map.entry(&quot;TEX&quot;, Division.WEST),</span>
+<span class="fc" id="L56">            Map.entry(&quot;LAA&quot;, Division.WEST),</span>
+<span class="fc" id="L57">            Map.entry(&quot;OAK&quot;, Division.WEST),</span>
+<span class="fc" id="L58">            Map.entry(&quot;SEA&quot;, Division.WEST),</span>
+<span class="fc" id="L59">            Map.entry(&quot;HOU&quot;, Division.WEST),</span>
+<span class="fc" id="L60">            Map.entry(&quot;TEX&quot;, Division.WEST),</span>
 
-<span class="fc" id="L61">            Map.entry(&quot;WAS&quot;, Division.EAST),</span>
-<span class="fc" id="L62">            Map.entry(&quot;PHI&quot;, Division.EAST),</span>
-<span class="fc" id="L63">            Map.entry(&quot;ATL&quot;, Division.EAST),</span>
-<span class="fc" id="L64">            Map.entry(&quot;NYM&quot;, Division.EAST),</span>
-<span class="fc" id="L65">            Map.entry(&quot;MIA&quot;, Division.EAST),</span>
+<span class="fc" id="L62">            Map.entry(&quot;WAS&quot;, Division.EAST),</span>
+<span class="fc" id="L63">            Map.entry(&quot;PHI&quot;, Division.EAST),</span>
+<span class="fc" id="L64">            Map.entry(&quot;ATL&quot;, Division.EAST),</span>
+<span class="fc" id="L65">            Map.entry(&quot;NYM&quot;, Division.EAST),</span>
+<span class="fc" id="L66">            Map.entry(&quot;MIA&quot;, Division.EAST),</span>
 
-<span class="fc" id="L67">            Map.entry(&quot;STL&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L68">            Map.entry(&quot;MIL&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L69">            Map.entry(&quot;CHC&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L70">            Map.entry(&quot;CIN&quot;, Division.CENTRAL),</span>
-<span class="fc" id="L71">            Map.entry(&quot;PIT&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L68">            Map.entry(&quot;STL&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L69">            Map.entry(&quot;MIL&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L70">            Map.entry(&quot;CHC&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L71">            Map.entry(&quot;CIN&quot;, Division.CENTRAL),</span>
+<span class="fc" id="L72">            Map.entry(&quot;PIT&quot;, Division.CENTRAL),</span>
 
-<span class="fc" id="L73">            Map.entry(&quot;LAD&quot;, Division.WEST),</span>
-<span class="fc" id="L74">            Map.entry(&quot;SF&quot;, Division.WEST),</span>
-<span class="fc" id="L75">            Map.entry(&quot;SD&quot;, Division.WEST),</span>
-<span class="fc" id="L76">            Map.entry(&quot;COL&quot;, Division.WEST),</span>
-<span class="fc" id="L77">            Map.entry(&quot;ARI&quot;, Division.WEST)</span>
+<span class="fc" id="L74">            Map.entry(&quot;LAD&quot;, Division.WEST),</span>
+<span class="fc" id="L75">            Map.entry(&quot;SF&quot;, Division.WEST),</span>
+<span class="fc" id="L76">            Map.entry(&quot;SD&quot;, Division.WEST),</span>
+<span class="fc" id="L77">            Map.entry(&quot;COL&quot;, Division.WEST),</span>
+<span class="fc" id="L78">            Map.entry(&quot;ARI&quot;, Division.WEST)</span>
     );
 
     /**
@@ -87,45 +88,45 @@ public class TeamImportService {
     @CircuitBreaker(name = &quot;mlbApi&quot;, fallbackMethod = &quot;fallbackTeams&quot;)
     @Retry(name = &quot;mlbApi&quot;)
     public TeamSummary getTeamSummary(int teamId) {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (this.cache.containsKey(teamId)) {</span>
-<span class="fc" id="L91">            return this.cache.get(teamId);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (this.cache.containsKey(teamId)) {</span>
+<span class="fc" id="L92">            return this.cache.get(teamId);</span>
         }
-<span class="fc" id="L93">        String url = &quot;https://statsapi.mlb.com/api/v1/teams/&quot; + teamId;</span>
+<span class="fc" id="L94">        String url = &quot;https://statsapi.mlb.com/api/v1/teams/&quot; + teamId;</span>
 
-<span class="fc" id="L95">        TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);</span>
+<span class="fc" id="L96">        TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);</span>
 
-<span class="pc bpc" id="L97" title="2 of 6 branches missed.">        if (response == null || response.teams() == null || response.teams().isEmpty()) {</span>
-<span class="fc" id="L98">            return null;</span>
+<span class="pc bpc" id="L98" title="2 of 6 branches missed.">        if (response == null || response.teams() == null || response.teams().isEmpty()) {</span>
+<span class="fc" id="L99">            return null;</span>
         }
 
-<span class="fc" id="L101">        TeamDetails t = response.teams().getFirst();</span>
+<span class="fc" id="L102">        TeamDetails t = response.teams().getFirst();</span>
 
-<span class="fc" id="L103">        League league = null;</span>
-<span class="pc bpc" id="L104" title="2 of 4 branches missed.">        if (t.league() != null &amp;&amp; t.league().name() != null) {</span>
-<span class="pc bpc" id="L105" title="1 of 3 branches missed.">            league = switch (t.league().name()) {</span>
-<span class="fc" id="L106">                case &quot;American League&quot; -&gt; League.AL;</span>
-<span class="nc" id="L107">                case &quot;National League&quot; -&gt; League.NL;</span>
-<span class="fc" id="L108">                default -&gt; null;</span>
+<span class="fc" id="L104">        League league = null;</span>
+<span class="pc bpc" id="L105" title="2 of 4 branches missed.">        if (t.league() != null &amp;&amp; t.league().name() != null) {</span>
+<span class="pc bpc" id="L106" title="1 of 3 branches missed.">            league = switch (t.league().name()) {</span>
+<span class="fc" id="L107">                case &quot;American League&quot; -&gt; League.AL;</span>
+<span class="nc" id="L108">                case &quot;National League&quot; -&gt; League.NL;</span>
+<span class="fc" id="L109">                default -&gt; null;</span>
             };
         }
 
-<span class="fc" id="L112">        Division division = TEAM_DIVISIONS.get(t.abbreviation());</span>
-<span class="fc" id="L113">        TeamSummary summary = new TeamSummary(</span>
-<span class="fc" id="L114">                t.name(),</span>
-<span class="fc" id="L115">                t.abbreviation(),</span>
+<span class="fc" id="L113">        Division division = TEAM_DIVISIONS.get(t.abbreviation());</span>
+<span class="fc" id="L114">        TeamSummary summary = new TeamSummary(</span>
+<span class="fc" id="L115">                t.name(),</span>
+<span class="fc" id="L116">                t.abbreviation(),</span>
                 league,
                 division);
 
-<span class="fc" id="L119">        this.cache.put(teamId, summary);</span>
-<span class="fc" id="L120">        return summary;</span>
+<span class="fc" id="L120">        this.cache.put(teamId, summary);</span>
+<span class="fc" id="L121">        return summary;</span>
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     private TeamSummary fallbackTeams(int teamId, Throwable t) throws ServiceUnavailableException {
-<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (this.cache.containsKey(teamId)) {</span>
-<span class="fc" id="L126">            return this.cache.get(teamId);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (this.cache.containsKey(teamId)) {</span>
+<span class="fc" id="L127">            return this.cache.get(teamId);</span>
         }
-<span class="fc" id="L128">        throw new ServiceUnavailableException(&quot;MLB API not available and no cached data for teamId = &quot; + teamId);</span>
+<span class="fc" id="L129">        throw new ServiceUnavailableException(&quot;MLB API not available and no cached data for teamId = &quot; + teamId);</span>
     }
 
     /**
@@ -136,27 +137,27 @@ public class TeamImportService {
     @CircuitBreaker(name = &quot;mlbApi&quot;, fallbackMethod = &quot;fallbackFindStatsAPiID&quot;)
     @Retry(name = &quot;mlbApi&quot;)
     public Map&lt;String, Integer&gt; findStatsApiId() {
-<span class="fc" id="L139">        String url = &quot;https://statsapi.mlb.com/api/v1/teams?sportId=1&quot;;</span>
+<span class="fc" id="L140">        String url = &quot;https://statsapi.mlb.com/api/v1/teams?sportId=1&quot;;</span>
         try {
-<span class="fc" id="L141">            TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);</span>
-<span class="pc bpc" id="L142" title="2 of 4 branches missed.">            if (response != null &amp;&amp; response.teams() != null) {</span>
-<span class="fc" id="L143">                return response.teams().stream().collect(Collectors.toMap(</span>
+<span class="fc" id="L142">            TeamDetailsResponse response = this.restTemplate.getForObject(url, TeamDetailsResponse.class);</span>
+<span class="pc bpc" id="L143" title="2 of 4 branches missed.">            if (response != null &amp;&amp; response.teams() != null) {</span>
+<span class="fc" id="L144">                return response.teams().stream().collect(Collectors.toMap(</span>
                         TeamDetails::name,
                         TeamDetails::id,
-<span class="nc" id="L146">                        (existing, replacement) -&gt; existing</span>
+<span class="nc" id="L147">                        (existing, replacement) -&gt; existing</span>
                 ));
             }
         }
-<span class="nc" id="L150">        catch (RestClientException ex) {</span>
-<span class="nc" id="L151">            log.error(&quot;Cannot obtain the id from Stats API for the teams: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L152">        }</span>
-<span class="nc" id="L153">        return new HashMap&lt;&gt;();</span>
+<span class="nc" id="L151">        catch (RestClientException ex) {</span>
+<span class="nc" id="L152">            log.error(&quot;Cannot obtain the id from Stats API for the teams: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L153">        }</span>
+<span class="nc" id="L154">        return new HashMap&lt;&gt;();</span>
     }
 
     @SuppressWarnings(&quot;unused&quot;)
     public Map&lt;String, Integer&gt; fallbackFindStatsAPiID(Throwable t) {
-<span class="nc" id="L158">        log.error(&quot;Cannot obtain the stat API ID: {}&quot;, t.getMessage());</span>
-<span class="nc" id="L159">        return new HashMap&lt;&gt;();</span>
+<span class="nc" id="L159">        log.error(&quot;Cannot obtain the stat API ID: {}&quot;, t.getMessage());</span>
+<span class="nc" id="L160">        return new HashMap&lt;&gt;();</span>
     }
 
     /**
@@ -166,51 +167,77 @@ public class TeamImportService {
     @CircuitBreaker(name = &quot;getTeamStats&quot;, fallbackMethod = &quot;fallbackTeamStats&quot;)
     @Retry(name = &quot;getTeamStats&quot;)
     public void getTeamStats() {
-<span class="fc" id="L169">        int currentYear = LocalDate.now().getYear();</span>
-<span class="fc" id="L170">        String url = &quot;https://statsapi.mlb.com/api/v1/standings?sportId=1&amp;season=&quot; + currentYear + &quot;&amp;standingsTypes=regularSeason&quot;;</span>
-<span class="fc" id="L171">        StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);</span>
-<span class="fc bfc" id="L172" title="All 2 branches covered.">        if (response == null) {</span>
-<span class="fc" id="L173">            throw new NullPointerException(&quot;Error fetching the team stats from the API. The response came null&quot;);</span>
-        }
+<span class="fc" id="L170">        int currentYear = LocalDate.now().getYear();</span>
+<span class="fc" id="L171">        String url = &quot;https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&amp;season=&quot;</span>
+                + currentYear + &quot;&amp;standingsTypes=regularSeason&quot;;
 
-<span class="fc bfc" id="L176" title="All 2 branches covered.">        if (response.records().isEmpty()) {</span>
-<span class="fc" id="L177">            log.warn(&quot;No stats found for the {} season. Setting default stats&quot;, currentYear);</span>
-<span class="fc" id="L178">            this.setEmptyStats();</span>
+        try {
+<span class="fc" id="L175">            StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);</span>
+
+<span class="pc bpc" id="L177" title="2 of 6 branches missed.">            if (response == null || response.records() == null || response.records().isEmpty()) {</span>
+<span class="fc" id="L178">                log.warn(&quot;No stats found for the {} season. Applying empty values&quot;, currentYear);</span>
+<span class="fc" id="L179">                this.setEmptyStats();</span>
+<span class="fc" id="L180">                return;</span>
+            }
+
+<span class="fc" id="L183">            List&lt;Team&gt; teamsToSave = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">            for (Records records : response.records()) {</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">                if (records.teamRecords() != null) {</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">                    for (TeamRecords teamRecord : records.teamRecords()) {</span>
+<span class="fc" id="L187">                        Team team = this.updateTeamStats(teamRecord);</span>
+<span class="fc" id="L188">                        teamsToSave.add(team);</span>
+<span class="fc" id="L189">                    }</span>
+                }
+<span class="fc" id="L191">            }</span>
+<span class="fc" id="L192">            this.teamRepository.saveAll(teamsToSave);</span>
+<span class="fc" id="L193">            log.info(&quot;Rankings and Team Stats successfully updated!&quot;);</span>
         }
-        else {
-<span class="fc" id="L181">            List&lt;Team&gt; teamsToSave = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L182" title="All 2 branches covered.">            for (Records records : response.records()) {</span>
-<span class="fc bfc" id="L183" title="All 2 branches covered.">               for (TeamRecords teamRecord : records.teamRecords()) {</span>
-<span class="fc" id="L184">                   Team team = this.updateTeamStats(teamRecord);</span>
-<span class="fc" id="L185">                   teamsToSave.add(team);</span>
-<span class="fc" id="L186">               }</span>
-<span class="fc" id="L187">            }</span>
-<span class="fc" id="L188">            this.teamRepository.saveAll(teamsToSave);</span>
-        }
-<span class="fc" id="L190">        log.info(&quot;Team Stats and Rankings successfully updated!&quot;);</span>
-<span class="fc" id="L191">    }</span>
+<span class="nc" id="L195">        catch (Exception e) {</span>
+<span class="nc" id="L196">            log.error(&quot;Error obtaining the stats from the API: {}&quot;, e.getMessage());</span>
+<span class="nc" id="L197">            this.setEmptyStats();</span>
+<span class="fc" id="L198">        }</span>
+<span class="fc" id="L199">    }</span>
 
     private Team updateTeamStats(TeamRecords teamRecord) {
-<span class="fc" id="L194">        Team team = this.teamRepository.findByNameOrThrow(teamRecord.team().name());</span>
-<span class="fc" id="L195">        team.addTeamStats(</span>
-<span class="fc" id="L196">                teamRecord.gamesPlayed(),</span>
-<span class="fc" id="L197">                teamRecord.wins(),</span>
-<span class="fc" id="L198">                teamRecord.losses(),</span>
-<span class="fc" id="L199">                teamRecord.divisionGamesBehind(),</span>
-<span class="fc" id="L200">                teamRecord.winningPercentage(),</span>
-<span class="fc" id="L201">                teamRecord.getLastTenGames()</span>
+<span class="fc" id="L202">        log.info(&quot;Team: {}&quot;, teamRecord.team().name());</span>
+<span class="fc" id="L203">        Team team = this.teamRepository.findByStatsApiIdOrThrow(teamRecord.team().id());</span>
+<span class="fc" id="L204">        team.addTeamStats(</span>
+<span class="fc" id="L205">                Objects.requireNonNullElse(teamRecord.gamesPlayed(), 0),</span>
+<span class="fc" id="L206">                Objects.requireNonNullElse(teamRecord.wins(), 0),</span>
+<span class="fc" id="L207">                Objects.requireNonNullElse(teamRecord.losses(), 0),</span>
+<span class="fc" id="L208">                this.parseGamesBehindAsDouble(teamRecord.divisionGamesBack()),</span>
+<span class="fc" id="L209">                Objects.requireNonNullElse(teamRecord.winningPercentage(), &quot;.000&quot;),</span>
+<span class="fc" id="L210">                teamRecord.getLastTenGames()</span>
         );
-<span class="fc" id="L203">        return team;</span>
+<span class="fc" id="L212">        return team;</span>
+    }
+
+    /**
+     * Obtain the gamesBehind value from the API as a String, and Map it to a double value.
+     *
+     * @param value gamesBehind value as a String.
+     * @return gamesBehind value as a double.
+     */
+    private double parseGamesBehindAsDouble(String value) {
+<span class="fc bfc" id="L222" title="All 4 branches covered.">        if (value == null || value.equals(&quot;-&quot;)) {</span>
+<span class="fc" id="L223">            return 0.0;</span>
+        }
+        try {
+<span class="fc" id="L226">            return Double.parseDouble(value);</span>
+        }
+<span class="nc" id="L228">        catch (Exception ex) {</span>
+<span class="nc" id="L229">            return 0.0;</span>
+        }
     }
 
     private void setEmptyStats() {
-<span class="fc" id="L207">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
-<span class="fc" id="L208">        teams.forEach(team -&gt; team.addTeamStats(0, 0, 0, 0.0, &quot;.000&quot;, &quot;0-0&quot;));</span>
-<span class="fc" id="L209">        this.teamRepository.saveAll(teams);</span>
-<span class="fc" id="L210">    }</span>
+<span class="fc" id="L234">        List&lt;Team&gt; teams = this.teamRepository.findAll();</span>
+<span class="fc" id="L235">        teams.forEach(team -&gt; team.addTeamStats(0, 0, 0, 0.0, &quot;.000&quot;, &quot;0-0&quot;));</span>
+<span class="fc" id="L236">        this.teamRepository.saveAll(teams);</span>
+<span class="fc" id="L237">    }</span>
 
     public void fallbackTeamStats(Throwable throwable) {
-<span class="nc" id="L213">        log.error(&quot;getTeamStats: Error fetching the team stats: {} &quot;, throwable.getMessage());</span>
-<span class="nc" id="L214">    }</span>
+<span class="nc" id="L240">        log.error(&quot;getTeamStats: Error fetching the team stats: {} &quot;, throwable.getMessage());</span>
+<span class="nc" id="L241">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,6 +1,7 @@
 package com.mlb.mlbportal.e2e;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasItems;
@@ -142,6 +143,57 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("GET /api/v1/players/rankings should return paginated rankings")
+    void testGetPlayerRankings() {
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("playerType", "position")
+                .queryParam("stat", "average")
+                .queryParam("page", 0)
+                .queryParam("size", 10)
+                .when()
+                .get(ALL_PLAYERS_PATH + "/rankings")
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(2))
+                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/players/rankings/all should return the rankings of all stats")
+    void testGetAllPlayerRankings() {
+        String url = ALL_PLAYERS_PATH + "/rankings/all";
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("playerType", "position")
+                .queryParam("league", League.AL)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("containsKey('average')", is(true))
+                .body("containsKey('homeRuns')", is(true))
+                .body("average.name", hasItems(PLAYER1_NAME, PLAYER2_NAME));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/players/rankings should return the ranking of the given stat")
+    void testGetRankingsWithFilters() {
+        String url = ALL_PLAYERS_PATH + "/rankings";
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("playerType", "position")
+                .queryParam("stat", "average")
+                .queryParam("teamNames", List.of(TEST_TEAM1_NAME))
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("content.size()", is(2))
+                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME));
+    }
+
+    @Test
     @DisplayName("POST /api/v1/players should create a player")
     void testCreatePlayer() {
         Map<String, Object> requestBody = Map.of(
@@ -177,6 +229,20 @@ class PlayerControllerTest extends BaseE2ETest {
                 .statusCode(200)
                 .body("url", is("http://fake.cloudinary.com/test.jpg"))
                 .body("publicId", is("fake123"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/players/refresh should trigger rankings update")
+    void testRefreshPlayerRankings() {
+        String url = ALL_PLAYERS_PATH + "/refresh";
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(200)
+                .body("status", is("SUCCESS"))
+                .body("message", is("Player Rankings successfully updated!"));
     }
 
     @Test

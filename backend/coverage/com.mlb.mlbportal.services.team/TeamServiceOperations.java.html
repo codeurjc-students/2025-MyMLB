@@ -76,7 +76,7 @@ public class TeamServiceOperations {
     public static double parseSafePct(String pct) {
 <span class="pc bpc" id="L77" title="2 of 6 branches missed.">        if (pct == null || pct.isEmpty() || pct.equals(&quot;-&quot;)) return 0.0;</span>
         try {
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            String normalized = pct.startsWith(&quot;.&quot;) ? &quot;0&quot; + pct : pct;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">            String normalized = pct.startsWith(&quot;.&quot;) ? &quot;0&quot; + pct : pct;</span>
 <span class="fc" id="L80">            return Double.parseDouble(normalized);</span>
         }
 <span class="nc" id="L82">        catch (NumberFormatException e) {</span>

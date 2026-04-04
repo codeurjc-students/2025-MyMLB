@@ -24,6 +24,12 @@ public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
 <span class="fc" id="L24">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
     }
 
+    Optional&lt;Team&gt; findByStatsApiId(Long id);
+
+    default Team findByStatsApiIdOrThrow(Long id) {
+<span class="nc" id="L30">        return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);</span>
+    }
+
     List&lt;Team&gt; findByNameContainingIgnoreCase(String input);
 
     @Query(&quot;SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) &lt; 24&quot;)

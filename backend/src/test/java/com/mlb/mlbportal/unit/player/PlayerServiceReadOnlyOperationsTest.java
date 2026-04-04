@@ -2,28 +2,43 @@ package com.mlb.mlbportal.unit.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
@@ -41,6 +56,10 @@ import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceReadOnlyOperationsTest {
@@ -68,6 +87,15 @@ class PlayerServiceReadOnlyOperationsTest {
 
     @Mock
     private PaginationHandlerService paginationHandlerService;
+
+    @Mock
+    private EntityManager entityManager;
+
+    @Mock
+    private TypedQuery<PlayerRankingsDTO> dataQuery;
+
+    @Mock
+    private TypedQuery<Long> countQuery;
 
     @InjectMocks
     private PlayerService playerService;
@@ -226,5 +254,56 @@ class PlayerServiceReadOnlyOperationsTest {
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getTotalPages()).isEqualTo(1);
         assertThat(result.getSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Should return top players ranking of a given stat")
+    void testGetTopPlayersRanking() {
+        PlayerRankingsDTO rankingDTO = new PlayerRankingsDTO(PLAYER1_NAME, "https://picture", 0.300);
+        List<PlayerRankingsDTO> content = List.of(rankingDTO);
+
+        when(this.entityManager.createQuery(anyString(), eq(PlayerRankingsDTO.class))).thenReturn(this.dataQuery);
+        when(this.entityManager.createQuery(anyString(), eq(Long.class))).thenReturn(this.countQuery);
+        when(this.dataQuery.getResultList()).thenReturn(content);
+        when(this.countQuery.getSingleResult()).thenReturn(1L);
+
+        Page<PlayerRankingsDTO> result = this.playerService.getTopPlayersRanking(
+                0, 10, "position", "average", List.of(TEST_TEAM1_NAME), null, null
+        );
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().getFirst().name()).isEqualTo(PLAYER1_NAME);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+
+        verify(this.dataQuery).setFirstResult(0);
+        verify(this.dataQuery).setMaxResults(10);
+        verify(this.entityManager, times(2)).createQuery(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException for invalid stat")
+    void testGetTopPlayersRankingInvalidStat() {
+        assertThatThrownBy(() -> this.playerService.getTopPlayersRanking(0, 10, "position", "stat", null, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The provided stat is not valid");
+    }
+
+    @Test
+    @DisplayName("Should return all stats rankings")
+    void testGetAllStatsRankings() {
+        PlayerRankingsDTO rankingDTO = new PlayerRankingsDTO(PLAYER1_NAME, "https://picture", 0.300);
+        List<PlayerRankingsDTO> content = List.of(rankingDTO);
+
+        when(this.entityManager.createQuery(anyString(), eq(PlayerRankingsDTO.class))).thenReturn(this.dataQuery);
+        when(this.entityManager.createQuery(anyString(), eq(Long.class))).thenReturn(this.countQuery);
+        when(this.dataQuery.getResultList()).thenReturn(content);
+        when(this.countQuery.getSingleResult()).thenReturn(1L);
+
+        Map<String, List<PlayerRankingsDTO>> result = playerService.getAllStatsRankings("position", null, null, null);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).containsKey("average");
+        assertThat(result.get("average")).extracting("name").contains(PLAYER1_NAME);
+        verify(entityManager, atLeastOnce()).createQuery(anyString(), eq(PlayerRankingsDTO.class));
     }
 }

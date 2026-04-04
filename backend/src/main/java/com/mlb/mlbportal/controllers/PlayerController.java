@@ -149,8 +149,7 @@ public class PlayerController {
         );
     }
 
-    // TODO
-    @Operation(summary = "Get All Player Rankings", description = "Returns all player rankings")
+    @Operation(summary = "Get All Player Rankings", description = "Returns a map of player rankings for all available statistics. The response is grouped by the stat name")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all rankings", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))

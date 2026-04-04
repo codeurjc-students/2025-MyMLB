@@ -14,7 +14,7 @@ public class PlayerScheduler {
     private final PlayerImportService playerImportService;
 
     @Async
-    @Scheduled(cron = &quot;0 0 6 * * *&quot;)
+    @Scheduled(cron = &quot;0 0 6 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void updateRostersAndPlayerStats() {
 <span class="fc" id="L19">        this.playerImportService.getTeamRoster();</span>
 <span class="fc" id="L20">    }</span>
