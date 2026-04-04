@@ -15,7 +15,9 @@ import com.mlb.mlbportal.models.enums.League;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -51,10 +53,8 @@ import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
-import lombok.AllArgsConstructor;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final PositionPlayerRepository positionPlayerRepository;
@@ -71,6 +71,9 @@ public class PlayerService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Lazy
+    private PlayerService self;
 
     @Transactional(readOnly = true)
     public Page<PlayerDTO> getAllPlayers(int page, int size) {
@@ -158,7 +161,7 @@ public class PlayerService {
         Map<String, List<PlayerRankingsDTO>> result = new ConcurrentHashMap<>();
 
         List<CompletableFuture<Void>> futureTask = allStats.stream().map(stat -> CompletableFuture.runAsync(() -> {
-            List<PlayerRankingsDTO> rankings = this.getTopPlayersRanking(0, 20, playerType, stat, teamNames, league, division).getContent();
+            List<PlayerRankingsDTO> rankings = this.self.getTopPlayersRanking(0, 20, playerType, stat, teamNames, league, division).getContent();
             result.put(stat, rankings);
         })).toList();
 

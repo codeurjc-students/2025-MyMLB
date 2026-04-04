@@ -60,6 +60,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceReadOnlyOperationsTest {
@@ -126,6 +127,9 @@ class PlayerServiceReadOnlyOperationsTest {
         this.allPlayers.addAll(positionPlayerDTOs);
         this.allPlayers.addAll(pitcherDTOs);
         this.allPlayers.sort((p1, p2) -> p1.name().compareToIgnoreCase(p2.name()));
+
+        ReflectionTestUtils.setField(this.playerService, "self", this.playerService);
+        ReflectionTestUtils.setField(this.playerService, "entityManager", this.entityManager);
     }
 
     @Test
@@ -301,8 +305,7 @@ class PlayerServiceReadOnlyOperationsTest {
 
         Map<String, List<PlayerRankingsDTO>> result = playerService.getAllStatsRankings("position", null, null, null);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result).containsKey("average");
+        assertThat(result).isNotEmpty().containsKey("average");
         assertThat(result.get("average")).extracting("name").contains(PLAYER1_NAME);
         verify(entityManager, atLeastOnce()).createQuery(anyString(), eq(PlayerRankingsDTO.class));
     }

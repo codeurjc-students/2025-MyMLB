@@ -11,6 +11,8 @@ import java.util.List;
 
 public class QueryBuilder {
 
+    private QueryBuilder() {}
+
     public static void setQueryParams(Query dataQuery, Query countQuery, List<String> teamNames, League league, Division division, boolean hasTeamFilter, boolean hasLeagueFilter, boolean hasDivisionFilter) {
         if (hasTeamFilter) {
             dataQuery.setParameter("teamNames", teamNames);

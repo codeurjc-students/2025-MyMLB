@@ -6,9 +6,12 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+
+import com.mlb.mlbportal.services.player.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -62,11 +65,14 @@ import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class PlayerControllerTest extends BaseE2ETest {
+    @Autowired
+    private PlayerService playerService;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -79,6 +85,8 @@ class PlayerControllerTest extends BaseE2ETest {
         saveTestPositionPlayers(PLAYER1_NAME, PLAYER1_NUMBER, team1, PLAYER1_AT_BATS, PLAYER1_WALKS, PLAYER1_HITS, PLAYER1_DOUBLES, PLAYER1_TRIPLES, PLAYER1_HOME_RUNS, PLAYER1_RBIS);
         saveTestPositionPlayers(PLAYER2_NAME, PLAYER2_NUMBER, team1, PLAYER2_AT_BATS, PLAYER2_WALKS, PLAYER2_HITS, PLAYER2_DOUBLES, PLAYER2_TRIPLES, PLAYER2_HOME_RUNS, PLAYER2_RBIS);
         saveTestPitchers(PLAYER3_NAME, PLAYER3_NUMBER, team2, PLAYER3_GAMES, PLAYER3_WINS, PLAYER3_LOSSES, PLAYER3_INNINGS, PLAYER3_SO, PLAYER3_WALKS, PLAYER3_HITS_ALLOWED, PLAYER3_RUNS_ALLOWED, PLAYER3_SAVES, PLAYER3_SAVES_OPPORTUNITIES);
+
+        ReflectionTestUtils.setField(this.playerService, "self", this.playerService);
     }
 
     @Test
@@ -167,10 +175,13 @@ class PlayerControllerTest extends BaseE2ETest {
                 .accept(ContentType.JSON)
                 .queryParam("playerType", "position")
                 .queryParam("league", League.AL)
+                .log().all()
                 .when()
                 .get(url)
                 .then()
+                .log().all()
                 .statusCode(200)
+                .log().all()
                 .body("containsKey('average')", is(true))
                 .body("containsKey('homeRuns')", is(true))
                 .body("average.name", hasItems(PLAYER1_NAME, PLAYER2_NAME));
