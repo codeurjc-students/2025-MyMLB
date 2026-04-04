@@ -8,12 +8,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
 	selector: 'app-player-rankings-widget',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
-	imports: [CommonModule, FormsModule, MatSelectModule, MatFormFieldModule, MatProgressSpinnerModule, MatIconModule],
+	imports: [CommonModule, FormsModule, MatSelectModule, MatFormFieldModule, MatProgressSpinnerModule, MatIconModule, MatTooltip],
 	templateUrl: './player-rankings-widget.component.html'
 })
 export class PlayerRankingsWidgetComponent implements OnInit {
@@ -104,6 +105,22 @@ export class PlayerRankingsWidgetComponent implements OnInit {
 		this.router.navigate(['player-rankings'], {
 			queryParams: {
 				playerType: this.playerType
+			}
+		});
+	}
+
+	public refresh() {
+		this.loading = true;
+		this.playerService.refreshPlayerRankings().subscribe({
+			next: (_) => {
+				this.loading = false;
+				this.ranking = [];
+				this.loadRanking();
+			},
+			error: (err) => {
+				this.loading = false;
+				this.error = true;
+				this.errorMessage = `An error occur while refreshing the ranking: ${err.message}`;
 			}
 		});
 	}

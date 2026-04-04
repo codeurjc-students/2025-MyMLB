@@ -35,7 +35,7 @@
 					<app-dropdown-menu></app-dropdown-menu>
 				</li>
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a></li>
-				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/player-rankings'), itemsHover()]" (click)="redirect('player-rankings')">Player Rankings</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/player-rankings'), itemsHover()]" (click)="redirect('player-rankings')">Top Players</a></li>
 			}
 			@else if (roles.includes("ADMIN")) {
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Menu</a></li>
@@ -115,7 +115,12 @@
                     }
 
                     @if (!roles.includes("ADMIN")) {
-                        <li><a (click)="isMenuOpen = false; redirect('standings')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Standings</a></li>
+						<li class="relative group">
+							<a class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer" [ngClass]="[applyStyle('/team'), itemsHover()]">Teams</a>
+							<app-dropdown-menu></app-dropdown-menu>
+						</li>
+						<li><a class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer" [ngClass]="[applyStyle('/standings'), itemsHover()]" (click)="redirect('standings')">Standings</a></li>
+						<li><a class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer" [ngClass]="[applyStyle('/player-rankings'), itemsHover()]" (click)="redirect('player-rankings')">Top Players</a></li>
                     }
                     @else if (roles.includes("ADMIN")) {
                         <div class="text-[10px] text-gray-400 uppercase tracking-widest px-4 mt-2">Admin Tools</div>

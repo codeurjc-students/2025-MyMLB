@@ -8,6 +8,7 @@ import java.util.Map;
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +51,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;
+    private final PlayerImportService playerImportService;
 
     @Operation(summary = "Get all players", description = "Returns a paginated list of all MLB players, including both position players and pitchers.")
     @ApiResponses(value = {
@@ -206,6 +208,17 @@ public class PlayerController {
     @PostMapping(value = "/{playerName}/pictures", consumes = "multipart/form-data", produces = "application/json")
     public ResponseEntity<PictureInfo> uploadPicture(@PathVariable("playerName") String playerName, @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));
+    }
+
+    @Operation(summary = "Refresh player rankings", description = "Triggers a manual update of the player rankings by fetching the latest team rosters and statistics.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Player Rankings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error during ranking update"),
+    })
+    @PostMapping(value = "/refresh", produces = "application/json")
+    public ResponseEntity<AuthResponse> refreshPlayerRankings() {
+        this.playerImportService.getTeamRoster();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Player Rankings successfully updated!"));
     }
 
     @Operation(summary = "Update position player", description = "Partially updates the stats or team assignment of a position player.")

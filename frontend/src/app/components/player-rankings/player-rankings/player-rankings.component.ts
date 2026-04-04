@@ -71,7 +71,7 @@ export class PlayerRankingsComponent implements OnInit {
 		SOPP: 'saveOpportunities',
 		WHIP: 'whip',
 	};
-	public completeStatName = { // TODO: Tooltip
+	public completeStatName: Record<string, string> = {
 		AVG: 'Average',
 		AB: 'At Bats',
 		H: 'Hits',
@@ -340,5 +340,21 @@ export class PlayerRankingsComponent implements OnInit {
 	public getCurrentDate() {
 		const today = new Date();
 		return today.toISOString().split('T')[0];
+	}
+
+	public refresh() {
+		this.loading = true;
+		this.playerService.refreshPlayerRankings().subscribe({
+			next: (_) => {
+				this.loading = false;
+				this.rankings = {};
+				this.loadDashboard();
+			},
+			error: (err) => {
+				this.loading = false;
+				this.error = true;
+				this.errorMessage = `An error occur updating the dashboard: ${err.message}`;
+			}
+		});
 	}
 }

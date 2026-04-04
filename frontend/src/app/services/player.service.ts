@@ -61,6 +61,10 @@ export class PlayerService {
 		return this.httpMock.post<PitcherGlobal>(`${this.apiUrl}/pitchers`, request);
 	}
 
+	public refreshPlayerRankings(): Observable<AuthResponse> {
+		return this.httpMock.post<AuthResponse>(`${this.apiUrl}/refresh`, {});
+	}
+
 	public updatePicture(playerName: string, file: File): Observable<Pictures> {
 		const formData = new FormData();
 		formData.append('file', file);
