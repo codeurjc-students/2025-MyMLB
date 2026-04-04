@@ -28,10 +28,10 @@ export class PlayerService {
 			});
 		}
 		if (league) {
-			params.set('league', league);
+			params = params.set('league', league);
 		}
 		if (division) {
-			params.set('division', division);
+			params = params.set('division', division);
 		}
 		return this.httpMock.get<PaginatedResponse<PlayerRanking>>(`${this.apiUrl}/rankings`, { params });
 	}
