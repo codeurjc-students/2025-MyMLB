@@ -118,42 +118,46 @@ public class TeamService {
 <span class="fc" id="L118">                    .sorted((t1, t2) -&gt; {</span>
 <span class="fc" id="L119">                        Double pct1 = TeamServiceOperations.parseSafePct(t1.getPct());</span>
 <span class="fc" id="L120">                        Double pct2 = TeamServiceOperations.parseSafePct(t2.getPct());</span>
-<span class="fc" id="L121">                        return Double.compare(pct2, pct1);</span>
-<span class="fc" id="L122">                    }).map(this.teamMapper::toTeamDTO).toList();</span>
+<span class="fc" id="L121">                        int pctCompare = Double.compare(pct2, pct1);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">                        if (pctCompare == 0) {</span>
+<span class="fc" id="L123">                            return Integer.compare(t2.getWins(), t1.getWins());</span>
+                        }
+<span class="fc" id="L125">                        return pctCompare;</span>
+<span class="fc" id="L126">                    }).map(this.teamMapper::toTeamDTO).toList();</span>
 
-<span class="fc" id="L124">            standings.computeIfAbsent(league, l -&gt; new LinkedHashMap&lt;&gt;()).put(division, sorted);</span>
-<span class="fc" id="L125">        }</span>
-<span class="fc" id="L126">        return standings;</span>
+<span class="fc" id="L128">            standings.computeIfAbsent(league, l -&gt; new LinkedHashMap&lt;&gt;()).put(division, sorted);</span>
+<span class="fc" id="L129">        }</span>
+<span class="fc" id="L130">        return standings;</span>
     }
 
     @Transactional
     public void updateRanking(Team awayTeam, Team homeTeam) {
-<span class="fc" id="L131">        Set&lt;Team&gt; teamsToUpdate = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L132">        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(awayTeam.getLeague(), awayTeam.getDivision()));</span>
-<span class="fc" id="L133">        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(homeTeam.getLeague(), homeTeam.getDivision()));</span>
-<span class="fc" id="L134">        teamsToUpdate.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, this.teamRepository, this.matchService));</span>
-<span class="fc" id="L135">        this.teamRepository.saveAll(teamsToUpdate);</span>
-<span class="fc" id="L136">    }</span>
+<span class="fc" id="L135">        Set&lt;Team&gt; teamsToUpdate = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L136">        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(awayTeam.getLeague(), awayTeam.getDivision()));</span>
+<span class="fc" id="L137">        teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(homeTeam.getLeague(), homeTeam.getDivision()));</span>
+<span class="fc" id="L138">        teamsToUpdate.forEach(team -&gt; TeamServiceOperations.enrichTeamStats(team, this.teamRepository, this.matchService));</span>
+<span class="fc" id="L139">        this.teamRepository.saveAll(teamsToUpdate);</span>
+<span class="fc" id="L140">    }</span>
 
     @Transactional
     public void updateTeam(String teamName, UpdateTeamRequest request) {
-<span class="fc" id="L140">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
+<span class="fc" id="L144">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
 
-<span class="fc" id="L142">        request.city().ifPresent(newCity -&gt; {</span>
-<span class="fc" id="L143">            String updatedName = team.getName().replace(team.getCity(), newCity);</span>
-<span class="fc" id="L144">            team.setCity(newCity);</span>
-<span class="fc" id="L145">            team.setName(updatedName);</span>
-<span class="fc" id="L146">        });</span>
-<span class="fc" id="L147">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
-<span class="fc" id="L148">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
-<span class="fc" id="L149">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
-<span class="fc" id="L150">            Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
-<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
-<span class="fc" id="L152">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
+<span class="fc" id="L146">        request.city().ifPresent(newCity -&gt; {</span>
+<span class="fc" id="L147">            String updatedName = team.getName().replace(team.getCity(), newCity);</span>
+<span class="fc" id="L148">            team.setCity(newCity);</span>
+<span class="fc" id="L149">            team.setName(updatedName);</span>
+<span class="fc" id="L150">        });</span>
+<span class="fc" id="L151">        request.newChampionship().ifPresent(team.getChampionships()::addLast);</span>
+<span class="fc" id="L152">        request.newInfo().ifPresent(team::setGeneralInfo);</span>
+<span class="fc" id="L153">        request.newStadiumName().ifPresent(stadiumName -&gt; {</span>
+<span class="fc" id="L154">            Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">            if (stadium.getTeam() != null) {</span>
+<span class="fc" id="L156">                throw new IllegalArgumentException(&quot;The stadium &quot; + stadium.getName() + &quot; already has a team&quot;);</span>
             }
-<span class="fc" id="L154">            team.setStadium(stadium);</span>
-<span class="fc" id="L155">        });</span>
-<span class="fc" id="L156">        this.teamRepository.save(team);</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L158">            team.setStadium(stadium);</span>
+<span class="fc" id="L159">        });</span>
+<span class="fc" id="L160">        this.teamRepository.save(team);</span>
+<span class="fc" id="L161">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

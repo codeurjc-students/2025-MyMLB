@@ -1,0 +1,235 @@
+<div class="p-6 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div class="flex flex-col items-center mb-8">
+        <h1 class="app-page-titles text-center">
+            {{ isPitcher ? 'Pitching' : 'Batting' }} Leaders
+        </h1>
+
+		<!-- Number of Players Per Ranking -->
+        <div class="flex p-1 rounded-xl shadow-inner border transition-colors bg-white border-gray-200 dark:bg-black/40 dark:border-white/10">
+            @for (range of [5, 10, 20]; track range) {
+                <button
+                    (click)="onNumberOfPlayersChange(range)"
+                    [class.bg-indigo-600]="numberOfPlayersToShow === range"
+                    [class.text-white]="numberOfPlayersToShow === range"
+                    [class.shadow-lg]="numberOfPlayersToShow === range"
+                    [class.text-gray-600]="numberOfPlayersToShow !== range"
+                    [class.dark:text-gray-400]="numberOfPlayersToShow !== range"
+                    class="px-8 py-2 cursor-pointer rounded-lg text-sm font-black transition-all duration-300 uppercase tracking-widest hover:text-indigo-600 dark:hover:text-white"
+                >
+                    TOP {{ range }}
+                </button>
+            }
+        </div>
+    </div>
+
+	<!-- Filters -->
+    <div class="flex flex-wrap md:flex-nowrap gap-4 mb-2 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 items-start">
+		<!-- Player Type Filter -->
+        <div class="w-full md:w-40 flex-shrink-0">
+            <mat-form-field appearance="fill" class="w-full admin-input-fields">
+                <mat-label>Template</mat-label>
+                <mat-select [(value)]="playerType" (selectionChange)="onTemplateChange($event.value)">
+                    @for (type of availablePlayerTypes; track type.value) {
+                        <mat-option [value]="type.value">
+                            {{ type.label }}
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+		<!-- League Filter -->
+        <div class="w-full md:w-40 flex-shrink-0">
+            <mat-form-field appearance="fill" class="w-full admin-input-fields">
+                <mat-label>League</mat-label>
+                <mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)">
+                    <mat-option value="">All Leagues</mat-option>
+                    @for (league of availableLeagues; track league) {
+                        <mat-option [value]="league">{{ league }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+		<!-- Division Filter -->
+        <div class="w-full md:w-48 flex-shrink-0">
+            <mat-form-field appearance="fill" class="w-full admin-input-fields">
+                <mat-label>Division</mat-label>
+                <mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)">
+                    <mat-option value="">All Divisions</mat-option>
+                    @for (div of availableDivisions; track div) {
+                        <mat-option [value]="div">{{ div }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+		<!-- Team Filter -->
+        <div class="flex-grow min-w-0">
+            <mat-form-field appearance="fill" class="w-full admin-input-fields">
+                <mat-label>Teams</mat-label>
+                <mat-select (selectionChange)="onTeamFilterChange($event.value)" #teamSelect panelClass="hide-selected-checkbox-panel">
+                    <mat-select-trigger>
+                        <div class="flex flex-wrap gap-1 py-1">
+                            @for (team of filteredTeams; track team) {
+                                <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-200 px-2 py-0.5 rounded text-[11px] font-bold border border-indigo-200 dark:border-indigo-800">
+                                    {{ team }}
+                                </span>
+                            }
+                        </div>
+                    </mat-select-trigger>
+
+                    @for (team of teamsToDisplay; track team.abbreviation) {
+                        <mat-option [value]="team.name">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center p-1 rounded shadow-sm w-7 h-7 flex-shrink-0"
+                                    [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
+                                    <img [src]="'assets/team-logos-new/' + team.league + '/' + team.division + '/' + team.abbreviation + '.png'"
+                                        class="w-5 h-5 object-contain" />
+                                </div>
+                                <span class="font-medium">{{ team.name }}</span>
+                            </div>
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+		<!-- Refresh Standings Button -->
+        <button class="app-button group !w-auto px-6 h-[52px]" (click)="refresh()" [disabled]="loading">
+            <span class="app-button-bright"></span>
+            <div class="app-button-texts flex items-center justify-center gap-2">
+                <mat-icon class="text-sm" [class.animate-spin]="loading">sync</mat-icon>
+                <span class="text-xs font-black uppercase tracking-widest text-white">Refresh</span>
+            </div>
+        </button>
+
+		<!-- Clear All Filters Button -->
+        <button (click)="onClearAllFilters()" class="app-red-buttons !w-auto group h-[52px] px-6 relative">
+			<span class="app-button-bright"></span>
+			<div class="app-button-texts flex flex-row items-center justify-center gap-2 leading-none h-full">
+				<mat-icon class="!flex items-center justify-center !w-5 !h-5 !text-xl !m-0">delete_sweep</mat-icon>
+				<span class="text-xs font-black uppercase tracking-widest text-white">Clear All</span>
+			</div>
+		</button>
+    </div>
+
+	<!-- Qualifiers Note -->
+	<div class="flex justify-end mb-6 px-2">
+        <span class="text-[10px] text-black dark:text-white font-bold uppercase tracking-widest">
+            *Qualifiers: 2.1 PA per team game for batters, 1.25 PA per team game for pitchers.
+        </span>
+    </div>
+
+	<!-- Rankings -->
+    <div class="relative min-h-[400px]">
+        @if (loading) {
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-[2px] z-20 transition-all">
+                <div class="w-16 h-16 rounded-full bg-white/10 dark:bg-blue-500/20 flex items-center justify-center shadow-2xl border border-white/10">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </div>
+                <span class="text-white text-[10px] font-bold uppercase tracking-[0.2em] mt-4 animate-pulse">Loading Rankings...</span>
+            </div>
+        }
+
+        @if (!error) {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                [class.opacity-30]="loading"
+				[class.blur-sm]="loading"
+				[class.pointer-events-none]="loading"
+			>
+                @for (stat of (isPitcher ? availablePitcherStats : availablePositionPlayerStats) | keyvalue:keepOrder; track stat.key) {
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 transition-all hover:scale-[1.01] group">
+                        <div
+                            [matTooltip]="completeStatName[stat.key]"
+                            matTooltipPosition="above"
+                            class="bg-gradient-to-b from-blue-800 via-blue-900 to-gray-900 dark:from-blue-950 dark:via-indigo-950 dark:to-slate-950 p-4 border-b border-white/10 text-center relative"
+                        >
+                            <h3 class="text-white font-black text-xl tracking-widest uppercase">{{ stat.key }}</h3>
+
+							<!-- Chart Visualization Button -->
+                            <button [matTooltip]="'Visualize in Chart'" matTooltipPosition="below" (click)="openChart(stat.key, stat.value)"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/10 hover:bg-indigo-500 text-white transition-all cursor-pointer shadow-sm border border-white/5">
+                                <mat-icon class="!w-5 !h-5 !text-lg">bar_chart</mat-icon>
+                            </button>
+                        </div>
+
+						<!-- Ranking Table -->
+                        <div class="p-2">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-[10px] uppercase text-black dark:text-white font-bold border-b border-gray-100 dark:border-gray-700">
+                                        <th class="px-3 py-2 w-12 text-center">Pos</th>
+                                        <th class="px-3 py-2">Player</th>
+                                        <th class="px-3 py-2 text-right">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50 dark:divide-gray-700/50">
+                                    @for (player of (rankings[stat.value] | slice:0:numberOfPlayersToShow); track player.name; let i = $index) {
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors group">
+                                            <td class="px-3 py-3 text-xs font-black text-black dark:text-white italic text-center">
+                                                #{{ i + 1 }}
+                                            </td>
+                                            <td class="px-3 py-3">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 border-2 border-white dark:border-gray-600 shadow-sm flex-shrink-0">
+                                                        <img [src]="player.picture" [alt]="player.name" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div class="flex flex-col min-w-0">
+                                                        <span class="text-sm font-bold text-black dark:text-white group-hover:text-indigo-600 transition-colors truncate">
+                                                            {{ player.name }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td class="px-3 py-3 text-right">
+                                                <span class="text-sm font-black text-black dark:text-white px-2 py-1 rounded bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600">
+                                                    {{ statFormatter(player.stat, stat.key) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Chart -->
+@if (selectedRankingForChart) {
+    <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div class="absolute cursor-pointer inset-0 bg-black/80 backdrop-blur-md" (click)="closeChart()"></div>
+
+        <div class="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-white/10 overflow-hidden animate-in zoom-in-95 duration-300 z-[10000]">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800">
+                <div class="w-10"></div>
+                <div class="flex-grow text-center">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                        {{ completeStatName[selectedRankingForChart.key] }} <span class="text-indigo-500">Leaders</span>
+                    </h2>
+                    <p class="text-sm text-gray-500 text-center">Top {{ numberOfPlayersToShow }} Players</p>
+                </div>
+                <button (click)="closeChart()" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <div class="p-6 h-[400px] sm:h-[500px] bg-white dark:bg-gray-900">
+                <canvas baseChart
+                    [data]="getChartData(selectedRankingForChart.value)"
+                    [options]="barChartOptions"
+                    [type]="'bar'">
+                </canvas>
+            </div>
+
+            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 text-center text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+                Official data for the 2026 MLB season  • Last Update: {{ getCurrentDate() }}
+            </div>
+        </div>
+    </div>
+}

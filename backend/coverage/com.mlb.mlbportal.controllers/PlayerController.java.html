@@ -2,7 +2,13 @@
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,6 +51,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;
+    private final PlayerImportService playerImportService;
 
     @Operation(summary = &quot;Get all players&quot;, description = &quot;Returns a paginated list of all MLB players, including both position players and pitchers.&quot;)
     @ApiResponses(value = {
@@ -53,7 +60,7 @@ public class PlayerController {
     })
     @GetMapping
     public ResponseEntity&lt;Page&lt;PlayerDTO&gt;&gt; getAllPlayers(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L56">        return ResponseEntity.ok(this.playerService.getAllPlayers(page, size));</span>
+<span class="fc" id="L63">        return ResponseEntity.ok(this.playerService.getAllPlayers(page, size));</span>
     }
 
     @Operation(summary = &quot;Get all position players&quot;, description = &quot;Returns a paginated list of all MLB position players with detailed stats.&quot;)
@@ -63,7 +70,7 @@ public class PlayerController {
     })
     @GetMapping(&quot;/position-players&quot;)
     public ResponseEntity&lt;Page&lt;PositionPlayerDTO&gt;&gt; getAllPositionPlayers(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L66">        return ResponseEntity.ok(this.playerService.getAllPositionPlayers(page, size));</span>
+<span class="fc" id="L73">        return ResponseEntity.ok(this.playerService.getAllPositionPlayers(page, size));</span>
     }
 
     @Operation(summary = &quot;Get all pitchers&quot;, description = &quot;Returns a paginated list of all MLB pitchers with detailed stats.&quot;)
@@ -73,7 +80,7 @@ public class PlayerController {
     })
     @GetMapping(&quot;/pitchers&quot;)
     public ResponseEntity&lt;Page&lt;PitcherDTO&gt;&gt; getAllPitchers(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="nc" id="L76">        return ResponseEntity.ok(this.playerService.getAllPitchers(page, size));</span>
+<span class="nc" id="L83">        return ResponseEntity.ok(this.playerService.getAllPitchers(page, size));</span>
     }
 
     @Operation(summary = &quot;Get player by name&quot;, description = &quot;Returns detailed information about a specific player identified by name.&quot;)
@@ -84,7 +91,7 @@ public class PlayerController {
     })
     @GetMapping(&quot;/{name}&quot;)
     public ResponseEntity&lt;PlayerDTO&gt; getPlayerByName(@PathVariable(&quot;name&quot;) String name) {
-<span class="fc" id="L87">        return ResponseEntity.ok(this.playerService.findPlayerByName(name));</span>
+<span class="fc" id="L94">        return ResponseEntity.ok(this.playerService.findPlayerByName(name));</span>
     }
 
     @Operation(summary = &quot;Get position players of a team&quot;, description = &quot;Returns a paginated list of position players for a specific team, ordered alphabetically.&quot;)
@@ -99,7 +106,7 @@ public class PlayerController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="fc" id="L102">        return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));</span>
+<span class="fc" id="L109">        return ResponseEntity.ok(this.playerService.getAllPositionPlayersOfATeam(teamName, page, size));</span>
     }
 
     @Operation(summary = &quot;Get pitchers of a team&quot;, description = &quot;Returns a paginated list of pitchers for a specific team, ordered alphabetically.&quot;)
@@ -114,7 +121,45 @@ public class PlayerController {
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="nc" id="L117">        return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));</span>
+<span class="nc" id="L124">        return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));</span>
+    }
+
+    @Operation(summary = &quot;Get Player Rankings&quot;, description = &quot;Returns a page of players (position or pitchers) sorted by a specific statistic.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the ranking&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PlayerRankingsDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/rankings&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Page&lt;PlayerRankingsDTO&gt;&gt; getPlayerRankings(@RequestParam(defaultValue = &quot;0&quot;)int page,
+                                                                     @RequestParam(defaultValue = &quot;20&quot;)int size,
+                                                                     @RequestParam String playerType,
+                                                                     @RequestParam String stat,
+                                                                     @RequestParam(required = false)List&lt;String&gt; teamNames,
+                                                                     @RequestParam(required = false)League league,
+                                                                     @RequestParam(required = false)Division division) {
+
+<span class="fc" id="L141">        return ResponseEntity.ok(this.playerService.getTopPlayersRanking(</span>
+                page,
+                size,
+                playerType,
+                stat,
+                teamNames,
+                league,
+                division)
+        );
+    }
+
+    @Operation(summary = &quot;Get All Player Rankings&quot;, description = &quot;Returns a map of player rankings for all available statistics. The response is grouped by the stat name&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved all rankings&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/rankings/all&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Map&lt;String , List&lt;PlayerRankingsDTO&gt;&gt;&gt; getAllPlayerRankings(@RequestParam String playerType,
+                                                                                      @RequestParam(required = false)List&lt;String&gt; teamNames,
+                                                                                      @RequestParam(required = false)League league,
+                                                                                      @RequestParam(required = false)Division division) {
+<span class="fc" id="L162">        return ResponseEntity.ok(this.playerService.getAllStatsRankings(playerType, teamNames, league, division));</span>
     }
 
     @Operation(summary = &quot;Create a position player&quot;, description = &quot;Creates a new MLB position player and assigns them to a team.&quot;)
@@ -126,13 +171,13 @@ public class PlayerController {
     })
     @PostMapping(value = &quot;/position-players&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PositionPlayerDTO&gt; createPositionPlayer(@Valid @RequestBody CreatePositionPlayerRequest request) {
-<span class="fc" id="L129">        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);</span>
+<span class="fc" id="L174">        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L131">                .fromCurrentContextPath()</span>
-<span class="fc" id="L132">                .path(&quot;/api/v1/players/{name}&quot;)</span>
-<span class="fc" id="L133">                .buildAndExpand(player.name())</span>
-<span class="fc" id="L134">                .toUri();</span>
-<span class="fc" id="L135">        return ResponseEntity.created(location).body(player);</span>
+<span class="fc" id="L176">                .fromCurrentContextPath()</span>
+<span class="fc" id="L177">                .path(&quot;/api/v1/players/{name}&quot;)</span>
+<span class="fc" id="L178">                .buildAndExpand(player.name())</span>
+<span class="fc" id="L179">                .toUri();</span>
+<span class="fc" id="L180">        return ResponseEntity.created(location).body(player);</span>
     }
 
     @Operation(summary = &quot;Create a pitcher&quot;, description = &quot;Creates a new MLB pitcher and assigns them to a team.&quot;)
@@ -144,13 +189,13 @@ public class PlayerController {
     })
     @PostMapping(value = &quot;/pitchers&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PitcherDTO&gt; createPitcher(@Valid @RequestBody CreatePitcherRequest request) {
-<span class="nc" id="L147">        PitcherDTO player = this.playerService.createPitcher(request);</span>
+<span class="nc" id="L192">        PitcherDTO player = this.playerService.createPitcher(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="nc" id="L149">                .fromCurrentContextPath()</span>
-<span class="nc" id="L150">                .path(&quot;/api/v1/players/{name}&quot;)</span>
-<span class="nc" id="L151">                .buildAndExpand(player.name())</span>
-<span class="nc" id="L152">                .toUri();</span>
-<span class="nc" id="L153">        return ResponseEntity.created(location).body(player);</span>
+<span class="nc" id="L194">                .fromCurrentContextPath()</span>
+<span class="nc" id="L195">                .path(&quot;/api/v1/players/{name}&quot;)</span>
+<span class="nc" id="L196">                .buildAndExpand(player.name())</span>
+<span class="nc" id="L197">                .toUri();</span>
+<span class="nc" id="L198">        return ResponseEntity.created(location).body(player);</span>
     }
 
     @Operation(summary = &quot;Upload player picture&quot;, description = &quot;Uploads or updates the profile picture of a specific player.&quot;)
@@ -161,7 +206,18 @@ public class PlayerController {
     })
     @PostMapping(value = &quot;/{playerName}/pictures&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; uploadPicture(@PathVariable(&quot;playerName&quot;) String playerName, @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
-<span class="fc" id="L164">        return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));</span>
+<span class="fc" id="L209">        return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));</span>
+    }
+
+    @Operation(summary = &quot;Refresh player rankings&quot;, description = &quot;Triggers a manual update of the player rankings by fetching the latest team rosters and statistics.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Player Rankings successfully updated&quot;, content = @Content(mediaType = &quot;application/json&quot;,schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error during ranking update&quot;),
+    })
+    @PostMapping(value = &quot;/refresh&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; refreshPlayerRankings() {
+<span class="fc" id="L219">        this.playerImportService.getTeamRoster();</span>
+<span class="fc" id="L220">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player Rankings successfully updated!&quot;));</span>
     }
 
     @Operation(summary = &quot;Update position player&quot;, description = &quot;Partially updates the stats or team assignment of a position player.&quot;)
@@ -173,8 +229,8 @@ public class PlayerController {
     @PatchMapping(value = &quot;/position-players/{playerName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updatePositionPlayer(@PathVariable(&quot;playerName&quot;) String playerName,
                                                              @RequestBody EditPositionPlayerRequest request) {
-<span class="fc" id="L176">        this.playerService.updatePositionPlayer(playerName, request);</span>
-<span class="fc" id="L177">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
+<span class="fc" id="L232">        this.playerService.updatePositionPlayer(playerName, request);</span>
+<span class="fc" id="L233">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Update pitcher&quot;, description = &quot;Partially updates the stats or team assignment of a pitcher.&quot;)
@@ -186,8 +242,8 @@ public class PlayerController {
     @PatchMapping(value = &quot;/pitchers/{playerName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updatePitcher(@PathVariable(&quot;playerName&quot;) String playerName,
                                                       @RequestBody EditPitcherRequest request) {
-<span class="nc" id="L189">        this.playerService.updatePitcher(playerName, request);</span>
-<span class="nc" id="L190">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
+<span class="nc" id="L245">        this.playerService.updatePitcher(playerName, request);</span>
+<span class="nc" id="L246">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Player successfully updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Delete player&quot;, description = &quot;Deletes a player by name and returns their details.&quot;)
@@ -197,7 +253,7 @@ public class PlayerController {
     })
     @DeleteMapping(value = &quot;/{playerName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PlayerDTO&gt; deletePlayer(@PathVariable(&quot;playerName&quot;) String playerName) {
-<span class="fc" id="L200">        return ResponseEntity.ok(this.playerService.deletePlayer(playerName));</span>
+<span class="fc" id="L256">        return ResponseEntity.ok(this.playerService.deletePlayer(playerName));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

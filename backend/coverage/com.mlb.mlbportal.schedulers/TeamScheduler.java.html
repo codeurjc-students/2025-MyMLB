@@ -14,7 +14,7 @@ public class TeamScheduler {
     private final TeamImportService teamImportService;
 
     @Async
-    @Scheduled(cron = &quot;0 0 5 * * *&quot;)
+    @Scheduled(cron = &quot;0 0 5 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void updateTeamStatsAndRankings() {
 <span class="fc" id="L19">        this.teamImportService.getTeamStats();</span>
 <span class="fc" id="L20">    }</span>

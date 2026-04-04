@@ -3,10 +3,21 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -58,55 +69,101 @@ public class PlayerService {
 
     private final PaginationHandlerService paginationHandlerService;
 
-    // TODO - Review
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Transactional(readOnly = true)
     public Page&lt;PlayerDTO&gt; getAllPlayers(int page, int size) {
-<span class="fc" id="L64">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
-<span class="fc" id="L65">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
+<span class="fc" id="L77">        List&lt;PositionPlayer&gt; positionPlayers = this.positionPlayerRepository.findAll();</span>
+<span class="fc" id="L78">        List&lt;Pitcher&gt; pitcherList = this.pitcherRepository.findAll();</span>
 
-<span class="fc" id="L67">        List&lt;PositionPlayerDTO&gt; mappedPositionPlayers = this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
-<span class="fc" id="L68">        List&lt;PitcherDTO&gt; mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);</span>
+<span class="fc" id="L80">        List&lt;PositionPlayerDTO&gt; mappedPositionPlayers = this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);</span>
+<span class="fc" id="L81">        List&lt;PitcherDTO&gt; mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);</span>
 
-<span class="fc" id="L70">        List&lt;PlayerDTO&gt; result = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L71">        result.addAll(mappedPositionPlayers);</span>
-<span class="fc" id="L72">        result.addAll(mappedPitchers);</span>
+<span class="fc" id="L83">        List&lt;PlayerDTO&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L84">        result.addAll(mappedPositionPlayers);</span>
+<span class="fc" id="L85">        result.addAll(mappedPitchers);</span>
 
-<span class="fc" id="L74">        result.sort((p1, p2) -&gt; p1.name().compareToIgnoreCase(p2.name()));</span>
-<span class="fc" id="L75">        return this.paginationHandlerService.paginateAndMap(result, page, size, Function.identity());</span>
+<span class="fc" id="L87">        result.sort((p1, p2) -&gt; p1.name().compareToIgnoreCase(p2.name()));</span>
+<span class="fc" id="L88">        return this.paginationHandlerService.paginateAndMap(result, page, size, Function.identity());</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PositionPlayerDTO&gt; getAllPositionPlayers(int page, int size) {
-<span class="fc" id="L80">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
-<span class="fc" id="L81">        return this.positionPlayerRepository.findAll(pageable).map(this.positionPlayerMapper::toPositionPlayerDTO);</span>
+<span class="fc" id="L93">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
+<span class="fc" id="L94">        return this.positionPlayerRepository.findAll(pageable).map(this.positionPlayerMapper::toPositionPlayerDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PitcherDTO&gt; getAllPitchers(int page, int size) {
-<span class="fc" id="L86">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
-<span class="fc" id="L87">        return this.pitcherRepository.findAll(pageable).map(this.pitcherMapper::toPitcherDTO);</span>
+<span class="fc" id="L99">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
+<span class="fc" id="L100">        return this.pitcherRepository.findAll(pageable).map(this.pitcherMapper::toPitcherDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public PlayerDTO findPlayerByName(String name) {
-<span class="fc" id="L92">        Player player = this.playerRepository.findByNameOrThrow(name);</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        return (player instanceof PositionPlayer pp)</span>
-<span class="fc" id="L94">                ? positionPlayerMapper.toPositionPlayerDTO(pp)</span>
-<span class="fc" id="L95">                : pitcherMapper.toPitcherDTO((Pitcher) player);</span>
+<span class="fc" id="L105">        Player player = this.playerRepository.findByNameOrThrow(name);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        return (player instanceof PositionPlayer pp)</span>
+<span class="fc" id="L107">                ? positionPlayerMapper.toPositionPlayerDTO(pp)</span>
+<span class="fc" id="L108">                : pitcherMapper.toPitcherDTO((Pitcher) player);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PositionPlayerSummaryDTO&gt; getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L100">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
-<span class="fc" id="L101">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
-<span class="fc" id="L102">        return this.paginationHandlerService.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);</span>
+<span class="fc" id="L113">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
+<span class="fc" id="L114">        List&lt;PositionPlayer&gt; players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);</span>
+<span class="fc" id="L115">        return this.paginationHandlerService.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public Page&lt;PitcherSummaryDTO&gt; getAllPitchersOfATeam(String teamName, int page, int size) {
-<span class="fc" id="L107">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
-<span class="fc" id="L108">        List&lt;Pitcher&gt; players = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
-<span class="fc" id="L109">        return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);</span>
+<span class="fc" id="L120">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
+<span class="fc" id="L121">        List&lt;Pitcher&gt; players = this.pitcherRepository.findByTeamOrderByNameAsc(team);</span>
+<span class="fc" id="L122">        return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);</span>
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;single-stat-player-rankings&quot;, key = &quot;{#stat, #playerType, #teamNames, #league, #division, #page, #size}&quot;)
+    public Page&lt;PlayerRankingsDTO&gt; getTopPlayersRanking(int page, int size, String playerType, String stat, List&lt;String&gt; teamNames, League league, Division division) {
+<span class="fc" id="L128">        String tableName = QueryBuilder.getTableName(playerType);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (!QueryBuilder.isValidStat(stat, playerType)) {</span>
+<span class="fc" id="L130">            throw new IllegalArgumentException(&quot;The provided stat is not valid&quot;);</span>
+        }
+<span class="fc" id="L132">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">        boolean hasTeamFilter = (teamNames != null &amp;&amp; !teamNames.isEmpty());</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        boolean hasLeagueFilter = league != null;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        boolean hasDivisionFilter = division != null;</span>
+
+        // Data Query Builder
+<span class="fc" id="L138">        String dataQueryString = QueryBuilder.buildDataQuery(stat, tableName, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);</span>
+<span class="fc" id="L139">        TypedQuery&lt;PlayerRankingsDTO&gt; dataQuery = this.entityManager.createQuery(dataQueryString, PlayerRankingsDTO.class);</span>
+
+        // Count Query Builder (For pagination)
+<span class="fc" id="L142">        String countQueryString = QueryBuilder.buildCountQuery(stat, tableName, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);</span>
+<span class="fc" id="L143">        TypedQuery&lt;Long&gt; countQuery = this.entityManager.createQuery(countQueryString, Long.class);</span>
+<span class="fc" id="L144">        QueryBuilder.setQueryParams(dataQuery, countQuery, teamNames, league, division, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);</span>
+
+        // Pagination
+<span class="fc" id="L147">        dataQuery.setFirstResult((int) pageable.getOffset());</span>
+<span class="fc" id="L148">        dataQuery.setMaxResults(pageable.getPageSize());</span>
+<span class="fc" id="L149">        List&lt;PlayerRankingsDTO&gt; content = dataQuery.getResultList();</span>
+<span class="fc" id="L150">        Long totalElements = countQuery.getSingleResult();</span>
+
+<span class="fc" id="L152">        return new PageImpl&lt;&gt;(content, pageable, totalElements);</span>
+    }
+
+    @Cacheable(value = &quot;all-stats-player-rankings&quot;, key = &quot;{#playerType, #teamNames, #league, #division}&quot;)
+    public Map&lt;String, List&lt;PlayerRankingsDTO&gt;&gt; getAllStatsRankings(String playerType, List&lt;String&gt; teamNames, League league, Division division) {
+<span class="fc" id="L157">        List&lt;String&gt; allStats = QueryBuilder.getPlayerStats(playerType);</span>
+<span class="fc" id="L158">        Map&lt;String, List&lt;PlayerRankingsDTO&gt;&gt; result = new ConcurrentHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L160">        List&lt;CompletableFuture&lt;Void&gt;&gt; futureTask = allStats.stream().map(stat -&gt; CompletableFuture.runAsync(() -&gt; {</span>
+<span class="fc" id="L161">            List&lt;PlayerRankingsDTO&gt; rankings = this.getTopPlayersRanking(0, 20, playerType, stat, teamNames, league, division).getContent();</span>
+<span class="fc" id="L162">            result.put(stat, rankings);</span>
+<span class="fc" id="L163">        })).toList();</span>
+
+<span class="fc" id="L165">        CompletableFuture.allOf(futureTask.toArray(new CompletableFuture[0])).join();</span>
+<span class="fc" id="L166">        return result;</span>
     }
 
     /**
@@ -116,11 +173,11 @@ public class PlayerService {
      * @throws RosterFullException if the roster already contains 24 or more players
      */
     private void checkTeamAvailability(Team team) {
-<span class="fc" id="L119">        int rosterSize = team.getPositionPlayers().size() + team.getPitchers().size();</span>
-<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (rosterSize &gt;= 24) {</span>
-<span class="fc" id="L121">            throw new RosterFullException(team.getName() + &quot; roster is full&quot;);</span>
+<span class="fc" id="L176">        int rosterSize = team.getPositionPlayers().size() + team.getPitchers().size();</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (rosterSize &gt;= 24) {</span>
+<span class="fc" id="L178">            throw new RosterFullException(team.getName() + &quot; roster is full&quot;);</span>
         }
-<span class="fc" id="L123">    }</span>
+<span class="fc" id="L180">    }</span>
 
     /**
      * Validates player creation by checking duplicates and team availability.
@@ -133,12 +190,12 @@ public class PlayerService {
      * @throws RosterFullException if the team roster is full
      */
     private Team playerCreationValidations(String playerName, String teamName) {
-<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (this.playerRepository.findByName(playerName).isPresent()) {</span>
-<span class="fc" id="L137">            throw new PlayerAlreadyExistsException();</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        if (this.playerRepository.findByName(playerName).isPresent()) {</span>
+<span class="fc" id="L194">            throw new PlayerAlreadyExistsException();</span>
         }
-<span class="fc" id="L139">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
-<span class="fc" id="L140">        this.checkTeamAvailability(team);</span>
-<span class="fc" id="L141">        return team;</span>
+<span class="fc" id="L196">        Team team = this.teamRepository.findByNameOrThrow(teamName);</span>
+<span class="fc" id="L197">        this.checkTeamAvailability(team);</span>
+<span class="fc" id="L198">        return team;</span>
     }
 
     /**
@@ -148,12 +205,12 @@ public class PlayerService {
      */
     @Transactional
     public PositionPlayerDTO createPositionPlayer(CreatePositionPlayerRequest request) {
-<span class="fc" id="L151">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
-<span class="fc" id="L152">        PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());</span>
-<span class="fc" id="L153">        newPlayer.setApiDataSource(false);</span>
-<span class="fc" id="L154">        team.addPositionPlayer(newPlayer);</span>
-<span class="fc" id="L155">        this.playerRepository.save(newPlayer);</span>
-<span class="fc" id="L156">        return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);</span>
+<span class="fc" id="L208">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
+<span class="fc" id="L209">        PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());</span>
+<span class="fc" id="L210">        newPlayer.setApiDataSource(false);</span>
+<span class="fc" id="L211">        team.addPositionPlayer(newPlayer);</span>
+<span class="fc" id="L212">        this.playerRepository.save(newPlayer);</span>
+<span class="fc" id="L213">        return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);</span>
     }
 
     /**
@@ -163,21 +220,21 @@ public class PlayerService {
      */
     @Transactional
     public PitcherDTO createPitcher(CreatePitcherRequest request) {
-<span class="fc" id="L166">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
-<span class="fc" id="L167">        Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());</span>
-<span class="fc" id="L168">        newPlayer.setApiDataSource(false);</span>
-<span class="fc" id="L169">        team.addPitcher(newPlayer);</span>
-<span class="fc" id="L170">        this.playerRepository.save(newPlayer);</span>
-<span class="fc" id="L171">        return this.pitcherMapper.toPitcherDTO(newPlayer);</span>
+<span class="fc" id="L223">        Team team = this.playerCreationValidations(request.name(), request.teamName());</span>
+<span class="fc" id="L224">        Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());</span>
+<span class="fc" id="L225">        newPlayer.setApiDataSource(false);</span>
+<span class="fc" id="L226">        team.addPitcher(newPlayer);</span>
+<span class="fc" id="L227">        this.playerRepository.save(newPlayer);</span>
+<span class="fc" id="L228">        return this.pitcherMapper.toPitcherDTO(newPlayer);</span>
     }
 
     @Transactional
     public PictureInfo updatePicture(String playerName, MultipartFile file) throws IOException {
-<span class="fc" id="L176">        Player player = this.playerRepository.findByNameOrThrow(playerName);</span>
-<span class="fc" id="L177">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
-<span class="fc" id="L178">        player.setPicture(pictureInfo);</span>
-<span class="fc" id="L179">        this.playerRepository.save(player);</span>
-<span class="fc" id="L180">        return pictureInfo;</span>
+<span class="fc" id="L233">        Player player = this.playerRepository.findByNameOrThrow(playerName);</span>
+<span class="fc" id="L234">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L235">        player.setPicture(pictureInfo);</span>
+<span class="fc" id="L236">        this.playerRepository.save(player);</span>
+<span class="fc" id="L237">        return pictureInfo;</span>
     }
 
     /**
@@ -186,91 +243,91 @@ public class PlayerService {
      * @param teamNameOpt the request field corresponding to the new possible team.
      */
     private void updateTeamIfNeeded(Player player, Optional&lt;String&gt; teamNameOpt) {
-<span class="fc" id="L189">        teamNameOpt.ifPresent(newTeamName -&gt; {</span>
-<span class="fc" id="L190">            Team newTeam = this.teamRepository.findByNameOrThrow(newTeamName);</span>
-<span class="fc" id="L191">            this.checkTeamAvailability(newTeam);</span>
-<span class="fc" id="L192">            Team oldTeam = player.getTeam();</span>
-<span class="pc bpc" id="L193" title="1 of 2 branches missed.">            if (oldTeam != null) {</span>
-<span class="pc bpc" id="L194" title="2 of 3 branches missed.">                switch (player) {</span>
-<span class="fc" id="L195">                    case PositionPlayer pos -&gt; oldTeam.removePositionPlayer(pos);</span>
-<span class="nc" id="L196">                    case Pitcher pit -&gt; oldTeam.removePitcher(pit);</span>
-<span class="nc" id="L197">                    default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
+<span class="fc" id="L246">        teamNameOpt.ifPresent(newTeamName -&gt; {</span>
+<span class="fc" id="L247">            Team newTeam = this.teamRepository.findByNameOrThrow(newTeamName);</span>
+<span class="fc" id="L248">            this.checkTeamAvailability(newTeam);</span>
+<span class="fc" id="L249">            Team oldTeam = player.getTeam();</span>
+<span class="pc bpc" id="L250" title="1 of 2 branches missed.">            if (oldTeam != null) {</span>
+<span class="pc bpc" id="L251" title="2 of 3 branches missed.">                switch (player) {</span>
+<span class="fc" id="L252">                    case PositionPlayer pos -&gt; oldTeam.removePositionPlayer(pos);</span>
+<span class="nc" id="L253">                    case Pitcher pit -&gt; oldTeam.removePitcher(pit);</span>
+<span class="nc" id="L254">                    default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
                 }
             }
 
-<span class="fc" id="L201">            player.setTeam(newTeam);</span>
-<span class="pc bpc" id="L202" title="2 of 3 branches missed.">            switch (player) {</span>
-<span class="fc" id="L203">                case PositionPlayer pos -&gt; newTeam.addPositionPlayer(pos);</span>
-<span class="nc" id="L204">                case Pitcher pit -&gt; newTeam.addPitcher(pit);</span>
-<span class="nc" id="L205">                default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
+<span class="fc" id="L258">            player.setTeam(newTeam);</span>
+<span class="pc bpc" id="L259" title="2 of 3 branches missed.">            switch (player) {</span>
+<span class="fc" id="L260">                case PositionPlayer pos -&gt; newTeam.addPositionPlayer(pos);</span>
+<span class="nc" id="L261">                case Pitcher pit -&gt; newTeam.addPitcher(pit);</span>
+<span class="nc" id="L262">                default -&gt; throw new IllegalArgumentException(&quot;Unsupported player subtype: &quot; + player.getClass().getName());</span>
             }
-<span class="fc" id="L207">        });</span>
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L264">        });</span>
+<span class="fc" id="L265">    }</span>
 
     @Transactional
     public void updatePositionPlayer(String playerName, EditPositionPlayerRequest request) {
-<span class="fc" id="L212">        PositionPlayer player = this.positionPlayerRepository.findByNameOrThrow(playerName);</span>
+<span class="fc" id="L269">        PositionPlayer player = this.positionPlayerRepository.findByNameOrThrow(playerName);</span>
 
-<span class="fc" id="L214">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
-<span class="fc" id="L215">        request.position().ifPresent(player::setPosition);</span>
-<span class="fc" id="L216">        request.atBats().ifPresent(player::setAtBats);</span>
-<span class="fc" id="L217">        request.walks().ifPresent(player::setWalks);</span>
-<span class="fc" id="L218">        request.hits().ifPresent(player::setHits);</span>
-<span class="fc" id="L219">        request.doubles().ifPresent(player::setDoubles);</span>
-<span class="fc" id="L220">        request.triples().ifPresent(player::setTriples);</span>
-<span class="fc" id="L221">        request.rbis().ifPresent(player::setRbis);</span>
-<span class="fc" id="L222">        request.homeRuns().ifPresent(player::setHomeRuns);</span>
-<span class="fc" id="L223">        request.apiDataSource().ifPresent(player::setApiDataSource);</span>
-<span class="fc" id="L224">        this.updateTeamIfNeeded(player, request.teamName());</span>
+<span class="fc" id="L271">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
+<span class="fc" id="L272">        request.position().ifPresent(player::setPosition);</span>
+<span class="fc" id="L273">        request.atBats().ifPresent(player::setAtBats);</span>
+<span class="fc" id="L274">        request.walks().ifPresent(player::setWalks);</span>
+<span class="fc" id="L275">        request.hits().ifPresent(player::setHits);</span>
+<span class="fc" id="L276">        request.doubles().ifPresent(player::setDoubles);</span>
+<span class="fc" id="L277">        request.triples().ifPresent(player::setTriples);</span>
+<span class="fc" id="L278">        request.rbis().ifPresent(player::setRbis);</span>
+<span class="fc" id="L279">        request.homeRuns().ifPresent(player::setHomeRuns);</span>
+<span class="fc" id="L280">        request.apiDataSource().ifPresent(player::setApiDataSource);</span>
+<span class="fc" id="L281">        this.updateTeamIfNeeded(player, request.teamName());</span>
 
-<span class="fc" id="L226">        this.playerRepository.save(player);</span>
-<span class="fc" id="L227">    }</span>
+<span class="fc" id="L283">        this.playerRepository.save(player);</span>
+<span class="fc" id="L284">    }</span>
 
     @Transactional
     public void updatePitcher(String playerName, EditPitcherRequest request) {
-<span class="fc" id="L231">        Pitcher player = this.pitcherRepository.findByNameOrThrow(playerName);</span>
+<span class="fc" id="L288">        Pitcher player = this.pitcherRepository.findByNameOrThrow(playerName);</span>
 
-<span class="fc" id="L233">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
-<span class="fc" id="L234">        request.position().ifPresent(player::setPosition);</span>
-<span class="fc" id="L235">        request.games().ifPresent(player::setGames);</span>
-<span class="fc" id="L236">        request.wins().ifPresent(player::setWins);</span>
-<span class="fc" id="L237">        request.losses().ifPresent(player::setLosses);</span>
-<span class="fc" id="L238">        request.inningsPitched().ifPresent(player::setInningsPitched);</span>
-<span class="fc" id="L239">        request.totalStrikeouts().ifPresent(player::setTotalStrikeouts);</span>
-<span class="fc" id="L240">        request.walks().ifPresent(player::setWalks);</span>
-<span class="fc" id="L241">        request.hitsAllowed().ifPresent(player::setHitsAllowed);</span>
-<span class="fc" id="L242">        request.runsAllowed().ifPresent(player::setRunsAllowed);</span>
-<span class="fc" id="L243">        request.saves().ifPresent(player::setSaves);</span>
-<span class="fc" id="L244">        request.saveOpportunities().ifPresent(player::setSaveOpportunities);</span>
-<span class="fc" id="L245">        request.apiDataSource().ifPresent(player::setApiDataSource);</span>
-<span class="fc" id="L246">        this.updateTeamIfNeeded(player, request.teamName());</span>
+<span class="fc" id="L290">        request.playerNumber().ifPresent(player::setPlayerNumber);</span>
+<span class="fc" id="L291">        request.position().ifPresent(player::setPosition);</span>
+<span class="fc" id="L292">        request.games().ifPresent(player::setGames);</span>
+<span class="fc" id="L293">        request.wins().ifPresent(player::setWins);</span>
+<span class="fc" id="L294">        request.losses().ifPresent(player::setLosses);</span>
+<span class="fc" id="L295">        request.inningsPitched().ifPresent(player::setInningsPitched);</span>
+<span class="fc" id="L296">        request.totalStrikeouts().ifPresent(player::setTotalStrikeouts);</span>
+<span class="fc" id="L297">        request.walks().ifPresent(player::setWalks);</span>
+<span class="fc" id="L298">        request.hitsAllowed().ifPresent(player::setHitsAllowed);</span>
+<span class="fc" id="L299">        request.runsAllowed().ifPresent(player::setRunsAllowed);</span>
+<span class="fc" id="L300">        request.saves().ifPresent(player::setSaves);</span>
+<span class="fc" id="L301">        request.saveOpportunities().ifPresent(player::setSaveOpportunities);</span>
+<span class="fc" id="L302">        request.apiDataSource().ifPresent(player::setApiDataSource);</span>
+<span class="fc" id="L303">        this.updateTeamIfNeeded(player, request.teamName());</span>
 
-<span class="fc" id="L248">        this.playerRepository.save(player);</span>
-<span class="fc" id="L249">    }</span>
+<span class="fc" id="L305">        this.playerRepository.save(player);</span>
+<span class="fc" id="L306">    }</span>
 
     /**
      * @implNote Deleting a player means that the player has retired from the MLB
      */
     @Transactional
     public PlayerDTO deletePlayer(String playerName) {
-<span class="fc" id="L256">        Player player = this.playerRepository.findByNameOrThrow(playerName);</span>
-<span class="fc" id="L257">        Team team = this.teamRepository.findByNameOrThrow(player.getTeam().getName());</span>
+<span class="fc" id="L313">        Player player = this.playerRepository.findByNameOrThrow(playerName);</span>
+<span class="fc" id="L314">        Team team = this.teamRepository.findByNameOrThrow(player.getTeam().getName());</span>
 
-<span class="pc bpc" id="L259" title="1 of 3 branches missed.">        PlayerDTO result = switch (player) {</span>
-<span class="fc" id="L260">            case PositionPlayer p -&gt; {</span>
-<span class="fc" id="L261">                PositionPlayerDTO dto = this.positionPlayerMapper.toPositionPlayerDTO(p);</span>
-<span class="fc" id="L262">                team.removePositionPlayer(p);</span>
-<span class="fc" id="L263">                yield dto;</span>
+<span class="pc bpc" id="L316" title="1 of 3 branches missed.">        PlayerDTO result = switch (player) {</span>
+<span class="fc" id="L317">            case PositionPlayer p -&gt; {</span>
+<span class="fc" id="L318">                PositionPlayerDTO dto = this.positionPlayerMapper.toPositionPlayerDTO(p);</span>
+<span class="fc" id="L319">                team.removePositionPlayer(p);</span>
+<span class="fc" id="L320">                yield dto;</span>
             }
-<span class="fc" id="L265">            case Pitcher p -&gt; {</span>
-<span class="fc" id="L266">                PitcherDTO dto = this.pitcherMapper.toPitcherDTO(p);</span>
-<span class="fc" id="L267">                team.removePitcher(p);</span>
-<span class="fc" id="L268">                yield dto;</span>
+<span class="fc" id="L322">            case Pitcher p -&gt; {</span>
+<span class="fc" id="L323">                PitcherDTO dto = this.pitcherMapper.toPitcherDTO(p);</span>
+<span class="fc" id="L324">                team.removePitcher(p);</span>
+<span class="fc" id="L325">                yield dto;</span>
             }
-<span class="pc" id="L270">            default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
+<span class="pc" id="L327">            default -&gt; throw new IllegalArgumentException(&quot;Unexpected subtype: &quot; + player.getClass().getName());</span>
         };
-<span class="fc" id="L272">        this.playerRepository.delete(player);</span>
-<span class="fc" id="L273">        return result;</span>
+<span class="fc" id="L329">        this.playerRepository.delete(player);</span>
+<span class="fc" id="L330">        return result;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

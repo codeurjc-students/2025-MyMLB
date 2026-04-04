@@ -4,26 +4,28 @@ describe('Edit Stadium E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
-		cy.viewport(1280, 720);
-		cy.intercept('GET', AUTH_API_URL, {
-			statusCode: 200,
-			body: { username: 'testUser', roles: ['ADMIN'] },
-		}).as('getAdmin');
+        cy.viewport(1280, 720);
 
-		cy.visit('/');
-		cy.wait('@getAdmin');
+        cy.intercept('GET', AUTH_API_URL, {
+            statusCode: 200,
+            body: { username: 'testUser', roles: ['ADMIN'] },
+        }).as('getAdmin');
 
-		cy.contains('Edit Menu').click();
+        cy.visit('/');
+        cy.wait('@getAdmin');
 
-		cy.intercept('GET', '/api/v1/searchs/stadium*', { fixture: 'stadium.json' }).as('searchStadium');
+        cy.contains('Edit Menu').should('be.visible').click();
+        cy.url().should('include', '/edit-menu');
+        cy.intercept('GET', '/api/v1/searchs/stadium*', { fixture: 'stadium.json' }).as('searchStadium');
 
-		cy.get('mat-select').first().click();
-		cy.get('mat-option').contains('Stadium').click();
-		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Yankee Stadium');
-		cy.wait('@searchStadium');
+        cy.get('mat-select').first().should('be.visible').click({ force: true });
+        cy.get('mat-option', { timeout: 10000 }).contains('Stadium').should('be.visible').click();
+        cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').should('be.visible').type('Yankee Stadium');
 
-		cy.contains('EDIT').click();
-	});
+        cy.wait('@searchStadium');
+
+        cy.contains('button', 'EDIT').should('be.visible').click();
+    });
 
 	it('should render stadium info', () => {
 		cy.contains('Edit Yankee Stadium').should('be.visible');

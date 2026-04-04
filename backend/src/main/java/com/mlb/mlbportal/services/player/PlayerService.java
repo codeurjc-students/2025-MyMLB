@@ -3,10 +3,23 @@ package com.mlb.mlbportal.services.player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,10 +53,8 @@ import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
-import lombok.AllArgsConstructor;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlayerService {
     private final PlayerRepository playerRepository;
     private final PositionPlayerRepository positionPlayerRepository;
@@ -58,7 +69,12 @@ public class PlayerService {
 
     private final PaginationHandlerService paginationHandlerService;
 
-    // TODO - Review
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Lazy
+    private PlayerService self;
+
     @Transactional(readOnly = true)
     public Page<PlayerDTO> getAllPlayers(int page, int size) {
         List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
@@ -107,6 +123,50 @@ public class PlayerService {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
         List<Pitcher> players = this.pitcherRepository.findByTeamOrderByNameAsc(team);
         return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "single-stat-player-rankings", key = "{#stat, #playerType, #teamNames, #league, #division, #page, #size}")
+    public Page<PlayerRankingsDTO> getTopPlayersRanking(int page, int size, String playerType, String stat, List<String> teamNames, League league, Division division) {
+        String tableName = QueryBuilder.getTableName(playerType);
+        if (!QueryBuilder.isValidStat(stat, playerType)) {
+            throw new IllegalArgumentException("The provided stat is not valid");
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        boolean hasTeamFilter = (teamNames != null && !teamNames.isEmpty());
+        boolean hasLeagueFilter = league != null;
+        boolean hasDivisionFilter = division != null;
+
+        // Data Query Builder
+        String dataQueryString = QueryBuilder.buildDataQuery(stat, tableName, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);
+        TypedQuery<PlayerRankingsDTO> dataQuery = this.entityManager.createQuery(dataQueryString, PlayerRankingsDTO.class);
+
+        // Count Query Builder (For pagination)
+        String countQueryString = QueryBuilder.buildCountQuery(stat, tableName, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);
+        TypedQuery<Long> countQuery = this.entityManager.createQuery(countQueryString, Long.class);
+        QueryBuilder.setQueryParams(dataQuery, countQuery, teamNames, league, division, hasTeamFilter, hasLeagueFilter, hasDivisionFilter);
+
+        // Pagination
+        dataQuery.setFirstResult((int) pageable.getOffset());
+        dataQuery.setMaxResults(pageable.getPageSize());
+        List<PlayerRankingsDTO> content = dataQuery.getResultList();
+        Long totalElements = countQuery.getSingleResult();
+
+        return new PageImpl<>(content, pageable, totalElements);
+    }
+
+    @Cacheable(value = "all-stats-player-rankings", key = "{#playerType, #teamNames, #league, #division}")
+    public Map<String, List<PlayerRankingsDTO>> getAllStatsRankings(String playerType, List<String> teamNames, League league, Division division) {
+        List<String> allStats = QueryBuilder.getPlayerStats(playerType);
+        Map<String, List<PlayerRankingsDTO>> result = new ConcurrentHashMap<>();
+
+        List<CompletableFuture<Void>> futureTask = allStats.stream().map(stat -> CompletableFuture.runAsync(() -> {
+            List<PlayerRankingsDTO> rankings = this.self.getTopPlayersRanking(0, 20, playerType, stat, teamNames, league, division).getContent();
+            result.put(stat, rankings);
+        })).toList();
+
+        CompletableFuture.allOf(futureTask.toArray(new CompletableFuture[0])).join();
+        return result;
     }
 
     /**

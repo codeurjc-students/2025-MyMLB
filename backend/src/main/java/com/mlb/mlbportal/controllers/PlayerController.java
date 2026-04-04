@@ -2,7 +2,13 @@ package com.mlb.mlbportal.controllers;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
+import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.models.enums.Division;
+import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,6 +51,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PlayerController {
     private final PlayerService playerService;
+    private final PlayerImportService playerImportService;
 
     @Operation(summary = "Get all players", description = "Returns a paginated list of all MLB players, including both position players and pitchers.")
     @ApiResponses(value = {
@@ -117,6 +124,44 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.getAllPitchersOfATeam(teamName, page, size));
     }
 
+    @Operation(summary = "Get Player Rankings", description = "Returns a page of players (position or pitchers) sorted by a specific statistic.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the ranking", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerRankingsDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/rankings", produces = "application/json")
+    public ResponseEntity<Page<PlayerRankingsDTO>> getPlayerRankings(@RequestParam(defaultValue = "0")int page,
+                                                                     @RequestParam(defaultValue = "20")int size,
+                                                                     @RequestParam String playerType,
+                                                                     @RequestParam String stat,
+                                                                     @RequestParam(required = false)List<String> teamNames,
+                                                                     @RequestParam(required = false)League league,
+                                                                     @RequestParam(required = false)Division division) {
+
+        return ResponseEntity.ok(this.playerService.getTopPlayersRanking(
+                page,
+                size,
+                playerType,
+                stat,
+                teamNames,
+                league,
+                division)
+        );
+    }
+
+    @Operation(summary = "Get All Player Rankings", description = "Returns a map of player rankings for all available statistics. The response is grouped by the stat name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all rankings", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping(value = "/rankings/all", produces = "application/json")
+    public ResponseEntity<Map<String , List<PlayerRankingsDTO>>> getAllPlayerRankings(@RequestParam String playerType,
+                                                                                      @RequestParam(required = false)List<String> teamNames,
+                                                                                      @RequestParam(required = false)League league,
+                                                                                      @RequestParam(required = false)Division division) {
+        return ResponseEntity.ok(this.playerService.getAllStatsRankings(playerType, teamNames, league, division));
+    }
+
     @Operation(summary = "Create a position player", description = "Creates a new MLB position player and assigns them to a team.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Player successfully created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PositionPlayerDTO.class))),
@@ -162,6 +207,17 @@ public class PlayerController {
     @PostMapping(value = "/{playerName}/pictures", consumes = "multipart/form-data", produces = "application/json")
     public ResponseEntity<PictureInfo> uploadPicture(@PathVariable("playerName") String playerName, @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(this.playerService.updatePicture(playerName, file));
+    }
+
+    @Operation(summary = "Refresh player rankings", description = "Triggers a manual update of the player rankings by fetching the latest team rosters and statistics.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Player Rankings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error during ranking update"),
+    })
+    @PostMapping(value = "/refresh", produces = "application/json")
+    public ResponseEntity<AuthResponse> refreshPlayerRankings() {
+        this.playerImportService.getTeamRoster();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Player Rankings successfully updated!"));
     }
 
     @Operation(summary = "Update position player", description = "Partially updates the stats or team assignment of a position player.")

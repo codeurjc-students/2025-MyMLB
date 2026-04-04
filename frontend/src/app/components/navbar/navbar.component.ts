@@ -104,7 +104,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 	}
 
 	public applyStyle(page: string): string {
-		return this.currentRoute === page || this.currentRoute.startsWith(page + '/') ? this.activeItem() : '';
+		const cleanCurrentUrl = this.router.url.split('?')[0];
+		const cleanUrl = page.startsWith('/') ? page : `/${page}`;
+		return (cleanCurrentUrl === cleanUrl || cleanCurrentUrl.startsWith(cleanUrl + '/')) ? this.activeItem() : '';
 	}
 
 	public navBarBackgroundColor(abbreviation: string | undefined) {
@@ -134,6 +136,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 				break;
 			case 'standings':
 				this.router.navigate(['standings']);
+				break;
+			case 'player-rankings':
+				this.router.navigate(['player-rankings']);
 				break;
 			case 'edit-menu':
 				this.router.navigate(['edit-menu']);

@@ -4,29 +4,35 @@ describe('Edit Player Component E2E Tests', () => {
 	const AUTH_API_URL = '/api/v1/auth/me';
 
 	beforeEach(() => {
-		cy.viewport(1280, 720);
-		cy.intercept('GET', AUTH_API_URL, {
-			statusCode: 200,
-			body: { username: 'testUser', roles: ['ADMIN'] },
-		}).as('getAdmin');
+        cy.viewport(1280, 720);
 
-		cy.visit('/');
-		cy.wait('@getAdmin');
+        cy.intercept('GET', AUTH_API_URL, {
+            statusCode: 200,
+            body: { username: 'testUser', roles: ['ADMIN'] },
+        }).as('getAdmin');
 
-		cy.contains('Edit Menu').click();
+        cy.visit('/');
+        cy.wait('@getAdmin');
 
-		cy.intercept('GET', '/api/v1/searchs/player*', { fixture: 'player.json' }).as('searchPlayer');
+        cy.contains('Edit Menu').should('be.visible').click();
 
-		cy.get('mat-select').first().click();
-		cy.get('mat-option').contains('Player').click();
+        cy.url().should('include', '/edit-menu');
 
-		cy.get('#player-type').first().click();
-		cy.get('mat-option').contains('Position').click();
-		cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').type('Aaron Judge');
-		cy.wait('@searchPlayer');
+        cy.intercept('GET', '/api/v1/searchs/player*', { fixture: 'player.json' }).as('searchPlayer');
 
-		cy.contains('EDIT').click();
-	});
+        cy.get('mat-select').first().should('be.visible').click({ force: true });
+        cy.get('mat-option', { timeout: 10000 }).contains('Player').should('be.visible').click();
+
+        cy.get('#player-type', { timeout: 10000 }).should('be.visible').click({ force: true });
+
+        cy.get('mat-option', { timeout: 10000 }).contains('Position Player').should('be.visible').click();
+
+        cy.get('input[placeholder="Search a Team, a Player or a Stadium to edit..."]').should('be.visible').type('Aaron Judge');
+
+        cy.wait('@searchPlayer');
+
+        cy.contains('button', 'EDIT').should('be.visible').click();
+    });
 
     it('should display player info and picture', () => {
         cy.get('h2').should('contain.text', 'Edit Aaron Judge');

@@ -17,7 +17,7 @@ public class MatchScheduler {
     private final MatchImportService matchImportService;
     private final MatchService matchService;
 
-    @Scheduled(cron = &quot;0 0 3 * * *&quot;)
+    @Scheduled(cron = &quot;0 0 3 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void preloadMatches() {
 <span class="fc" id="L22">        LocalDate now = LocalDate.now();</span>
 <span class="fc" id="L23">        LocalDate currentStart = now.withDayOfMonth(1);</span>
@@ -31,8 +31,8 @@ public class MatchScheduler {
 <span class="fc" id="L31">    }</span>
 
     @Schedules({
-            @Scheduled(cron = &quot;0 0 19-23 * * *&quot;),
-            @Scheduled(cron = &quot;0 0 0-4 * * *&quot;)
+            @Scheduled(cron = &quot;0 */20 19-23 * * *&quot;, zone = &quot;Europe/Madrid&quot;),
+            @Scheduled(cron = &quot;0 */20 0-8 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     })
     public void updateStandings() {
 <span class="fc" id="L38">        log.info(&quot;Starting synchronization of the matches status&quot;);</span>
@@ -44,7 +44,7 @@ public class MatchScheduler {
 <span class="fc" id="L44">        }</span>
 <span class="fc" id="L45">    }</span>
 
-    @Scheduled(cron = &quot;0 */10 * * * *&quot;)
+    @Scheduled(cron = &quot;0 */10 * * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void checkSendingEmailNotification() {
 <span class="fc" id="L49">        this.matchService.notificateMatchStart();</span>
 <span class="fc" id="L50">    }</span>

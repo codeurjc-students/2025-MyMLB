@@ -42,3 +42,9 @@ export type EditPositionPlayerRequest = {
 	homeRuns?: number
 	apiDataSource?: boolean
 }
+
+export type PlayerRanking = {
+	name: string,
+	picture: string,
+	stat: number
+}

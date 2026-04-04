@@ -106,3 +106,51 @@ body {
 .dark .datasource-checkbox .mdc-label {
   color: #ffffff !important;
 }
+
+/* --- Player Rankings Widget --- */
+::ng-deep .stats-select-compact {
+  display: flex !important;
+  justify-content: center;
+  width: 120px !important;
+  margin: 0 auto !important;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-text-field-wrapper {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 99px !important;
+  padding: 0 16px !important;
+  height: 36px !important;
+}
+
+::ng-deep .stats-select-compact .mdc-line-ripple {
+  display: none !important;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-form-field-flex {
+  padding-top: 0 !important;
+  height: 100% !important;
+  align-items: center !important;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-form-field-infix {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  min-height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-select-value {
+  color: #60a5fa !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+}
+
+::ng-deep .stats-select-compact .mat-mdc-select-arrow svg {
+  fill: #60a5fa !important;
+}

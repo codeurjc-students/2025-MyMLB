@@ -20,6 +20,8 @@ public class Match {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    private long statsApiId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = &quot;home_team_id&quot;)
     private Team homeTeam;
@@ -42,13 +44,13 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-<span class="fc" id="L45">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
-<span class="fc" id="L46">        this.homeTeam = homeTeam;</span>
-<span class="fc" id="L47">        this.awayTeam = awayTeam;</span>
-<span class="fc" id="L48">        this.homeScore = homeScore;</span>
-<span class="fc" id="L49">        this.awayScore = awayScore;</span>
-<span class="fc" id="L50">        this.date = date;</span>
-<span class="fc" id="L51">        this.status = status;</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L47">    public Match(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {</span>
+<span class="fc" id="L48">        this.homeTeam = homeTeam;</span>
+<span class="fc" id="L49">        this.awayTeam = awayTeam;</span>
+<span class="fc" id="L50">        this.homeScore = homeScore;</span>
+<span class="fc" id="L51">        this.awayScore = awayScore;</span>
+<span class="fc" id="L52">        this.date = date;</span>
+<span class="fc" id="L53">        this.status = status;</span>
+<span class="fc" id="L54">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

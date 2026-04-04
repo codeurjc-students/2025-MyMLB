@@ -99,6 +99,7 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/players").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/players/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/players/*/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/players/refresh").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/players/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/players/*/pictures").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PATCH, "/api/v1/players/**").hasRole("ADMIN")
