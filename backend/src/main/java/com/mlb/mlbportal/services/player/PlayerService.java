@@ -16,6 +16,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -72,8 +73,12 @@ public class PlayerService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Lazy
     private PlayerService self;
+
+    @Autowired
+    public void setSelf(@Lazy PlayerService self) {
+        this.self = self;
+    }
 
     @Transactional(readOnly = true)
     public Page<PlayerDTO> getAllPlayers(int page, int size) {
