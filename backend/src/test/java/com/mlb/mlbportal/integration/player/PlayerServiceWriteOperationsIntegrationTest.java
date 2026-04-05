@@ -86,7 +86,8 @@ class PlayerServiceWriteOperationsIntegrationTest {
         );
         PlayerDTO result = this.playerService.createPlayer("position", request);
 
-        assertThat(result).isNotNull().isInstanceOf(PositionPlayerDTO.class).isEqualTo(NEW_PLAYER_NAME);
+        assertThat(result).isNotNull().isInstanceOf(PositionPlayerDTO.class);
+        assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
 
         this.playerRepository.flush();
 
