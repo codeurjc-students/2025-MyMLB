@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { PlayerRankingsWidgetComponent } from '../../../../app/components/player-rankings/player-rankings-widget/player-rankings-widget.component';
-import { PlayerService } from '../../../../app/services/player.service';
-import { PaginatedResponse } from '../../../../app/models/pagination.model';
-import { PlayerRanking } from '../../../../app/models/position-player.model';
+import { PlayerRankingsWidgetComponent } from '../../../app/components/player-rankings/player-rankings-widget/player-rankings-widget.component';
+import { PlayerService } from '../../../app/services/player.service';
+import { PaginatedResponse } from '../../../app/models/pagination.model';
+import { PlayerRanking } from '../../../app/models/position-player.model';
 
 describe('Player Rankings Widget Component Integration Test', () => {
     let fixture: ComponentFixture<PlayerRankingsWidgetComponent>;

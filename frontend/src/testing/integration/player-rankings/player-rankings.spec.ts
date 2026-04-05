@@ -4,10 +4,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Chart, registerables } from 'chart.js';
-import { PlayerRankingsComponent } from '../../../../app/components/player-rankings/player-rankings/player-rankings.component';
-import { PlayerService } from '../../../../app/services/player.service';
-import { TeamService } from '../../../../app/services/team.service';
-import { BackgroundColorService } from '../../../../app/services/background-color.service';
+import { PlayerRankingsComponent } from '../../../app/components/player-rankings/player-rankings/player-rankings.component';
+import { PlayerService } from '../../../app/services/player.service';
+import { TeamService } from '../../../app/services/team.service';
+import { BackgroundColorService } from '../../../app/services/background-color.service';
 
 Chart.register(...registerables);
 

@@ -1,9 +1,9 @@
 package com.mlb.mlbportal.dto.player;
 
 public interface PlayerDTO {
-    public String name();
+    String name();
 
-    public String teamName();
+    String teamName();
 
-    public String type();
+    String type();
 }

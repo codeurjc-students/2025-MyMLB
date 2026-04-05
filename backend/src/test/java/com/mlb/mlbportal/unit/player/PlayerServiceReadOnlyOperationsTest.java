@@ -3,21 +3,17 @@ package com.mlb.mlbportal.unit.player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_PLAYER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.uploader.PictureService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +22,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -60,6 +57,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,12 +82,6 @@ class PlayerServiceReadOnlyOperationsTest {
     private TeamRepository teamRepository;
 
     @Mock
-    private PictureService pictureService;
-
-    @Mock
-    private PaginationHandlerService paginationHandlerService;
-
-    @Mock
     private EntityManager entityManager;
 
     @Mock
@@ -105,9 +97,6 @@ class PlayerServiceReadOnlyOperationsTest {
     private List<Pitcher> pitchers;
     private List<PositionPlayerDTO> positionPlayerDTOs;
     private List<PitcherDTO> pitcherDTOs;
-    private List<PlayerDTO> allPlayers;
-    private List<PositionPlayerSummaryDTO> positionSummaryDTOs;
-    private List<PitcherSummaryDTO> pitcherSummaryDTOs;
     private List<Team> teams;
 
     @BeforeEach
@@ -120,144 +109,83 @@ class PlayerServiceReadOnlyOperationsTest {
 
         this.positionPlayerDTOs = BuildMocksFactory.buildPositionPlayerDTOs();
         this.pitcherDTOs = BuildMocksFactory.buildPitcherDTOs();
-        this.positionSummaryDTOs = BuildMocksFactory.buildPositionPlayerSummaryDTOs();
-        this.pitcherSummaryDTOs = BuildMocksFactory.buildPitcherSummaryDTOs();
+        List<PositionPlayerSummaryDTO> positionSummaryDTOs = BuildMocksFactory.buildPositionPlayerSummaryDTOs();
+        List<PitcherSummaryDTO> pitcherSummaryDTOs = BuildMocksFactory.buildPitcherSummaryDTOs();
 
-        this.allPlayers = new ArrayList<>();
-        this.allPlayers.addAll(positionPlayerDTOs);
-        this.allPlayers.addAll(pitcherDTOs);
-        this.allPlayers.sort((p1, p2) -> p1.name().compareToIgnoreCase(p2.name()));
+        List<PlayerDTO> allPlayers = new ArrayList<>();
+        allPlayers.addAll(positionPlayerDTOs);
+        allPlayers.addAll(pitcherDTOs);
+        allPlayers.sort((p1, p2) -> p1.name().compareToIgnoreCase(p2.name()));
 
         ReflectionTestUtils.setField(this.playerService, "self", this.playerService);
         ReflectionTestUtils.setField(this.playerService, "entityManager", this.entityManager);
     }
 
-    @Test
-    @DisplayName("Should return all players mapped and sorted")
-    void testGetAllPlayers() {
-        Page<PlayerDTO> mockPage = new PageImpl<>(this.allPlayers, PageRequest.of(0, 10), this.allPlayers.size());
-        when(this.positionPlayerRepository.findAll()).thenReturn(this.positionPlayers);
-        when(this.pitcherRepository.findAll()).thenReturn(this.pitchers);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(anyList(), eq(0), eq(10), any());
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("provideGetAllPlayersScenarios")
+    @DisplayName("Should return paginated players based on filters")
+    void testGetAllPlayersParametrized(String description, String type, String name, String team, int expectedSize) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name"));
 
-        Page<PlayerDTO> result = this.playerService.getAllPlayers(0, 10);
+        if (name != null) {
+            PositionPlayer player = this.positionPlayers.getFirst();
+            when(this.playerRepository.findByNameOrThrow(name)).thenReturn(player);
+            when(this.positionPlayerMapper.toPositionPlayerDTO(player)).thenReturn(this.positionPlayerDTOs.getFirst());
+        }
+        else if (type != null) {
+            if ("position".equals(type)) {
+                Page<PositionPlayer> page = new PageImpl<>(this.positionPlayers, pageable, this.positionPlayers.size());
+                if (team != null) {
+                    when(this.teamRepository.findByNameOrThrow(team)).thenReturn(this.teams.getFirst());
+                    when(this.positionPlayerRepository.findByTeamOrderByNameAsc(any(), any())).thenReturn(page);
+                }
+                else {
+                    when(this.positionPlayerRepository.findAll(any(Pageable.class))).thenReturn(page);
+                }
+                when(this.positionPlayerMapper.toPositionPlayerDTO(any())).thenReturn(this.positionPlayerDTOs.getFirst());
+            }
+            else {
+                Page<Pitcher> page = new PageImpl<>(this.pitchers, pageable, this.pitchers.size());
+                when(this.pitcherRepository.findAll(any(Pageable.class))).thenReturn(page);
+                when(this.pitcherMapper.toPitcherDTO(any())).thenReturn(this.pitcherDTOs.getFirst());
+            }
+        }
+        else {
+            Page<PositionPlayer> page = new PageImpl<>(this.positionPlayers, pageable, this.positionPlayers.size());
+            if (team != null) {
+                when(this.teamRepository.findByNameOrThrow(team)).thenReturn(this.teams.getFirst());
+                when(this.playerRepository.findByTeamOrderByNameAsc(any(), any())).thenAnswer(i -> page);
+            }
+            else {
+                when(this.playerRepository.findAll(any(Pageable.class))).thenAnswer(i -> page);
+            }
+            when(this.positionPlayerMapper.toPositionPlayerDTO(any())).thenReturn(this.positionPlayerDTOs.getFirst());
+        }
 
-        assertThat(result.getContent()).hasSize(allPlayers.size()).containsExactlyElementsOf(allPlayers);
-        assertThat(result.getTotalElements()).isEqualTo(allPlayers.size());
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isZero();
-        assertThat(result.getSize()).isEqualTo(10);
-        assertThat(result.hasNext()).isFalse();
+        Page<PlayerDTO> result = this.playerService.getAllPlayers(type, name, team, 0, 10);
+
+        assertThat(result.getContent()).hasSize(expectedSize);
     }
 
-    @Test
-    @DisplayName("Should return all position players")
-    void testGetAllPositionPlayers() {
-        Page<PositionPlayer> mockPage = new PageImpl<>(this.positionPlayers, PageRequest.of(0, 10), this.positionPlayers.size());
-        when(this.positionPlayerRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
-        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.getFirst())).thenReturn(this.positionPlayerDTOs.getFirst());
-        when(this.positionPlayerMapper.toPositionPlayerDTO(this.positionPlayers.get(1))).thenReturn(this.positionPlayerDTOs.get(1));
-
-        Page<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers(0, 10);
-
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent()).containsExactlyElementsOf(this.positionPlayerDTOs);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getSize()).isEqualTo(10);
-    }
-
-    @Test
-    @DisplayName("Should return all pitchers")
-    void testGetAllPitchers() {
-        Page<Pitcher> mockPage = new PageImpl<>(this.pitchers, PageRequest.of(0, 10), this.pitchers.size());
-
-        when(this.pitcherRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
-        when(this.pitcherMapper.toPitcherDTO(this.pitchers.getFirst())).thenReturn(this.pitcherDTOs.getFirst());
-
-        Page<PitcherDTO> result = this.playerService.getAllPitchers(0, 10);
-
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent()).containsExactlyElementsOf(this.pitcherDTOs);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getSize()).isEqualTo(10);
-    }
-
-    @Test
-    @DisplayName("Should return the position player by its name")
-    void testFindPositionPlayerByName() {
-        PositionPlayer player = this.positionPlayers.getFirst();
-        when(this.playerRepository.findByNameOrThrow(PLAYER1_NAME)).thenReturn(player);
-        when(this.positionPlayerMapper.toPositionPlayerDTO(player)).thenReturn(this.positionPlayerDTOs.getFirst());
-
-        assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER1_NAME));
-        PlayerDTO result = this.playerService.findPlayerByName(player.getName());
-
-        assertThat(result.name()).isEqualTo(player.getName());
-    }
-
-    @Test
-    @DisplayName("Should return the pitcher by its name")
-    void testFindPitcherByName() {
-        Pitcher pitcher = this.pitchers.getFirst();
-        when(this.playerRepository.findByNameOrThrow(PLAYER3_NAME)).thenReturn(pitcher);
-        when(this.pitcherMapper.toPitcherDTO(pitcher)).thenReturn(this.pitcherDTOs.getFirst());
-
-        assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER3_NAME));
-        PlayerDTO result = this.playerService.findPlayerByName(pitcher.getName());
-
-        assertThat(result.name()).isEqualTo(pitcher.getName());
+    private static Stream<Arguments> provideGetAllPlayersScenarios() {
+        return Stream.of(
+                Arguments.of("Filter by Name", null, PLAYER1_NAME, null, 1),
+                Arguments.of("Filter by Type (Position)", "position", null, null, 2),
+                Arguments.of("Filter by Type (Pitcher)", "pitcher", null, null, 1),
+                Arguments.of("Filter by Team (No type)", null, null, TEST_TEAM1_NAME, 2),
+                Arguments.of("Filter by Type and Team", "position", null, TEST_TEAM1_NAME, 2),
+                Arguments.of("All Players (No filters)", null, null, null, 2)
+        );
     }
 
     @Test
     @DisplayName("Should throw PlayerNotFoundException for an unknown player")
     void testFindUnknownPlayerByName() {
-        when(this.playerRepository.findByNameOrThrow(UNKNOWN_PLAYER)).thenCallRealMethod();
+        when(this.playerRepository.findByNameOrThrow(UNKNOWN_PLAYER)).thenThrow(new PlayerNotFoundException());
 
-        assertThatThrownBy(() -> this.playerService.findPlayerByName(UNKNOWN_PLAYER))
+        assertThatThrownBy(() -> this.playerService.getAllPlayers(null, UNKNOWN_PLAYER, null, 0, 10))
                 .isInstanceOf(PlayerNotFoundException.class)
-                .hasMessageContaining("Player Not Found");
-    }
-
-    @Test
-    @DisplayName("Should return paginated position players of a team")
-    void testGetPositionPlayersOfTeam() {
-        Team team = this.teams.getFirst();
-        Page<PositionPlayerSummaryDTO> mockPage = new PageImpl<>(this.positionSummaryDTOs, PageRequest.of(0, 10), this.positionSummaryDTOs.size());
-
-        when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
-        when(this.positionPlayerRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.positionPlayers);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.positionPlayers), eq(0), eq(10), any());
-
-        Page<PositionPlayerSummaryDTO> result = this.playerService.getAllPositionPlayersOfATeam(TEST_TEAM1_NAME, 0, 10);
-        List<PositionPlayerSummaryDTO> resultContent = result.getContent();
-
-        assertThat(resultContent).hasSize(this.positionSummaryDTOs.size());
-        assertThat(resultContent.get(0).name()).isEqualTo(PLAYER1_NAME);
-        assertThat(resultContent.get(1).name()).isEqualTo(PLAYER2_NAME);
-
-        assertThat(result.getTotalElements()).isEqualTo(2);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getSize()).isEqualTo(10);
-    }
-
-    @Test
-    @DisplayName("Should return paginated pitchers of a team")
-    void testGetPitchersOfTeam() {
-        Team team = this.teams.get(1);
-        Page<PitcherSummaryDTO> mockPage = new PageImpl<>(this.pitcherSummaryDTOs, PageRequest.of(0, 10), this.pitcherSummaryDTOs.size());
-
-        when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
-        when(this.pitcherRepository.findByTeamOrderByNameAsc(team)).thenReturn(this.pitchers);
-        doReturn(mockPage).when(this.paginationHandlerService).paginateAndMap(eq(this.pitchers), eq(0), eq(10), any());
-
-        Page<PitcherSummaryDTO> result = this.playerService.getAllPitchersOfATeam(TEST_TEAM2_NAME, 0, 10);
-        List<PitcherSummaryDTO> resultContent = result.getContent();
-
-        assertThat(resultContent).hasSize(1);
-        assertThat(resultContent.getFirst().name()).isEqualTo(PLAYER3_NAME);
-        assertThat(result.getTotalElements()).isEqualTo(1);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getSize()).isEqualTo(10);
+                .hasMessage("Player Not Found");
     }
 
     @Test
@@ -285,10 +213,10 @@ class PlayerServiceReadOnlyOperationsTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException for invalid stat")
+    @DisplayName("Should throw InvalidTypeException for invalid stat")
     void testGetTopPlayersRankingInvalidStat() {
         assertThatThrownBy(() -> this.playerService.getTopPlayersRanking(0, 10, "position", "stat", null, null, null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidTypeException.class)
                 .hasMessage("The provided stat is not valid");
     }
 

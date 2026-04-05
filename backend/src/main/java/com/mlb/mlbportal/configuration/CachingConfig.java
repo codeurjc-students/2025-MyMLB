@@ -20,6 +20,7 @@ public class CachingConfig {
     public CacheManager cacheConfig() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(
+                this.buildCache("get-players", 24 * 60),
                 this.buildCache("all-stats-player-rankings", 24 * 60),
                 this.buildCache("single-stat-player-rankings", 24 * 60)
         ));

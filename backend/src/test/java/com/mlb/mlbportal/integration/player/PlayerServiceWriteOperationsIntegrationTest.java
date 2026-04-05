@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mlb.mlbportal.dto.player.CreatePlayerRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
-import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
@@ -77,22 +78,28 @@ class PlayerServiceWriteOperationsIntegrationTest {
     @Test
     @DisplayName("Should create the player and correctly associated with the team")
     void testPlayerCreation() {
-        CreatePositionPlayerRequest request =
-                new CreatePositionPlayerRequest(NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, TEST_TEAM1_NAME, PlayerPositions.SS);
+        CreatePlayerRequest<PlayerPositions> request = new CreatePlayerRequest<>(
+                NEW_PLAYER_NAME,
+                NEW_PLAYER_NUMBER,
+                TEST_TEAM1_NAME,
+                PlayerPositions.SS
+        );
+        PlayerDTO result = this.playerService.createPlayer("position", request);
 
-        PositionPlayerDTO player = this.playerService.createPositionPlayer(request);
+        assertThat(result).isNotNull().isInstanceOf(PositionPlayerDTO.class);
+        assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
 
-        assertThat(player).isNotNull();
-        assertThat(player.name()).isEqualTo(NEW_PLAYER_NAME);
+        this.playerRepository.flush();
 
-        Team team = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
-        PositionPlayer storedPlayer = this.positionPlayerRepository.findByNameOrThrow(NEW_PLAYER_NAME);
-
+        Team team = this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME);
         assertThat(team.getPositionPlayers())
                 .extracting(PositionPlayer::getName)
-                .contains(player.name());
+                .contains(NEW_PLAYER_NAME);
 
+        PositionPlayer storedPlayer = this.positionPlayerRepository.findByNameOrThrow(NEW_PLAYER_NAME);
+        assertThat(storedPlayer.getPlayerNumber()).isEqualTo(NEW_PLAYER_NUMBER);
         assertThat(storedPlayer.isApiDataSource()).isFalse();
+        assertThat(storedPlayer.getPosition()).isEqualTo(PlayerPositions.SS);
     }
 
     @Test

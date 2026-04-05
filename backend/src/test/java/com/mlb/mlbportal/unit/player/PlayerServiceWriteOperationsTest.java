@@ -1,13 +1,17 @@
 package com.mlb.mlbportal.unit.player;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.mlb.mlbportal.dto.player.CreatePlayerRequest;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +20,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,10 +32,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
-import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
-import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
@@ -95,77 +98,76 @@ class PlayerServiceWriteOperationsTest {
         this.positionPlayers = BuildMocksFactory.buildPositionPlayers(teams);
     }
 
-    @ParameterizedTest(name = "Create player case: {0}")
+    @ParameterizedTest(name = "{0}")
     @MethodSource("provideCreateCases")
-    void testCreatePlayer(String type, Object request, Object dto, Team team,
+    void testCreatePlayer(String description, String type, CreatePlayerRequest<?> request, PlayerDTO expectedDto,
                           boolean shouldFail, Class<? extends Throwable> expectedException, String expectedMessage) {
-        if (shouldFail) {
-            if (expectedException == PlayerAlreadyExistsException.class) {
-                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.of(this.positionPlayers.getFirst()));
-            }
-            else if (expectedException == TeamNotFoundException.class) {
-                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
-                when(this.teamRepository.findByNameOrThrow(UNKNOWN_TEAM)).thenCallRealMethod();
-            }
-            else if (expectedException == RosterFullException.class) {
-                team.setPositionPlayers(IntStream.range(0, 24).mapToObj(i -> new PositionPlayer()).toList());
-                when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
-                when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
-            }
 
-            assertThatThrownBy(() -> {
-                if (type.equals("pitcher")) {
-                    this.playerService.createPitcher((CreatePitcherRequest) request);
-                } else {
-                    this.playerService.createPositionPlayer((CreatePositionPlayerRequest) request);
-                }
-            })
-                    .isInstanceOf(expectedException)
-                    .hasMessageContaining(expectedMessage);
+        if (description.contains("Duplicate")) {
+            when(this.playerRepository.findByName(anyString())).thenReturn(Optional.of(new PositionPlayer()));
         }
         else {
             when(this.playerRepository.findByName(anyString())).thenReturn(Optional.empty());
-            when(this.teamRepository.findByNameOrThrow(team.getName())).thenReturn(team);
+            if (description.contains("Team Not Found")) {
+                when(this.teamRepository.findByNameOrThrow(anyString())).thenThrow(new TeamNotFoundException());
+            }
+            else {
+                Team team = new Team();
+                team.setName(request.teamName());
 
-            if (request instanceof CreatePositionPlayerRequest posReq && dto instanceof PositionPlayerDTO posDto) {
-                when(this.positionPlayerMapper.toPositionPlayerDTO(any(PositionPlayer.class))).thenReturn(posDto);
-                PositionPlayerDTO result = this.playerService.createPositionPlayer(posReq);
-                assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
+                if (description.contains("Roster Full")) {
+                    team.setPositionPlayers(new ArrayList<>(Arrays.asList(new PositionPlayer[12])));
+                    team.setPitchers(new ArrayList<>(Arrays.asList(new Pitcher[12])));
+                }
+                when(this.teamRepository.findByNameOrThrow(anyString())).thenReturn(team);
             }
-            else if (request instanceof CreatePitcherRequest pitReq && dto instanceof PitcherDTO pitDto) {
-                when(this.pitcherMapper.toPitcherDTO(any(Pitcher.class))).thenReturn(pitDto);
-                PitcherDTO result = this.playerService.createPitcher(pitReq);
-                assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
+        }
+
+        if (shouldFail) {
+            assertThatThrownBy(() -> this.playerService.createPlayer(type, request))
+                    .isInstanceOf(expectedException);
+        }
+        else {
+            if (request.position() instanceof PlayerPositions) {
+                when(this.positionPlayerMapper.toPositionPlayerDTO(any())).thenReturn((PositionPlayerDTO) expectedDto);
             }
+            else {
+                when(this.pitcherMapper.toPitcherDTO(any())).thenReturn((PitcherDTO) expectedDto);
+            }
+
+            PlayerDTO result = this.playerService.createPlayer(type, request);
+
+            assertThat(result.name()).isEqualTo(NEW_PLAYER_NAME);
+            verify(this.playerRepository, times(1)).save(any());
         }
     }
 
     private static Stream<Arguments> provideCreateCases() {
-        Team team = new Team();
-        team.setName(TEST_TEAM1_NAME);
+        String teamName = TEST_TEAM1_NAME;
+
+        CreatePlayerRequest<PlayerPositions> posReq = new CreatePlayerRequest<>(
+                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, teamName, PlayerPositions.CF);
+
+        CreatePlayerRequest<PitcherPositions> pitReq = new CreatePlayerRequest<>(
+                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, teamName, PitcherPositions.SP);
 
         PositionPlayerDTO posDto = new PositionPlayerDTO(
-                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF,
-                0,0,0,0,0,0,0,0,0,0,0,null, false
-        );
-        CreatePositionPlayerRequest posReq = new CreatePositionPlayerRequest(
-                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PlayerPositions.CF
-        );
+                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, teamName, PlayerPositions.CF,
+                0,0,0,0,0,0,0,0,0,0,0,null, false);
 
         PitcherDTO pitDto = new PitcherDTO(
-                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.RP,
-                0,0,0,0,0,0,0,0,0,0,0,0,null, false
-        );
-        CreatePitcherRequest pitReq = new CreatePitcherRequest(
-                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, team.getName(), PitcherPositions.SP
-        );
+                NEW_PLAYER_NAME, NEW_PLAYER_NUMBER, teamName, PitcherPositions.SP,
+                0,0,0,0,0,0,0,0,0,0,0,0,null, false);
 
         return Stream.of(
-                Arguments.of("position player", posReq, posDto, team, false, null, null),
-                Arguments.of("pitcher", pitReq, pitDto, team, false, null, null),
-                Arguments.of("duplicate player", posReq, null, team, true, PlayerAlreadyExistsException.class, "Player Already Exists"),
-                Arguments.of("team not found", new CreatePositionPlayerRequest(NEW_PLAYER_NAME, 1, UNKNOWN_TEAM, PlayerPositions.CF), null, team, true, TeamNotFoundException.class, "Team Not Found"),
-                Arguments.of("roster full", posReq, null, team, true, RosterFullException.class, team.getName() + " roster is full")
+                Arguments.of("Success - Position Player", "position", posReq, posDto, false, null, null),
+                Arguments.of("Success - Pitcher", "pitcher", pitReq, pitDto, false, null, null),
+
+                Arguments.of("Error - Duplicate Player", "position", posReq, null, true, PlayerAlreadyExistsException.class, "Player Already Exists"),
+                Arguments.of("Error - Team Not Found", "position", new CreatePlayerRequest<>(NEW_PLAYER_NAME, 1, UNKNOWN_TEAM, PlayerPositions.CF), null, true, TeamNotFoundException.class, "Team Not Found"),
+                Arguments.of("Error - Roster Full", "position", posReq, null, true, RosterFullException.class, teamName + " roster is full"),
+
+                Arguments.of("Error - Invalid Position for Type", "pitcher", posReq, null, true, InvalidTypeException.class, "Position must be a pitching position")
         );
     }
 

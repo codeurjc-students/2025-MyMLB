@@ -1,9 +1,9 @@
-package com.mlb.mlbportal.dto.player.pitcher;
+package com.mlb.mlbportal.dto.player;
 
-import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.Positions;
 import jakarta.validation.constraints.NotNull;
 
-public record CreatePitcherRequest(
+public record CreatePlayerRequest<T extends Positions>(
         @NotNull(message = "The player's name is required")
         String name,
 
@@ -14,5 +14,5 @@ public record CreatePitcherRequest(
         String teamName,
 
         @NotNull(message = "The player's position is required")
-        PitcherPositions position
+        T position
 ) {}

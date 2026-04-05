@@ -54,15 +54,15 @@ export class PlayerService {
 	}
 
 	public createPositionPlayer(request: CreatePlayerRequest): Observable<PositionPlayerGlobal> {
-		return this.httpMock.post<PositionPlayerGlobal>(`${this.apiUrl}/position-players`, request);
+		return this.httpMock.post<PositionPlayerGlobal>(`${this.apiUrl}/position-player`, request);
 	}
 
 	public createPitcher(request: CreatePlayerRequest): Observable<PitcherGlobal> {
-		return this.httpMock.post<PitcherGlobal>(`${this.apiUrl}/pitchers`, request);
+		return this.httpMock.post<PitcherGlobal>(`${this.apiUrl}/pitcher`, request);
 	}
 
 	public refreshPlayerRankings(): Observable<AuthResponse> {
-		return this.httpMock.post<AuthResponse>(`${this.apiUrl}/refresh`, {});
+		return this.httpMock.post<AuthResponse>(`${this.apiUrl}/sync`, {});
 	}
 
 	public updatePicture(playerName: string, file: File): Observable<Pictures> {

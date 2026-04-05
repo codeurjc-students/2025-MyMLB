@@ -14,7 +14,8 @@ describe('Standings Component E2E Tests', () => {
 	});
 
 	it('should display the title of the page and the leagues and divisions', () => {
-		cy.contains('MLB Standings 2025').should('be.visible');
+		const currentSeason = new Date().getFullYear();
+		cy.contains(`MLB Standings ${currentSeason}`).should('be.visible');
 		cy.contains('AL - East').should('be.visible');
 		cy.contains('NL - Central').should('be.visible');
 	});
@@ -32,14 +33,10 @@ describe('Standings Component E2E Tests', () => {
 	});
 
 	it('should navigate to the team page after clicking on one', () => {
-		cy.fixture('team-info.json').then((team) => {
-			cy.intercept('GET', 'https://localhost:8443/api/v1/teams/*', {
-				statusCode: 200,
-				body: team,
-			}).as('getTeam');
-		});
+		cy.intercept('GET', '**/api/v1/teams/*', { fixture: 'team-info.json' }).as('getTeam');
+    	cy.wait('@getStandings');
 
-		cy.get('table tbody tr').should('have.length.at.least', 1);
+    	cy.get('table tbody tr').should('have.length.at.least', 1);
 		cy.get('table tbody tr img[alt="NYY"]').first().click();
 		cy.wait('@getTeam');
 		cy.url().should('include', '/team/New%20York%20Yankees');

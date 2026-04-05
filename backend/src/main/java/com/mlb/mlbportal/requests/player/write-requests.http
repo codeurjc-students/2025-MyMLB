@@ -1,43 +1,43 @@
 ### Create a Position Player
-POST https://localhost:8443/api/v1/players/position-players
+POST https://localhost:8443/api/v1/players/position-player
 Content-Type: application/json
 
 {
-    "name": "Gleyber Torres",
-    "playerNumber": 25,
+    "name": "Peter Pan",
+    "playerNumber": 99,
     "position": "2B",
     "teamName": "Detroit Tigers"
 }
 
 ### Try to create a player with a name that already exists
-POST https://localhost:8443/api/v1/players/position-players
+POST https://localhost:8443/api/v1/players/position-player
 Content-Type: application/json
 
 {
-    "name": "Anthony Volpe",
+    "name": "Aaron Judge",
     "playerNumber": 34,
     "position": "2B",
     "teamName": "Detroit Tigers"
 }
 
 ### Try to create a player with a team that doesn't exists
-POST https://localhost:8443/api/v1/players/position-players
+POST https://localhost:8443/api/v1/players/position-player
 Content-Type: application/json
 
 {
-    "name": "Vladimir Guerrero Jr",
+    "name": "New Player",
     "playerNumber": 28,
     "position": "2B",
     "teamName": "Leones del Caracas"
 }
 
 ### Create a pitcher
-POST https://localhost:8443/api/v1/players/pitchers
+POST https://localhost:8443/api/v1/players/pitcher
 Content-Type: application/json
 
 {
-    "name": "Gerrit Cole",
-    "playerNumber": 45,
+    "name": "Test Pitcher",
+    "playerNumber": 2,
     "position": "SP",
     "teamName": "New York Yankees"
 }

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
@@ -104,50 +105,18 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/players/position-players should return all position players with the correct data")
-    void testGetAllPositionPlayers() {
+    @DisplayName("GET /api/v1/players should return all players with the correct data")
+    void testGetAllPlayersWithFilters() {
         given()
                 .accept(ContentType.JSON)
+                .queryParam("playerName", PLAYER1_NAME)
                 .when()
-                .get(ALL_POSITION_PLAYERS_PATH)
+                .get(ALL_PLAYERS_PATH)
                 .then()
                 .statusCode(200)
-                .body("content.size()", is(2))
-                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
-                .body("content.teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM1_NAME));
-    }
-
-    @Test
-    @DisplayName("GET /api/v1/players/{name} should return the position player with their respective name")
-    void testGetPositionPlayerByName() {
-        String url = ALL_PLAYERS_PATH + "/" + PLAYER1_NAME;
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(200)
-                .body("name", is(PLAYER1_NAME))
-                .body("teamName", is(TEST_TEAM1_NAME))
-                .body("hits", is(PLAYER1_HITS));
-    }
-
-    @Test
-    @DisplayName("GET /api/v1/players/position-players/{teamName} should return all position players of the given team")
-    void testGetAllPositionsPlayerOfATeam() {
-        String url = ALL_POSITION_PLAYERS_PATH + "/" + TEST_TEAM1_NAME;
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get(url)
-                .then()
-                .statusCode(200)
-                .body("content.size()", is(2))
-                .body("content.name", hasItems(PLAYER1_NAME, PLAYER2_NAME))
-                .body("content.hits", hasItems(PLAYER1_HITS, PLAYER2_HITS))
-                .body("page.size", is(10))
-                .body("page.totalElements", is(2))
-                .body("page.totalPages", is(1));
+                .body("content.size()", is(1))
+                .body("content.name", hasItem(PLAYER1_NAME))
+                .body("content.teamName", hasItem(TEST_TEAM1_NAME));
     }
 
     @Test
@@ -175,13 +144,10 @@ class PlayerControllerTest extends BaseE2ETest {
                 .accept(ContentType.JSON)
                 .queryParam("playerType", "position")
                 .queryParam("league", League.AL)
-                .log().all()
                 .when()
                 .get(url)
                 .then()
-                .log().all()
                 .statusCode(200)
-                .log().all()
                 .body("containsKey('average')", is(true))
                 .body("containsKey('homeRuns')", is(true))
                 .body("average.name", hasItems(PLAYER1_NAME, PLAYER2_NAME));
@@ -205,7 +171,7 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/players should create a player")
+    @DisplayName("POST /api/v1/players/position-player should create a player")
     void testCreatePlayer() {
         Map<String, Object> requestBody = Map.of(
                 "name", NEW_PLAYER_NAME,
@@ -219,7 +185,7 @@ class PlayerControllerTest extends BaseE2ETest {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(ALL_POSITION_PLAYERS_PATH)
+                .post("/api/v1/players/position-player")
                 .then()
                 .statusCode(201)
                 .body("name", is(NEW_PLAYER_NAME))
@@ -243,15 +209,15 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/players/refresh should trigger rankings update")
+    @DisplayName("POST /api/v1/players/sync should trigger rankings update")
     void testRefreshPlayerRankings() {
-        String url = ALL_PLAYERS_PATH + "/refresh";
+        String url = ALL_PLAYERS_PATH + "/sync";
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .post(url)
                 .then()
-                .statusCode(200)
+                .statusCode(202)
                 .body("status", is("SUCCESS"))
                 .body("message", is("Player Rankings successfully updated!"));
     }

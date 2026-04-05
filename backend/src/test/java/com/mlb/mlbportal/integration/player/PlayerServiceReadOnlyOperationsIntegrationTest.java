@@ -3,14 +3,16 @@ package com.mlb.mlbportal.integration.player;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.mlb.mlbportal.utils.TestConstants.*;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER1_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER2_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.PLAYER3_NAME;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.services.player.PlayerService;
@@ -84,53 +86,22 @@ class PlayerServiceReadOnlyOperationsIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should return all players")
+    @DisplayName("Should return all players from database and return the correct DTO")
     void testGetAllPlayers() {
-        Page<PlayerDTO> result = this.playerService.getAllPlayers(0, 10);
+        Page<PlayerDTO> result = this.playerService.getAllPlayers(null, null, null, 0, 10);
 
         assertThat(result.getContent()).hasSize(3);
-        assertThat(result.getContent()).extracting(PlayerDTO::name).containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME);
-    }
 
-    @Test
-    @DisplayName("Should return all position players")
-    void testGetAllPositionPlayers() {
-        Page<PositionPlayerDTO> result = this.playerService.getAllPositionPlayers(0, 10);
+        long pitchersCount = result.getContent().stream().filter(PitcherDTO.class::isInstance).count();
 
-        assertThat(result.getContent()).hasSize(2);
-        assertThat(result.getContent()).extracting(PositionPlayerDTO::name).containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME);
-        assertThat(result.getContent()).extracting(PositionPlayerDTO::teamName).containsExactlyInAnyOrder(TEST_TEAM1_NAME, TEST_TEAM1_NAME);
-    }
+        long positionPlayersCount = result.getContent().stream().filter(PositionPlayerDTO.class::isInstance).count();
 
-    @Test
-    @DisplayName("Should return the position player by its name")
-    void testFindPositionPlayerByName() {
-        assertThatNoException().isThrownBy(() -> this.playerService.findPlayerByName(PLAYER1_NAME));
-        PlayerDTO result = this.playerService.findPlayerByName(PLAYER1_NAME);
+        assertThat(pitchersCount).isEqualTo(1);
+        assertThat(positionPlayersCount).isEqualTo(2);
 
-        assertThat(result).isNotNull();
-        assertThat(result.type()).isEqualTo("PositionPlayer");
-        assertThat(result.name()).isEqualTo(PLAYER1_NAME);
-    }
-
-    @Test
-    @DisplayName("Should return paginated position players of a team")
-    void testGetPositionPlayerOfATeam() {
-        Page<PositionPlayerSummaryDTO> result = this.playerService.getAllPositionPlayersOfATeam(TEST_TEAM1_NAME, 0, 10);
-        List<PositionPlayerSummaryDTO> resultContent = result.getContent();
-
-        assertThat(resultContent).hasSize(2);
-        assertThat(resultContent.get(0).name()).isEqualTo(PLAYER1_NAME);
-        assertThat(resultContent.get(1).name()).isEqualTo(PLAYER2_NAME);
-
-        assertThat(result.getTotalElements()).isEqualTo(2);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumber()).isZero(); // page index
-        assertThat(result.getSize()).isEqualTo(10);  // requested size
-        assertThat(result.hasNext()).isFalse();
-        assertThat(result.hasPrevious()).isFalse();
-        assertThat(result.isFirst()).isTrue();
-        assertThat(result.isLast()).isTrue();
+        assertThat(result.getContent())
+                .extracting(PlayerDTO::name)
+                .containsExactlyInAnyOrder(PLAYER1_NAME, PLAYER2_NAME, PLAYER3_NAME);
     }
 
     @Test

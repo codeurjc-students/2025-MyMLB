@@ -3,12 +3,15 @@ import { Component, inject, OnInit } from '@angular/core';
 import { StandingsResponse, TeamService } from '../../services/team.service';
 import { BackgroundColorService } from '../../services/background-color.service';
 import { StandingsData } from '../../models/standings-data.model';
-import { MatTooltip } from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingModalComponent } from "../modal/loading-modal/loading-modal.component";
 
 @Component({
 	selector: 'app-standings',
 	standalone: true,
-	imports: [CommonModule, MatTooltip],
+	imports: [CommonModule, MatTooltipModule, MatIconModule, MatProgressSpinnerModule, LoadingModalComponent],
 	templateUrl: './standings.component.html',
 })
 export class StandingsComponent implements OnInit {
@@ -17,6 +20,7 @@ export class StandingsComponent implements OnInit {
 
 	public standings: StandingsData[] = [];
 	public errorMessage = '';
+	public loading = false;
 
 	public headers = [
 		{ stat: 'G', description: 'Total games played' },
@@ -28,6 +32,10 @@ export class StandingsComponent implements OnInit {
 	];
 
 	ngOnInit() {
+		this.loadStandings();
+	}
+
+	private loadStandings() {
 		this.teamService.getStandings().subscribe({
 			next: (response: StandingsResponse) => {
 				for (const league of Object.keys(response)) {
@@ -53,5 +61,29 @@ export class StandingsComponent implements OnInit {
 
 	public isGoodPct(pct: string) {
 		return this.teamService.isGoodPct(pct);
+	}
+
+	public refreshStandings() {
+		this.loading = true;
+		this.teamService.refreshStandings().subscribe({
+			next: (_) => {
+				this.loading = false;
+				this.standings = [];
+				this.loadStandings();
+			},
+			error: (err) => {
+				this.loading = false;
+				this.errorMessage = `An error occurr refreshing the standings: ${err.message}`;
+			}
+		});
+	}
+
+	public getCurrentDate() {
+		const today = new Date();
+		return today.toISOString().split('T')[0];
+	}
+
+	public getCurrentSeason() {
+		return new Date().getFullYear();
 	}
 }
