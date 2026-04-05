@@ -135,7 +135,7 @@ public class TeamService {
         Set<Team> teamsToUpdate = new HashSet<>();
         teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(awayTeam.getLeague(), awayTeam.getDivision()));
         teamsToUpdate.addAll(this.teamRepository.findByLeagueAndDivision(homeTeam.getLeague(), homeTeam.getDivision()));
-        teamsToUpdate.forEach(team -> TeamServiceOperations.enrichTeamStats(team, this.teamRepository, this.matchService));
+        teamsToUpdate.forEach(team -> TeamServiceOperations.enrichTeamStats(team, this.teamRepository));
         this.teamRepository.saveAll(teamsToUpdate);
     }
 

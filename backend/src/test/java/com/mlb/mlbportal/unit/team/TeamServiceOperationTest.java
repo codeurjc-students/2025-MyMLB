@@ -58,7 +58,7 @@ class TeamServiceOperationsTest {
     void testEnrichTeamStats() {
         when(this.teamRepository.findByLeagueAndDivision(this.team.getLeague(), this.team.getDivision())).thenReturn(Arrays.asList(this.leader, this.team));
 
-        TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
+        TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository);
 
         assertThat(this.team.getTotalGames()).isEqualTo(this.team.getWins() + this.team.getLosses());
         assertThat(Double.parseDouble(this.team.getPct())).isGreaterThan(Double.parseDouble("0.0"));
@@ -75,7 +75,7 @@ class TeamServiceOperationsTest {
 
         when(this.teamRepository.findByLeagueAndDivision(League.AL, Division.EAST)).thenReturn(Collections.singletonList(this.team));
 
-        TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository, this.matchService);
+        TeamServiceOperations.enrichTeamStats(this.team, this.teamRepository);
 
         assertThat(this.team.getTotalGames()).isZero();
         assertThat(this.team.getPct()).isEqualTo(".000");

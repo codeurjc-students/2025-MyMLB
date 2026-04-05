@@ -5,13 +5,12 @@ import java.util.Locale;
 
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MatchService;
 
 public class TeamServiceOperations {
 
     private TeamServiceOperations() {}
     
-    public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
+    public static void enrichTeamStats(Team team, TeamRepository teamRepository) {
         recalculatePct(team);
         calculateGamesBehind(team, teamRepository);
         teamRepository.save(team);

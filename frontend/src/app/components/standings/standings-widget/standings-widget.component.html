@@ -51,7 +51,7 @@
 					class="text-lg px-3 py-1.5 cursor-pointer bg-white/10 text-white rounded-full hover:bg-white/20 transition-all duration-200 shadow-sm"
 					aria-label="Previous"
 				>
-					<mat-icon>arrow_back</mat-icon>
+					<mat-icon id="back-arrow">arrow_back</mat-icon>
 				</button>
 
 				<button
@@ -59,7 +59,7 @@
 					class="text-lg px-3 py-1.5 cursor-pointer bg-white/10 text-white rounded-full hover:bg-white/20 transition-all duration-200 shadow-sm"
 					aria-label="Next"
 				>
-					<mat-icon>arrow_forward</mat-icon>
+					<mat-icon id="forward-arrow">arrow_forward</mat-icon>
 				</button>
 			</div>
 		</div>
@@ -95,6 +95,7 @@
 								<div class="flex items-center gap-2 w-full">
 									<div class="team-logo-container" [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
 										<img
+											id="team-logo"
 											src="assets/team-logos-new/{{ team.league }}/{{ team.division }}/{{ team.abbreviation }}.png"
 											alt="{{ team.abbreviation }}"
 											class="w-9 h-9 object-contain cursor-pointer"

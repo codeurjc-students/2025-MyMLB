@@ -92,13 +92,9 @@ class PlayerServiceReadOnlyOperationsIntegrationTest {
 
         assertThat(result.getContent()).hasSize(3);
 
-        long pitchersCount = result.getContent().stream()
-                .filter(p -> p instanceof PitcherDTO)
-                .count();
+        long pitchersCount = result.getContent().stream().filter(PitcherDTO.class::isInstance).count();
 
-        long positionPlayersCount = result.getContent().stream()
-                .filter(p -> p instanceof PositionPlayerDTO)
-                .count();
+        long positionPlayersCount = result.getContent().stream().filter(PositionPlayerDTO.class::isInstance).count();
 
         assertThat(pitchersCount).isEqualTo(1);
         assertThat(positionPlayersCount).isEqualTo(2);

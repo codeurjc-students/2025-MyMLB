@@ -32,7 +32,7 @@ describe('Standings Widget E2E Tests', () => {
 	});
 
 	it('should navigate to next division when clicking →', () => {
-		cy.contains('→').click();
+		cy.get('#forward-arrow').click();
 		cy.contains('NL').should('be.visible');
 		cy.contains('Central').should('be.visible');
 		cy.contains('CHC').should('be.visible');
@@ -40,8 +40,8 @@ describe('Standings Widget E2E Tests', () => {
 	});
 
 	it('should navigate back to previous division when clicking ←', () => {
-		cy.contains('→').click();
-		cy.contains('←').click();
+		cy.get('#forward-arrow').click();
+		cy.get('#back-arrow').click();
 		cy.contains('AL').should('be.visible');
 		cy.contains('East').should('be.visible');
 		cy.contains('NYY').should('be.visible');
