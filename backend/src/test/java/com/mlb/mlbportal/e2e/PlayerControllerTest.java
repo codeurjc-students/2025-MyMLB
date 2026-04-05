@@ -243,15 +243,15 @@ class PlayerControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("POST /api/v1/players/refresh should trigger rankings update")
+    @DisplayName("POST /api/v1/players/sync should trigger rankings update")
     void testRefreshPlayerRankings() {
-        String url = ALL_PLAYERS_PATH + "/refresh";
+        String url = ALL_PLAYERS_PATH + "/sync";
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .post(url)
                 .then()
-                .statusCode(200)
+                .statusCode(202)
                 .body("status", is("SUCCESS"))
                 .body("message", is("Player Rankings successfully updated!"));
     }

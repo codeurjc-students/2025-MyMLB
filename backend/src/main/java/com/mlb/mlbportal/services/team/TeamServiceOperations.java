@@ -15,7 +15,6 @@ public class TeamServiceOperations {
     public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
         recalculatePct(team);
         calculateGamesBehind(team, teamRepository);
-        calculateLast10Games(team, matchService);
         teamRepository.save(team);
     }
 
@@ -49,28 +48,6 @@ public class TeamServiceOperations {
         Team leader = divisionTeams.getFirst();
         double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;
         team.setGamesBehind(gamesBehind);
-    }
-
-    private static void calculateLast10Games(Team team, MatchService matchService) {
-        List<Match> last10Matches = matchService.getLast10Matches(team);
-        String matchesRecord;
-        if (last10Matches.isEmpty()) {
-            matchesRecord = "0-0";
-        }
-        else {
-            int numberOfWins = 0;
-            for (Match match : last10Matches) {
-                boolean isHomeTeam = team.equals(match.getHomeTeam());
-                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();
-                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();
-
-                if (teamScore > awayScore) {
-                    numberOfWins++;
-                }
-            }
-            matchesRecord = numberOfWins + "-" + (last10Matches.size() - numberOfWins);
-        }
-        team.setLastTen(matchesRecord);
     }
 
     public static double parseSafePct(String pct) {

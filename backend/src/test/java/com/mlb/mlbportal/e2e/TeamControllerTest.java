@@ -115,6 +115,20 @@ class TeamControllerTest extends BaseE2ETest {
     }
 
     @Test
+    @DisplayName("POST /api/v1/teams/sync should trigger rankings update")
+    void testRefreshStandings() {
+        String url = TEAM_INFO_PATH + "sync";
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(202)
+                .body("status", is("SUCCESS"))
+                .body("message", is("Standings successfully updated!"));
+    }
+
+    @Test
     @DisplayName("PATCH /api/v1/teams/{teamName} should update the team with the provided fields")
     void testUpdateTeam() {
         String url = TEAM_INFO_PATH + TEST_TEAM1_NAME;

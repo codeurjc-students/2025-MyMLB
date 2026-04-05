@@ -62,7 +62,7 @@ export class PlayerService {
 	}
 
 	public refreshPlayerRankings(): Observable<AuthResponse> {
-		return this.httpMock.post<AuthResponse>(`${this.apiUrl}/refresh`, {});
+		return this.httpMock.post<AuthResponse>(`${this.apiUrl}/sync`, {});
 	}
 
 	public updatePicture(playerName: string, file: File): Observable<Pictures> {

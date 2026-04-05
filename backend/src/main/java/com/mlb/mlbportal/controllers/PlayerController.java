@@ -211,13 +211,13 @@ public class PlayerController {
 
     @Operation(summary = "Refresh player rankings", description = "Triggers a manual update of the player rankings by fetching the latest team rosters and statistics.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Player Rankings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "202", description = "Player Rankings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error during ranking update"),
     })
-    @PostMapping(value = "/refresh", produces = "application/json")
+    @PostMapping(value = "/sync", produces = "application/json")
     public ResponseEntity<AuthResponse> refreshPlayerRankings() {
         this.playerImportService.getTeamRoster();
-        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Player Rankings successfully updated!"));
+        return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, "Player Rankings successfully updated!"));
     }
 
     @Operation(summary = "Update position player", description = "Partially updates the stats or team assignment of a position player.")

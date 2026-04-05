@@ -97,4 +97,8 @@ export class TeamService {
 	public updateTeam(teamName: string, request: UpdateTeamRequest): Observable<AuthResponse> {
 		return this.http.patch<AuthResponse>(`${this.url}/${teamName}`, request);
 	}
+
+	public refreshStandings(): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.url}/sync`, {});
+	}
 }

@@ -4,11 +4,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +39,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TeamController {
     private final TeamService teamService;
+    private final TeamImportService teamImportService;
 
     @Operation(summary = "Get all teams", description = "Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.")
     @ApiResponses(value = {
@@ -80,6 +83,17 @@ public class TeamController {
     @GetMapping(value = "/{teamName}", produces = "application/json")
     public ResponseEntity<TeamInfoDTO> getTeamInfo(@PathVariable("teamName") String teamName) {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
+    }
+
+    @Operation(summary = "Refresh current season standings", description = "Triggers a manual update of the current season standings by fetching the team statistics.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Season Standings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error during ranking update"),
+    })
+    @PostMapping(value = "/sync", produces = "application/json")
+    public ResponseEntity<AuthResponse> refreshStandings() {
+        this.teamImportService.getTeamStats();
+        return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, "Standings successfully updated!"));
     }
 
     @Operation(summary = "Update team information", description = "Updates specific fields of an MLB team identified by its name. Supports partial updates such as wins, losses, or team details.")

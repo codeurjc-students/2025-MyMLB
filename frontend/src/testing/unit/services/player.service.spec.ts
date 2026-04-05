@@ -219,7 +219,7 @@ describe('Player Service Tests', () => {
 			expect(response.message).toContain('updated');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/refresh`);
+		const req = httpMock.expectOne(`${apiUrl}/sync`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body).toEqual({});
 		req.flush(mockResponse);
