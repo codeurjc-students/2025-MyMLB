@@ -3,47 +3,27 @@ GET https://localhost:8443/api/v1/players?page=0&size=10
 Accept: application/json
 
 ### Get All Position Players
-GET https://localhost:8443/api/v1/players/position-players?page=0&size=10
+GET https://localhost:8443/api/v1/players?playerType=position&page=0&size=10
 Accept: application/json
 
 ### Get All Pitchers
-GET https://localhost:8443/api/v1/players/pitchers?page=0&size=10
+GET https://localhost:8443/api/v1/players?playerType=pitcher&page=0&size=10
 Accept: application/json
 
-### Get Player by name (Position Player)
-GET https://localhost:8443/api/v1/players/Aaron Judge
-Accept: application/json
-
-### Get Player by name (Pitcher)
-GET https://localhost:8443/api/v1/players/Max Fried
+### Get Player by Name
+GET https://localhost:8443/api/v1/players?playerName=Aaron Judge&page=0&size=10
 Accept: application/json
 
 ### Get Non Existent Player
-GET https://localhost:8443/api/v1/players/Mike Trout
+GET https://localhost:8443/api/v1/players?playerName=Player&page=0&size=10
 Accept: application/json
 
-### Get All Position Players of a Team
-GET https://localhost:8443/api/v1/players/position-players/New York Yankees
+### Get Position Players of a Team
+GET https://localhost:8443/api/v1/players?playerType=position&teamName=New York Yankees&page=0&size=10
 Accept: application/json
 
-### Get All Pitchers of a Team
-GET https://localhost:8443/api/v1/players/pitchers/New York Yankees
-Accept: application/json
-
-### Get All Position Players of a Team
-GET https://localhost:8443/api/v1/players/position-players/Boston Red Sox
-Accept: application/json
-
-### Get All Pitchers of a Team
-GET https://localhost:8443/api/v1/players/pitchers/Boston Red Sox
-Accept: application/json
-
-### Get All Position Players of a Non Existent Team
-GET https://localhost:8443/api/v1/players/position-players/Team1
-Accept: application/json
-
-### Get All Pitchers of a Non Existent Team
-GET https://localhost:8443/api/v1/players/pitchers/Team1
+### Get Position Players of a Non Existent Team
+GET https://localhost:8443/api/v1/players?playerType=position&teamName=Team1&page=0&size=10
 Accept: application/json
 
 ### Get Top Position Players based on Average

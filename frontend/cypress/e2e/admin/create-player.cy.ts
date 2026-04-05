@@ -31,7 +31,7 @@ describe('Create Player Component E2E Tests', () => {
             },
         }).as('getAvailableTeams');
 
-        cy.intercept('POST', '/api/v1/players/position-players', {
+        cy.intercept('POST', '/api/v1/players/position-player', {
             statusCode: 200,
             body: {
                 name: 'Gleyber Torres',

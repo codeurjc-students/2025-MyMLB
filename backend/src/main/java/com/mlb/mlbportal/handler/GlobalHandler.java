@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -69,6 +70,12 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleEditEventRequestMissMatch(EventRequestMissMatchException ex) {
         return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "Request MissMatch");
+    }
+
+    @ExceptionHandler(InvalidTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleInvalidType(InvalidTypeException ex) {
+        return this.buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), "Invalid Type");
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

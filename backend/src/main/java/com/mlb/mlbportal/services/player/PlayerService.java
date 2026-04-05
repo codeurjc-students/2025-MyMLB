@@ -1,17 +1,19 @@
 package com.mlb.mlbportal.services.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
+import com.mlb.mlbportal.dto.player.CreatePlayerRequest;
 import com.mlb.mlbportal.dto.player.PlayerRankingsDTO;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.enums.PitcherPositions;
+import com.mlb.mlbportal.models.enums.PlayerPositions;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -29,14 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mlb.mlbportal.dto.player.PlayerDTO;
-import com.mlb.mlbportal.dto.player.pitcher.CreatePitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
-import com.mlb.mlbportal.dto.player.pitcher.PitcherSummaryDTO;
-import com.mlb.mlbportal.dto.player.position.CreatePositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
-import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.RosterFullException;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
@@ -52,7 +50,6 @@ import com.mlb.mlbportal.repositories.player.PitcherRepository;
 import com.mlb.mlbportal.repositories.player.PlayerRepository;
 import com.mlb.mlbportal.repositories.player.PositionPlayerRepository;
 import com.mlb.mlbportal.services.uploader.PictureService;
-import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
 @Service
 @RequiredArgsConstructor
@@ -68,8 +65,6 @@ public class PlayerService {
 
     private final PictureService pictureService;
 
-    private final PaginationHandlerService paginationHandlerService;
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -81,53 +76,73 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PlayerDTO> getAllPlayers(int page, int size) {
-        List<PositionPlayer> positionPlayers = this.positionPlayerRepository.findAll();
-        List<Pitcher> pitcherList = this.pitcherRepository.findAll();
-
-        List<PositionPlayerDTO> mappedPositionPlayers = this.positionPlayerMapper.toListPositionPlayerDTO(positionPlayers);
-        List<PitcherDTO> mappedPitchers = this.pitcherMapper.toListPitcherDTO(pitcherList);
-
-        List<PlayerDTO> result = new ArrayList<>();
-        result.addAll(mappedPositionPlayers);
-        result.addAll(mappedPitchers);
-
-        result.sort((p1, p2) -> p1.name().compareToIgnoreCase(p2.name()));
-        return this.paginationHandlerService.paginateAndMap(result, page, size, Function.identity());
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PositionPlayerDTO> getAllPositionPlayers(int page, int size) {
+    @Cacheable(value = "get-players", key = "{#playerType, #playerName, #teamName, #page, #size}")
+    public Page<PlayerDTO> getAllPlayers(String playerType, String playerName, String teamName, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        return this.positionPlayerRepository.findAll(pageable).map(this.positionPlayerMapper::toPositionPlayerDTO);
+        // Player by Name
+        if (playerName != null && !playerName.isBlank()) {
+            Player player = this.playerRepository.findByNameOrThrow(playerName);
+            return new PageImpl<>(List.of(this.mapToDTO(player)), pageable, 1);
+        }
+
+        // Players of a certain type
+        if (playerType != null) {
+            return this.getPlayersByTypeAndTeam(playerType, teamName, pageable);
+        }
+
+        // All Players (without filters)
+        Page<? extends Player> playerPage;
+        if (teamName != null) {
+            Team team = this.teamRepository.findByNameOrThrow(teamName);
+            playerPage = this.playerRepository.findByTeamOrderByNameAsc(team, pageable);
+        }
+        else {
+            playerPage = this.playerRepository.findAll(pageable);
+        }
+        return playerPage.map(this::mapToDTO);
     }
 
-    @Transactional(readOnly = true)
-    public Page<PitcherDTO> getAllPitchers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        return this.pitcherRepository.findAll(pageable).map(this.pitcherMapper::toPitcherDTO);
+    /**
+     * Helper method that manages the case when the playerType and team filters are active.
+     *
+     * @param playerType position or pitcher.
+     * @param teamName the name of the team to filter.
+     * @param pageable page configuration.
+     * @return the paginated result.
+     */
+    private Page<PlayerDTO> getPlayersByTypeAndTeam(String playerType, String teamName, Pageable pageable) {
+        Team team = (teamName != null) ? this.teamRepository.findByNameOrThrow(teamName) : null;
+
+        if ("position".equalsIgnoreCase(playerType)) {
+            Page<PositionPlayer> players = (team != null)
+                    ? this.positionPlayerRepository.findByTeamOrderByNameAsc(team, pageable)
+                    : this.positionPlayerRepository.findAll(pageable);
+            return players.map(this.positionPlayerMapper::toPositionPlayerDTO);
+        }
+
+        if ("pitcher".equalsIgnoreCase(playerType)) {
+            Page<Pitcher> players = (team != null)
+                    ? this.pitcherRepository.findByTeamOrderByNameAsc(team, pageable)
+                    : this.pitcherRepository.findAll(pageable);
+            return players.map(this.pitcherMapper::toPitcherDTO);
+        }
+        throw new InvalidTypeException("Invalid player type: " + playerType);
     }
 
-    @Transactional(readOnly = true)
-    public PlayerDTO findPlayerByName(String name) {
-        Player player = this.playerRepository.findByNameOrThrow(name);
-        return (player instanceof PositionPlayer pp)
-                ? positionPlayerMapper.toPositionPlayerDTO(pp)
-                : pitcherMapper.toPitcherDTO((Pitcher) player);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PositionPlayerSummaryDTO> getAllPositionPlayersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamRepository.findByNameOrThrow(teamName);
-        List<PositionPlayer> players = this.positionPlayerRepository.findByTeamOrderByNameAsc(team);
-        return this.paginationHandlerService.paginateAndMap(players, page, size, this.positionPlayerMapper::toPositionPlayerSummaryDTO);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PitcherSummaryDTO> getAllPitchersOfATeam(String teamName, int page, int size) {
-        Team team = this.teamRepository.findByNameOrThrow(teamName);
-        List<Pitcher> players = this.pitcherRepository.findByTeamOrderByNameAsc(team);
-        return this.paginationHandlerService.paginateAndMap(players, page, size, this.pitcherMapper::toPitcherSummaryDTO);
+    /**
+     * Manual PlayerDTO mapper.
+     *
+     * @param player to map
+     * @return mapped player
+     */
+    private PlayerDTO mapToDTO(Player player) {
+        if (player instanceof PositionPlayer pp) {
+            return this.positionPlayerMapper.toPositionPlayerDTO(pp);
+        }
+        else if (player instanceof Pitcher p) {
+            return this.pitcherMapper.toPitcherDTO(p);
+        }
+        throw new InvalidTypeException("Unknown player subclass");
     }
 
     @Transactional(readOnly = true)
@@ -135,7 +150,7 @@ public class PlayerService {
     public Page<PlayerRankingsDTO> getTopPlayersRanking(int page, int size, String playerType, String stat, List<String> teamNames, League league, Division division) {
         String tableName = QueryBuilder.getTableName(playerType);
         if (!QueryBuilder.isValidStat(stat, playerType)) {
-            throw new IllegalArgumentException("The provided stat is not valid");
+            throw new InvalidTypeException("The provided stat is not valid");
         }
         Pageable pageable = PageRequest.of(page, size);
         boolean hasTeamFilter = (teamNames != null && !teamNames.isEmpty());
@@ -212,28 +227,29 @@ public class PlayerService {
      * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
      */
     @Transactional
-    public PositionPlayerDTO createPositionPlayer(CreatePositionPlayerRequest request) {
+    public PlayerDTO createPlayer(String playerType, CreatePlayerRequest<?> request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
-        PositionPlayer newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, request.position());
+        Player newPlayer;
+        if ("position".equalsIgnoreCase(playerType)) {
+            if (!(request.position() instanceof PlayerPositions pos)) {
+                throw new InvalidTypeException("Position must be a field position for position players");
+            }
+            newPlayer = new PositionPlayer(request.name(), request.playerNumber(), team, pos);
+            team.addPositionPlayer((PositionPlayer) newPlayer);
+        }
+        else if ("pitcher".equalsIgnoreCase(playerType)) {
+            if (!(request.position() instanceof PitcherPositions pos)) {
+                throw new InvalidTypeException("Position must be a pitching position for pitchers");
+            }
+            newPlayer = new Pitcher(request.name(), request.playerNumber(), team, pos);
+            team.addPitcher((Pitcher) newPlayer);
+        }
+        else {
+            throw new InvalidTypeException("Invalid player type: " + playerType);
+        }
         newPlayer.setApiDataSource(false);
-        team.addPositionPlayer(newPlayer);
         this.playerRepository.save(newPlayer);
-        return this.positionPlayerMapper.toPositionPlayerDTO(newPlayer);
-    }
-
-    /**
-     * @implNote Creating a player means that the player has been promoted to the MLB team.
-     * At creation time, the team must not be null; however, once the player has played in the MLB,
-     * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
-     */
-    @Transactional
-    public PitcherDTO createPitcher(CreatePitcherRequest request) {
-        Team team = this.playerCreationValidations(request.name(), request.teamName());
-        Pitcher newPlayer = new Pitcher(request.name(), request.playerNumber(), team, request.position());
-        newPlayer.setApiDataSource(false);
-        team.addPitcher(newPlayer);
-        this.playerRepository.save(newPlayer);
-        return this.pitcherMapper.toPitcherDTO(newPlayer);
+        return this.mapToDTO(newPlayer);
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package com.mlb.mlbportal.repositories.player;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,7 +24,7 @@ public interface PositionPlayerRepository extends JpaRepository<PositionPlayer, 
         return this.findByName(name).orElseThrow(PlayerNotFoundException::new);
     }
 
-    List<PositionPlayer> findByTeamOrderByNameAsc(Team team);
+    Page<PositionPlayer> findByTeamOrderByNameAsc(Team team, Pageable pageable);
 
     Page<PositionPlayer> findByNameContainingIgnoreCase(String input, Pageable pageable);
 }

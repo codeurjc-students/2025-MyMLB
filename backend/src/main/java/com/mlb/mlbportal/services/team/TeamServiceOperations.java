@@ -3,7 +3,6 @@ package com.mlb.mlbportal.services.team;
 import java.util.List;
 import java.util.Locale;
 
-import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.MatchService;

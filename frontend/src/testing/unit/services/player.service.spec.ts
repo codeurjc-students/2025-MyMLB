@@ -68,7 +68,7 @@ describe('Player Service Tests', () => {
 			expect(response.name).toEqual('Gleyber Torres');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/position-players`);
+		const req = httpMock.expectOne(`${apiUrl}/position-player`);
 		expect(req.request.method).toBe('POST');
 		req.flush(mockPositionPlayer);
 	});
@@ -100,7 +100,7 @@ describe('Player Service Tests', () => {
 			expect(response.name).toEqual('Paul Skenes');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/pitchers`);
+		const req = httpMock.expectOne(`${apiUrl}/pitcher`);
 		expect(req.request.method).toBe('POST');
 		req.flush(mockPitcher);
 	});

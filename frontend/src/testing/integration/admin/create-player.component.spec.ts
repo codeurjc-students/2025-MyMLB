@@ -70,7 +70,7 @@ describe('Create Player Component Integration Tests', () => {
 
 		component.createPlayer();
 
-		const req = httpMock.expectOne(`${apiPlayers}/position-players`);
+		const req = httpMock.expectOne(`${apiPlayers}/position-player`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body.name).toBe('Aaron Judge');
 

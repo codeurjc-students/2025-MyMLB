@@ -3,7 +3,7 @@ package com.mlb.mlbportal.models.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum PitcherPositions {
+public enum PitcherPositions implements Positions {
     SP("SP"),
     RP("RP"),
     CL("CL"),
