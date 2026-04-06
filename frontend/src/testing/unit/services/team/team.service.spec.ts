@@ -15,7 +15,6 @@ describe('Team Service Tests', () => {
 	let httpMock: HttpTestingController;
 	let mockSelectedTeamService: jasmine.SpyObj<SelectedTeamService>;
   	let mockRouter: jasmine.SpyObj<Router>;
-	const apiURL = 'https://localhost:8443/api/v1/teams';
 
 	const mockResponse = {
 		American: {
@@ -119,7 +118,7 @@ describe('Team Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/standings`);
+		const req = httpMock.expectOne(`${service['url']}/standings`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -132,7 +131,7 @@ describe('Team Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/available?page=0&size=10`);
+		const req = httpMock.expectOne(`${service['url']}/available?page=0&size=10`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -142,7 +141,7 @@ describe('Team Service Tests', () => {
 			expect(response).toEqual(mockTeamInfo);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/Yankees`);
+		const req = httpMock.expectOne(`${service['url']}/Yankees`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockTeamInfo);
 	});
@@ -154,7 +153,7 @@ describe('Team Service Tests', () => {
 			expect(mockRouter.navigate).toHaveBeenCalledWith(['team', 'Yankees']);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/Yankees`);
+		const req = httpMock.expectOne(`${service['url']}/Yankees`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockTeamInfo);
 	});
@@ -169,7 +168,7 @@ describe('Team Service Tests', () => {
 			expect(teams[3].division).toBe('East');
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/standings`);
+		const req = httpMock.expectOne(`${service['url']}/standings`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -179,7 +178,7 @@ describe('Team Service Tests', () => {
 			expect(rank).toBe(2);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/standings`);
+		const req = httpMock.expectOne(`${service['url']}/standings`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -189,7 +188,7 @@ describe('Team Service Tests', () => {
 			expect(rank).toBe(-1);
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/standings`);
+		const req = httpMock.expectOne(`${service['url']}/standings`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -209,7 +208,7 @@ describe('Team Service Tests', () => {
 			expect(response.status).toBe('SUCCESS');
 		});
 
-		const req = httpMock.expectOne(`${apiURL}/${teamStats.name}`);
+		const req = httpMock.expectOne(`${service['url']}/${teamStats.name}`);
 		expect(req.request.method).toBe('PATCH');
 		req.flush(response);
 	});

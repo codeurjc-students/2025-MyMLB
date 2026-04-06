@@ -10,8 +10,8 @@ describe('Support Component Integration Test', () => {
     let component: Support;
     let httpMock: HttpTestingController;
 
-    const userUrl = 'https://localhost:8443/api/v1/users/profile';
-    const supportUrl = 'https://localhost:8443/api/v1/support';
+    const userUrl = '/api/v1/users/profile';
+    const supportUrl = '/api/v1/support';
 
     const mockProfileResponse = {
         email: 'test@example.com',

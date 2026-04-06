@@ -11,7 +11,7 @@ describe('Matches Of The Day Component Integration Test', () => {
 	let component: MatchesOfTheDayComponent;
 	let httpMock: HttpTestingController;
 
-	const baseUrl = 'https://localhost:8443/api/v1/matches/today';
+	const baseUrl = '/api/v1/matches/today';
 
 	const generateMockMatches = (count: number): PaginatedResponse<ShowMatch> => ({
         content: Array.from({ length: count }, (_, i) => ({

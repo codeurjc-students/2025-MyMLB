@@ -14,7 +14,7 @@ describe('API Performance Component Integration Test', () => {
     let component: ApiPerformanceComponent;
     let httpMock: HttpTestingController;
 
-    const apiUrl = 'https://localhost:8443/api/v1/analytics/api-performance';
+    const apiUrl = '/api/v1/analytics/api-performance';
 
 	const mockResponse: APIAnalytics[] = [
 		{

@@ -10,7 +10,7 @@ describe('Support Ticket Modal Component Integration Test', () => {
     let component: SupportTicketModalComponent;
     let httpMock: HttpTestingController;
 
-    const adminApi = 'https://localhost:8443/api/v1/admin/support/tickets';
+    const adminApi = '/api/v1/admin/support/tickets';
 
     const mockMessages: SupportMessage[] = [
         {

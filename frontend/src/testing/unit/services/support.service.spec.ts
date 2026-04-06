@@ -9,8 +9,8 @@ describe('Support Service Tests', () => {
     let service: SupportService;
     let httpMock: HttpTestingController;
 
-    const userApi = 'https://localhost:8443/api/v1/support';
-    const adminApi = 'https://localhost:8443/api/v1/admin/support/tickets';
+    const userApi = '/api/v1/support';
+    const adminApi = '/api/v1/admin/support/tickets';
 
     beforeEach(() => {
         TestBed.configureTestingModule({

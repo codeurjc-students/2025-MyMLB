@@ -8,7 +8,6 @@ import { Pictures } from "../../../../app/models/pictures.model";
 describe('Event Service Tests', () => {
 	let service: EventService;
 	let httpMock: HttpTestingController;
-	const apiUrl = 'https://localhost:8443/api/v1/events';
 	const sectorId = 1;
 	const eventId = 2;
 	const matchId = 1;
@@ -38,7 +37,7 @@ describe('Event Service Tests', () => {
 			expect(event).toEqual(mockEvent);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/${eventId}`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/${eventId}`);
 		expect(request.request.method).toBe('GET');
 		request.flush(mockEvent);
 	});
@@ -48,7 +47,7 @@ describe('Event Service Tests', () => {
 			expect(event).toEqual(mockEvent);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/match/${matchId}`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/match/${matchId}`);
 		expect(request.request.method).toBe('GET');
 		request.flush(mockEvent);
 	});
@@ -60,7 +59,7 @@ describe('Event Service Tests', () => {
 			expect(sectors).toEqual(mockResponse);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/${eventId}/sectors`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/${eventId}/sectors`);
 		expect(request.request.method).toBe('GET');
 		request.flush(mockResponse);
 	});
@@ -73,7 +72,7 @@ describe('Event Service Tests', () => {
 			expect(seats).toEqual(mockResponse);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/${eventId}/sector/${sectorId}`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/${eventId}/sector/${sectorId}`);
 		expect(request.request.method).toBe('GET');
 		request.flush(mockResponse);
 	});
@@ -88,7 +87,7 @@ describe('Event Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const request = httpMock.expectOne(apiUrl);
+		const request = httpMock.expectOne(service['apiUrl']);
 		expect(request.request.method).toBe('POST');
 		expect(request.request.body).toBe(mockRequest);
 		request.flush(mockResponse);
@@ -103,7 +102,7 @@ describe('Event Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const request = httpMock.expectOne(apiUrl);
+		const request = httpMock.expectOne(service['apiUrl']);
 		expect(request.request.method).toBe('PUT');
 		expect(request.request.body).toBe(mockRequest);
 		request.flush(mockResponse);
@@ -114,7 +113,7 @@ describe('Event Service Tests', () => {
 			expect(response).toEqual(mockEvent);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/${eventId}`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/${eventId}`);
 		expect(request.request.method).toBe('DELETE');
 		request.flush(mockEvent);
 	});

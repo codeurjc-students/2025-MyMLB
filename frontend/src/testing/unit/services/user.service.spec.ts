@@ -10,12 +10,6 @@ import { TeamSummary } from '../../../app/models/team.model';
 describe('User Service Tests', () => {
 	let service: UserService;
 	let httpMock: HttpTestingController;
-	const apiUrl = 'https://localhost:8443/api/v1/users';
-
-	const mockUsers: User[] = [
-		MockFactory.buildUserMocks('user1', 'user1@gmail.com'),
-		MockFactory.buildUserMocks('user2', 'user2@gmail.com')
-	];
 
 	const mockFavteams: TeamSummary[] = [
 		MockFactory.buildTeamSummaryMock('team1', 't1', 'AL', 'EAST'),
@@ -46,7 +40,7 @@ describe('User Service Tests', () => {
             expect(profile).toEqual(mockProfile);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/profile`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/profile`);
         expect(req.request.method).toBe('GET');
         expect(req.request.withCredentials).toBeTrue();
         req.flush(mockProfile);
@@ -60,7 +54,7 @@ describe('User Service Tests', () => {
             expect(user).toEqual(mockUserResponse);
         });
 
-        const req = httpMock.expectOne(apiUrl);
+        const req = httpMock.expectOne(service['apiUrl']);
         expect(req.request.method).toBe('PATCH');
         expect(req.request.body).toEqual(updateRequest);
         expect(req.request.withCredentials).toBeTrue();
@@ -75,7 +69,7 @@ describe('User Service Tests', () => {
             expect(response).toEqual(mockPictureResponse);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/picture`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/picture`);
         expect(req.request.method).toBe('POST');
         expect(req.request.body instanceof FormData).toBeTrue();
         req.flush(mockPictureResponse);
@@ -88,7 +82,7 @@ describe('User Service Tests', () => {
             expect(response).toEqual(mockResponse);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/picture`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/picture`);
         expect(req.request.method).toBe('DELETE');
         req.flush(mockResponse);
     });
@@ -110,7 +104,7 @@ describe('User Service Tests', () => {
 		});
 		service.getFavTeams();
 
-		const req = httpMock.expectOne(`${apiUrl}/favorites/teams`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/favorites/teams`);
 		expect(req.request.method).toBe('GET');
 		expect(req.request.withCredentials).toBeTrue();
 		req.flush(mockFavteams);
@@ -118,7 +112,7 @@ describe('User Service Tests', () => {
 
 	it('should return the currently selected favorite teams', () => {
 		service.getFavTeams();
-		const req = httpMock.expectOne(`${apiUrl}/favorites/teams`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/favorites/teams`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockFavteams);
 
@@ -136,7 +130,7 @@ describe('User Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/favorites/teams/${newFavTeam.name}`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/favorites/teams/${newFavTeam.name}`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.withCredentials).toBeTrue();
 		req.flush(mockResponse);
@@ -150,7 +144,7 @@ describe('User Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/favorites/teams/${mockFavteams[0].name}`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/favorites/teams/${mockFavteams[0].name}`);
 		expect(req.request.method).toBe('DELETE');
 		expect(req.request.withCredentials).toBeTrue();
 		req.flush(mockResponse);

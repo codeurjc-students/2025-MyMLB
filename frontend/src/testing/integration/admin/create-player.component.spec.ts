@@ -16,8 +16,7 @@ describe('Create Player Component Integration Tests', () => {
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const apiPlayers = 'https://localhost:8443/api/v1/players';
-	const apiTeams = 'https://localhost:8443/api/v1/teams';
+	const apiPlayers = '/api/v1/players';
 
 	const mockPositionPlayer: PositionPlayerGlobal = MockFactory.buildPositionPlayerGlobalMock(
 		'Aaron Judge',

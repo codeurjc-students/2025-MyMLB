@@ -11,7 +11,7 @@ describe('Email Phase Component Integration Tests', () => {
 	let component: EmailPhaseComponent;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/auth';
+	const apiUrl = '/api/v1/auth';
 	const forgotPasswordUrl = `${apiUrl}/forgot-password`;
 	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 

@@ -14,9 +14,9 @@ describe('Profile Component Integration Test', () => {
     let httpMock: HttpTestingController;
     let routerSpy: jasmine.SpyObj<Router>;
 
-    const authUrl = 'https://localhost:8443/api/v1/auth';
-    const usersUrl = 'https://localhost:8443/api/v1/users';
-	const statsUrl = 'https://localhost:8443/api/v1/analytics';
+    const authUrl = '/api/v1/auth';
+    const usersUrl = '/api/v1/users';
+	const statsUrl = '/api/v1/analytics';
 
     const mockUser: UserRole = {
         username: 'testUser',

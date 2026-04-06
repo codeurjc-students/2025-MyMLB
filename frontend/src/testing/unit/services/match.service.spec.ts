@@ -8,7 +8,6 @@ import { MockFactory } from '../../utils/mock-factory';
 describe('Match Service Tests', () => {
 	let service: MatchService;
 	let httpMock: HttpTestingController;
-	const apiUrl = 'https://localhost:8443/api/v1/matches';
 
 	const match1Id = 1;
 	const match2Id = 2;
@@ -38,7 +37,7 @@ describe('Match Service Tests', () => {
 			expect(response).toEqual(mockMatch);
 		});
 
-		const request = httpMock.expectOne(`${apiUrl}/${match1Id}`);
+		const request = httpMock.expectOne(`${service['apiUrl']}/${match1Id}`);
 		expect(request.request.method).toBe('GET');
 		request.flush(mockMatch);
 	});
@@ -51,7 +50,7 @@ describe('Match Service Tests', () => {
 			expect(data.content[0].status).toBe('SCHEDULED');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/today?page=0&size=10`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/today?page=0&size=10`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -69,7 +68,7 @@ describe('Match Service Tests', () => {
 			expect(data[1].status).toBe('SCHEDULED');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/team/${teamName}?year=${year}&month=${month}`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/team/${teamName}?year=${year}&month=${month}`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockHomeMatches);
 	});

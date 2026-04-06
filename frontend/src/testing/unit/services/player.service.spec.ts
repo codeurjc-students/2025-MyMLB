@@ -17,8 +17,6 @@ describe('Player Service Tests', () => {
 	let service: PlayerService;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/players';
-
 	const mockCreatePitcherRequest: CreatePlayerRequest = {
 		name: 'Paul Skenes',
 		playerNumber: 67,
@@ -68,7 +66,7 @@ describe('Player Service Tests', () => {
 			expect(response.name).toEqual('Gleyber Torres');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/position-player`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/position-player`);
 		expect(req.request.method).toBe('POST');
 		req.flush(mockPositionPlayer);
 	});
@@ -100,7 +98,7 @@ describe('Player Service Tests', () => {
 			expect(response.name).toEqual('Paul Skenes');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/pitcher`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/pitcher`);
 		expect(req.request.method).toBe('POST');
 		req.flush(mockPitcher);
 	});
@@ -114,7 +112,7 @@ describe('Player Service Tests', () => {
 			expect(response.url).toContain('pic.webp');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/Paul Skenes/pictures`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/Paul Skenes/pictures`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body instanceof FormData).toBeTrue();
 		req.flush(mockPictures);
@@ -129,7 +127,7 @@ describe('Player Service Tests', () => {
 				expect(response).toEqual(mockResponse);
 			});
 
-		const req = httpMock.expectOne(`${apiUrl}/position-players/Gleyber Torres`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/position-players/Gleyber Torres`);
 		expect(req.request.method).toBe('PATCH');
 		req.flush(mockResponse);
 	});
@@ -141,7 +139,7 @@ describe('Player Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/pitchers/Paul Skenes`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/pitchers/Paul Skenes`);
 		expect(req.request.method).toBe('PATCH');
 		req.flush(mockResponse);
 	});
@@ -151,7 +149,7 @@ describe('Player Service Tests', () => {
 			expect(response).toEqual({ success: true });
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/Paul Skenes`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/Paul Skenes`);
 		expect(req.request.method).toBe('DELETE');
 		req.flush({ success: true });
 	});
@@ -173,7 +171,7 @@ describe('Player Service Tests', () => {
 			});
 
 		const req = httpMock.expectOne((request) =>
-			request.url === `${apiUrl}/rankings` &&
+			request.url === `${service['apiUrl']}/rankings` &&
 			request.params.get('page') === '0' &&
 			request.params.get('size') === '10' &&
 			request.params.get('playerType') === 'position' &&
@@ -199,7 +197,7 @@ describe('Player Service Tests', () => {
 		});
 
 		const req = httpMock.expectOne((request) =>
-			request.url === `${apiUrl}/rankings/all` &&
+			request.url === `${service['apiUrl']}/rankings/all` &&
 			request.params.get('playerType') === 'position' &&
 			request.params.get('league') === 'NL'
 		);
@@ -219,7 +217,7 @@ describe('Player Service Tests', () => {
 			expect(response.message).toContain('updated');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/sync`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/sync`);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body).toEqual({});
 		req.flush(mockResponse);

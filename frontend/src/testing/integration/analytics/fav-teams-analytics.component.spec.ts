@@ -13,7 +13,7 @@ describe('FavTeams Analytics Component Integration Test', () => {
     let component: FavTeamsAnalyticsComponent;
     let httpMock: HttpTestingController;
 
-    const apiUrl = 'https://localhost:8443/api/v1/analytics/fav-teams';
+    const apiUrl = '/api/v1/analytics/fav-teams';
 
     const mockFavTeamsData: Record<string, number> = {
 		'New York Yankees': 10,

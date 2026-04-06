@@ -10,8 +10,6 @@ describe('Stadium Service Tests', () => {
 	let service: StadiumService;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/stadiums';
-
 	const mockAuthResponse: AuthResponse = {
 		status: 'SUCCESS',
 		message: 'Picture removed successfully',
@@ -50,7 +48,7 @@ describe('Stadium Service Tests', () => {
 			expect(stadiums.page.totalPages).toBe(1);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/available?page=0&size=10`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/available?page=0&size=10`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
@@ -81,7 +79,7 @@ describe('Stadium Service Tests', () => {
 				expect(picture).toEqual(mockResponse);
 			});
 
-			const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures${suffix}`);
+			const req = httpMock.expectOne(`${service['apiUrl']}/${stadiumName}/pictures${suffix}`);
 
 			expect(req.request.method).toBe('POST');
 			expect(req.request.body instanceof FormData).toBeTrue();
@@ -100,7 +98,7 @@ describe('Stadium Service Tests', () => {
 			expect(response.message).toBe('Picture removed successfully');
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/${stadiumName}/pictures?publicId=${publicId}`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/${stadiumName}/pictures?publicId=${publicId}`);
 		expect(req.request.method).toBe('DELETE');
 		req.flush(mockAuthResponse);
 	});
@@ -115,7 +113,7 @@ describe('Stadium Service Tests', () => {
 			expect(summary.pictures.length).toBe(0);
 		});
 
-		const req = httpMock.expectOne(apiUrl);
+		const req = httpMock.expectOne(service['apiUrl']);
 		expect(req.request.method).toBe('POST');
 		expect(req.request.body).toEqual(request);
 		req.flush(mockSummary);

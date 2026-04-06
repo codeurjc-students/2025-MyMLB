@@ -10,7 +10,7 @@ describe('Standings Widget Component Integration Test', () => {
 	let component: StandingsWidgetComponent;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/teams/standings';
+	const apiUrl = '/api/v1/teams/standings';
 
 	const mockResponse = {
 		American: {

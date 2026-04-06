@@ -14,8 +14,8 @@ describe('Edit Team Component Integration Tests', () => {
 	let component: EditTeamComponent;
 	let httpMock: HttpTestingController;
 
-	const teamApiUrl = 'https://localhost:8443/api/v1/teams';
-	const stadiumApiUrl = 'https://localhost:8443/api/v1/stadiums';
+	const teamApiUrl = '/api/v1/teams';
+	const stadiumApiUrl = '/api/v1/stadiums';
 
 	const mockTeamInfo: TeamInfo = {
 		teamStats: {
