@@ -2,11 +2,14 @@ package com.mlb.mlbportal.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mlb.mlbportal.models.Team;
@@ -39,4 +42,9 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "JOIN t.favoritedByUsers u GROUP BY t.name"
     )
     List<FavTeamAnalyticsDTO> findAllFavoriteTeamsCounter();
+
+    @Query("SELECT new com.mlb.mlbportal.dto.team.RunsStatsDTO(t.name, t.runsScored, t.runsAllowed) " +
+            "FROM Team t WHERE t.name IN :teams"
+    )
+    List<RunsStatsDTO> findRunsStats(@Param("teams") Set<String> teams);
 }

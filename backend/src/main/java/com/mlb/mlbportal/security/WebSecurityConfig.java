@@ -84,6 +84,8 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams/standings").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/teams/{teamName}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/teams/analytics/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/teams/analytics/hydrate").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/v1/teams/sync").permitAll()
                     .requestMatchers(HttpMethod.PATCH, "/api/v1/teams/**").hasRole("ADMIN")
 

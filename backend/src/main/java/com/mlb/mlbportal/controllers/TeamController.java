@@ -1,9 +1,15 @@
 package com.mlb.mlbportal.controllers;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +89,32 @@ public class TeamController {
     @GetMapping(value = "/{teamName}", produces = "application/json")
     public ResponseEntity<TeamInfoDTO> getTeamInfo(@PathVariable("teamName") String teamName) {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
+    }
+
+    @GetMapping(value = "/{teamName}/analytics/wins-per-rival", produces = "application/json")
+    public ResponseEntity<List<WinsPerRivalDTO>> getWinsPerRival(@PathVariable("teamName") String teamName, @RequestParam List<String> rivalTeamNames) {
+        return ResponseEntity.ok(this.teamService.getWinsPerRivals(teamName, rivalTeamNames));
+    }
+
+    @GetMapping(value = "/analytics/runs-per-rival", produces = "application/json")
+    public ResponseEntity<List<RunsStatsDTO>> getRunsStatsPerRival(@RequestParam Set<String> teams) {
+        return ResponseEntity.ok(this.teamService.getRunStatsPerRival(teams));
+    }
+
+    @GetMapping(value = "/{teamName}/analytics/win-distribution", produces = "application/json")
+    public ResponseEntity<WinDistributionDTO> getWinDistribution(@PathVariable("teamName") String teamName) {
+        return ResponseEntity.ok(this.teamService.getWinDistribution(teamName));
+    }
+
+    @GetMapping(value = "/analytics/historic-ranking", produces = "application/json")
+    public ResponseEntity<Map<String, List<HistoricRankingDTO>>> getHistoricRanking(@RequestParam Set<String> teams, @RequestParam(required = false)LocalDate dateFrom) {
+        return ResponseEntity.ok(this.teamService.getHistoricRanking(teams, dateFrom));
+    }
+
+    @PostMapping(value = "/analytics/hydrate", produces = "application/json")
+    public ResponseEntity<AuthResponse> hydrateHistoricRanking() {
+        this.teamImportService.hydrateHistoryFromStart();
+        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Daily Rankings Updated"));
     }
 
     @Operation(summary = "Refresh current season standings", description = "Triggers a manual update of the current season standings by fetching the team statistics.")

@@ -1,22 +1,54 @@
 ### Get All Teams
 GET https://localhost:8443/api/v1/teams?page=0&size=10
-Content-Type: application/json
+Accept: application/json
 
 ### Get Available Teams
 GET https://localhost:8443/api/v1/teams/available?page=0&size=10
-Content-Type: application/json
+Accept: application/json
 
 ### Get Standings
 GET https://localhost:8443/api/v1/teams/standings
-Content-Type: application/json
+Accept: application/json
 
 ### Get Team Information
 GET https://localhost:8443/api/v1/teams/New York Yankees
-Content-Type: application/json
+Accept: application/json
 
 ### Get Non Existent Team Information
 GET https://localhost:8443/api/v1/teams/Team1
-Content-Type: application/json
+Accept: application/json
+
+### Get Wins of a Single Rival
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants
+Accept: application/json
+
+### Get Wins of Multiple Rivals
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants, Seattle Mariners
+Accept: application/json
+
+### Get Wins with Non Rivals
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=
+Accept: application/json
+
+### Get Wins With Fix Team = Rival Team
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=New York Yankees
+Accept: application/json
+
+### Get Runs Stats
+GET https://localhost:8443/api/v1/teams/analytics/runs-per-rival?teams=New York Yankees, Houston Astros, Los Angeles Dodgers, Toronto Blue Jays
+Accept: application/json
+
+### Get Win Distribution
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/win-distribution?
+Accept: application/json
+
+### Temp
+GET https://localhost:8443/api/v1/teams/temp
+Accept: application/json
+
+### Get Historic Ranking
+GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
+Accept: application/json
 
 ### Update Team with city, championships and general information
 PATCH https://localhost:8443/api/v1/teams/New York Yankees

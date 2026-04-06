@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.models.DailyStandings;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -39,6 +41,7 @@ public class TeamImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map<Integer, TeamSummary> cache = new HashMap<>();
     private final TeamRepository teamRepository;
+    private final DailyStandingsRepository dailyStandingsRepository;
 
     private static final Map<String, Division> TEAM_DIVISIONS = Map.ofEntries(
             Map.entry("BAL", Division.EAST),
@@ -168,6 +171,7 @@ public class TeamImportService {
     @Retry(name = "getTeamStats")
     public void getTeamStats() {
         int currentYear = LocalDate.now().getYear();
+        LocalDate today = LocalDate.now();
         String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season="
                 + currentYear + "&standingsTypes=regularSeason";
 
@@ -181,15 +185,26 @@ public class TeamImportService {
             }
 
             List<Team> teamsToSave = new ArrayList<>();
+            List<DailyStandings> dailyHistory = new ArrayList<>();
             for (Records records : response.records()) {
                 if (records.teamRecords() != null) {
                     for (TeamRecords teamRecord : records.teamRecords()) {
                         Team team = this.updateTeamStats(teamRecord);
                         teamsToSave.add(team);
+                        if (!this.dailyStandingsRepository.existsByTeamAndMatchDate(team, today)) {
+                            dailyHistory.add(new DailyStandings(
+                                    team,
+                                    today,
+                                    this.parseRankToInt(teamRecord.divisionRank()),
+                                    Objects.requireNonNullElse(teamRecord.wins(), 0),
+                                    Objects.requireNonNullElse(teamRecord.losses(), 0)
+                            ));
+                        }
                     }
                 }
             }
             this.teamRepository.saveAll(teamsToSave);
+            this.dailyStandingsRepository.saveAll(dailyHistory);
             log.info("Rankings and Team Stats successfully updated!");
         }
         catch (Exception e) {
@@ -206,6 +221,9 @@ public class TeamImportService {
                 Objects.requireNonNullElse(teamRecord.wins(), 0),
                 Objects.requireNonNullElse(teamRecord.losses(), 0),
                 this.parseGamesBehindAsDouble(teamRecord.divisionGamesBack()),
+                Objects.requireNonNullElse(teamRecord.runsScored(), 0),
+                Objects.requireNonNullElse(teamRecord.runsAllowed(), 0),
+                Objects.requireNonNullElse(teamRecord.runDifferential(), 0),
                 Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"),
                 teamRecord.getLastTenGames()
         );
@@ -232,11 +250,82 @@ public class TeamImportService {
 
     private void setEmptyStats() {
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> team.addTeamStats(0, 0, 0, 0.0, ".000", "0-0"));
+        teams.forEach(team -> team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0, ".000", "0-0"));
         this.teamRepository.saveAll(teams);
     }
 
     public void fallbackTeamStats(Throwable throwable) {
         log.error("getTeamStats: Error fetching the team stats: {} ", throwable.getMessage());
+    }
+
+    public void hydrateHistoryFromStart() {
+        LocalDate startOfSeason = LocalDate.of(2026, 3, 25);
+        LocalDate today = LocalDate.now();
+
+        for (LocalDate date = startOfSeason; date.isBefore(today); date = date.plusDays(1)) {
+            try {
+                log.info("Updating Historic Ranking for date: {}", date);
+                this.importStatsByDate(date);
+                Thread.sleep(500);
+
+            }
+            catch (Exception e) {
+                log.error("Error on date {}: {}", date, e.getMessage());
+            }
+        }
+    }
+
+    @CircuitBreaker(name = "importStatsByDate", fallbackMethod = "fallbackHistoricRanking")
+    @Retry(name = "importStatsByDate")
+    private void importStatsByDate(LocalDate date) {
+        String url = String.format(
+                "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2026&date=%s",
+                date.toString()
+        );
+
+        try {
+            StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
+
+            if (response != null && response.records() != null) {
+                List<DailyStandings> dayHistory = new ArrayList<>();
+                for (Records record : response.records()) {
+                    if (record.teamRecords() == null) continue;
+
+                    for (TeamRecords teamRecord : record.teamRecords()) {
+                        this.teamRepository.findByStatsApiId(teamRecord.team().id()).ifPresent(team -> dayHistory.add(new DailyStandings(
+                                team,
+                                date,
+                                this.parseRankToInt(teamRecord.divisionRank()),
+                                teamRecord.wins(),
+                                teamRecord.losses()
+                        )));
+                    }
+                }
+                if (!dayHistory.isEmpty()) {
+                    this.dailyStandingsRepository.saveAll(dayHistory);
+                    log.info("Stored {} registers for date {}", dayHistory.size(), date);
+                }
+            }
+        }
+        catch (Exception e) {
+            log.warn("API failed for date {}", date);
+            throw e;
+        }
+    }
+
+    public void fallbackHistoricRanking(LocalDate date, Throwable t) {
+        log.warn("hydrateHistoricRanking: An error occur for date {}: {}", date, t.getMessage());
+    }
+
+    private int parseRankToInt(String value) {
+        if (value == null || value.isBlank()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

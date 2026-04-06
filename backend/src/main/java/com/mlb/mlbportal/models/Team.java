@@ -11,12 +11,32 @@ import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.models.player.Pitcher;
 import com.mlb.mlbportal.models.player.PositionPlayer;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "T_Team", indexes = {
+        @Index(name = "idx_team_name", columnList = "name")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,6 +62,12 @@ public class Team {
     private double gamesBehind;
 
     private String lastTen;
+
+    private int runsScored;
+
+    private int runsAllowed;
+
+    private int runDifferential;
 
     private String teamLogo;
 
@@ -124,11 +150,14 @@ public class Team {
         this.lastTen = "0-0";
     }
 
-    public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, String pct, String lastTen) {
+    public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, int runsScored, int runsAllowed, int runDifferential, String pct, String lastTen) {
         this.totalGames = gamesPlayed;
         this.wins = wins;
         this.losses = losses;
         this.gamesBehind = gamesBehind;
+        this.runsScored = runsScored;
+        this.runsAllowed = runsAllowed;
+        this.runDifferential = runDifferential;
         this.pct = pct;
         this.lastTen = lastTen;
     }

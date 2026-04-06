@@ -10,7 +10,7 @@ import com.mlb.mlbportal.models.UserEntity;
 
 @Repository
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
-    public Optional<PasswordResetToken> findByCode(String code);
+    Optional<PasswordResetToken> findByCode(String code);
     
-    public Optional<PasswordResetToken> findByUser(UserEntity user);
+    Optional<PasswordResetToken> findByUser(UserEntity user);
 }

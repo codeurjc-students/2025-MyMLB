@@ -9,11 +9,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TeamRecords(
         TeamRecordsGeneralInfo team,
+        String divisionRank,
         Integer gamesPlayed,
         Integer wins,
         Integer losses,
         String winningPercentage,
         String divisionGamesBack,
+        Integer runsScored,
+        Integer runsAllowed,
+        Integer runDifferential,
         RecordsWrapper records
 ) {
     public String getLastTenGames() {
