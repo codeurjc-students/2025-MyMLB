@@ -11,7 +11,7 @@ describe('Edit Stadium Component Integration Tests', () => {
 	let component: EditStadiumComponent;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/stadiums';
+	const apiUrl = '/api/v1/stadiums';
 
 	const mockStadium: Stadium = {
 		name: 'Yankee Stadium',

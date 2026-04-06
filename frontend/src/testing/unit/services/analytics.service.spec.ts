@@ -9,7 +9,6 @@ import { APIAnalytics } from "../../../app/models/analytics.model";
 describe('Analytics Service Tests', () => {
     let service: AnalyticsService;
     let httpMock: HttpTestingController;
-    const apiUrl = 'https://localhost:8443/api/v1/analytics';
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -41,7 +40,7 @@ describe('Analytics Service Tests', () => {
             expect(stats).toEqual(mockStats);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/visibility?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/visibility?dateFrom=${dateFrom}&dateTo=${dateTo}`);
         expect(req.request.method).toBe('GET');
         req.flush(mockStats);
     });
@@ -53,7 +52,7 @@ describe('Analytics Service Tests', () => {
             expect(response).toEqual(mockResponse);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/visibility/visualizations`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/visibility/visualizations`);
         expect(req.request.method).toBe('POST');
         expect(req.request.body).toEqual({});
         req.flush(mockResponse);
@@ -66,7 +65,7 @@ describe('Analytics Service Tests', () => {
             expect(response).toEqual(mockResponse);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/visibility/registrations`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/visibility/registrations`);
         expect(req.request.method).toBe('POST');
         req.flush(mockResponse);
     });
@@ -78,7 +77,7 @@ describe('Analytics Service Tests', () => {
             expect(response).toEqual(mockResponse);
         });
 
-        const req = httpMock.expectOne(`${apiUrl}/visibility/losses`);
+        const req = httpMock.expectOne(`${service['apiUrl']}/visibility/losses`);
         expect(req.request.method).toBe('POST');
         req.flush(mockResponse);
     });
@@ -88,7 +87,7 @@ describe('Analytics Service Tests', () => {
 
         service.trackVisitor();
 
-		const req = httpMock.expectOne(`${apiUrl}/visibility/visualizations`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/visibility/visualizations`);
         expect(req.request.method).toBe('POST');
         req.flush(mockResponse);
 
@@ -104,7 +103,7 @@ describe('Analytics Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/fav-teams`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/fav-teams`);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
 	});
@@ -125,7 +124,7 @@ describe('Analytics Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const req = httpMock.expectOne(`${apiUrl}/api-performance?dateRange=1h`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/api-performance?dateRange=1h`);
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
 	});

@@ -7,7 +7,6 @@ import { MockFactory } from "../../../utils/mock-factory";
 describe('Ticket Service Tests', () => {
 	let service: TicketService;
 	let httpMock: HttpTestingController
-	const apiUrl = 'https://localhost:8443/api/v1/tickets';
 	const managerId = 1;
 	const ticketId = 2;
 
@@ -34,7 +33,7 @@ describe('Ticket Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const request = httpMock.expectOne(apiUrl);
+		const request = httpMock.expectOne(service['apiUrl']);
 		expect(request.request.method).toBe('POST');
 		expect(request.request.body).toBe(mockRequest);
 		expect(request.request.withCredentials).toBeTrue;
@@ -47,7 +46,7 @@ describe('Ticket Service Tests', () => {
 			expect(response).toEqual(mockResponse);
 		});
 
-		const url = `${apiUrl}/${ticketId}/download`;
+		const url = `${service['apiUrl']}/${ticketId}/download`;
 		const request = httpMock.expectOne(url);
 		expect(request.request.method).toBe('GET');
 		expect(request.request.withCredentials).toBeTrue();

@@ -12,7 +12,7 @@ describe('Ticket Purchase Component Integration Test', () => {
 	let component: TicketPurchaseComponent;
 	let httpMock: HttpTestingController;
 
-	const apiUrl = 'https://localhost:8443/api/v1/tickets';
+	const apiUrl = '/api/v1/tickets';
 	const managerId = 1;
 	const ticketId = 2;
 	const sectorId = 1;

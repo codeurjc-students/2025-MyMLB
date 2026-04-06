@@ -12,7 +12,7 @@ describe('Create Stadium Component Integration Tests', () => {
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const apiUrl = 'https://localhost:8443/api/v1/stadiums';
+	const apiUrl = '/api/v1/stadiums';
 
 	beforeEach(() => {
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);

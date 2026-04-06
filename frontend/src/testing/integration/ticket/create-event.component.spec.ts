@@ -12,8 +12,8 @@ describe('Create Event Integration Tests', () => {
 	let fixture: ComponentFixture<CreateEventComponent>;
 	let component: CreateEventComponent;
 	let httpMock: HttpTestingController;
-	let apiUrl = 'https://localhost:8443/api/v1/events';
-	let matchUrl = 'https://localhost:8443/api/v1/matches';
+	let apiUrl = '/api/v1/events';
+	let matchUrl = '/api/v1/matches';
 	let routeQueryParams$: Subject<any>;
 
 	const matchId = 1;

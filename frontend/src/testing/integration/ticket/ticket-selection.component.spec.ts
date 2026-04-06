@@ -14,7 +14,7 @@ describe('Ticket Selection Component Integration Test', () => {
     let httpMock: HttpTestingController;
     let routeQueryParams$: Subject<any>;
 
-    const apiUrl = 'https://localhost:8443/api/v1/events';
+    const apiUrl = '/api/v1/events';
     const sectorId = 1;
 	const eventId = 2;
 	const matchId = 1;

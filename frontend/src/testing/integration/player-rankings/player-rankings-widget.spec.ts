@@ -13,7 +13,7 @@ describe('Player Rankings Widget Component Integration Test', () => {
     let httpMock: HttpTestingController;
     let router: Router;
 
-    const apiUrl = 'https://localhost:8443/api/v1/players';
+    const apiUrl = '/api/v1/players';
 
     const mockRankingsResponse: PaginatedResponse<PlayerRanking> = {
         content: [

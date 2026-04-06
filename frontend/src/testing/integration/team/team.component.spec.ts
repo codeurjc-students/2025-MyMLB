@@ -65,7 +65,7 @@ describe('Team Component Integration Tests', () => {
 		const mockActivatedRoute = {
             snapshot: {
                 paramMap: {
-                    get: (key: string) => 'New York Yankees'
+                    get: () => 'New York Yankees'
                 }
             }
         };

@@ -16,10 +16,10 @@ describe('Favorite Team Component Integration Test', () => {
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const apiUrl = 'https://localhost:8443/api/v1/users';
+	const apiUrl = '/api/v1/users';
 	const favTeamsUrl = `${apiUrl}/favorites/teams`;
-	const activeUserUrl = 'https://localhost:8443/api/v1/auth/me';
-	const standingsUrl = 'https://localhost:8443/api/v1/teams/standings';
+	const activeUserUrl = '/api/v1/auth/me';
+	const standingsUrl = '/api/v1/teams/standings';
 
 	const mockTeams: TeamSummary[] = [
 		MockFactory.buildTeamSummaryMock('team1', 't1', 'AL', 'EAST'),

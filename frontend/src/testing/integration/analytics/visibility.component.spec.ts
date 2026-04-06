@@ -13,7 +13,7 @@ describe('Visibility Component Integration Test', () => {
     let component: VisibilityComponent;
     let httpMock: HttpTestingController;
 
-    const apiUrl = 'https://localhost:8443/api/v1/analytics/visibility';
+    const apiUrl = '/api/v1/analytics/visibility';
 
     const mockStatsResponse = [
         { date: '2026-03-01', visualizations: 100, newUsers: 20, deletedUsers: 5 },

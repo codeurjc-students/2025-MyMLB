@@ -13,10 +13,10 @@ describe('Register Component Integration Test', () => {
 	let httpMock: HttpTestingController;
 	let routerSpy: jasmine.SpyObj<Router>;
 
-	const apiUrl = 'https://localhost:8443/api/v1/auth';
+	const apiUrl = '/api/v1/auth';
 	const registerUrl = `${apiUrl}/register`;
 	const meUrl = `${apiUrl}/me`;
-	const statsUrl = 'https://localhost:8443/api/v1/analytics';
+	const statsUrl = '/api/v1/analytics';
 	const defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 
 	beforeEach(() => {

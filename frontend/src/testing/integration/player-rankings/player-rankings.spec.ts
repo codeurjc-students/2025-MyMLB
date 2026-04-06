@@ -17,8 +17,8 @@ describe('Player Rankings Component Integration Test', () => {
     let httpMock: HttpTestingController;
     let queryParamsSubject: BehaviorSubject<any>;
 
-    const playersUrl = 'https://localhost:8443/api/v1/players';
-    const teamsUrl = 'https://localhost:8443/api/v1/teams';
+    const playersUrl = '/api/v1/players';
+    const teamsUrl = '/api/v1/teams';
 
     const mockStandingsResponse = {
         'AL': { 'EAST': [{ name: 'Baltimore Orioles', abbreviation: 'BAL' }] }
