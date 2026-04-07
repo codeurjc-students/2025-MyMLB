@@ -11,6 +11,7 @@ import com.mlb.mlbportal.dto.team.RunsStatsDTO;
 import com.mlb.mlbportal.dto.team.WinDistributionDTO;
 import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,26 +92,54 @@ public class TeamController {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
     }
 
+    @Operation(summary = "Get wins per rival", description = "Calculates the number of wins for a specific team against a list of selected rivals.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved wins per rival stats", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = WinsPerRivalDTO.class)))),
+            @ApiResponse(responseCode = "404", description = "Team or rivals not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/{teamName}/analytics/wins-per-rival", produces = "application/json")
-    public ResponseEntity<List<WinsPerRivalDTO>> getWinsPerRival(@PathVariable("teamName") String teamName, @RequestParam List<String> rivalTeamNames) {
+    public ResponseEntity<List<WinsPerRivalDTO>> getWinsPerRival(@PathVariable("teamName") String teamName, @RequestParam Set<String> rivalTeamNames) {
         return ResponseEntity.ok(this.teamService.getWinsPerRivals(teamName, rivalTeamNames));
     }
 
+    @Operation(summary = "Get run stats per rival", description = "Returns scoring statistics (runs scored vs runs allowed) between the specified teams.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved run stats", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RunsStatsDTO.class)))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/analytics/runs-per-rival", produces = "application/json")
     public ResponseEntity<List<RunsStatsDTO>> getRunsStatsPerRival(@RequestParam Set<String> teams) {
         return ResponseEntity.ok(this.teamService.getRunStatsPerRival(teams));
     }
 
+    @Operation(summary = "Get team win distribution", description = "Returns a percentage breakdown of home vs away wins for a specific team.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved win distribution", content = @Content(mediaType = "application/json", schema = @Schema(implementation = WinDistributionDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/{teamName}/analytics/win-distribution", produces = "application/json")
     public ResponseEntity<WinDistributionDTO> getWinDistribution(@PathVariable("teamName") String teamName) {
         return ResponseEntity.ok(this.teamService.getWinDistribution(teamName));
     }
 
+    @Operation(summary = "Get historic daily rankings", description = "Returns a chronological map of division rankings, wins, and losses for the selected teams from a starting date.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved historic data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/analytics/historic-ranking", produces = "application/json")
     public ResponseEntity<Map<String, List<HistoricRankingDTO>>> getHistoricRanking(@RequestParam Set<String> teams, @RequestParam(required = false)LocalDate dateFrom) {
         return ResponseEntity.ok(this.teamService.getHistoricRanking(teams, dateFrom));
     }
 
+    @Operation(summary = "Hydrate historic ranking data", description = "Admin tool to manually trigger the historical data import for the current season.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Hydration process completed successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Unauthorized - Admin access required", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Error during API hydration process", content = @Content(mediaType = "application/json"))
+    })
     @PostMapping(value = "/analytics/hydrate", produces = "application/json")
     public ResponseEntity<AuthResponse> hydrateHistoricRanking() {
         this.teamImportService.hydrateHistoryFromStart();

@@ -208,7 +208,7 @@ class TeamImportServiceTest {
 
         TeamRecordsGeneralInfo apiTeam = new TeamRecordsGeneralInfo(1L, TEST_TEAM1_NAME);
         TeamRecords teamRecord = new TeamRecords(
-                apiTeam, 10, 6, 4, ".600", "2.0", new RecordsWrapper(new ArrayList<>())
+                apiTeam, "1",  10, 6, 4, ".600", "2.0", 42, 10, 32, new RecordsWrapper(new ArrayList<>())
         );
         Records records = new Records(List.of(teamRecord));
         StandingsResponse response = new StandingsResponse(List.of(records));

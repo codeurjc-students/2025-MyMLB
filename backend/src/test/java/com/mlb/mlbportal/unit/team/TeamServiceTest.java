@@ -1,17 +1,22 @@
 package com.mlb.mlbportal.unit.team;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.mlb.mlbportal.utils.TestConstants.OCCUPIED_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
+import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_USER_USERNAME;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_STADIUM;
 import static com.mlb.mlbportal.utils.TestConstants.UNKNOWN_TEAM;
@@ -20,7 +25,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
+import com.mlb.mlbportal.mappers.DailyStandingsMapper;
+import com.mlb.mlbportal.models.DailyStandings;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
+import com.mlb.mlbportal.repositories.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,9 +66,7 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
-import com.mlb.mlbportal.services.player.PlayerService;
 import com.mlb.mlbportal.services.team.TeamService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 import com.mlb.mlbportal.utils.BuildMocksFactory;
@@ -69,13 +81,6 @@ class TeamServiceTest {
     private TeamMapper teamMapper;
 
     @Mock
-    @SuppressWarnings("unused")
-    private MatchService matchService;
-
-    @Mock
-    private PlayerService playerService;
-
-    @Mock
     private UserService userService;
 
     @Mock
@@ -83,6 +88,15 @@ class TeamServiceTest {
 
     @Mock
     private StadiumRepository stadiumRepository;
+
+    @Mock
+    private MatchRepository matchRepository;
+
+    @Mock
+    private DailyStandingsRepository dailyStandingsRepository;
+
+    @Mock
+    private DailyStandingsMapper dailyStandingsMapper;
 
     @InjectMocks
     private TeamService teamService;
@@ -156,6 +170,33 @@ class TeamServiceTest {
     }
 
     @Test
+    @DisplayName("Should return the general info of a team with updated players and pitchers")
+    void testGetTeamInfo() {
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
+
+        TeamInfoDTO expected = this.mockTeamInfoDTOs.getFirst();
+        when(this.teamMapper.toTeamInfoDTO(this.team1)).thenReturn(expected);
+
+        TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
+
+        assertThat(result).isNotNull();
+        assertThat(result.teamStats().name()).isEqualTo(expected.teamStats().name());
+        assertThat(result.teamStats().abbreviation()).isEqualTo(expected.teamStats().abbreviation());
+        assertThat(result.city()).isEqualTo(expected.city());
+        assertThat(result.stadium().name()).isEqualTo(expected.stadium().name());
+    }
+
+    @Test
+    @DisplayName("Should throw TeamNotFoundException for a non existent team")
+    void testGetNonExistentTeamInfo() {
+        when(this.teamRepository.findByNameOrThrow(any())).thenCallRealMethod();
+
+        assertThatThrownBy(() -> this.teamService.getTeamInfo(UNKNOWN_TEAM))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessage("Team Not Found");
+    }
+
+    @Test
     @DisplayName("Should return standings grouped and ordered prioritizing user's favorite divisions")
     void testGetStandingsWithUserFavorites() {
         this.mockTeamRepositoryAndMapper();
@@ -170,8 +211,6 @@ class TeamServiceTest {
 
         assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.getFirst(), this.mockTeamDTOs.get(1));
         assertThat(standings.get(this.team3.getLeague()).get(this.team3.getDivision())).containsExactly(this.mockTeamDTOs.get(2));
-
-        verify(this.userService).getUser(TEST_USER_USERNAME);
     }
 
     @Test
@@ -185,7 +224,6 @@ class TeamServiceTest {
 
         assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.getFirst(), this.mockTeamDTOs.get(1));
         assertThat(standings.get(this.team3.getLeague()).get(this.team3.getDivision())).containsExactly(this.mockTeamDTOs.get(2));
-
         verify(this.userService, never()).getUser(any());
     }
 
@@ -206,7 +244,6 @@ class TeamServiceTest {
         this.assertCommonStandingsStructure(standings);
 
         assertThat(standings.get(League.AL).get(Division.EAST)).containsExactly(this.mockTeamDTOs.get(1), this.mockTeamDTOs.getFirst());
-
         verify(this.userService, never()).getUser(any());
     }
 
@@ -235,6 +272,108 @@ class TeamServiceTest {
     }
 
     @Test
+    @DisplayName("Should get the wins of a certain team against certain rivals")
+    void testGetWinsPerRivals() {
+        Set<String> rivals = Set.of(TEST_TEAM2_NAME, TEST_TEAM3_NAME);
+        WinsPerRivalDTO winsAgainstTeam2 = BuildMocksFactory.buildWinsPerRivalDTO(TEST_TEAM2_NAME, 6, 3);
+        WinsPerRivalDTO winsAgainstTeam3 = BuildMocksFactory.buildWinsPerRivalDTO(TEST_TEAM3_NAME, 10, 8);
+        List<WinsPerRivalDTO> expectedResult = List.of(winsAgainstTeam2, winsAgainstTeam3);
+
+        when(this.matchRepository.findWinsPerRival(TEST_TEAM1_NAME, rivals)).thenReturn(expectedResult);
+
+        List<WinsPerRivalDTO> result = this.teamService.getWinsPerRivals(TEST_TEAM1_NAME, rivals);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(WinsPerRivalDTO::rivalTeamName).containsExactly(TEST_TEAM2_NAME, TEST_TEAM3_NAME);
+        assertThat(result).extracting(WinsPerRivalDTO::wins).containsExactly(3L, 8L);
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidTypeException when no rival teams are provided")
+    void testGetWinsPerRivalsWithoutRivals() {
+        assertThatThrownBy(() -> this.teamService.getWinsPerRivals(TEST_TEAM1_NAME, Collections.emptySet()))
+                .isInstanceOf(InvalidTypeException.class)
+                .hasMessage("The rival teams are required");
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidTypeException when the base team is among the rival ones")
+    void testGetWinsPerRivalsWithSameTeam() {
+        Set<String> rivals = Set.of(TEST_TEAM2_NAME, TEST_TEAM1_NAME);
+        assertThatThrownBy(() -> this.teamService.getWinsPerRivals(TEST_TEAM1_NAME, rivals))
+                .isInstanceOf(InvalidTypeException.class)
+                .hasMessage("The rival team must differ from the current team");
+    }
+
+    @Test
+    @DisplayName("Should return the run analytics of the provided team for the current season")
+    void testGetRunStatsPerRivals() {
+        Set<String> teams = Set.of(TEST_TEAM1_NAME, TEST_TEAM2_NAME);
+        RunsStatsDTO statsTeam1 = BuildMocksFactory.buildRunStatsDTO(TEST_TEAM1_NAME, 42, 20);
+        RunsStatsDTO statsTeam2 = BuildMocksFactory.buildRunStatsDTO(TEST_TEAM2_NAME, 30, 15);
+        List<RunsStatsDTO> expectedResult = List.of(statsTeam1, statsTeam2);
+
+        when(this.teamRepository.findRunsStats(teams)).thenReturn(expectedResult);
+
+        List<RunsStatsDTO> result = this.teamService.getRunStatsPerRival(teams);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(RunsStatsDTO::teamName).containsExactly(TEST_TEAM1_NAME, TEST_TEAM2_NAME);
+        assertThat(result).extracting(RunsStatsDTO::runsScored).containsExactly(42, 30);
+    }
+
+    @Test
+    @DisplayName("Should return the win distribution of a certain team")
+    void testGetWinDistribution() {
+        WinDistributionDTO expectedResult = BuildMocksFactory.buildWinDistributionDTO(TEST_TEAM1_NAME, 30, 25, 20, 10);
+        double homePct = (double) 25 / 30;
+        double formattedHomePct = Math.round(homePct * 1000.0) / 1000.0;
+        double roadPct = (double) 10 / 20;
+        double formattedRoadPct = Math.round(roadPct * 1000.0) / 1000.0;
+
+        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
+        when(this.matchRepository.findWinDistribution(TEST_TEAM1_NAME)).thenReturn(expectedResult);
+
+        WinDistributionDTO result = this.teamService.getWinDistribution(TEST_TEAM1_NAME);
+
+        assertThat(result.teamName()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.getHomeWinPct()).isEqualTo(formattedHomePct);
+        assertThat(result.getRoadWinPct()).isEqualTo(formattedRoadPct);
+    }
+
+    @Test
+    @DisplayName("Should return a map of historic rankings grouped by team name")
+    void testGetHistoricRanking() {
+        Set<String> teams = Set.of(TEST_TEAM1_NAME);
+        LocalDate dateFrom = LocalDate.of(2026, 3, 25);
+        DailyStandings standing = new DailyStandings();
+        HistoricRankingDTO dto = BuildMocksFactory.buildHistoricRankingDTO(TEST_TEAM1_NAME, dateFrom, 1, 10, 5);
+        List<DailyStandings> queryResult = List.of(standing);
+
+        when(this.dailyStandingsRepository.findHistoricRanking(teams, dateFrom)).thenReturn(queryResult);
+        when(this.dailyStandingsMapper.toHistoricRankingDTO(standing)).thenReturn(dto);
+
+        Map<String, List<HistoricRankingDTO>> result = teamService.getHistoricRanking(teams, dateFrom);
+
+        assertThat(result).isNotNull();
+        assertThat(result).containsKey(TEST_TEAM1_NAME);
+        assertThat(result.get(TEST_TEAM1_NAME)).hasSize(1);
+        assertThat(result.get(TEST_TEAM1_NAME).getFirst().teamName()).isEqualTo(TEST_TEAM1_NAME);
+    }
+
+    @Test
+    @DisplayName("Should use default date (one month ago) when dateFrom is nor provided")
+    void testGetHistoricRankingWithDefaultDate() {
+        Set<String> teams = Set.of(TEST_TEAM1_NAME);
+
+        when(this.dailyStandingsRepository.findHistoricRanking(eq(teams), any(LocalDate.class))).thenReturn(List.of());
+
+        this.teamService.getHistoricRanking(teams, null);
+
+        verify(this.dailyStandingsRepository).findHistoricRanking(teams, LocalDate.now().minusMonths(1));
+    }
+
+    @Test
     @DisplayName("Should update stats and save both teams when updating ranking")
     void testUpdateRanking() {
         this.team1.setWins(TEST_TEAM1_WINS);
@@ -252,35 +391,6 @@ class TeamServiceTest {
 
         verify(this.teamRepository, times(1)).save(this.team1);
         verify(this.teamRepository, times(1)).save(this.team2);
-    }
-
-    @Test
-    @DisplayName("Should return the general info of a team with updated players and pitchers")
-    void testGetTeamInfo() {
-        when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
-
-        TeamInfoDTO expected = this.mockTeamInfoDTOs.getFirst();
-        when(this.teamMapper.toTeamInfoDTO(this.team1)).thenReturn(expected);
-
-        TeamInfoDTO result = this.teamService.getTeamInfo(TEST_TEAM1_NAME);
-
-        assertThat(result).isNotNull();
-        assertThat(result.teamStats().name()).isEqualTo(expected.teamStats().name());
-        assertThat(result.teamStats().abbreviation()).isEqualTo(expected.teamStats().abbreviation());
-        assertThat(result.city()).isEqualTo(expected.city());
-        assertThat(result.stadium().name()).isEqualTo(expected.stadium().name());
-
-        verify(this.teamRepository).findByNameOrThrow(TEST_TEAM1_NAME);
-    }
-
-    @Test
-    @DisplayName("Should throw TeamNotFoundException for a non existent team")
-    void testGetNonExistentTeamInfo() {
-        when(this.teamRepository.findByNameOrThrow(any())).thenCallRealMethod();
-
-        assertThatThrownBy(() -> this.teamService.getTeamInfo(UNKNOWN_TEAM))
-                .isInstanceOf(TeamNotFoundException.class)
-                .hasMessage("Team Not Found");
     }
 
     @Test

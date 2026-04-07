@@ -165,6 +165,7 @@ public class TeamImportService {
 
     /**
      * Obtain the team stats from the API, and store it in the database.
+     * Also, stores the ranking data for today.
      */
     @Transactional
     @CircuitBreaker(name = "getTeamStats", fallbackMethod = "fallbackTeamStats")
@@ -177,13 +178,11 @@ public class TeamImportService {
 
         try {
             StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
-
             if (response == null || response.records() == null || response.records().isEmpty()) {
                 log.warn("No stats found for the {} season. Applying empty values", currentYear);
                 this.setEmptyStats();
                 return;
             }
-
             List<Team> teamsToSave = new ArrayList<>();
             List<DailyStandings> dailyHistory = new ArrayList<>();
             for (Records records : response.records()) {
@@ -258,6 +257,9 @@ public class TeamImportService {
         log.error("getTeamStats: Error fetching the team stats: {} ", throwable.getMessage());
     }
 
+    /**
+     * Triggers a full historical data synchronization from the start of the current season to today.
+     */
     public void hydrateHistoryFromStart() {
         LocalDate startOfSeason = LocalDate.of(2026, 3, 25);
         LocalDate today = LocalDate.now();
@@ -267,7 +269,6 @@ public class TeamImportService {
                 log.info("Updating Historic Ranking for date: {}", date);
                 this.importStatsByDate(date);
                 Thread.sleep(500);
-
             }
             catch (Exception e) {
                 log.error("Error on date {}: {}", date, e.getMessage());
@@ -275,6 +276,11 @@ public class TeamImportService {
         }
     }
 
+    /**
+     * Synchronizes daily rankings from the API for a specific date.
+     *
+     * @param date the season day to fetch and persist.
+     */
     @CircuitBreaker(name = "importStatsByDate", fallbackMethod = "fallbackHistoricRanking")
     @Retry(name = "importStatsByDate")
     private void importStatsByDate(LocalDate date) {
@@ -317,6 +323,12 @@ public class TeamImportService {
         log.warn("hydrateHistoricRanking: An error occur for date {}: {}", date, t.getMessage());
     }
 
+    /**
+     * Parse the ranking from String (API) to Integer (Application)
+     *
+     * @param value ranking value from the API.
+     * @return ranking value as Integer.
+     */
     private int parseRankToInt(String value) {
         if (value == null || value.isBlank()) {
             return 0;

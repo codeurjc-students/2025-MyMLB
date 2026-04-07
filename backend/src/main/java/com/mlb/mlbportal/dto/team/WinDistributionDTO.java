@@ -19,7 +19,7 @@ public record WinDistributionDTO(
         if (this.roadGames == null || this.roadGames == 0) {
             return 0.0;
         }
-        double pct = (double) this.roadWins / this.roadWins;
+        double pct = (double) this.roadWins / this.roadGames;
         return Math.round(pct * 1000.0) / 1000.0;
     }
 }
