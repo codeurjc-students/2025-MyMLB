@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-04-04T15:20:48+0200&quot;,
+    date = &quot;2026-04-08T19:23:29+0200&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -68,59 +68,59 @@ import org.springframework.stereotype.Component;
 
     @Override
     public List&lt;PositionPlayerDTO&gt; toListPositionPlayerDTO(List&lt;PositionPlayer&gt; playerList) {
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if ( playerList == null ) {</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if ( playerList == null ) {</span>
 <span class="nc" id="L72">            return null;</span>
         }
 
-<span class="fc" id="L75">        List&lt;PositionPlayerDTO&gt; list = new ArrayList&lt;PositionPlayerDTO&gt;( playerList.size() );</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">        for ( PositionPlayer positionPlayer : playerList ) {</span>
-<span class="fc" id="L77">            list.add( toPositionPlayerDTO( positionPlayer ) );</span>
-<span class="fc" id="L78">        }</span>
+<span class="nc" id="L75">        List&lt;PositionPlayerDTO&gt; list = new ArrayList&lt;PositionPlayerDTO&gt;( playerList.size() );</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        for ( PositionPlayer positionPlayer : playerList ) {</span>
+<span class="nc" id="L77">            list.add( toPositionPlayerDTO( positionPlayer ) );</span>
+<span class="nc" id="L78">        }</span>
 
-<span class="fc" id="L80">        return list;</span>
+<span class="nc" id="L80">        return list;</span>
     }
 
     @Override
     public PositionPlayerSummaryDTO toPositionPlayerSummaryDTO(PositionPlayer player) {
-<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if ( player == null ) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if ( player == null ) {</span>
 <span class="nc" id="L86">            return null;</span>
         }
 
-<span class="fc" id="L89">        double average = 0.0d;</span>
-<span class="fc" id="L90">        double obp = 0.0d;</span>
-<span class="fc" id="L91">        double slugging = 0.0d;</span>
-<span class="fc" id="L92">        double ops = 0.0d;</span>
-<span class="fc" id="L93">        String name = null;</span>
-<span class="fc" id="L94">        int playerNumber = 0;</span>
-<span class="fc" id="L95">        PlayerPositions position = null;</span>
-<span class="fc" id="L96">        int atBats = 0;</span>
-<span class="fc" id="L97">        int walks = 0;</span>
-<span class="fc" id="L98">        int hits = 0;</span>
-<span class="fc" id="L99">        int doubles = 0;</span>
-<span class="fc" id="L100">        int triples = 0;</span>
-<span class="fc" id="L101">        int homeRuns = 0;</span>
-<span class="fc" id="L102">        int rbis = 0;</span>
-<span class="fc" id="L103">        PictureInfo picture = null;</span>
+<span class="nc" id="L89">        double average = 0.0d;</span>
+<span class="nc" id="L90">        double obp = 0.0d;</span>
+<span class="nc" id="L91">        double slugging = 0.0d;</span>
+<span class="nc" id="L92">        double ops = 0.0d;</span>
+<span class="nc" id="L93">        String name = null;</span>
+<span class="nc" id="L94">        int playerNumber = 0;</span>
+<span class="nc" id="L95">        PlayerPositions position = null;</span>
+<span class="nc" id="L96">        int atBats = 0;</span>
+<span class="nc" id="L97">        int walks = 0;</span>
+<span class="nc" id="L98">        int hits = 0;</span>
+<span class="nc" id="L99">        int doubles = 0;</span>
+<span class="nc" id="L100">        int triples = 0;</span>
+<span class="nc" id="L101">        int homeRuns = 0;</span>
+<span class="nc" id="L102">        int rbis = 0;</span>
+<span class="nc" id="L103">        PictureInfo picture = null;</span>
 
-<span class="fc" id="L105">        average = player.getAverage();</span>
-<span class="fc" id="L106">        obp = player.getObp();</span>
-<span class="fc" id="L107">        slugging = player.getSlugging();</span>
-<span class="fc" id="L108">        ops = player.getOps();</span>
-<span class="fc" id="L109">        name = player.getName();</span>
-<span class="fc" id="L110">        playerNumber = player.getPlayerNumber();</span>
-<span class="fc" id="L111">        position = player.getPosition();</span>
-<span class="fc" id="L112">        atBats = player.getAtBats();</span>
-<span class="fc" id="L113">        walks = player.getWalks();</span>
-<span class="fc" id="L114">        hits = player.getHits();</span>
-<span class="fc" id="L115">        doubles = player.getDoubles();</span>
-<span class="fc" id="L116">        triples = player.getTriples();</span>
-<span class="fc" id="L117">        homeRuns = player.getHomeRuns();</span>
-<span class="fc" id="L118">        rbis = player.getRbis();</span>
-<span class="fc" id="L119">        picture = player.getPicture();</span>
+<span class="nc" id="L105">        average = player.getAverage();</span>
+<span class="nc" id="L106">        obp = player.getObp();</span>
+<span class="nc" id="L107">        slugging = player.getSlugging();</span>
+<span class="nc" id="L108">        ops = player.getOps();</span>
+<span class="nc" id="L109">        name = player.getName();</span>
+<span class="nc" id="L110">        playerNumber = player.getPlayerNumber();</span>
+<span class="nc" id="L111">        position = player.getPosition();</span>
+<span class="nc" id="L112">        atBats = player.getAtBats();</span>
+<span class="nc" id="L113">        walks = player.getWalks();</span>
+<span class="nc" id="L114">        hits = player.getHits();</span>
+<span class="nc" id="L115">        doubles = player.getDoubles();</span>
+<span class="nc" id="L116">        triples = player.getTriples();</span>
+<span class="nc" id="L117">        homeRuns = player.getHomeRuns();</span>
+<span class="nc" id="L118">        rbis = player.getRbis();</span>
+<span class="nc" id="L119">        picture = player.getPicture();</span>
 
-<span class="fc" id="L121">        PositionPlayerSummaryDTO positionPlayerSummaryDTO = new PositionPlayerSummaryDTO( name, playerNumber, position, atBats, walks, hits, doubles, triples, homeRuns, rbis, average, obp, ops, slugging, picture );</span>
+<span class="nc" id="L121">        PositionPlayerSummaryDTO positionPlayerSummaryDTO = new PositionPlayerSummaryDTO( name, playerNumber, position, atBats, walks, hits, doubles, triples, homeRuns, rbis, average, obp, ops, slugging, picture );</span>
 
-<span class="fc" id="L123">        return positionPlayerSummaryDTO;</span>
+<span class="nc" id="L123">        return positionPlayerSummaryDTO;</span>
     }
 
     @Override

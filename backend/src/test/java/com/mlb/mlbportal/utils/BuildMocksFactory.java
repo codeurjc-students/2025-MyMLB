@@ -136,6 +136,10 @@ public class BuildMocksFactory {
         return Arrays.asList(match1, match2, match3);
     }
 
+    public static Match buildMatch(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {
+        return new Match(awayTeam, homeTeam, awayScore, homeScore, date, status);
+    }
+
     public static List<MatchDTO> buildMatchDTOMocks(List<Match> matches) {
         return matches.stream().map(m -> {
             TeamSummary home = new TeamSummary(m.getHomeTeam().getName(), m.getHomeTeam().getAbbreviation(), m.getHomeTeam().getLeague(), m.getHomeTeam().getDivision());

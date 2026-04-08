@@ -20,19 +20,22 @@ import java.util.concurrent.TimeUnit;
     public CacheManager cacheConfig() {
 <span class="fc" id="L21">        SimpleCacheManager cacheManager = new SimpleCacheManager();</span>
 <span class="fc" id="L22">        cacheManager.setCaches(Arrays.asList(</span>
-<span class="fc" id="L23">                this.buildCache(&quot;all-stats-player-rankings&quot;, 24 * 60),</span>
-<span class="fc" id="L24">                this.buildCache(&quot;single-stat-player-rankings&quot;, 24 * 60)</span>
+<span class="fc" id="L23">                this.buildCache(&quot;get-players&quot;, 24 * 60),</span>
+<span class="fc" id="L24">                this.buildCache(&quot;all-stats-player-rankings&quot;, 24 * 60),</span>
+<span class="fc" id="L25">                this.buildCache(&quot;single-stat-player-rankings&quot;, 24 * 60),</span>
+<span class="fc" id="L26">                this.buildCache(&quot;runs-per-rival&quot;, 24 * 60),</span>
+<span class="fc" id="L27">                this.buildCache(&quot;historic-ranking&quot;, 24 * 60)</span>
         ));
-<span class="fc" id="L26">        return cacheManager;</span>
+<span class="fc" id="L29">        return cacheManager;</span>
     }
 
     private CaffeineCache buildCache(String name, int minutesToExpire) {
-<span class="fc" id="L30">        return new CaffeineCache(name, Caffeine.newBuilder()</span>
-<span class="fc" id="L31">                .initialCapacity(5_000)</span>
-<span class="fc" id="L32">                .maximumSize(20_000)</span>
-<span class="fc" id="L33">                .expireAfterWrite(minutesToExpire, TimeUnit.MINUTES)</span>
-<span class="fc" id="L34">                .recordStats()</span>
-<span class="fc" id="L35">                .build());</span>
+<span class="fc" id="L33">        return new CaffeineCache(name, Caffeine.newBuilder()</span>
+<span class="fc" id="L34">                .initialCapacity(5_000)</span>
+<span class="fc" id="L35">                .maximumSize(20_000)</span>
+<span class="fc" id="L36">                .expireAfterWrite(minutesToExpire, TimeUnit.MINUTES)</span>
+<span class="fc" id="L37">                .recordStats()</span>
+<span class="fc" id="L38">                .build());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

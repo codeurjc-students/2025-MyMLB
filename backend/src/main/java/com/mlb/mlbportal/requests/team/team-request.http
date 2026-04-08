@@ -39,11 +39,11 @@ GET https://localhost:8443/api/v1/teams/analytics/runs-per-rival?teams=New York 
 Accept: application/json
 
 ### Get Win Distribution
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/win-distribution?
+GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/win-distribution
 Accept: application/json
 
 ### Temp
-GET https://localhost:8443/api/v1/teams/temp
+POST https://localhost:8443/api/v1/teams/analytics/hydrate
 Accept: application/json
 
 ### Get Historic Ranking

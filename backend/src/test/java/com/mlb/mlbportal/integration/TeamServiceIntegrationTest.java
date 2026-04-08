@@ -1,31 +1,38 @@
 package com.mlb.mlbportal.integration;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.STADIUM1_YEAR;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM1_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM2_WINS;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_ABBREVIATION;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_CITY;
-import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOGO;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_LOSSES;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_NAME;
 import static com.mlb.mlbportal.utils.TestConstants.TEST_TEAM3_WINS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
+import com.mlb.mlbportal.models.DailyStandings;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
+import com.mlb.mlbportal.utils.BuildMocksFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +76,11 @@ class TeamServiceIntegrationTest {
     @Autowired
     private StadiumRepository stadiumRepository;
 
-    private Team team1, team2, team3;
+    @Autowired
+    private DailyStandingsRepository dailyStandingsRepository;
+
+    private Team team1;
+    private Team team2;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -79,33 +90,86 @@ class TeamServiceIntegrationTest {
         this.userRepository.deleteAll();
         this.stadiumRepository.deleteAll();
 
-        this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
-        this.team1.setCity(TEST_TEAM1_CITY);
-        this.team1.setWins(TEST_TEAM1_WINS);
-        this.team1.setLosses(TEST_TEAM1_LOSSES);
+        this.team1 = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_WINS, TEST_TEAM1_LOSSES, TEST_TEAM1_CITY);
+        this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM2_WINS, TEST_TEAM2_LOSSES, TEST_TEAM2_CITY);
+        Team team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, League.NL, Division.CENTRAL, TEST_TEAM3_WINS, TEST_TEAM3_LOSSES, TEST_TEAM3_CITY);
 
-        this.team2 = new Team(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM2_LOGO);
-        this.team2.setWins(TEST_TEAM2_WINS);
-        this.team2.setLosses(TEST_TEAM2_LOSSES);
-        this.team2.setCity(TEST_TEAM2_CITY);
+        this.team1.setRunsScored(5);
+        this.team1.setRunsAllowed(3);
 
-        this.team3 = new Team(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, League.NL, Division.CENTRAL, TEST_TEAM3_LOGO);
-        this.team3.setWins(TEST_TEAM3_WINS);
-        this.team3.setLosses(TEST_TEAM3_LOSSES);
-        this.team3.setCity(TEST_TEAM3_CITY);
+        this.team2.setRunsScored(3);
+        this.team2.setRunsAllowed(5);
 
-        this.teamRepository.saveAll(List.of(this.team1, this.team2, this.team3));
+        this.teamRepository.saveAll(List.of(this.team1, this.team2, team3));
+
+        DailyStandings historicStanding = new DailyStandings(
+                this.team1,
+                LocalDate.now().minusDays(1),
+                1,
+                TEST_TEAM1_WINS,
+                TEST_TEAM1_LOSSES
+        );
+        this.dailyStandingsRepository.saveAndFlush(historicStanding);
 
         Team persistedTeam1 = this.teamRepository.findByName(TEST_TEAM1_NAME).orElseThrow();
         Team persistedTeam2 = this.teamRepository.findByName(TEST_TEAM2_NAME).orElseThrow();
 
         LocalDateTime now = LocalDateTime.now();
+        Match newMatch = BuildMocksFactory.buildMatch(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.FINISHED);
+        newMatch.setWinnerTeam(persistedTeam1);
 
-        this.matchRepository.save(new Match(persistedTeam1, persistedTeam2, 5, 3, now.minusDays(4), MatchStatus.FINISHED));
+        this.matchRepository.save(newMatch);
 
         // Prepare the PCT for the test Teams
         this.teamService.updateRanking(this.team1, this.team2);
-        this.teamService.updateRanking(this.team2, this.team3);
+        this.teamService.updateRanking(this.team2, team3);
+    }
+
+    @Test
+    @DisplayName("Should get the wins of a certain team against certain rivals")
+    void testGetWinsPerRivals() {
+        Set<String> rivals = Set.of(TEST_TEAM2_NAME);
+
+        List<WinsPerRivalDTO> result = this.teamService.getWinsPerRivals(TEST_TEAM1_NAME, rivals);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.getFirst().rivalTeamName()).isEqualTo(TEST_TEAM2_NAME);
+        assertThat(result.getFirst().wins()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Should return the run analytics of the provided team for the current season")
+    void testGetRunStatsPerRival() {
+        Set<String> teams = Set.of(TEST_TEAM1_NAME, TEST_TEAM2_NAME);
+
+        List<RunsStatsDTO> result = this.teamService.getRunStatsPerRival(teams);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(RunsStatsDTO::teamName).containsExactly(TEST_TEAM1_NAME, TEST_TEAM2_NAME);
+        assertThat(result).extracting(RunsStatsDTO::runsScored).containsExactly(5, 3);
+    }
+
+    @Test
+    @DisplayName("Should return the win distribution of a certain team")
+    void testGetWinDistribution() {
+        WinDistributionDTO result = this.teamService.getWinDistribution(TEST_TEAM1_NAME);
+
+        assertThat(result.teamName()).isEqualTo(TEST_TEAM1_NAME);
+        assertThat(result.roadWins()).isEqualTo(1L);
+        assertThat(result.getHomeWinPct()).isEqualTo(0.0);
+        assertThat(result.getRoadWinPct()).isEqualTo(1.0);
+    }
+
+    @Test
+    @DisplayName("Should return a map of historic rankings grouped by team name")
+    void testGetHistoricRanking() {
+        LocalDate today = java.time.LocalDate.now();
+        Set<String> teams = Set.of(TEST_TEAM1_NAME);
+        Map<String, List<HistoricRankingDTO>> result = this.teamService.getHistoricRanking(teams, today.minusDays(1));
+
+        assertThat(result).containsKey(TEST_TEAM1_NAME);
+        assertThat(result.get(TEST_TEAM1_NAME)).isNotEmpty();
+        assertThat(result.get(TEST_TEAM1_NAME).getFirst().rank()).isEqualTo(1);
     }
 
     @Test

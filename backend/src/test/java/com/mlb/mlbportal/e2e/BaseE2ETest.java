@@ -1,8 +1,11 @@
 package com.mlb.mlbportal.e2e;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.mlb.mlbportal.models.DailyStandings;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import com.mlb.mlbportal.repositories.analytics.APIPerformanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +80,9 @@ public abstract class BaseE2ETest {
     private APIPerformanceRepository apiPerformanceRepository;
 
     @Autowired
+    private DailyStandingsRepository dailyStandingsRepository;
+
+    @Autowired
     protected PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -87,6 +93,7 @@ public abstract class BaseE2ETest {
     }
 
     protected void cleanDatabase() {
+        this.dailyStandingsRepository.deleteAll();
         this.ticketRepository.deleteAll();
         this.seatRepository.deleteAll();
         this.eventManagerRepository.deleteAll();
@@ -115,8 +122,19 @@ public abstract class BaseE2ETest {
         return this.teamRepository.save(team);
     }
 
+    protected DailyStandings saveTestDailyStandings(Team team, LocalDate matchDate, int rank, int wins, int losses) {
+        return this.dailyStandingsRepository.save(new DailyStandings(team, matchDate, rank, wins, losses));
+    }
+
     protected void saveTestMatches(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {
-        this.matchRepository.save(new Match(awayTeam, homeTeam, awayScore, homeScore, date, status));
+        Match match = new Match(awayTeam, homeTeam, awayScore, homeScore, date, status);
+        if (awayScore > homeScore) {
+            match.setWinnerTeam(awayTeam);
+        }
+        else {
+            match.setWinnerTeam(homeTeam);
+        }
+        this.matchRepository.save(match);
     }
 
     protected void saveTestStadiums(String name, int openingDate, Team team) {

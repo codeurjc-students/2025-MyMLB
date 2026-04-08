@@ -353,7 +353,7 @@ class TeamServiceTest {
         when(this.dailyStandingsRepository.findHistoricRanking(teams, dateFrom)).thenReturn(queryResult);
         when(this.dailyStandingsMapper.toHistoricRankingDTO(standing)).thenReturn(dto);
 
-        Map<String, List<HistoricRankingDTO>> result = teamService.getHistoricRanking(teams, dateFrom);
+        Map<String, List<HistoricRankingDTO>> result = this.teamService.getHistoricRanking(teams, dateFrom);
 
         assertThat(result).isNotNull();
         assertThat(result).containsKey(TEST_TEAM1_NAME);

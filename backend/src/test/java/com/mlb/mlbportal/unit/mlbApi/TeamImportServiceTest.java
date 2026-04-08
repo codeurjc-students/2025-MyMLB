@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mlb.mlbportal.dto.mlbapi.team.*;
 import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,6 +50,9 @@ class TeamImportServiceTest {
 
     @Mock
     private TeamRepository teamRepository;
+
+    @Mock
+    private DailyStandingsRepository dailyStandingsRepository;
 
     @InjectMocks
     private TeamImportService teamImportService;
@@ -261,5 +266,59 @@ class TeamImportServiceTest {
 
         double nullResult = (double) method.invoke(this.teamImportService, (String) null);
         assertThat(nullResult).isZero();
+    }
+
+    @Test
+    @DisplayName("Should hydrate history from start date until today")
+    void testHydrateHistoryFromStart() {
+        this.teamImportService.hydrateHistoryFromStart();
+        verify(this.restTemplate, atLeastOnce()).getForObject(anyString(), eq(StandingsResponse.class));
+    }
+
+    @Test
+    @DisplayName("Should fetch and persist daily standings")
+    void testImportStatsByDate() throws Exception {
+        LocalDate testDate = LocalDate.of(2026, 4, 1);
+        String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2026&date=2026-04-01";
+
+        TeamRecordsGeneralInfo apiTeam = new TeamRecordsGeneralInfo(1L, TEST_TEAM1_NAME);
+        TeamRecords teamRecord = new TeamRecords(
+                apiTeam, "1", 10, 6, 4, ".600", "0", 0, 0, 0, null
+        );
+        Records record = new Records(List.of(teamRecord));
+        StandingsResponse response = new StandingsResponse(List.of(record));
+
+        Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
+
+        when(this.restTemplate.getForObject(url, StandingsResponse.class)).thenReturn(response);
+        when(this.teamRepository.findByStatsApiId(1L)).thenReturn(java.util.Optional.of(domainTeam));
+
+        Method method = TeamImportService.class.getDeclaredMethod("importStatsByDate", LocalDate.class);
+        method.setAccessible(true);
+        method.invoke(this.teamImportService, testDate);
+
+        verify(this.dailyStandingsRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("Should enter the fallback method and not save any data in the DB")
+    void testFallbackHistoricRanking() {
+        Throwable throwable = new RuntimeException("API error");
+
+        this.teamImportService.fallbackHistoricRanking(LocalDate.now(), throwable);
+
+        verify(this.dailyStandingsRepository, times(0)).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("Should parse rank string to int correctly")
+    void testParseRankToInt() throws Exception {
+        Method method = TeamImportService.class.getDeclaredMethod("parseRankToInt", String.class);
+        method.setAccessible(true);
+
+        assertThat((int) method.invoke(this.teamImportService, "5")).isEqualTo(5);
+        assertThat((int) method.invoke(this.teamImportService, "")).isZero();
+        assertThat((int) method.invoke(this.teamImportService, "abc")).isZero();
+        assertThat((int) method.invoke(this.teamImportService, (String) null)).isZero();
     }
 }

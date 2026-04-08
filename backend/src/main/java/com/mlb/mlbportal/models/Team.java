@@ -150,6 +150,16 @@ public class Team {
         this.lastTen = "0-0";
     }
 
+    public Team(String name, String abbreviation, League league, Division division, int wins, int losses, String city) {
+        this.name = name;
+        this.abbreviation = abbreviation;
+        this.league = league;
+        this.division = division;
+        this.wins = wins;
+        this.losses = losses;
+        this.city = city;
+    }
+
     public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, int runsScored, int runsAllowed, int runDifferential, String pct, String lastTen) {
         this.totalGames = gamesPlayed;
         this.wins = wins;

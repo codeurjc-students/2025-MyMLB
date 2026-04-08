@@ -3,84 +3,59 @@
 import java.util.List;
 import java.util.Locale;
 
-import com.mlb.mlbportal.models.Match;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MatchService;
 
 public class TeamServiceOperations {
 
     private TeamServiceOperations() {}
     
-    public static void enrichTeamStats(Team team, TeamRepository teamRepository, MatchService matchService) {
-<span class="fc" id="L16">        recalculatePct(team);</span>
-<span class="fc" id="L17">        calculateGamesBehind(team, teamRepository);</span>
-<span class="fc" id="L18">        calculateLast10Games(team, matchService);</span>
-<span class="fc" id="L19">        teamRepository.save(team);</span>
-<span class="fc" id="L20">    }</span>
+    public static void enrichTeamStats(Team team, TeamRepository teamRepository) {
+<span class="fc" id="L14">        recalculatePct(team);</span>
+<span class="fc" id="L15">        calculateGamesBehind(team, teamRepository);</span>
+<span class="fc" id="L16">        teamRepository.save(team);</span>
+<span class="fc" id="L17">    }</span>
 
     private static void recalculatePct(Team team) {
-<span class="fc" id="L23">        int totalGames = team.getWins() + team.getLosses();</span>
-<span class="fc" id="L24">        team.setTotalGames(totalGames);</span>
-<span class="fc bfc" id="L25" title="All 2 branches covered.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
-<span class="fc" id="L26">        String formatted = String.format(Locale.US, &quot;%.3f&quot;, pct);</span>
-<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if (formatted.startsWith(&quot;0.&quot;)) {</span>
-<span class="fc" id="L28">            team.setPct(formatted.substring(1));</span>
+<span class="fc" id="L20">        int totalGames = team.getWins() + team.getLosses();</span>
+<span class="fc" id="L21">        team.setTotalGames(totalGames);</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        double pct = totalGames &gt; 0 ? (double) team.getWins() / totalGames : 0.0;</span>
+<span class="fc" id="L23">        String formatted = String.format(Locale.US, &quot;%.3f&quot;, pct);</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        if (formatted.startsWith(&quot;0.&quot;)) {</span>
+<span class="fc" id="L25">            team.setPct(formatted.substring(1));</span>
         }
         else {
-<span class="nc" id="L31">            team.setPct(formatted);</span>
+<span class="nc" id="L28">            team.setPct(formatted);</span>
         }
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L30">    }</span>
 
     private static void calculateGamesBehind(Team team, TeamRepository teamRepository) {
-<span class="fc" id="L36">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
+<span class="fc" id="L33">        List&lt;Team&gt; divisionTeams = teamRepository.findByLeagueAndDivision(team.getLeague(), team.getDivision());</span>
 
-<span class="fc" id="L38">        divisionTeams.forEach(TeamServiceOperations::recalculatePct);</span>
+<span class="fc" id="L35">        divisionTeams.forEach(TeamServiceOperations::recalculatePct);</span>
 
-<span class="fc" id="L40">        divisionTeams.sort((a, b) -&gt; {</span>
-<span class="fc" id="L41">            Double pct1 = parseSafePct(a.getPct());</span>
-<span class="fc" id="L42">            Double pct2 = parseSafePct(b.getPct());</span>
-<span class="fc" id="L43">            return Double.compare(pct2, pct1);</span>
+<span class="fc" id="L37">        divisionTeams.sort((a, b) -&gt; {</span>
+<span class="fc" id="L38">            Double pct1 = parseSafePct(a.getPct());</span>
+<span class="fc" id="L39">            Double pct2 = parseSafePct(b.getPct());</span>
+<span class="fc" id="L40">            return Double.compare(pct2, pct1);</span>
         });
 
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (divisionTeams.isEmpty())</span>
-<span class="nc" id="L47">            return;</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (divisionTeams.isEmpty())</span>
+<span class="nc" id="L44">            return;</span>
 
-<span class="fc" id="L49">        Team leader = divisionTeams.getFirst();</span>
-<span class="fc" id="L50">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
-<span class="fc" id="L51">        team.setGamesBehind(gamesBehind);</span>
-<span class="fc" id="L52">    }</span>
-
-    private static void calculateLast10Games(Team team, MatchService matchService) {
-<span class="fc" id="L55">        List&lt;Match&gt; last10Matches = matchService.getLast10Matches(team);</span>
-        String matchesRecord;
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (last10Matches.isEmpty()) {</span>
-<span class="fc" id="L58">            matchesRecord = &quot;0-0&quot;;</span>
-        }
-        else {
-<span class="fc" id="L61">            int numberOfWins = 0;</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">            for (Match match : last10Matches) {</span>
-<span class="fc" id="L63">                boolean isHomeTeam = team.equals(match.getHomeTeam());</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">                int teamScore = isHomeTeam ? match.getHomeScore() : match.getAwayScore();</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">                int awayScore = isHomeTeam ? match.getAwayScore() : match.getHomeScore();</span>
-
-<span class="fc bfc" id="L67" title="All 2 branches covered.">                if (teamScore &gt; awayScore) {</span>
-<span class="fc" id="L68">                    numberOfWins++;</span>
-                }
-<span class="fc" id="L70">            }</span>
-<span class="fc" id="L71">            matchesRecord = numberOfWins + &quot;-&quot; + (last10Matches.size() - numberOfWins);</span>
-        }
-<span class="fc" id="L73">        team.setLastTen(matchesRecord);</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L46">        Team leader = divisionTeams.getFirst();</span>
+<span class="fc" id="L47">        double gamesBehind = ((leader.getWins() - team.getWins()) + (team.getLosses() - leader.getLosses())) / 2.0;</span>
+<span class="fc" id="L48">        team.setGamesBehind(gamesBehind);</span>
+<span class="fc" id="L49">    }</span>
 
     public static double parseSafePct(String pct) {
-<span class="pc bpc" id="L77" title="2 of 6 branches missed.">        if (pct == null || pct.isEmpty() || pct.equals(&quot;-&quot;)) return 0.0;</span>
+<span class="pc bpc" id="L52" title="2 of 6 branches missed.">        if (pct == null || pct.isEmpty() || pct.equals(&quot;-&quot;)) return 0.0;</span>
         try {
-<span class="fc bfc" id="L79" title="All 2 branches covered.">            String normalized = pct.startsWith(&quot;.&quot;) ? &quot;0&quot; + pct : pct;</span>
-<span class="fc" id="L80">            return Double.parseDouble(normalized);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            String normalized = pct.startsWith(&quot;.&quot;) ? &quot;0&quot; + pct : pct;</span>
+<span class="fc" id="L55">            return Double.parseDouble(normalized);</span>
         }
-<span class="nc" id="L82">        catch (NumberFormatException e) {</span>
-<span class="nc" id="L83">            return 0.0;</span>
+<span class="nc" id="L57">        catch (NumberFormatException e) {</span>
+<span class="nc" id="L58">            return 0.0;</span>
         }
     }
 }
