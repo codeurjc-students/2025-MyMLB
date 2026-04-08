@@ -143,6 +143,13 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    public List<TeamDTO> getRivalTeams(String teamName) {
+        this.teamRepository.findByNameOrThrow(teamName);
+        List<Team> queryResult = this.teamRepository.findRivals(teamName);
+        return this.teamMapper.toTeamDTOList(queryResult);
+    }
+
+    @Transactional(readOnly = true)
     public List<WinsPerRivalDTO> getWinsPerRivals(String fixedTeamName, Set<String> rivalTeamsNames) {
         if (rivalTeamsNames == null || rivalTeamsNames.isEmpty()) {
             throw new InvalidTypeException("The rival teams are required");

@@ -1,0 +1,1 @@
+export type TeamTabs = 'Home' | 'Stats' | 'Roster' | 'Matches';

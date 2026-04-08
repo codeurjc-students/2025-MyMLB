@@ -92,6 +92,11 @@ public class TeamController {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
     }
 
+    @GetMapping(value = "/{teamName}/rivals", produces = "application/json")
+    public ResponseEntity<List<TeamDTO>> getRivalTeams(@PathVariable("teamName")String teamName) {
+        return ResponseEntity.ok(this.teamService.getRivalTeams(teamName));
+    }
+
     @Operation(summary = "Get wins per rival", description = "Calculates the number of wins for a specific team against a list of selected rivals.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved wins per rival stats", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = WinsPerRivalDTO.class)))),

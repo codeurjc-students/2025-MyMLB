@@ -33,3 +33,33 @@ export type UpdateTeamRequest = {
 	newInfo?: string,
 	newStadiumName?: string
 }
+
+export type WinsPerRival = {
+	rivalTeamName: string,
+	gamesPlayed: number,
+	wins: number
+}
+
+export type RunStats = {
+	teamName: string,
+	runsScored: number,
+	runsAllowed: number
+}
+
+export type WinsDistribution = {
+	teamName: string,
+	homeGames: number,
+	homeWins: number,
+	roadGames: number,
+	roadWins: number,
+	homeWinPct: number,
+	roadWinPct: number
+}
+
+export type HistoricRanking = {
+	teamName: string,
+	matchDate: Date,
+	rank: number,
+	wins: number,
+	losses: number
+}

@@ -43,6 +43,9 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     )
     List<FavTeamAnalyticsDTO> findAllFavoriteTeamsCounter();
 
+    @Query("SELECT t FROM Team t WHERE t.name != :teamName")
+    List<Team> findRivals(@Param("teamName")String teamName);
+
     @Query("SELECT new com.mlb.mlbportal.dto.team.RunsStatsDTO(t.name, t.runsScored, t.runsAllowed) " +
             "FROM Team t WHERE t.name IN :teams"
     )

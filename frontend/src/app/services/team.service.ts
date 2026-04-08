@@ -1,8 +1,8 @@
 import { PaginatedResponse } from './../models/pagination.model';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { Team, TeamSummary, TeamInfo, UpdateTeamRequest } from '../models/team.model';
+import { Team, TeamSummary, TeamInfo, UpdateTeamRequest, WinsPerRival, RunStats, WinsDistribution, HistoricRanking } from '../models/team.model';
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../models/auth.model';
@@ -19,8 +19,9 @@ export type StandingsResponse = {
 })
 export class TeamService {
 	private url = `${environment.apiUrl}/teams`;
-
-	constructor(private http: HttpClient, private selectedTeamService: SelectedTeamService, private router: Router ) {}
+	private http = inject(HttpClient);
+	private selectedTeamService = inject(SelectedTeamService);
+	private router = inject(Router);
 
 	public getAvailableTeams(page: number, size: number): Observable<PaginatedResponse<TeamSummary>> {
 		return this.http.get<PaginatedResponse<TeamSummary>>(`${this.url}/available?page=${page}&size=${size}`);
@@ -92,6 +93,48 @@ export class TeamService {
 				return -1;
 			})
 		);
+	}
+
+	public getRivals(teamName: string): Observable<Team[]> {
+		return this.http.get<Team[]>(`${this.url}/${teamName}/rivals`);
+	}
+
+	public getWinsPerRivals(baseTeamName: string, rivalTeamNames: string[]): Observable<WinsPerRival[]> {
+		let params = new HttpParams();
+		if (rivalTeamNames && rivalTeamNames.length > 0) {
+			rivalTeamNames.forEach(rival => {
+				params = params.append('rivalTeamNames', rival);
+			});
+		}
+		return this.http.get<WinsPerRival[]>(`${this.url}/${baseTeamName}/analytics/wins-per-rival`, { params });
+	}
+
+	public getRunsStatsPerRival(teams: string[]): Observable<RunStats[]> {
+		let params = new HttpParams();
+		if (teams && teams.length > 0) {
+			teams.forEach(team => {
+				params = params.append('teams', team);
+			});
+		}
+		return this.http.get<RunStats[]>(`${this.url}/analytics/runs-per-rival`, { params });
+	}
+
+	public getWinDistribution(teamName: string): Observable<WinsDistribution> {
+		return this.http.get<WinsDistribution>(`${this.url}/${teamName}/analytics/win-distribution`);
+	}
+
+	public getHistoricRanking(teams: string[], dateFrom?: Date): Observable<Record<string, HistoricRanking[]>> {
+		let params = new HttpParams();
+		if (teams && teams.length > 0) {
+			teams.forEach(team => {
+				params = params.append('teams', team);
+			});
+		}
+		if (dateFrom) {
+			const formattedDate = dateFrom.toISOString().split('T')[0];
+			params = params.set('dateFrom', formattedDate);
+		}
+		return this.http.get<Record<string, HistoricRanking[]>>(`${this.url}/analytics/historic-ranking`, { params });
 	}
 
 	public updateTeam(teamName: string, request: UpdateTeamRequest): Observable<AuthResponse> {

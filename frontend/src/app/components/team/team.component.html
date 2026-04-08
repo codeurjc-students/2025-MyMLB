@@ -1,269 +1,312 @@
-<div
-	class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-24 flex flex-col items-center"
->
-
+<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-24 flex flex-col items-center">
 	@if (team) {
 		<!-- Team Header -->
-		<section class="flex flex-col md:flex-row items-center justify-center gap-6 w-full text-center overflow-visible">
-			<div
-				class="w-32 h-32 rounded-full shadow-lg flex items-center justify-center"
-				[ngClass]="backgroundService.getBackgroundColor(team.teamStats.abbreviation)"
-			>
-				<img
-				src="assets/team-logos-new/{{ team.teamStats.league }}/{{
-					team.teamStats.division
-				}}/{{ team.teamStats.abbreviation }}.png"
-				alt="Team Logo"
-				class="w-24 h-24 object-contain"
-				/>
-			</div>
-			<h1 class="app-page-titles">
-				{{ team.teamStats.name }}
-			</h1>
-		</section>
+		<section class="w-full max-w-6xl mt-8 animate-fadeIn">
+			<div class="app-background-header backdrop-blur-md bg-white/80 dark:bg-gray-900/40 border border-gray-200 dark:border-white/10 rounded-[3rem] shadow-2xl overflow-hidden">
 
-		<!-- Calendar Section -->
-		<section>
-			<button (click)="openCalendar()" class="app-button group px-6 py-3 font-semibold tracking-widest">
-				<span class="app-button-bright"></span>
-				<span class="app-button-texts">Show Calendar</span>
-			</button>
-			@if (showCalendar) {
-				<app-calendar [team]="team" (close)="showCalendar = false"></app-calendar>
-			}
-		</section>
-
-		<!-- Informatiom Section -->
-		<section class="w-full max-w-5xl team-section-container text-center">
-			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">About the Team</h2>
-			<p class="text-lg leading-relaxed">{{ team.generalInfo }}</p>
-		</section>
-
-		<!-- Championships Section -->
-		<div class="w-full max-w-6xl team-section-container text-center">
-			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Championships</h2>
-			<div class="grid grid-cols-3 md:grid-cols-6 gap-8 justify-center">
-				@if(championships.length === 0) {
-					<div class="col-span-3 md:col-span-6 flex justify-center items-center w-full">
-						<p class="text-2xl font-bold text-black dark:text-white whitespace-nowrap">
-							No championships won yet
-						</p>
+				<div class="flex flex-col md:flex-row items-center justify-center gap-8 p-10 pb-6">
+					<div class="w-32 h-32 rounded-full shadow-2xl flex items-center justify-center p-2 transform hover:scale-105 transition-transform duration-500"
+						[ngClass]="backgroundService.getBackgroundColor(team.teamStats.abbreviation)">
+						<img src="assets/team-logos-new/{{ team.teamStats.league }}/{{ team.teamStats.division }}/{{ team.teamStats.abbreviation }}.png"
+							alt="Team Logo" class="w-24 h-24 object-contain drop-shadow-lg" />
 					</div>
-				}
-				@else {
-					@for (champion of championships; track champion) {
-						<div class="flex flex-col items-center space-y-2">
-							<img src="/assets/trophy.png" alt="WS Trophy" class="trophy glow-hover">
-							<span class="text-lg font-medium">{{ champion }}</span>
+
+					<div class="flex flex-col items-center md:items-start">
+						<h1 class="text-5xl md:text-6xl font-black uppercase tracking-tighter text-gray-900 dark:text-white leading-none">
+							{{ team.teamStats.name }}
+						</h1>
+						<div class="flex gap-3 mt-4">
+							<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+								{{ team.teamStats.league }}
+							</span>
+							<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+								{{ team.teamStats.division }}
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<nav class="flex justify-center border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 px-6">
+					<div class="flex flex-wrap justify-center -mb-px">
+						@for (tab of tabs; track tab) {
+							<button (click)="changeTab(tab)"
+								class="relative px-8 py-5 text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 group"
+								[ngClass]="{
+									'text-indigo-600 dark:text-indigo-400': currentTab === tab,
+									'text-gray-500 hover:text-gray-800 dark:hover:text-white': currentTab !== tab
+								}">
+
+								<span class="relative z-10">{{ tab }}</span>
+
+								@if (currentTab === tab) {
+									<div class="absolute bottom-0 left-0 right-0 h-1 bg-indigo-500 rounded-t-full shadow-[0_-4px_10px_rgba(99,102,241,0.5)] animate-slideInUp"></div>
+								}
+								@else {
+									<div class="absolute bottom-0 left-1/2 right-1/2 h-0.5 bg-gray-300 dark:bg-gray-700 transition-all duration-300 group-hover:left-0 group-hover:right-0"></div>
+								}
+							</button>
+						}
+					</div>
+				</nav>
+			</div>
+		</section>
+
+		<!-- Home Tab -->
+		@if (currentTab === 'Home') {
+			<!-- Informatiom Section -->
+			<section class="w-full max-w-5xl team-section-container text-center">
+				<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">About the Team</h2>
+				<p class="text-lg leading-relaxed">{{ team.generalInfo }}</p>
+			</section>
+
+			<!-- Championships Section -->
+			<div class="w-full max-w-6xl team-section-container text-center">
+				<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Championships</h2>
+				<div class="grid grid-cols-3 md:grid-cols-6 gap-8 justify-center">
+					@if(championships.length === 0) {
+						<div class="col-span-3 md:col-span-6 flex justify-center items-center w-full">
+							<p class="text-2xl font-bold text-black dark:text-white whitespace-nowrap">
+								No championships won yet
+							</p>
 						</div>
 					}
-				}
+					@else {
+						@for (champion of championships; track champion) {
+							<div class="flex flex-col items-center space-y-2">
+								<img src="/assets/trophy.png" alt="WS Trophy" class="trophy glow-hover">
+								<span class="text-lg font-medium">{{ champion }}</span>
+							</div>
+						}
+					}
+				</div>
 			</div>
-		</div>
 
-		<!-- Stadium Section -->
-		<section class="w-full max-w-6xl team-section-container text-center">
-			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Stadium</h2>
-			<p class="text-xl font-semibold">{{ team.stadium.name }}</p>
-			<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
-				Opening Date: {{ team.stadium.openingDate }}
-			</p>
-
-			@if (stadiumImages.length === 0) {
+			<!-- Stadium Section -->
+			<section class="w-full max-w-6xl team-section-container text-center">
+				<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Stadium</h2>
+				<p class="text-xl font-semibold">{{ team.stadium.name }}</p>
 				<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
-					No pictures available for this stadium
+					Opening Date: {{ team.stadium.openingDate }}
 				</p>
-			}
-			@else {
-				<!-- Carousel Container -->
-				<div class="relative">
-					<!-- Image Track -->
-					<div class="relative w-full flex justify-center h-80">
-						<img
-							[src]="stadiumImages[currentIndex].url"
-							class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
-							[ngClass]="{
-								'opacity-0': isTransitioning,
-								'opacity-100': !isTransitioning
-							}"
-							alt="Stadium image"
-						/>
-					</div>
 
-					<!-- Left Button -->
-					<button
-						(click)="scrollCarousel('left')"
-						class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
-					>
-						←
-					</button>
-
-					<!-- Right Button -->
-					<button
-						(click)="scrollCarousel('right')"
-						class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
-					>
-						→
-					</button>
-
-					<!-- Dots -->
-					<div class="flex justify-center mt-4 space-x-2">
-						@for (img of stadiumImages; let i = $index; track img) {
-							<div
-								class="w-3 h-3 rounded-full cursor-pointer transition-all"
+				@if (stadiumImages.length === 0) {
+					<p class="text-sm text-gray-600 dark:text-gray-300 mb-6">
+						No pictures available for this stadium
+					</p>
+				}
+				@else {
+					<!-- Carousel Container -->
+					<div class="relative">
+						<!-- Image Track -->
+						<div class="relative w-full flex justify-center h-80">
+							<img
+								[src]="stadiumImages[currentIndex].url"
+								class="absolute w-[36rem] h-80 rounded-xl shadow-xl object-cover transition-opacity duration-700 ease-in-out"
 								[ngClass]="{
-									'bg-blue-700': i === currentIndex,
-									'bg-gray-400 dark:bg-gray-600': i !== currentIndex
+									'opacity-0': isTransitioning,
+									'opacity-100': !isTransitioning
 								}"
-								(click)="goToSlide(i)"
-							></div>
+								alt="Stadium image"
+							/>
+						</div>
+
+						<!-- Left Button -->
+						<button
+							(click)="scrollCarousel('left')"
+							class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+						>
+							←
+						</button>
+
+						<!-- Right Button -->
+						<button
+							(click)="scrollCarousel('right')"
+							class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-blue-700 text-white px-3 py-2 rounded-full shadow hover:bg-blue-800 transition"
+						>
+							→
+						</button>
+
+						<!-- Dots -->
+						<div class="flex justify-center mt-4 space-x-2">
+							@for (img of stadiumImages; let i = $index; track img) {
+								<div
+									class="w-3 h-3 rounded-full cursor-pointer transition-all"
+									[ngClass]="{
+										'bg-blue-700': i === currentIndex,
+										'bg-gray-400 dark:bg-gray-600': i !== currentIndex
+									}"
+									(click)="goToSlide(i)"
+								></div>
+							}
+						</div>
+					</div>
+				}
+			</section>
+		}
+
+		<!-- Stats Tab -->
+		@if (currentTab === 'Stats') {
+			<!-- Stats Section -->
+			<section class="w-full max-w-6xl">
+				<app-stats-panel id="team-stats" [teamStats]="true" [team]="team" [teamRank]="teamRank"></app-stats-panel>
+			</section>
+
+			<app-team-statistics [baseTeamName]="team.teamStats.name" (changeTab)="changeTab($event)"></app-team-statistics>
+		}
+
+		<!-- Roster Tab -->
+		@if (currentTab === 'Roster') {
+			<!-- Position Players Section -->
+			<section class="w-full max-w-6xl team-section-container text-center">
+				<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Position Players</h2>
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
+					@for (player of positionPlayers; track player.name) {
+					<div id="position-player-card"
+						class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
+						(click)="selectPlayer(player)"
+						>
+						<img
+							src="{{ player.picture.url }}"
+							alt="{{ player.name }}"
+							class="w-24 h-24 rounded-full object-cover mb-2"
+						/>
+						<p class="font-semibold">{{ player.name }}</p>
+						<p class="text-sm text-gray-500 dark:text-gray-300">{{ player.position }}</p>
+					</div>
+					}
+				</div>
+			</section>
+
+			<!-- Pitchers Section -->
+			<section class="w-full max-w-6xl team-section-container text-center">
+				<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Pitchers</h2>
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
+					@for (pitcher of pitchers; track pitcher.name) {
+						<div id="pitcher-card"
+							class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
+							(click)="selectPlayer(pitcher)"
+						>
+							<img
+								src="{{ pitcher.picture.url }}"
+								alt="{{ pitcher.name }}"
+								class="w-24 h-24 rounded-full object-cover mb-2"
+							/>
+							<p class="font-semibold">{{ pitcher.name }}</p>
+							<p class="text-sm text-gray-500 dark:text-gray-300">{{ pitcher.position }}</p>
+						</div>
+					}
+				</div>
+			</section>
+
+			@if (selectedPlayer) {
+				<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+					<div class="w-full max-w-6xl">
+						<app-stats-panel id="player-stats" [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
+					</div>
+				</div>
+			}
+		}
+
+		<!-- Matches Tab -->
+		@if (currentTab === 'Matches') {
+			<!-- Calendar Section -->
+			<section>
+				<button (click)="openCalendar()" class="app-button group px-6 py-3 font-semibold tracking-widest">
+					<span class="app-button-bright"></span>
+					<span class="app-button-texts">Show Calendar</span>
+				</button>
+				@if (showCalendar) {
+					<app-calendar [team]="team" (close)="showCalendar = false"></app-calendar>
+				}
+			</section>
+
+			<!-- Upcoming Home Games Section -->
+			<section class="w-full max-w-6xl team-section-container text-center pb-20">
+				<h2 class="text-4xl font-bold mb-10 text-blue-800 dark:text-blue-300 italic tracking-tight">
+					Upcoming Home Games
+				</h2>
+
+				<div class="space-y-4 max-w-4xl mx-auto">
+					@for (match of paginationHandlerService.items$ | async; track match.id) {
+						<div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl transition-all duration-300 group">
+
+							<div class="flex flex-col items-center md:items-start min-w-[120px]">
+								<span class="text-xs font-black uppercase tracking-widest text-indigo-500">{{ match.date | date: 'EEEE' }}</span>
+								<span class="text-xl font-bold text-gray-800 dark:text-white">{{ match.date | date: 'MMM d' }}</span>
+								<span class="text-xs text-gray-500 font-medium">{{ match.date | date: 'shortTime' }}</span>
+							</div>
+
+							<div class="flex items-center justify-center gap-6 flex-1">
+
+								<div class="flex flex-col items-center gap-2">
+									<div class="w-16 h-16 rounded-full flex items-center justify-center p-3 shadow-inner group-hover:scale-110 transition-transform duration-500"
+										[ngClass]="backgroundService.getBackgroundColor(match.awayTeam.abbreviation)">
+										<img [src]="'assets/team-logos-new/' + match.awayTeam.league + '/' + match.awayTeam.division + '/' + match.awayTeam.abbreviation + '.png'"
+											class="w-full h-full object-contain" [alt]="match.awayTeam.name">
+									</div>
+									<span class="text-sm font-black tracking-tighter">{{ match.awayTeam.abbreviation }}</span>
+								</div>
+
+								<div class="flex flex-col items-center px-2">
+									<span class="text-sm font-light text-gray-400">VS</span>
+								</div>
+
+								<div class="flex flex-col items-center gap-2">
+									<div class="w-16 h-16 rounded-full flex items-center justify-center p-3 shadow-inner group-hover:scale-110 transition-transform duration-500"
+										[ngClass]="backgroundService.getBackgroundColor(match.homeTeam.abbreviation)">
+										<img [src]="'assets/team-logos-new/' + match.homeTeam.league + '/' + match.homeTeam.division + '/' + match.homeTeam.abbreviation + '.png'"
+											class="w-full h-full object-contain" [alt]="match.homeTeam.abbreviation">
+									</div>
+									<span class="text-sm font-black tracking-tighter">{{ match.homeTeam.abbreviation }}</span>
+								</div>
+							</div>
+
+							<div class="w-full md:w-auto">
+								@if (!isAdmin) {
+									<button (click)="goToPurchaseTickets(match.id)" class="app-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
+										<span class="app-button-bright"></span>
+										<span class="app-button-texts">Buy Tickets</span>
+									</button>
+								}
+								@else if (eventMap.get(match.id)) {
+									<div class="flex flex-col items-center justify-center md:justify-end gap-3">
+										<button (click)="editEvent(match.id)" class="app-success-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
+											<span class="app-button-bright"></span>
+											<span class="app-button-texts">Edit Event</span>
+										</button>
+										<button (click)="deleteEvent(match.id)" class="app-red-buttons w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
+											<span class="app-button-bright"></span>
+											<span class="app-button-texts">Delete Event</span>
+										</button>
+									</div>
+								}
+								@else {
+									<button (click)="createEvent(match.id)" class="app-success-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
+										<span class="app-button-bright"></span>
+										<span class="app-button-texts">Create Event</span>
+									</button>
+								}
+							</div>
+						</div>
+					}
+					<div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-10">
+						@if (paginationHandlerService.hasMore) {
+							<button (click)="loadNextMatches()"
+									class="px-8 py-3 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all shadow-lg hover:scale-105 active:scale-95">
+								Load More Games
+							</button>
+						}
+
+						@if (((paginationHandlerService.items$ | async)?.length || 0) > PAGE_SIZE) {
+							<button (click)="showLess()"
+									class="px-8 py-3 cursor-pointer border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-full transition-all hover:bg-gray-100 dark:hover:bg-gray-700">
+								Show Less
+							</button>
 						}
 					</div>
 				</div>
-			}
-		</section>
-
-		<!-- Stats Section -->
-		<section class="w-full max-w-6xl">
-			<app-stats-panel id="team-stats" [teamStats]="true" [team]="team" [teamRank]="teamRank"></app-stats-panel>
-		</section>
-
-		<!-- Position Players Section -->
-		<section class="w-full max-w-6xl team-section-container text-center">
-			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Position Players</h2>
-			<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
-				@for (player of positionPlayers; track player.name) {
-				<div id="position-player-card"
-					class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
-					(click)="selectPlayer(player)"
-					>
-					<img
-						src="{{ player.picture.url }}"
-						alt="{{ player.name }}"
-						class="w-24 h-24 rounded-full object-cover mb-2"
-					/>
-					<p class="font-semibold">{{ player.name }}</p>
-					<p class="text-sm text-gray-500 dark:text-gray-300">{{ player.position }}</p>
-				</div>
-				}
-			</div>
-		</section>
-
-		<!-- Pitchers Section -->
-		<section class="w-full max-w-6xl team-section-container text-center">
-			<h2 class="text-4xl font-bold mb-6 text-blue-800 dark:text-blue-300">Pitchers</h2>
-			<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 justify-center">
-				@for (pitcher of pitchers; track pitcher.name) {
-					<div id="pitcher-card"
-						class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-[1.03] transition cursor-pointer"
-						(click)="selectPlayer(pitcher)"
-					>
-						<img
-							src="{{ pitcher.picture.url }}"
-							alt="{{ pitcher.name }}"
-							class="w-24 h-24 rounded-full object-cover mb-2"
-						/>
-						<p class="font-semibold">{{ pitcher.name }}</p>
-						<p class="text-sm text-gray-500 dark:text-gray-300">{{ pitcher.position }}</p>
-					</div>
-				}
-			</div>
-		</section>
-
-		@if (selectedPlayer) {
-			<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-				<div class="w-full max-w-6xl">
-					<app-stats-panel id="player-stats" [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
-				</div>
-			</div>
+			</section>
 		}
-
-		<!-- Upcoming Home Games Section -->
-		<section class="w-full max-w-6xl team-section-container text-center pb-20">
-			<h2 class="text-4xl font-bold mb-10 text-blue-800 dark:text-blue-300 italic tracking-tight">
-				Upcoming Home Games
-			</h2>
-
-			<div class="space-y-4 max-w-4xl mx-auto">
-				@for (match of paginationHandlerService.items$ | async; track match.id) {
-					<div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl transition-all duration-300 group">
-
-						<div class="flex flex-col items-center md:items-start min-w-[120px]">
-							<span class="text-xs font-black uppercase tracking-widest text-indigo-500">{{ match.date | date: 'EEEE' }}</span>
-							<span class="text-xl font-bold text-gray-800 dark:text-white">{{ match.date | date: 'MMM d' }}</span>
-							<span class="text-xs text-gray-500 font-medium">{{ match.date | date: 'shortTime' }}</span>
-						</div>
-
-						<div class="flex items-center justify-center gap-6 flex-1">
-
-							<div class="flex flex-col items-center gap-2">
-								<div class="w-16 h-16 rounded-full flex items-center justify-center p-3 shadow-inner group-hover:scale-110 transition-transform duration-500"
-									[ngClass]="backgroundService.getBackgroundColor(match.awayTeam.abbreviation)">
-									<img [src]="'assets/team-logos-new/' + match.awayTeam.league + '/' + match.awayTeam.division + '/' + match.awayTeam.abbreviation + '.png'"
-										class="w-full h-full object-contain" [alt]="match.awayTeam.name">
-								</div>
-								<span class="text-sm font-black tracking-tighter">{{ match.awayTeam.abbreviation }}</span>
-							</div>
-
-							<div class="flex flex-col items-center px-2">
-								<span class="text-sm font-light text-gray-400">VS</span>
-							</div>
-
-							<div class="flex flex-col items-center gap-2">
-								<div class="w-16 h-16 rounded-full flex items-center justify-center p-3 shadow-inner group-hover:scale-110 transition-transform duration-500"
-									[ngClass]="backgroundService.getBackgroundColor(match.homeTeam.abbreviation)">
-									<img [src]="'assets/team-logos-new/' + match.homeTeam.league + '/' + match.homeTeam.division + '/' + match.homeTeam.abbreviation + '.png'"
-										class="w-full h-full object-contain" [alt]="match.homeTeam.abbreviation">
-								</div>
-								<span class="text-sm font-black tracking-tighter">{{ match.homeTeam.abbreviation }}</span>
-							</div>
-						</div>
-
-						<div class="w-full md:w-auto">
-							@if (!isAdmin) {
-								<button (click)="goToPurchaseTickets(match.id)" class="app-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
-									<span class="app-button-bright"></span>
-									<span class="app-button-texts">Buy Tickets</span>
-								</button>
-							}
-							@else if (eventMap.get(match.id)) {
-								<div class="flex flex-col items-center justify-center md:justify-end gap-3">
-									<button (click)="editEvent(match.id)" class="app-success-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
-										<span class="app-button-bright"></span>
-										<span class="app-button-texts">Edit Event</span>
-									</button>
-									<button (click)="deleteEvent(match.id)" class="app-red-buttons w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
-										<span class="app-button-bright"></span>
-										<span class="app-button-texts">Delete Event</span>
-									</button>
-								</div>
-							}
-							@else {
-								<button (click)="createEvent(match.id)" class="app-success-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
-									<span class="app-button-bright"></span>
-									<span class="app-button-texts">Create Event</span>
-								</button>
-							}
-						</div>
-					</div>
-				}
-				<div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-10">
-                    @if (paginationHandlerService.hasMore) {
-                        <button (click)="loadNextMatches()"
-                                class="px-8 py-3 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all shadow-lg hover:scale-105 active:scale-95">
-                            Load More Games
-                        </button>
-                    }
-
-                    @if (((paginationHandlerService.items$ | async)?.length || 0) > PAGE_SIZE) {
-                        <button (click)="showLess()"
-                                class="px-8 py-3 cursor-pointer border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-full transition-all hover:bg-gray-100 dark:hover:bg-gray-700">
-                            Show Less
-                        </button>
-                    }
-                </div>
-			</div>
-		</section>
 	}
 
 	@if (success) {
