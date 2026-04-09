@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TeamService } from '../../../services/team.service';
 import { RunStats, Team, WinsDistribution } from '../../../models/team.model';
@@ -11,23 +11,37 @@ import { MatSelectModule } from '@angular/material/select';
 import { AnalyticsCardsComponent } from "../../stats/analytics-cards/analytics-cards.component";
 import { AnalyticsCards } from '../../../models/analytics.model';
 import { TeamTabs } from '../../../models/team-tabs.model';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BackgroundColorService } from '../../../services/background-color.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
 	selector: 'app-team-statistics',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
-	imports: [CommonModule, FormsModule, BaseChartDirective, LoadingModalComponent, MatIconModule, MatSelectModule, AnalyticsCardsComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		BaseChartDirective,
+		LoadingModalComponent,
+		MatIconModule,
+		MatSelectModule,
+		AnalyticsCardsComponent,
+		MatTooltipModule,
+		MatCheckboxModule
+	],
 	templateUrl: './team-statistics.component.html'
 })
 export class TeamStatisticsComponent implements OnInit {
 	@Input() baseTeamName!: string;
-	@Output() changeTab = new EventEmitter<TeamTabs>();
 
 	private teamService = inject(TeamService);
+	public backgroundColorService = inject(BackgroundColorService);
 
 	public allRivals: Team[] = [];
 	public displayedTeams: Team[] = [];
 	public rivalTeams: string[] = [];
+	public selectedRivalsAbbreviation: string[] = [];
 
 	public winDistribution?: WinsDistribution;
 
@@ -110,20 +124,61 @@ export class TeamStatisticsComponent implements OnInit {
 				display: true,
 				position: 'bottom',
 				labels: { usePointStyle: true, color: '#9CA3AF' }
-			}
+			},
+			tooltip: {
+            	mode: 'index',
+                intersect: false,
+                backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                titleFont: { size: 14, weight: 'bold' },
+                bodySpacing: 5,
+                padding: 12,
+                cornerRadius: 10,
+                displayColors: true
+            }
         }
     };
 
-    public pieOptions: ChartConfiguration['options'] = {
+    public winDistributionPieOptions: ChartConfiguration['options'] = {
         responsive: true,
 		maintainAspectRatio: false,
         plugins: {
             legend: {
 				position: 'bottom',
 				labels: { color: '#94a3b8', padding: 20 }
-			}
+			},
         }
     };
+
+	public winsPerRivalsPieOptions: ChartConfiguration['options'] = {
+		responsive: true,
+		maintainAspectRatio: false,
+		plugins: {
+			legend: {
+				position: 'bottom',
+				labels: { color: '#94a3b8', padding: 20 }
+			},
+			tooltip: {
+				callbacks: {
+					label: (context) => {
+						const value = context.parsed;
+						if (context.label === this.baseTeamName) {
+							return `${this.baseTeamName} Wins: ${value}`;
+						}
+						else {
+							let rivalsTooltip = ' ';
+							if (this.rivalTeams.length > 3) {
+								rivalsTooltip = `${this.rivalTeams.slice(0, 3).join(', ')} and ${this.rivalTeams.length - 3} more`;
+							}
+							else {
+								rivalsTooltip = this.rivalTeams.join(', ');
+							}
+							return `${rivalsTooltip} Wins: ${value}`;
+						}
+					}
+				}
+			}
+		}
+	};
 
     public barOptions: ChartConfiguration['options'] = {
         responsive: true,
@@ -132,7 +187,7 @@ export class TeamStatisticsComponent implements OnInit {
         plugins: { legend: { display: false } },
         scales: {
             x: {
-				grid: { display: false },
+				grid: { display: true },
 				ticks: { color: '#94a3b8' } },
             y: {
 				grid: { display: false },
@@ -181,15 +236,15 @@ export class TeamStatisticsComponent implements OnInit {
 				iconStyles: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400',
 				label: 'Home Wins PCT',
 				textStyles: 'from-indigo-600 to-purple-500',
-				value: this.homeWinPct,
+				value: this.homeWinPct * 100,
 				isRate: true
 			},
 			{
 				iconName: 'auto_graph',
-				iconStyles: 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400',
+				iconStyles: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400',
 				label: 'Road Wins PCT',
-				textStyles: 'from-indigo-600 to-pink-500',
-				value: this.roadWinPct,
+				textStyles: 'from-cyan-500 to-emerald-500',
+				value: this.roadWinPct * 100,
 				isRate: true
 			},
 		];
@@ -216,18 +271,24 @@ export class TeamStatisticsComponent implements OnInit {
 		this.loading = true;
 		this.teamService.getWinsPerRivals(this.baseTeamName, this.rivalTeams).subscribe({
 			next: (response) => {
-				let winsCounter = 0;
-				let rivalWinsCounter = 0;
-				response.forEach(data => {
-					winsCounter += data.wins;
-					rivalWinsCounter += (data.gamesPlayed - data.wins);
-				});
-				this.winsPerRivalsChartData = {
-					labels: [this.baseTeamName, 'Rivals'],
-					datasets: [{
-						...this.winsPerRivalsChartData.datasets[0],
-						data: [winsCounter, rivalWinsCounter]
-					}]
+				if (response.length === 0) {
+					this.winsPerRivalsChartData.datasets = [];
+				}
+				else {
+					let winsCounter = 0;
+					let rivalWinsCounter = 0;
+					response.forEach(data => {
+						winsCounter += data.wins;
+						rivalWinsCounter += (data.gamesPlayed - data.wins);
+					});
+					const rivalsLabel = (this.rivalTeams.length === 1) ? this.rivalTeams[0] : 'Rivals';
+					this.winsPerRivalsChartData = {
+						labels: [this.baseTeamName, rivalsLabel],
+						datasets: [{
+							...this.winsPerRivalsChartData.datasets[0],
+							data: [winsCounter, rivalWinsCounter]
+						}]
+					}
 				}
 			},
 			error: (err) => this.handleErrors(err, 'wins per rival')
@@ -308,20 +369,23 @@ export class TeamStatisticsComponent implements OnInit {
 	public onRivalTeamSelected(rival: string) {
 		if (!this.rivalTeams.includes(rival)) {
 			this.rivalTeams.push(rival);
+			const abbreviation = this.allRivals.find(team => team.name === rival)!.abbreviation;
+			this.selectedRivalsAbbreviation.push(abbreviation);
 			this.updateCharts();
 		}
 	}
 
 	public removeRivalTeam(rivalName: string) {
 		this.rivalTeams = this.rivalTeams.filter(rival => rival !== rivalName);
+		const abbreviation = this.allRivals.find(team => team.name === rivalName)!.abbreviation;
+		this.selectedRivalsAbbreviation = this.selectedRivalsAbbreviation.filter(abbr => abbr !== abbreviation);
 		this.updateCharts();
 	}
 
-	// TODO
 	private updateCharts() {
 		this.displayedTeams = this.allRivals.filter(rival => !this.rivalTeams.includes(rival.name));
 		if (this.rivalTeams.length === 0) {
-			this.resetWinPerRivalsChart();
+			this.resetCharts();
 		}
 		else {
 			this.loadWinsPerRivals();
@@ -330,7 +394,7 @@ export class TeamStatisticsComponent implements OnInit {
 		}
 	}
 
-	private resetWinPerRivalsChart() {
+	private resetCharts() {
 		this.winsPerRivalsChartData = {
 			labels: [],
 			datasets: [{
@@ -338,71 +402,106 @@ export class TeamStatisticsComponent implements OnInit {
 				data: []
 			}]
 		};
+
+		this.runStatsChartData = {
+			labels: [this.baseTeamName],
+			datasets: [this.runStatsChartData.datasets[0]]
+		}
+
+		const baseTeamDataset = this.historicRankingChartData.datasets.find(dataset => dataset.label === this.baseTeamName);
+
+		if (baseTeamDataset) {
+			this.historicRankingChartData = {
+				labels: this.historicRankingChartData.labels,
+				datasets: [{
+					...baseTeamDataset,
+                    borderColor: '#F59E0B',
+                    backgroundColor: `#F59E0B1A`,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#F59E0B'
+				}]
+			}
+		}
 	}
 
 	// ------------------ Filters ---------------------------------
 
 	public onLeagueFilterChange(newLeague: string) {
 		this.filteredLeague = newLeague;
-		this.rivalTeams = this.allRivals.filter(rival => rival.league === newLeague).map(r => r.name);
-		this.updateCharts();
+		this.applyMixedFilters();
 	}
 
 	public onDivisionFilterChange(newDivision: string) {
 		this.filteredDivision = newDivision;
-		this.rivalTeams = this.allRivals.filter(rival => rival.division === newDivision).map(r => r.name);
-		this.updateCharts();
+		this.applyMixedFilters();
 	}
 
 	public onOver500RivalsFilterChange(newState: boolean) {
-		console.log('Presionado', newState);
 		this.onlyOver500Teams = newState;
-		if (newState) {
-			this.rivalTeams = this.allRivals.filter(rival => parseFloat(rival.pct) >= 0.500).map(r => r.name);
+		this.applyMixedFilters();
+	}
+
+	private applyMixedFilters() {
+		const filteredRivals = this.allRivals.filter(rival => {
+			const league = !this.filteredLeague || rival.league === this.filteredLeague;
+			const division = !this.filteredDivision || rival.division === this.filteredDivision;
+			const over500 = !this.onlyOver500Teams || (rival.pct && parseFloat(rival.pct) >= 0.500);
+
+			return league && division && over500;
+		});
+		if (!this.filteredLeague && !this.filteredDivision && !this.onlyOver500Teams) {
+			this.rivalTeams = [];
+			this.selectedRivalsAbbreviation = [];
 		}
 		else {
-			this.rivalTeams = [];
+			this.rivalTeams = filteredRivals.map(rival => rival.name);
+			this.selectedRivalsAbbreviation = filteredRivals.map(rival => rival.abbreviation);
 		}
 		this.updateCharts();
 	}
 
 	public onDateChange(event: any) {
         this.dateFrom = new Date(event.target.value);
-        if (this.rivalTeams.length > 0) {
-            this.loadHistoricRanking();
-        }
+        this.loadHistoricRanking();
     }
 
 	public onClearLeagueFilter() {
 		this.filteredLeague = '';
-		this.rivalTeams = [];
-		this.updateCharts();
+		this.applyMixedFilters();
 	}
 
 	public onClearDivisionFilter() {
 		this.filteredDivision = '';
-		this.rivalTeams = [];
-		this.updateCharts();
+		this.applyMixedFilters();
 	}
 
 	public clearAllFilters() {
-		this.onClearLeagueFilter();
-		this.onClearDivisionFilter();
+		this.filteredLeague = '';
+		this.filteredDivision = '';
+		this.onlyOver500Teams = false;
+		this.rivalTeams = [];
+		this.selectedRivalsAbbreviation = [];
+		this.applyMixedFilters();
 	}
 
+	// ----------------------- Additional Methods -------------------
 	public toggleRunStatsChartDataset() {
         this.scoredRunsDataSet = !this.scoredRunsDataSet;
         this.loadRunsStats();
     }
 
-	// Handler
 	private handleErrors(err: any, chartOfError: string) {
 		this.loading = false;
         this.error = true;
         this.errorMessage = `An error occurred loading the ${chartOfError}: ${err.message}`;
 	}
 
-	public returnToTeamMainTab() {
-		this.changeTab.emit('Home');
+	public isWinsPerRivalsChartEmpty() {
+		return this.rivalTeams.length === 0 || this.winsPerRivalsChartData.datasets.length === 0;
+	}
+
+	public getTeam(abbreviation: string) {
+		return this.allRivals.find(team => team.abbreviation === abbreviation);
 	}
 }

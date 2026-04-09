@@ -150,9 +150,9 @@ export class ApiPerformanceComponent implements OnInit {
 					padding: 20,
 					color: '#9CA3AF'
 				}
-             },
-             tooltip: {
-                mode: 'index',
+            },
+            tooltip: {
+            	mode: 'index',
                 intersect: false,
                 backgroundColor: 'rgba(17, 24, 39, 0.9)',
                 titleFont: { size: 14, weight: 'bold' },

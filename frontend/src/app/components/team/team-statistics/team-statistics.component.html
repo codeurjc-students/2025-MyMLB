@@ -2,66 +2,118 @@
 	<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
 		Detailed Statistics
 	</h2>
+
 	<!-- Filters Section-->
-    <section class="w-full flex flex-wrap items-center justify-between gap-4 p-5 rounded-[1.5rem] border backdrop-blur-md bg-white/80 dark:bg-gray-900/40 border-gray-200 dark:border-white/10 shadow-lg">
-        <div class="flex flex-wrap items-center gap-4 flex-grow">
-			<!-- League Filter -->
-            <div class="w-full md:w-56">
-                <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
-                    <mat-label>League</mat-label>
-                    <mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)">
-                        <mat-option value="">All Leagues</mat-option>
-                        @for (league of availableLeagues; track league) {
-                            <mat-option [value]="league">{{ league }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
+	<section class="w-full flex flex-col gap-4 p-5 rounded-[1.5rem] border backdrop-blur-md bg-white/80 dark:bg-gray-900/40 border-gray-200 dark:border-white/10 shadow-lg">
+		<div class="w-full flex flex-wrap items-start justify-between gap-4">
+			<div class="flex flex-wrap items-start gap-4 flex-grow">
 
-			<!-- Division Filter -->
-            <div class="w-full md:w-56">
-                <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
-                    <mat-label>Division</mat-label>
-                    <mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)">
-                        <mat-option value="">All Divisions</mat-option>
-                        @for (div of availableDivisions; track div) {
-                            <mat-option [value]="div">{{ div }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
+				<!-- League Filter -->
+				<div class="w-full md:w-auto md:min-w-[280px] flex items-start gap-2">
+					<mat-form-field matTooltip="Filter by rivals of the selected league" matTooltipPosition="above" appearance="fill" class="flex-grow admin-input-fields !pb-0">
+						<mat-label>League</mat-label>
+						<mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)">
+							@for (league of availableLeagues; track league) {
+								<mat-option [value]="league">{{ league }}</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
 
-			<!-- Rivals Filter -->
-            <div class="w-full md:w-72">
-                <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
-                    <mat-label>Add Rival to Compare</mat-label>
-                    <mat-select (selectionChange)="onRivalTeamSelected($event.value)">
-                        @for (team of displayedTeams; track team.name) {
-                            <mat-option [value]="team.name">{{ team.name }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
+					<!-- Clear League Filter Button -->
+					@if (filteredLeague) {
+						<button (click)="onClearLeagueFilter()" matTooltip="Clear league filter" matTooltipPosition="above" class="app-red-buttons !w-10 h-[52px] flex items-center justify-center shrink-0 relative group">
+							<span class="app-button-bright"></span>
+							<div class="app-button-texts"><mat-icon class="!text-lg">delete_sweep</mat-icon></div>
+						</button>
+					}
+				</div>
 
-			<!-- Teams Over 500 PCT Filter -->
-			<div class="flex items-center justify-center bg-[#1e2632] px-4 h-[52px] rounded-xl border border-white/10 min-w-[120px]">
-				<mat-checkbox [(ngModel)]="onlyOver500Teams" (ngModelChange)="onOver500RivalsFilterChange($event)" class="datasource-checkbox">
-					<span class="text-[10px] font-black uppercase tracking-widest text-gray-400 select-none">
-						Only >.500
-					</span>
-				</mat-checkbox>
+				<!-- Division Filter -->
+				<div class="w-full md:w-auto md:min-w-[280px] flex items-start gap-2">
+					<mat-form-field matTooltip="Filter by rivals of the selected division" matTooltipPosition="above" appearance="fill" class="flex-grow admin-input-fields !pb-0">
+						<mat-label>Division</mat-label>
+						<mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)">
+							@for (division of availableDivisions; track division) {
+								<mat-option [value]="division">{{ division }}</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+
+					<!-- Clear Division Filter Button -->
+					@if (filteredDivision) {
+						<button (click)="onClearDivisionFilter()" matTooltip="Clear division filter" matTooltipPosition="above" class="app-red-buttons !w-10 h-[52px] flex items-center justify-center shrink-0 relative group">
+							<span class="app-button-bright"></span>
+							<div class="app-button-texts"><mat-icon class="!text-lg">delete_sweep</mat-icon></div>
+						</button>
+					}
+				</div>
+
+				<!-- Rivals Filter -->
+				<div class="w-full md:w-72">
+					<mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
+						<mat-label>Add Rival to Compare</mat-label>
+						<mat-select (selectionChange)="onRivalTeamSelected($event.value)">
+							@for (team of displayedTeams; track team.name) {
+								<mat-option [value]="team.name">
+									<div class="flex items-center gap-3">
+										<div class="flex items-center justify-center p-1 rounded-full shadow-sm w-7 h-7 flex-shrink-0" [ngClass]="backgroundColorService.getBackgroundColor(team.abbreviation)">
+											<img [src]="'assets/team-logos-new/' + team.league + '/' + team.division + '/' + team.abbreviation + '.png'" class="w-5 h-5 object-contain" />
+										</div>
+										<span class="font-medium">{{ team.name }}</span>
+									</div>
+								</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+				<!-- Teams over .500 Filter -->
+				<div
+					matTooltip="Filter by rivals with a win percentage above .500 (50%)"
+					matTooltipPosition="above"
+					class="flex items-center h-[52px] px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#1e2632]/50 hover:bg-white/80 dark:hover:bg-[#1e2632] transition-all cursor-pointer group">
+					<mat-checkbox
+						[(ngModel)]="onlyOver500Teams"
+						(ngModelChange)="onOver500RivalsFilterChange($event)"
+						class="custom-filter-checkbox">
+						<span class="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 group-hover:text-emerald-500 transition-colors">
+							Over .500 Teams
+						</span>
+					</mat-checkbox>
+				</div>
 			</div>
-        </div>
 
-		<!-- Clear Filters Button -->
-        <button (click)="clearAllFilters()" class="app-red-buttons !w-auto h-[52px] px-8 relative group">
-            <span class="app-button-bright"></span>
-            <div class="app-button-texts flex items-center gap-2">
-                <mat-icon class="!w-5 !h-5 !text-xl">delete_sweep</mat-icon>
-                <span class="text-xs font-black uppercase tracking-widest">Clear Filters</span>
-            </div>
-        </button>
-    </section>
+			<!-- Clear All Filters Button -->
+			<button (click)="clearAllFilters()" class="app-red-buttons !w-auto h-[52px] px-8 relative group shrink-0">
+				<span class="app-button-bright"></span>
+				<div class="app-button-texts flex items-center gap-2">
+					<mat-icon class="!text-xl">delete_sweep</mat-icon>
+					<span class="text-xs font-black uppercase tracking-widest text-white">Clear Filters</span>
+				</div>
+			</button>
+		</div>
+
+		<!-- Selected Rivals Badges -->
+		@if (selectedRivalsAbbreviation.length > 0) {
+			<div class="w-full flex flex-wrap items-center gap-3 pt-3 border-t border-gray-200 dark:border-white/5">
+				<span class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+					Selected Rivals:
+				</span>
+				<div class="flex flex-wrap gap-2">
+					@for (abbr of selectedRivalsAbbreviation; track abbr) {
+						<div
+							[matTooltip]="getTeam(abbr)?.name"
+							matTooltipPosition="above"
+							class="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 border border-white/10"
+							[ngClass]="backgroundColorService.getBackgroundColor(abbr)"
+						>
+							<img [src]="'assets/team-logos-new/' + getTeam(abbr)!.league + '/' + getTeam(abbr)!.division + '/' + abbr + '.png'" class="w-6 h-6 object-contain" />
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</section>
 
 	<!-- Analytics Cards Section -->
 	<section class="w-full animate-fadeIn">
@@ -92,7 +144,7 @@
                 <mat-icon>donut_large</mat-icon> Win Distribution
             </h2>
             <div class="relative flex-grow">
-                <canvas baseChart [data]="winDistributionChartData" [options]="pieOptions" type="pie"></canvas>
+                <canvas baseChart [data]="winDistributionChartData" [options]="winDistributionPieOptions" type="pie"></canvas>
             </div>
         </div>
 
@@ -102,17 +154,24 @@
                 <h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
                     <mat-icon>groups</mat-icon> Wins vs Rivals
                 </h2>
-                <div class="flex flex-wrap gap-1">
-                    @for (rival of rivalTeams; track rival) {
-                        <span class="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-3 py-1 rounded-xl text-[9px] font-bold flex items-center gap-2 uppercase tracking-widest">
-                            {{ rival }}
-                            <mat-icon (click)="removeRivalTeam(rival)" class="!w-3 !h-3 !text-[10px] cursor-pointer">close</mat-icon>
-                        </span>
-                    }
-                </div>
             </div>
-            <div class="relative flex-grow">
-                <canvas baseChart [data]="winsPerRivalsChartData" [options]="pieOptions" type="pie"></canvas>
+            <div class="relative flex-grow flex flex-col h-full">
+				@if (isWinsPerRivalsChartEmpty()) {
+					<div class="flex flex-col items-center justify-center flex-grow">
+						<mat-icon class="!w-12 !h-12 !text-5xl text-gray-300 dark:text-gray-600 mb-2">query_stats</mat-icon>
+						<span class="text-sm font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
+							@if (rivalTeams.length === 0) {
+								No rivals selected
+							}
+							@else {
+								No matches disputed between the selected rivals
+							}
+						</span>
+					</div>
+				}
+				@else {
+					<canvas baseChart [data]="winsPerRivalsChartData" [options]="winsPerRivalsPieOptions" type="pie"></canvas>
+				}
             </div>
         </div>
 
@@ -123,7 +182,9 @@
                     <mat-icon>bar_chart</mat-icon> Runs Analysis
                 </h2>
                 <button (click)="toggleRunStatsChartDataset()"
-                    class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-emerald-500 transition-all">
+					[matTooltip]="scoredRunsDataSet ? 'Switch to Runs Allowed' : 'Switch to Runs Scored'"
+					matTooltipPosition="above"
+                    class="flex items-center gap-2 cursor-pointer bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-emerald-500 transition-all">
                     <mat-icon class="!w-4 !h-4 !text-base">{{ scoredRunsDataSet ? 'insights' : 'analytics' }}</mat-icon>
                     {{ scoredRunsDataSet ? 'Scored' : 'Allowed' }}
                 </button>
@@ -138,3 +199,23 @@
 @if (loading) {
     <app-loading-modal message="Analyzing Statistics..."></app-loading-modal>
 }
+
+<style lang="scss">
+	::ng-deep .custom-filter-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+		background-color: #10b981 !important;
+		border-color: #10b981 !important;
+	}
+
+	::ng-deep .custom-filter-checkbox .mdc-checkbox__background {
+		border-color: rgba(156, 163, 175, 0.5) !important;
+		border-radius: 4px !important;
+	}
+
+	::ng-deep .custom-filter-checkbox .mat-mdc-checkbox-ripple {
+		display: none;
+	}
+
+	::ng-deep .custom-filter-checkbox .mdc-label {
+		padding-left: 8px !important;
+	}
+</style>

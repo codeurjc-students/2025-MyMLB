@@ -82,7 +82,7 @@
                     @for (team of teamsToDisplay; track team.abbreviation) {
                         <mat-option [value]="team.name">
                             <div class="flex items-center gap-3">
-                                <div class="flex items-center justify-center p-1 rounded shadow-sm w-7 h-7 flex-shrink-0"
+                                <div class="flex items-center justify-center p-1 rounded-full shadow-sm w-7 h-7 flex-shrink-0"
                                     [ngClass]="backgroundService.getBackgroundColor(team.abbreviation)">
                                     <img [src]="'assets/team-logos-new/' + team.league + '/' + team.division + '/' + team.abbreviation + '.png'"
                                         class="w-5 h-5 object-contain" />
