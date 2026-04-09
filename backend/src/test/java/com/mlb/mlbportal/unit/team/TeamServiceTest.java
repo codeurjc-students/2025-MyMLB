@@ -332,7 +332,7 @@ class TeamServiceTest {
         double formattedRoadPct = Math.round(roadPct * 1000.0) / 1000.0;
 
         when(this.teamRepository.findByNameOrThrow(TEST_TEAM1_NAME)).thenReturn(this.team1);
-        when(this.matchRepository.findWinDistribution(TEST_TEAM1_NAME)).thenReturn(expectedResult);
+        when(this.teamRepository.findWinDistribution(TEST_TEAM1_NAME)).thenReturn(expectedResult);
 
         WinDistributionDTO result = this.teamService.getWinDistribution(TEST_TEAM1_NAME);
 

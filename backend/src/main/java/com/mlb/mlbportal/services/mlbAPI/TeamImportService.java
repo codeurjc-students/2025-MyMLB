@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.dto.mlbapi.team.SplitRecords;
 import com.mlb.mlbportal.models.DailyStandings;
 import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import org.springframework.stereotype.Service;
@@ -226,6 +227,14 @@ public class TeamImportService {
                 Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"),
                 teamRecord.getLastTenGames()
         );
+        SplitRecords homeSplits = teamRecord.getHomeSplit().orElse(new SplitRecords(0, 0, "home"));
+        SplitRecords roadSplits = teamRecord.getAwaySplit().orElse(new SplitRecords(0, 0, "away"));
+
+        team.setHomeGamesPlayed(homeSplits.getTotalGamesPlayed());
+        team.setHomeGamesWins(homeSplits.wins());
+
+        team.setRoadGamesPlayed(roadSplits.getTotalGamesPlayed());
+        team.setRoadGamesWins(roadSplits.wins());
         return team;
     }
 
@@ -249,7 +258,13 @@ public class TeamImportService {
 
     private void setEmptyStats() {
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0, ".000", "0-0"));
+        teams.forEach(team -> {
+            team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0, ".000", "0-0");
+            team.setHomeGamesPlayed(0);
+            team.setHomeGamesWins(0);
+            team.setRoadGamesPlayed(0);
+            team.setRoadGamesWins(0);
+        });
         this.teamRepository.saveAll(teams);
     }
 

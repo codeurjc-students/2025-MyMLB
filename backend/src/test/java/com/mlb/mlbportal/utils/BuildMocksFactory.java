@@ -311,7 +311,7 @@ public class BuildMocksFactory {
         return new RunsStatsDTO(teamName, runsScored, runsAllowed);
     }
 
-    public static WinDistributionDTO buildWinDistributionDTO(String teamName, long homeGames, long homeWins, long roadGames, long roadWins) {
+    public static WinDistributionDTO buildWinDistributionDTO(String teamName, int homeGames, int homeWins, int roadGames, int roadWins) {
         return new WinDistributionDTO(teamName, homeGames, homeWins, roadGames, roadWins);
     }
 

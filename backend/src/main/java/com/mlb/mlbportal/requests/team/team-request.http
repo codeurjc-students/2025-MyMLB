@@ -50,6 +50,10 @@ Accept: application/json
 POST https://localhost:8443/api/v1/teams/analytics/hydrate
 Accept: application/json
 
+### Refresh Standings
+POST https://localhost:8443/api/v1/teams/sync
+Accept: application/json
+
 ### Get Historic Ranking
 GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
 Accept: application/json

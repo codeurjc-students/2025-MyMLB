@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -50,4 +51,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "FROM Team t WHERE t.name IN :teams"
     )
     List<RunsStatsDTO> findRunsStats(@Param("teams") Set<String> teams);
+
+    @Query("SELECT new com.mlb.mlbportal.dto.team.WinDistributionDTO(t.name, t.homeGamesPlayed, t.homeGamesWins, t.roadGamesPlayed, t.roadGamesWins) FROM Team t WHERE t.name = :team")
+    WinDistributionDTO findWinDistribution(@Param("team")String team);
 }

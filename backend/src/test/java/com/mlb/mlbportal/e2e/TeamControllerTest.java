@@ -3,6 +3,7 @@ package com.mlb.mlbportal.e2e;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,9 +13,11 @@ import static org.hamcrest.Matchers.is;
 
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,6 +48,8 @@ import io.restassured.http.ContentType;
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TeamControllerTest extends BaseE2ETest {
+    @Autowired
+    private TeamRepository teamRepository;
 
     @BeforeEach
     @SuppressWarnings("unused")
@@ -56,6 +61,20 @@ class TeamControllerTest extends BaseE2ETest {
                 Division.EAST);
         saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), League.NL,
                 Division.CENTRAL);
+
+        team1.setHomeGamesPlayed(0);
+        team1.setHomeGamesWins(0);
+        team1.setRoadGamesPlayed(1);
+        team1.setRoadGamesWins(1);
+
+        team2.setRunsScored(3);
+        team2.setRunsAllowed(5);
+        team2.setHomeGamesPlayed(1);
+        team2.setHomeGamesWins(0);
+        team2.setRoadGamesPlayed(0);
+        team2.setRoadGamesWins(0);
+
+        this.teamRepository.saveAll(List.of(team1, team2));
 
         saveTestMatches(team1, team2, 5, 3, LocalDateTime.now().minusDays(4), MatchStatus.FINISHED);
         saveTestDailyStandings(team1, LocalDate.now().minusMonths(1), 1, 20, 10);

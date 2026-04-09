@@ -169,7 +169,7 @@ public class TeamService {
     @Transactional(readOnly = true)
     public WinDistributionDTO getWinDistribution(String teamName) {
         this.teamRepository.findByNameOrThrow(teamName);
-        return this.matchRepository.findWinDistribution(teamName);
+        return this.teamRepository.findWinDistribution(teamName);
     }
 
     @Transactional(readOnly = true)

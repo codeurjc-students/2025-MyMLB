@@ -96,9 +96,17 @@ class TeamServiceIntegrationTest {
 
         this.team1.setRunsScored(5);
         this.team1.setRunsAllowed(3);
+        this.team1.setHomeGamesPlayed(0);
+        this.team1.setHomeGamesWins(0);
+        this.team1.setRoadGamesPlayed(1);
+        this.team1.setRoadGamesWins(1);
 
         this.team2.setRunsScored(3);
         this.team2.setRunsAllowed(5);
+        this.team2.setHomeGamesPlayed(1);
+        this.team2.setHomeGamesWins(0);
+        this.team2.setRoadGamesPlayed(0);
+        this.team2.setRoadGamesWins(0);
 
         this.teamRepository.saveAll(List.of(this.team1, this.team2, team3));
 

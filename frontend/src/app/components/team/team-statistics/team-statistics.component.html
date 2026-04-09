@@ -1,6 +1,11 @@
-<div class="min-h-screen p-6 space-y-6">
+<div class="team-section-container min-h-screen p-6 space-y-6">
+	<h2 class="text-4xl font-bold mb-6 text-center text-blue-800 dark:text-blue-300">
+		Detailed Statistics
+	</h2>
+	<!-- Filters Section-->
     <section class="w-full flex flex-wrap items-center justify-between gap-4 p-5 rounded-[1.5rem] border backdrop-blur-md bg-white/80 dark:bg-gray-900/40 border-gray-200 dark:border-white/10 shadow-lg">
         <div class="flex flex-wrap items-center gap-4 flex-grow">
+			<!-- League Filter -->
             <div class="w-full md:w-56">
                 <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
                     <mat-label>League</mat-label>
@@ -13,6 +18,7 @@
                 </mat-form-field>
             </div>
 
+			<!-- Division Filter -->
             <div class="w-full md:w-56">
                 <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
                     <mat-label>Division</mat-label>
@@ -25,6 +31,7 @@
                 </mat-form-field>
             </div>
 
+			<!-- Rivals Filter -->
             <div class="w-full md:w-72">
                 <mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
                     <mat-label>Add Rival to Compare</mat-label>
@@ -36,14 +43,18 @@
                 </mat-form-field>
             </div>
 
-            <div class="flex items-center bg-gray-100 dark:bg-white/5 px-4 h-[52px] rounded-xl border border-gray-200 dark:border-white/10">
-                <mat-checkbox [(ngModel)]="onlyOver500Teams" (change)="onOvser500RivalsFilterChange(onlyOver500Teams)">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-400">Only >.500</span>
-                </mat-checkbox>
-            </div>
+			<!-- Teams Over 500 PCT Filter -->
+			<div class="flex items-center justify-center bg-[#1e2632] px-4 h-[52px] rounded-xl border border-white/10 min-w-[120px]">
+				<mat-checkbox [(ngModel)]="onlyOver500Teams" (ngModelChange)="onOver500RivalsFilterChange($event)" class="datasource-checkbox">
+					<span class="text-[10px] font-black uppercase tracking-widest text-gray-400 select-none">
+						Only >.500
+					</span>
+				</mat-checkbox>
+			</div>
         </div>
 
-        <button (click)="onClearLeagueFilter(); onClearDivisionFilter()" class="app-red-buttons !w-auto h-[52px] px-8 relative group">
+		<!-- Clear Filters Button -->
+        <button (click)="clearAllFilters()" class="app-red-buttons !w-auto h-[52px] px-8 relative group">
             <span class="app-button-bright"></span>
             <div class="app-button-texts flex items-center gap-2">
                 <mat-icon class="!w-5 !h-5 !text-xl">delete_sweep</mat-icon>
@@ -52,14 +63,16 @@
         </button>
     </section>
 
+	<!-- Analytics Cards Section -->
 	<section class="w-full animate-fadeIn">
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 			<app-analytics-cards [data]="getWinDsitributionCardsContent()"></app-analytics-cards>
 		</div>
 	</section>
 
+	<!-- Charts Grid Section -->
     <main class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeIn">
-
+		<!-- Historic Ranking Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-black uppercase tracking-tighter text-amber-500 flex items-center gap-2">
@@ -73,6 +86,7 @@
             </div>
         </div>
 
+		<!-- Win Distribution Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <h2 class="text-lg font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2 mb-6">
                 <mat-icon>donut_large</mat-icon> Win Distribution
@@ -82,6 +96,7 @@
             </div>
         </div>
 
+		<!-- Wins Per Rivals Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
@@ -101,6 +116,7 @@
             </div>
         </div>
 
+		<!-- Runs Stats Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
@@ -116,9 +132,7 @@
                 <canvas baseChart [data]="runStatsChartData" [options]="barOptions" type="bar"></canvas>
             </div>
         </div>
-
     </main>
-
 </div>
 
 @if (loading) {

@@ -2,10 +2,10 @@ package com.mlb.mlbportal.dto.team;
 
 public record WinDistributionDTO(
         String teamName,
-        Long homeGames,
-        Long homeWins,
-        Long roadGames,
-        Long roadWins
+        Integer homeGames,
+        Integer homeWins,
+        Integer roadGames,
+        Integer roadWins
 ) {
     public Double getHomeWinPct() {
         if (this.homeGames == null || this.homeGames == 0) {

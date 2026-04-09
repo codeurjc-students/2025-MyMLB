@@ -69,6 +69,14 @@ public class Team {
 
     private int runDifferential;
 
+    private int homeGamesPlayed;
+
+    private int homeGamesWins;
+
+    private int roadGamesPlayed;
+
+    private int roadGamesWins;
+
     private String teamLogo;
 
     private String city;

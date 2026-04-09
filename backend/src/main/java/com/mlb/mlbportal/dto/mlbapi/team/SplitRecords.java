@@ -11,4 +11,8 @@ public record SplitRecords(
         Integer wins,
         Integer losses,
         String type
-) {}
+) {
+    public int getTotalGamesPlayed() {
+        return (this.wins != null ? this.wins : 0) + (this.losses != null ? this.losses : 0);
+    }
+}

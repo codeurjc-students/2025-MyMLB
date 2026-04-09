@@ -317,20 +317,20 @@ export class TeamStatisticsComponent implements OnInit {
 		this.updateCharts();
 	}
 
+	// TODO
 	private updateCharts() {
 		this.displayedTeams = this.allRivals.filter(rival => !this.rivalTeams.includes(rival.name));
-		if (this.rivalTeams.length > 0) {
+		if (this.rivalTeams.length === 0) {
+			this.resetWinPerRivalsChart();
+		}
+		else {
 			this.loadWinsPerRivals();
-			this.loadWinDistribution();
 			this.loadRunsStats();
 			this.loadHistoricRanking();
 		}
-		else {
-			this.resetCharts();
-		}
 	}
 
-	private resetCharts() {
+	private resetWinPerRivalsChart() {
 		this.winsPerRivalsChartData = {
 			labels: [],
 			datasets: [{
@@ -338,14 +338,6 @@ export class TeamStatisticsComponent implements OnInit {
 				data: []
 			}]
 		};
-        this.runStatsChartData = {
-			labels: [],
-			datasets: [{
-				...this.runStatsChartData.datasets[0],
-				data: []
-			}]
-		};
-        this.historicRankingChartData = { labels: [], datasets: [] };
 	}
 
 	// ------------------ Filters ---------------------------------
@@ -362,7 +354,8 @@ export class TeamStatisticsComponent implements OnInit {
 		this.updateCharts();
 	}
 
-	public onOvser500RivalsFilterChange(newState: boolean) {
+	public onOver500RivalsFilterChange(newState: boolean) {
+		console.log('Presionado', newState);
 		this.onlyOver500Teams = newState;
 		if (newState) {
 			this.rivalTeams = this.allRivals.filter(rival => parseFloat(rival.pct) >= 0.500).map(r => r.name);
@@ -390,6 +383,11 @@ export class TeamStatisticsComponent implements OnInit {
 		this.filteredDivision = '';
 		this.rivalTeams = [];
 		this.updateCharts();
+	}
+
+	public clearAllFilters() {
+		this.onClearLeagueFilter();
+		this.onClearDivisionFilter();
 	}
 
 	public toggleRunStatsChartDataset() {
