@@ -33,7 +33,7 @@ import flatpickr from 'flatpickr';
 	templateUrl: './team-statistics.component.html'
 })
 export class TeamStatisticsComponent implements OnInit, OnChanges {
-	@Input() baseTeamName!: string;
+	@Input() public baseTeamName!: string;
 
 	private teamService = inject(TeamService);
 	public backgroundColorService = inject(BackgroundColorService);
@@ -47,8 +47,8 @@ export class TeamStatisticsComponent implements OnInit, OnChanges {
 
 	// UI
 	public scoredRunsDataSet = true;
-	@ViewChild('dateFrom') dateFrom!: ElementRef;
-	@ViewChild('selectRival') selectRivalInput!: MatSelect;
+	@ViewChild('dateFrom') public dateFrom!: ElementRef;
+	@ViewChild('selectRival') private selectRivalInput!: MatSelect;
 	private selectedDateFrom = '';
 	public availableLeagues = ['AL', 'NL'];
 	public availableDivisions = ['EAST', 'CENTRAL', 'WEST'];

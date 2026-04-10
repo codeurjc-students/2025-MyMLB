@@ -1,4 +1,4 @@
-import { UpdateTeamRequest } from './../../../../app/models/team.model';
+import { RunStats, UpdateTeamRequest, WinsDistribution, WinsPerRival } from './../../../../app/models/team.model';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TeamService } from '../../../../app/services/team.service';
 import { TestBed } from '@angular/core/testing';
@@ -192,6 +192,107 @@ describe('Team Service Tests', () => {
 		expect(req.request.method).toBe('GET');
 		req.flush(mockResponse);
 	});
+
+    it('should fetch rivals of a certain team', () => {
+        const mockRivals: Team[] = [
+            { name: 'Boston Red Sox', abbreviation: 'BOS', league: 'AL', division: 'East' } as Team,
+            { name: 'Baltimore Orioles', abbreviation: 'BAL', league: 'AL', division: 'East' } as Team
+        ];
+
+        service.getRivals('New York Yankees').subscribe((response) => {
+            expect(response).toEqual(mockRivals);
+            expect(response.length).toBe(2);
+        });
+
+        const req = httpMock.expectOne(`${service['url']}/New York Yankees/rivals`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockRivals);
+    });
+
+    it('should fetch wins per rivals', () => {
+        const mockWins: WinsPerRival[] = [
+            { rivalTeamName: 'Boston Red Sox', wins: 5, gamesPlayed: 10 },
+            { rivalTeamName: 'Baltimore Orioles', wins: 7, gamesPlayed: 10 }
+        ];
+        const rivals = ['Boston Red Sox', 'Ba<ltimore Orioles'];
+
+        service.getWinsPerRivals('New York Yankees', rivals).subscribe((response) => {
+            expect(response).toEqual(mockWins);
+        });
+
+        const req = httpMock.expectOne(req =>
+            req.url === `${service['url']}/New York Yankees/analytics/wins-per-rival` &&
+            req.params.getAll('rivalTeamNames')?.length === 2
+        );
+
+        expect(req.request.method).toBe('GET');
+        expect(req.request.params.get('rivalTeamNames')).toBe('Boston Red Sox');
+        req.flush(mockWins);
+    });
+
+    it('should fetch runs stats per rival', () => {
+        const mockRunStats: RunStats[] = [
+            { teamName: 'New York Yankees', runsScored: 50, runsAllowed: 40 },
+            { teamName: 'Boston Red Sox', runsScored: 40, runsAllowed: 50 }
+        ];
+        const teams = ['New York Yankees', 'Boston Red Sox'];
+
+        service.getRunsStatsPerRival(teams).subscribe((response) => {
+            expect(response).toEqual(mockRunStats);
+        });
+
+        const req = httpMock.expectOne(req =>
+            req.url === `${service['url']}/analytics/runs-per-rival` &&
+            req.params.getAll('teams')?.length === 2
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush(mockRunStats);
+    });
+
+    it('should fetch win distribution only with teams', () => {
+        const mockDistribution: WinsDistribution = {
+			teamName: 'New York Yankees',
+            homeWins: 50,
+            roadWins: 40,
+            homeGames: 81,
+            roadGames: 81,
+            homeWinPct: 0.617,
+            roadWinPct: 0.493
+        };
+
+        service.getWinDistribution('New York Yankees').subscribe((response) => {
+            expect(response).toEqual(mockDistribution);
+        });
+
+        const req = httpMock.expectOne(`${service['url']}/New York Yankees/analytics/win-distribution`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockDistribution);
+    });
+
+    it('should fetch historic ranking with teams and dateFrom params', () => {
+        const mockHistoricRanking = {
+            'New York Yankees': [
+                { matchDate: '2023-01-01', rank: 1 },
+                { matchDate: '2023-02-01', rank: 2 }
+            ]
+        };
+        const teams = ['New York Yankees'];
+        const dateFrom = '2023-01-01';
+
+        service.getHistoricRanking(teams, dateFrom).subscribe((response) => {
+            expect(response['New York Yankees'][0].rank).toBe(1);
+        });
+
+        const req = httpMock.expectOne(req =>
+            req.url === `${service['url']}/analytics/historic-ranking` &&
+            req.params.get('dateFrom') === '2023-01-01' &&
+            req.params.get('teams') === 'New York Yankees'
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush(mockHistoricRanking);
+    });
 
 	it('should update the team successfully', () => {
 		const request: UpdateTeamRequest = {

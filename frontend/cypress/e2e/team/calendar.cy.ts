@@ -43,6 +43,7 @@ describe('Team Calendar E2E Tests', () => {
 			});
 		});
 
+		cy.get('button').contains('Matches').click();
 		cy.get('button').contains('Show Calendar').click();
 		cy.wait('@getMatches');
 		cy.get('app-calendar').should('exist').and('be.visible');
