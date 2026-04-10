@@ -10,23 +10,23 @@ import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
-import com.mlb.mlbportal.dto.mlbapi.team.SplitRecords;
-import com.mlb.mlbportal.models.DailyStandings;
-import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbapi.team.Records;
+import com.mlb.mlbportal.dto.mlbapi.team.SplitRecords;
 import com.mlb.mlbportal.dto.mlbapi.team.StandingsResponse;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamRecords;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.DailyStandings;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -285,7 +285,7 @@ public class TeamImportService {
                 this.importStatsByDate(date);
                 Thread.sleep(500);
             }
-            catch (Exception e) {
+            catch (InterruptedException e) {
                 log.error("Error on date {}: {}", date, e.getMessage());
             }
         }
@@ -309,10 +309,10 @@ public class TeamImportService {
 
             if (response != null && response.records() != null) {
                 List<DailyStandings> dayHistory = new ArrayList<>();
-                for (Records record : response.records()) {
-                    if (record.teamRecords() == null) continue;
+                for (Records recordDTO : response.records()) {
+                    if (recordDTO.teamRecords() == null) continue;
 
-                    for (TeamRecords teamRecord : record.teamRecords()) {
+                    for (TeamRecords teamRecord : recordDTO.teamRecords()) {
                         this.teamRepository.findByStatsApiId(teamRecord.team().id()).ifPresent(team -> dayHistory.add(new DailyStandings(
                                 team,
                                 date,

@@ -355,8 +355,7 @@ class TeamServiceTest {
 
         Map<String, List<HistoricRankingDTO>> result = this.teamService.getHistoricRanking(teams, dateFrom);
 
-        assertThat(result).isNotNull();
-        assertThat(result).containsKey(TEST_TEAM1_NAME);
+        assertThat(result).isNotNull().containsKey(TEST_TEAM1_NAME);
         assertThat(result.get(TEST_TEAM1_NAME)).hasSize(1);
         assertThat(result.get(TEST_TEAM1_NAME).getFirst().teamName()).isEqualTo(TEST_TEAM1_NAME);
     }

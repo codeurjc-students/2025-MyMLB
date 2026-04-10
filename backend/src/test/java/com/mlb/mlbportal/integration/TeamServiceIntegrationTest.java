@@ -163,7 +163,7 @@ class TeamServiceIntegrationTest {
         WinDistributionDTO result = this.teamService.getWinDistribution(TEST_TEAM1_NAME);
 
         assertThat(result.teamName()).isEqualTo(TEST_TEAM1_NAME);
-        assertThat(result.roadWins()).isEqualTo(1L);
+        assertThat(result.roadWins()).isEqualTo(1);
         assertThat(result.getHomeWinPct()).isEqualTo(0.0);
         assertThat(result.getRoadWinPct()).isEqualTo(1.0);
     }

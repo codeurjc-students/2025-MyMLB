@@ -285,8 +285,8 @@ class TeamImportServiceTest {
         TeamRecords teamRecord = new TeamRecords(
                 apiTeam, "1", 10, 6, 4, ".600", "0", 0, 0, 0, null
         );
-        Records record = new Records(List.of(teamRecord));
-        StandingsResponse response = new StandingsResponse(List.of(record));
+        Records recordDTO = new Records(List.of(teamRecord));
+        StandingsResponse response = new StandingsResponse(List.of(recordDTO));
 
         Team domainTeam = new Team(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, League.AL, Division.EAST, TEST_TEAM1_LOGO);
 
