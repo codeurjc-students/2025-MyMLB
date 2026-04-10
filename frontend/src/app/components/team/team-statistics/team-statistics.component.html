@@ -23,7 +23,9 @@
 					@if (filteredLeague) {
 						<button (click)="onClearLeagueFilter()" matTooltip="Clear league filter" matTooltipPosition="above" class="app-red-buttons !w-10 h-[52px] flex items-center justify-center shrink-0 relative group">
 							<span class="app-button-bright"></span>
-							<div class="app-button-texts"><mat-icon class="!text-lg">delete_sweep</mat-icon></div>
+							<div class="app-button-texts">
+								<mat-icon class="!text-lg">delete_sweep</mat-icon>
+							</div>
 						</button>
 					}
 				</div>
@@ -52,7 +54,7 @@
 				<div class="w-full md:w-72">
 					<mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
 						<mat-label>Add Rival to Compare</mat-label>
-						<mat-select (selectionChange)="onRivalTeamSelected($event.value)">
+						<mat-select #selectRival (selectionChange)="onRivalTeamSelected($event.value)">
 							@for (team of displayedTeams; track team.name) {
 								<mat-option [value]="team.name">
 									<div class="flex items-center gap-3">
@@ -68,9 +70,7 @@
 				</div>
 
 				<!-- Teams over .500 Filter -->
-				<div
-					matTooltip="Filter by rivals with a win percentage above .500 (50%)"
-					matTooltipPosition="above"
+				<div matTooltip="Filter by rivals with a win percentage above .500 (50%)" matTooltipPosition="above"
 					class="flex items-center h-[52px] px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#1e2632]/50 hover:bg-white/80 dark:hover:bg-[#1e2632] transition-all cursor-pointer group">
 					<mat-checkbox
 						[(ngModel)]="onlyOver500Teams"
@@ -99,15 +99,24 @@
 				<span class="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
 					Selected Rivals:
 				</span>
-				<div class="flex flex-wrap gap-2">
+				<div class="flex flex-wrap gap-4">
 					@for (abbr of selectedRivalsAbbreviation; track abbr) {
-						<div
-							[matTooltip]="getTeam(abbr)?.name"
-							matTooltipPosition="above"
-							class="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 border border-white/10"
-							[ngClass]="backgroundColorService.getBackgroundColor(abbr)"
-						>
-							<img [src]="'assets/team-logos-new/' + getTeam(abbr)!.league + '/' + getTeam(abbr)!.division + '/' + abbr + '.png'" class="w-6 h-6 object-contain" />
+						<div class="relative group">
+							<div [matTooltip]="getTeam(abbr)?.name" matTooltipPosition="above"
+								class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md border border-white/10 transition-transform group-hover:scale-105"
+								[ngClass]="backgroundColorService.getBackgroundColor(abbr)"
+							>
+								<img [src]="'assets/team-logos-new/' + getTeam(abbr)!.league + '/' + getTeam(abbr)!.division + '/' + abbr + '.png'"
+									class="w-7 h-7 object-contain"
+								/>
+							</div>
+
+							<button (click)="onRemoveRival(abbr)" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full
+								flex items-center justify-center shadow-lg border border-white dark:border-gray-900
+								transition-all transform scale-0 group-hover:scale-110"
+							>
+								<mat-icon class="!text-[12px] !w-3 !h-3 !line-height-[12px]">close</mat-icon>
+							</button>
 						</div>
 					}
 				</div>
@@ -125,37 +134,71 @@
 	<!-- Charts Grid Section -->
     <main class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeIn">
 		<!-- Historic Ranking Chart -->
-        <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-black uppercase tracking-tighter text-amber-500 flex items-center gap-2">
-                    <mat-icon>trending_up</mat-icon> Historic Ranking
-                </h2>
-                <input type="date" [ngModel]="dateFrom | date:'yyyy-MM-dd'" (change)="onDateChange($event)"
-                    class="bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-1.5 text-xs font-bold text-indigo-500 focus:outline-none">
-            </div>
-            <div class="relative flex-grow">
-                <canvas baseChart [data]="historicRankingChartData" [options]="lineOptions" type="line"></canvas>
-            </div>
-        </div>
+		<div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
+			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+				<!-- Chart Header -->
+				<div>
+                    <h2 class="text-lg font-black uppercase tracking-tighter text-amber-500 flex items-center gap-2">
+						<mat-icon class="scale-110">trending_up</mat-icon>
+						Historic Ranking
+					</h2>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">Division ranking evolution per team</p>
+                </div>
+
+				<div class="flex items-center gap-2">
+					<div class="relative group" matTooltip="Select the start date of the chart" matTooltipPosition="above">
+						<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 scale-75">
+							<mat-icon class="text-sm scale-75">calendar_today</mat-icon>
+						</div>
+						<input #dateFrom type="text" class="bg-white dark:bg-gray-900/50 border-none rounded-xl py-2 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none w-40 cursor-pointer shadow-sm"
+						>
+					</div>
+
+					<!-- Set Default Date From Button -->
+					<button (click)="setDefaultDateFilter()" matTooltip="Reset to last month" matTooltipPosition="above" class="app-red-buttons !w-10 h-[38px] flex items-center justify-center shrink-0 relative group">
+						<span class="app-button-bright"></span>
+						<div class="app-button-texts">
+							<mat-icon class="!text-lg">restart_alt</mat-icon>
+						</div>
+					</button>
+				</div>
+			</div>
+
+			<div class="relative flex-grow">
+				<canvas baseChart #historicChart="base-chart"
+						[data]="historicRankingChartData"
+						[options]="lineOptions"
+						[type]="'line'">
+				</canvas>
+			</div>
+		</div>
 
 		<!-- Win Distribution Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
-            <h2 class="text-lg font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2 mb-6">
-                <mat-icon>donut_large</mat-icon> Win Distribution
-            </h2>
-            <div class="relative flex-grow">
-                <canvas baseChart [data]="winDistributionChartData" [options]="winDistributionPieOptions" type="pie"></canvas>
-            </div>
-        </div>
+			<!-- Chart Header -->
+			<div class="mb-8">
+				<h2 class="text-lg font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
+					<mat-icon>donut_large</mat-icon> Win Distribution
+				</h2>
+				<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Home vs Away performance split</p>
+			</div>
+
+			<div class="relative flex-grow">
+				<canvas baseChart [data]="winDistributionChartData" [options]="winDistributionPieOptions" type="pie"></canvas>
+			</div>
+		</div>
 
 		<!-- Wins Per Rivals Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
+            <!-- Chart Header -->
+			<div class="mb-6 shrink-0">
+				<h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
                     <mat-icon>groups</mat-icon> Wins vs Rivals
                 </h2>
-            </div>
-            <div class="relative flex-grow flex flex-col h-full">
+				<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Series record against selected rivals</p>
+			</div>
+
+            <div class="relative flex-grow min-h-0 overflow-hidden flex items-center justify-center">
 				@if (isWinsPerRivalsChartEmpty()) {
 					<div class="flex flex-col items-center justify-center flex-grow">
 						<mat-icon class="!w-12 !h-12 !text-5xl text-gray-300 dark:text-gray-600 mb-2">query_stats</mat-icon>
@@ -177,18 +220,24 @@
 
 		<!-- Runs Stats Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
-                    <mat-icon>bar_chart</mat-icon> Runs Analysis
-                </h2>
-                <button (click)="toggleRunStatsChartDataset()"
+            <!-- Chart Header -->
+			<div class="flex justify-between items-center mb-6">
+				<div>
+					<h2 class="text-lg font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
+						<mat-icon>bar_chart</mat-icon> Runs Analysis
+					</h2>
+					<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Offensive and defensive scoring metrics</p>
+				</div>
+
+				<button (click)="toggleRunStatsChartDataset()"
 					[matTooltip]="scoredRunsDataSet ? 'Switch to Runs Allowed' : 'Switch to Runs Scored'"
 					matTooltipPosition="above"
                     class="flex items-center gap-2 cursor-pointer bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-emerald-500 transition-all">
                     <mat-icon class="!w-4 !h-4 !text-base">{{ scoredRunsDataSet ? 'insights' : 'analytics' }}</mat-icon>
                     {{ scoredRunsDataSet ? 'Scored' : 'Allowed' }}
                 </button>
-            </div>
+			</div>
+
             <div class="relative flex-grow">
                 <canvas baseChart [data]="runStatsChartData" [options]="barOptions" type="bar"></canvas>
             </div>

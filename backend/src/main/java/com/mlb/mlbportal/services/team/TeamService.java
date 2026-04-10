@@ -173,7 +173,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "historic-ranking", key = "#teams")
+    @Cacheable(value = "historic-ranking", key = "{#teams, #dateFrom}")
     public Map<String, List<HistoricRankingDTO>> getHistoricRanking(Set<String> teams, LocalDate dateFrom) {
         if (dateFrom == null) {
             dateFrom = LocalDate.now().minusMonths(1);

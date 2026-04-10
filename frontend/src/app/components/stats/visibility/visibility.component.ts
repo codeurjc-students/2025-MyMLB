@@ -202,7 +202,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
 			{
 				iconName: 'trending_up',
 				iconStyles: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400',
-				label: 'Success Rate',
+				label: 'Growth Rate',
 				textStyles: 'from-indigo-600 to-purple-500',
 				value: this.growthPercentage,
 				isRate: true,

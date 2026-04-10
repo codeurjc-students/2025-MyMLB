@@ -58,6 +58,10 @@ Accept: application/json
 GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
 Accept: application/json
 
+### Get Historic Ranking
+GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees&dateFrom=2026-04-01
+Accept: application/json
+
 ### Update Team with city, championships and general information
 PATCH https://localhost:8443/api/v1/teams/New York Yankees
 Content-Type: application/json

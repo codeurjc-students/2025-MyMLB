@@ -123,7 +123,7 @@ export class TeamService {
 		return this.http.get<WinsDistribution>(`${this.url}/${teamName}/analytics/win-distribution`);
 	}
 
-	public getHistoricRanking(teams: string[], dateFrom?: Date): Observable<Record<string, HistoricRanking[]>> {
+	public getHistoricRanking(teams: string[], dateFrom?: string): Observable<Record<string, HistoricRanking[]>> {
 		let params = new HttpParams();
 		if (teams && teams.length > 0) {
 			teams.forEach(team => {
@@ -131,8 +131,7 @@ export class TeamService {
 			});
 		}
 		if (dateFrom) {
-			const formattedDate = dateFrom.toISOString().split('T')[0];
-			params = params.set('dateFrom', formattedDate);
+    		params = params.set('dateFrom', dateFrom);
 		}
 		return this.http.get<Record<string, HistoricRanking[]>>(`${this.url}/analytics/historic-ranking`, { params });
 	}

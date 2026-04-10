@@ -20,11 +20,12 @@ import { SuccessModalComponent } from '../modal/success-modal/success-modal.comp
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 import { TeamTabs } from '../../models/team-tabs.model';
 import { TeamStatisticsComponent } from "./team-statistics/team-statistics.component";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
 	selector: 'app-team',
 	standalone: true,
-	imports: [CommonModule, StatsPanelComponent, CalendarComponent, SuccessModalComponent, ErrorModalComponent, TeamStatisticsComponent],
+	imports: [CommonModule, StatsPanelComponent, CalendarComponent, SuccessModalComponent, ErrorModalComponent, TeamStatisticsComponent, MatTooltip],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './team.component.html',
 })

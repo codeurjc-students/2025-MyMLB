@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TeamService } from '../../../services/team.service';
 import { RunStats, Team, WinsDistribution } from '../../../models/team.model';
@@ -7,13 +7,13 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { LoadingModalComponent } from "../../modal/loading-modal/loading-modal.component";
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { AnalyticsCardsComponent } from "../../stats/analytics-cards/analytics-cards.component";
 import { AnalyticsCards } from '../../../models/analytics.model';
-import { TeamTabs } from '../../../models/team-tabs.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import flatpickr from 'flatpickr';
 
 @Component({
 	selector: 'app-team-statistics',
@@ -32,7 +32,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 	],
 	templateUrl: './team-statistics.component.html'
 })
-export class TeamStatisticsComponent implements OnInit {
+export class TeamStatisticsComponent implements OnInit, OnChanges {
 	@Input() baseTeamName!: string;
 
 	private teamService = inject(TeamService);
@@ -47,7 +47,9 @@ export class TeamStatisticsComponent implements OnInit {
 
 	// UI
 	public scoredRunsDataSet = true;
-	public dateFrom: Date = new Date(new Date().getFullYear(), 0, 1);
+	@ViewChild('dateFrom') dateFrom!: ElementRef;
+	@ViewChild('selectRival') selectRivalInput!: MatSelect;
+	private selectedDateFrom = '';
 	public availableLeagues = ['AL', 'NL'];
 	public availableDivisions = ['EAST', 'CENTRAL', 'WEST'];
 	public filteredLeague = '';
@@ -152,6 +154,9 @@ export class TeamStatisticsComponent implements OnInit {
 	public winsPerRivalsPieOptions: ChartConfiguration['options'] = {
 		responsive: true,
 		maintainAspectRatio: false,
+		layout: {
+			padding: 20
+		},
 		plugins: {
 			legend: {
 				position: 'bottom',
@@ -196,13 +201,61 @@ export class TeamStatisticsComponent implements OnInit {
         }
     };
 
+	@ViewChild(BaseChartDirective) historicChart?: BaseChartDirective;
+
 	ngOnInit() {
+		const from = new Date();
+		from.setMonth(from.getMonth() - 1);
+		this.selectedDateFrom = from.toISOString().split('T')[0];
+
 		this.loadRivalTeams();
 		this.loadWinsPerRivals();
 		this.loadWinDistribution();
 		this.loadRunsStats();
 		this.loadHistoricRanking();
 	}
+
+	ngAfterViewInit() {
+		const configBase = {
+			disableMobile: false,
+			dateFormat: 'Y-m-d',
+			altInput: true,
+			altFormat: 'M j, Y',
+		};
+
+		flatpickr(this.dateFrom.nativeElement, {
+			...configBase,
+			defaultDate: this.selectedDateFrom,
+			maxDate: new Date(),
+			onChange: (selectedDates) => {
+				if (selectedDates?.length) {
+					this.selectedDateFrom = selectedDates[0].toISOString().split('T')[0];
+					this.loadHistoricRanking();
+				}
+			},
+		});
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes['baseTeamName'] && !changes['baseTeamName'].firstChange) {
+			this.reloadComponent();
+		}
+	}
+
+	private reloadComponent() {
+        this.rivalTeams = [];
+        this.selectedRivalsAbbreviation = [];
+
+        this.loadRivalTeams();
+        this.loadWinsPerRivals();
+        this.loadWinDistribution();
+        this.loadRunsStats();
+        this.loadHistoricRanking();
+
+        this.filteredLeague = '';
+        this.filteredDivision = '';
+        this.onlyOver500Teams = false;
+    }
 
 	// ----------------- Win Distribution Cards -------------------
 	public getWinDsitributionCardsContent(): AnalyticsCards[] {
@@ -268,6 +321,9 @@ export class TeamStatisticsComponent implements OnInit {
 	}
 
 	private loadWinsPerRivals() {
+		if (this.rivalTeams.length === 0) {
+			return;
+		}
 		this.loading = true;
 		this.teamService.getWinsPerRivals(this.baseTeamName, this.rivalTeams).subscribe({
 			next: (response) => {
@@ -341,10 +397,11 @@ export class TeamStatisticsComponent implements OnInit {
 	private loadHistoricRanking() {
 		this.loading = true;
 		const teamsToDisplay = [this.baseTeamName, ...this.rivalTeams];
-		this.teamService.getHistoricRanking(teamsToDisplay).subscribe({
+		this.teamService.getHistoricRanking(teamsToDisplay, this.selectedDateFrom).subscribe({
 			next: (response) => {
 				const teams = Object.keys(response);
 				if (teams.length === 0) {
+					this.loading = false;
 					return;
 				}
 				const labels = response[teams[0]].map(data => new Date(data.matchDate).toLocaleDateString());
@@ -361,6 +418,8 @@ export class TeamStatisticsComponent implements OnInit {
                         pointBackgroundColor: colors[i % colors.length]
                     }))
                 };
+				this.historicChart?.update();
+				this.loading = false;
 			},
 			error: (err) => this.handleErrors(err, 'historic ranking')
 		});
@@ -373,13 +432,6 @@ export class TeamStatisticsComponent implements OnInit {
 			this.selectedRivalsAbbreviation.push(abbreviation);
 			this.updateCharts();
 		}
-	}
-
-	public removeRivalTeam(rivalName: string) {
-		this.rivalTeams = this.rivalTeams.filter(rival => rival !== rivalName);
-		const abbreviation = this.allRivals.find(team => team.name === rivalName)!.abbreviation;
-		this.selectedRivalsAbbreviation = this.selectedRivalsAbbreviation.filter(abbr => abbr !== abbreviation);
-		this.updateCharts();
 	}
 
 	private updateCharts() {
@@ -443,28 +495,51 @@ export class TeamStatisticsComponent implements OnInit {
 	}
 
 	private applyMixedFilters() {
-		const filteredRivals = this.allRivals.filter(rival => {
-			const league = !this.filteredLeague || rival.league === this.filteredLeague;
-			const division = !this.filteredDivision || rival.division === this.filteredDivision;
-			const over500 = !this.onlyOver500Teams || (rival.pct && parseFloat(rival.pct) >= 0.500);
+		const filteredRivalsBySelectors = this.allRivals.filter(rival => {
+			const matchesLeague = !this.filteredLeague || rival.league === this.filteredLeague;
+			const matchesDivision = !this.filteredDivision || rival.division === this.filteredDivision;
+			const matchesOver500 = !this.onlyOver500Teams || (rival.pct && parseFloat(rival.pct) >= 0.500);
 
-			return league && division && over500;
+			return matchesLeague && matchesDivision && matchesOver500;
 		});
-		if (!this.filteredLeague && !this.filteredDivision && !this.onlyOver500Teams) {
-			this.rivalTeams = [];
-			this.selectedRivalsAbbreviation = [];
+		const hasActiveFilters = this.filteredLeague !== '' || this.filteredDivision !== '' || this.onlyOver500Teams;
+
+		if (hasActiveFilters) { // Rivals based on the active filters
+			this.rivalTeams = filteredRivalsBySelectors.map(rival => rival.name);
+			this.selectedRivalsAbbreviation = filteredRivalsBySelectors.map(rival => rival.abbreviation);
+
+			const currentSelectValue = this.selectRivalInput?.value;
+			if (currentSelectValue && !this.rivalTeams.includes(currentSelectValue)) {
+				this.selectRivalInput.value = null;
+			}
 		}
-		else {
-			this.rivalTeams = filteredRivals.map(rival => rival.name);
-			this.selectedRivalsAbbreviation = filteredRivals.map(rival => rival.abbreviation);
+		else { // Rival teams manually selected
+			const rivalManuallySelected = this.selectRivalInput?.value;
+			if (rivalManuallySelected) {
+				const team = this.allRivals.find(t => t.name === rivalManuallySelected);
+				this.rivalTeams = [rivalManuallySelected];
+				this.selectedRivalsAbbreviation = team ? [team.abbreviation] : [];
+			}
+			else {
+				this.rivalTeams = [];
+				this.selectedRivalsAbbreviation = [];
+			}
 		}
 		this.updateCharts();
 	}
 
-	public onDateChange(event: any) {
-        this.dateFrom = new Date(event.target.value);
-        this.loadHistoricRanking();
-    }
+	public setDefaultDateFilter() {
+		const from = new Date();
+		from.setMonth(from.getMonth() - 1);
+		const formatted = from.toISOString().split('T')[0];
+		this.selectedDateFrom = formatted;
+
+		const fpFrom = (this.dateFrom.nativeElement as any)._flatpickr;
+		if (fpFrom) {
+			fpFrom.setDate(formatted);
+		}
+		this.loadHistoricRanking();
+	}
 
 	public onClearLeagueFilter() {
 		this.filteredLeague = '';
@@ -476,13 +551,31 @@ export class TeamStatisticsComponent implements OnInit {
 		this.applyMixedFilters();
 	}
 
+	public onRemoveRival(abbr: string) {
+		const team = this.allRivals.find(rival => rival.abbreviation === abbr)!;
+		const rivalName = team.name;
+		this.selectedRivalsAbbreviation = this.selectedRivalsAbbreviation.filter(a => a !== abbr);
+		this.rivalTeams = this.rivalTeams.filter(name => name !== rivalName);
+		if (this.selectRivalInput.value === rivalName) {
+			this.selectRivalInput.value = null;
+		}
+		if (this.rivalTeams.length === 0) {
+			this.clearAllFilters();
+		}
+		else {
+			this.updateCharts();
+		}
+	}
+
 	public clearAllFilters() {
 		this.filteredLeague = '';
 		this.filteredDivision = '';
 		this.onlyOver500Teams = false;
 		this.rivalTeams = [];
+		this.selectRivalInput.value = null;
 		this.selectedRivalsAbbreviation = [];
 		this.applyMixedFilters();
+		this.setDefaultDateFilter();
 	}
 
 	// ----------------------- Additional Methods -------------------
