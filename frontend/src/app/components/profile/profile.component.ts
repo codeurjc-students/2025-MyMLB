@@ -18,6 +18,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatchService } from '../../services/match.service';
+import { TeamService } from '../../services/team.service';
 
 @Component({
 	selector: 'app-profile',
@@ -42,6 +43,7 @@ export class ProfileComponent implements OnInit {
 	private userService = inject(UserService);
 	private analyticsService = inject(AnalyticsService);
 	private matchService = inject(MatchService);
+	private teamService = inject(TeamService);
 
 	public username = '';
 
@@ -70,17 +72,9 @@ export class ProfileComponent implements OnInit {
 	private readonly maxPictureSize = 1 * 1024 * 1024; // 1MB
 
 	ngOnInit(): void {
-		this.authService.getActiveUser().subscribe({
-			next: (response) => {
-				this.isAdmin = response.roles.includes('ADMIN');
-				this.username = response.username;
-			},
-			error: () => {
-				this.error = true;
-				this.errorMessage = 'Unexpected error while retrieving the user';
-			}
-		});
-
+		const currentUser = this.authService.getCurrentUser();
+		this.isAdmin = currentUser.roles.includes('ADMIN');
+		this.username = currentUser.username;
 		this.retrieveProfileData();
 	}
 
@@ -221,7 +215,23 @@ export class ProfileComponent implements OnInit {
 			error: (err) => {
 				this.loading = false;
 				this.error = true;
-				this.errorMessage = `An error occur updating the matches: ${err.message}`;
+				this.errorMessage = `An error occur updating the matches: ${err.error.message}`;
+			}
+		});
+	}
+
+	public hydrateTeamStatistics() {
+		this.loading = true;
+		this.teamService.hydrateTeamStatistics().subscribe({
+			next: (_) => {
+				this.loading = false;
+				this.sucess = true;
+				this.successMessage = 'Hydrating Team Statistics';
+			},
+			error: (err) => {
+				this.loading = false;
+				this.error = true;
+				this.errorMessage = `An error occur hydrating the statistics: ${err.error.message}`;
 			}
 		});
 	}

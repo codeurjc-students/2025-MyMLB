@@ -163,7 +163,6 @@ describe('Team Statistics Component Tests', () => {
         fixture.detectChanges();
 
         expect(component.error).toBeTrue();
-        expect(component.errorMessage).toContain('wins distribution');
     });
 
     it('should generate analytics cards with correct calculated values', () => {

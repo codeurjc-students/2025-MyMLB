@@ -8,6 +8,7 @@ import { PlayerRankingsComponent } from '../../../app/components/player-rankings
 import { PlayerService } from '../../../app/services/player.service';
 import { TeamService } from '../../../app/services/team.service';
 import { BackgroundColorService } from '../../../app/services/background-color.service';
+import { AuthService } from '../../../app/services/auth.service';
 
 Chart.register(...registerables);
 
@@ -15,6 +16,7 @@ describe('Player Rankings Component Integration Test', () => {
     let fixture: ComponentFixture<PlayerRankingsComponent>;
     let component: PlayerRankingsComponent;
     let httpMock: HttpTestingController;
+	let authServiceMock: any;
     let queryParamsSubject: BehaviorSubject<any>;
 
     const playersUrl = '/api/v1/players';
@@ -28,6 +30,9 @@ describe('Player Rankings Component Integration Test', () => {
 
     beforeEach(() => {
         queryParamsSubject = new BehaviorSubject<any>({ playerType: 'position' });
+		authServiceMock = {
+            currentUser$: new BehaviorSubject({ username: 'test-user', roles: ['USER'] }),
+        };
 
         TestBed.configureTestingModule({
             imports: [PlayerRankingsComponent],
@@ -35,6 +40,7 @@ describe('Player Rankings Component Integration Test', () => {
                 PlayerService,
                 TeamService,
                 BackgroundColorService,
+				{ provide: AuthService, useValue: authServiceMock },
                 provideHttpClient(),
                 provideHttpClientTesting(),
                 {
@@ -74,23 +80,25 @@ describe('Player Rankings Component Integration Test', () => {
         expect(component.allTeams.length).toBe(1);
     });
 
-    it('should reload dashboard when playerType changes in URL', () => {
-        fixture.detectChanges();
-        flushInitialRequests('position');
+	it('should reload dashboard when playerType changes in URL', () => {
+		fixture.detectChanges();
+		flushInitialRequests('position');
 
-        queryParamsSubject.next({ playerType: 'pitcher' });
+		queryParamsSubject.next({ playerType: 'pitcher' });
 
-        const reqRank = httpMock.expectOne(req =>
-            req.url === `${playersUrl}/rankings/all` && req.params.get('playerType') === 'pitcher'
-        );
-        reqRank.flush(mockRankings);
+		const reqRank = httpMock.expectOne(req =>
+			req.url === `${playersUrl}/rankings/all` && req.params.get('playerType') === 'pitcher'
+		);
+		reqRank.flush(mockRankings);
 
-        const reqTeams = httpMock.expectOne(req => req.url === `${teamsUrl}/standings`);
-        reqTeams.flush(mockStandingsResponse);
+		const reqTeams = httpMock.match(req => req.url === `${teamsUrl}/standings`);
+		if (reqTeams.length > 0) {
+			reqTeams.forEach(req => req.flush(mockStandingsResponse));
+		}
 
-        expect(component.isPitcher).toBeTrue();
-        expect(component.playerType).toBe('pitcher');
-    });
+		expect(component.isPitcher).toBeTrue();
+		expect(component.playerType).toBe('pitcher');
+	});
 
     it('should reload dashboard when league filter is applied', () => {
         fixture.detectChanges();

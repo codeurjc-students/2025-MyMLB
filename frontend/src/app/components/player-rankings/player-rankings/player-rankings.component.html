@@ -96,13 +96,15 @@
         </div>
 
 		<!-- Refresh Standings Button -->
-        <button class="app-button group !w-auto px-6 h-[52px]" (click)="refresh()" [disabled]="loading">
-            <span class="app-button-bright"></span>
-            <div class="app-button-texts flex items-center justify-center gap-2">
-                <mat-icon class="text-sm" [class.animate-spin]="loading">sync</mat-icon>
-                <span class="text-xs font-black uppercase tracking-widest text-white">Refresh</span>
-            </div>
-        </button>
+		@if ((currentUser$ | async)?.roles?.includes('ADMIN')) {
+			<button class="app-button group !w-auto px-6 h-[52px]" (click)="refresh()" [disabled]="loading">
+				<span class="app-button-bright"></span>
+				<div class="app-button-texts flex items-center justify-center gap-2">
+					<mat-icon class="text-sm" [class.animate-spin]="loading">sync</mat-icon>
+					<span class="text-xs font-black uppercase tracking-widest text-white">Refresh</span>
+				</div>
+			</button>
+		}
 
 		<!-- Clear All Filters Button -->
         <button (click)="onClearAllFilters()" class="app-red-buttons !w-auto group h-[52px] px-6 relative">

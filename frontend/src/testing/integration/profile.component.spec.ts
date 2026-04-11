@@ -13,6 +13,7 @@ describe('Profile Component Integration Test', () => {
     let component: ProfileComponent;
     let httpMock: HttpTestingController;
     let routerSpy: jasmine.SpyObj<Router>;
+	let authService: AuthService;
 
     const authUrl = '/api/v1/auth';
     const usersUrl = '/api/v1/users';
@@ -55,9 +56,13 @@ describe('Profile Component Integration Test', () => {
         fixture = TestBed.createComponent(ProfileComponent);
         component = fixture.componentInstance;
         httpMock = TestBed.inject(HttpTestingController);
+		authService = TestBed.inject(AuthService);
+
+		spyOn(authService, 'getCurrentUser').and.returnValue(mockUser);
 
         fixture.detectChanges();
-        const meReqs = httpMock.match(`${authUrl}/me`);
+
+		const meReqs = httpMock.match(`${authUrl}/me`);
         meReqs.forEach(req => req.flush(mockUser));
 
         const profileReqs = httpMock.match(`${usersUrl}/profile`);

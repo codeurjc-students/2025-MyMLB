@@ -13,7 +13,7 @@ describe('Login Component Tests', () => {
 	let routerSpy: jasmine.SpyObj<Router>;
 
 	beforeEach(() => {
-		authServiceSpy = jasmine.createSpyObj('AuthService', ['loginUser']);
+		authServiceSpy = jasmine.createSpyObj('AuthService', ['loginUser', 'getActiveUser', 'setCurrentUser']);
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 		TestBed.configureTestingModule({
@@ -42,6 +42,7 @@ describe('Login Component Tests', () => {
 		};
 
 		authServiceSpy.loginUser.and.returnValue(of(mockResponse));
+		authServiceSpy.getActiveUser.and.returnValue(of({ username: 'testUser', roles: ['USER'] }));
 
 		loginComponent.loginForm.setValue({ username: 'user', password: 'pass' });
 		loginComponent.login();

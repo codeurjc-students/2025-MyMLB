@@ -1,5 +1,5 @@
 import { PositionPlayer } from './../../../models/position-player.model';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { TeamInfo } from '../../../models/team.model';
 import { Pitcher } from '../../../models/pitcher.model';
 import { CommonModule } from '@angular/common';
@@ -20,7 +20,7 @@ export class StatsPanelComponent {
 	@Input() player!: Pitcher | PositionPlayer;
 	@Output() close = new EventEmitter<void>();
 
-	constructor(public validationService: ValidationService) {}
+	public validationService = inject(ValidationService);
 
 	public closePanel = () => {
 		this.close.emit();

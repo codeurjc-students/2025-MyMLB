@@ -10,14 +10,16 @@
 			}
         </h2>
 
-        <div class="absolute right-0">
-            <button [matTooltip]="'Refresh Rankings'" matTooltipPosition="above" class="app-button group !w-10 !h-10 p-0 flex items-center justify-center rounded-full" (click)="refresh()" [disabled]="loading">
-                <span class="app-button-bright"></span>
-                <div class="app-button-texts flex items-center justify-center">
-                    <mat-icon [class.animate-spin]="loading" class="text-lg">sync</mat-icon>
-                </div>
-            </button>
-        </div>
+		@if ((currentUser$ | async)?.roles?.includes('ADMIN')) {
+			<div class="absolute right-0">
+				<button [matTooltip]="'Refresh Rankings'" matTooltipPosition="above" class="app-button group !w-10 !h-10 p-0 flex items-center justify-center rounded-full" (click)="refresh()" [disabled]="loading">
+					<span class="app-button-bright"></span>
+					<div class="app-button-texts flex items-center justify-center">
+						<mat-icon [class.animate-spin]="loading" class="text-lg">sync</mat-icon>
+					</div>
+				</button>
+			</div>
+		}
     </div>
 
     <div class="flex justify-center mb-6">

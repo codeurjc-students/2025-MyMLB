@@ -9,6 +9,7 @@ import { Pictures } from '../../../app/models/pictures.model';
 import { User } from '../../../app/models/user.model';
 import { AnalyticsService } from '../../../app/services/analytics.service';
 import { MatchService } from '../../../app/services/match.service';
+import { TeamService } from '../../../app/services/team.service';
 
 describe('Profile Component Tests', () => {
     let component: ProfileComponent;
@@ -17,12 +18,13 @@ describe('Profile Component Tests', () => {
     let userServiceSpy: jasmine.SpyObj<UserService>;
 	let analyticsServiceSpy: jasmine.SpyObj<AnalyticsService>;
 	let matchServiceSpy: jasmine.SpyObj<MatchService>;
+	let teamServiceSpy: jasmine.SpyObj<TeamService>;
     let routerSpy: jasmine.SpyObj<Router>;
 
     beforeEach(() => {
         const authServiceMock = jasmine.createSpyObj('AuthService', [
             'logoutUser',
-            'getActiveUser',
+            'getCurrentUser',
             'deleteAccount'
         ]);
         const userServiceMock = jasmine.createSpyObj('UserService', [
@@ -35,6 +37,7 @@ describe('Profile Component Tests', () => {
 
 		const statsServiceMock = jasmine.createSpyObj('StatsService', ['updateDeletedUsers']);
 		const matchServiceMock = jasmine.createSpyObj('MatchService', ['refreshMatches']);
+		const teamServiceMock = jasmine.createSpyObj('TeamService', ['hydrateTeamStatistics']);
         const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
         TestBed.configureTestingModule({
@@ -44,6 +47,7 @@ describe('Profile Component Tests', () => {
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: AnalyticsService, useValue: statsServiceMock },
                 { provide: MatchService, useValue: matchServiceMock },
+                { provide: TeamService, useValue: teamServiceMock },
                 { provide: Router, useValue: routerMock }
             ],
         });
@@ -55,10 +59,11 @@ describe('Profile Component Tests', () => {
         userServiceSpy = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
 		analyticsServiceSpy = TestBed.inject(AnalyticsService) as jasmine.SpyObj<AnalyticsService>;
 		matchServiceSpy = TestBed.inject(MatchService) as jasmine.SpyObj<MatchService>;
+		teamServiceSpy = TestBed.inject(TeamService) as jasmine.SpyObj<TeamService>;
         routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
         const mockUser: UserRole = { username: 'testUser', roles: ['USER'] };
-        authServiceSpy.getActiveUser.and.returnValue(of(mockUser));
+        authServiceSpy.getCurrentUser.and.returnValue(mockUser);
         userServiceSpy.getUserProfile.and.returnValue(of({ email: 'test@test.com', picture: null, enableNotifications: false }));
 		const response: AuthResponse = {
 			status: 'SUCCESS',
@@ -71,12 +76,6 @@ describe('Profile Component Tests', () => {
         fixture.detectChanges();
         expect(component.username).toBe('testUser');
         expect(component.errorMessage).toBe('');
-    });
-
-    it('should show an error message if getActiveUser fails', () => {
-        authServiceSpy.getActiveUser.and.returnValue(throwError(() => new Error('Backend Error')));
-        fixture.detectChanges();
-        expect(component.errorMessage).toBe('Unexpected error while retrieving the user');
     });
 
     it('should successfully logout the user when confirm() is called with activeAction = logout', () => {

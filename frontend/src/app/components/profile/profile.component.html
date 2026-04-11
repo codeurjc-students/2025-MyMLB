@@ -132,6 +132,14 @@
 					<span>Refresh {{ currentYear }} Season Matches</span>
 				</div>
 			</button>
+
+			<button class="w-full app-button group" (click)="hydrateTeamStatistics()">
+				<span class="app-button-bright"></span>
+				<div class="app-button-texts flex items-center justify-center gap-2">
+					<mat-icon>sync</mat-icon>
+					<span>Hydrate {{ currentYear }} Team Statistics</span>
+				</div>
+			</button>
 		</div>
 	}
 

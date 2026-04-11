@@ -315,7 +315,7 @@ export class TeamStatisticsComponent implements OnInit, OnChanges {
 			error: (err) => {
 				this.loading = false;
 				this.error = true;
-				this.errorMessage = `An error occur loading the teams: ${err.message}`;
+				this.errorMessage = `An error occur loading the teams: ${err.error.message}`;
 			}
 		});
 	}
@@ -587,7 +587,7 @@ export class TeamStatisticsComponent implements OnInit, OnChanges {
 	private handleErrors(err: any, chartOfError: string) {
 		this.loading = false;
         this.error = true;
-        this.errorMessage = `An error occurred loading the ${chartOfError}: ${err.message}`;
+        this.errorMessage = `An error occurred loading the ${chartOfError}: ${err.error.message}`;
 	}
 
 	public isWinsPerRivalsChartEmpty() {

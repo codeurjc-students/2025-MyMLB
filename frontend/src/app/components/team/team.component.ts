@@ -67,6 +67,8 @@ export class TeamComponent implements OnInit {
 	public successMessage = '';
 	public errorMessage = '';
 
+	public currentUser$ = this.authService.currentUser$;
+
 	public tabs: TeamTabs[] = ['Home', 'Stats', 'Roster', 'Matches'];
 	public currentTab: TeamTabs = 'Home';
 
@@ -95,9 +97,6 @@ export class TeamComponent implements OnInit {
 			}
 		});
 
-		this.authService.getActiveUser().subscribe((response) => {
-			this.isAdmin = response.roles.includes('ADMIN');
-		});
 		this.paginationHandlerService.items$.subscribe((matches) => {
 			if (matches && matches.length > 0) {
 				this.checkEventOfAMatch(matches);

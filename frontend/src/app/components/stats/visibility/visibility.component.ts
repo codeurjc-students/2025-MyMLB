@@ -330,7 +330,7 @@ export class VisibilityComponent implements OnInit, AfterViewInit {
 				},
 				error: (err) => {
 					this.error = true;
-					this.errorMessage = `Error loading the chart: ${err.message}`;
+					this.errorMessage = `Error loading the chart: ${err.error.message}`;
 					this.loading = false;
 				},
 			});

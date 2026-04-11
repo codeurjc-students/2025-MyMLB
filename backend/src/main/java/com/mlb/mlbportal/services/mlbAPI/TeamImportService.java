@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.conflict.RankingRegisterAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -334,7 +335,7 @@ public class TeamImportService {
         }
         catch (Exception e) {
             log.warn("API failed for date {}", date);
-            throw e;
+            throw new RankingRegisterAlreadyExistsException("Hydration is not possible because data has already been recorded during the selected time period");
         }
     }
 

@@ -260,7 +260,7 @@
 							</div>
 
 							<div class="w-full md:w-auto">
-								@if (!isAdmin) {
+								@if (!(currentUser$ | async)?.roles?.includes('ADMIN')) {
 									<button (click)="goToPurchaseTickets(match.id)" class="app-button w-full md:w-auto px-10 py-3 text-xs uppercase font-bold tracking-widest">
 										<span class="app-button-bright"></span>
 										<span class="app-button-texts">Buy Tickets</span>

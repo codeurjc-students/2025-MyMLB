@@ -1,7 +1,7 @@
 import { PaginatedResponse } from './../models/pagination.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, shareReplay, tap } from 'rxjs';
 import { Team, TeamSummary, TeamInfo, UpdateTeamRequest, WinsPerRival, RunStats, WinsDistribution, HistoricRanking } from '../models/team.model';
 import { SelectedTeamService } from './selected-team.service';
 import { Router } from '@angular/router';
@@ -21,6 +21,7 @@ export class TeamService {
 	private url = `${environment.apiUrl}/teams`;
 	private http = inject(HttpClient);
 	private selectedTeamService = inject(SelectedTeamService);
+	private standingsCache$?: Observable<StandingsResponse>; // Used to only make 1 call to /standings, in getTeamNamesAndAbbr and getTeamDivisionRank
 	private router = inject(Router);
 
 	public getAvailableTeams(page: number, size: number): Observable<PaginatedResponse<TeamSummary>> {
@@ -28,7 +29,12 @@ export class TeamService {
 	}
 
 	public getStandings(): Observable<StandingsResponse> {
-		return this.http.get<StandingsResponse>(`${this.url}/standings`);
+		if (!this.standingsCache$) {
+			this.standingsCache$ = this.http.get<StandingsResponse>(`${this.url}/standings`).pipe(
+				shareReplay(1) // Store the last value and share it with the other methods
+			);
+		}
+		return this.standingsCache$;
 	}
 
 	public isGoodPct(pct : string) {
@@ -50,13 +56,7 @@ export class TeamService {
 	public getTeamsNamesAndAbbr(): Observable<TeamSummary[]> {
 		return this.getStandings().pipe(
 			map((data) => {
-				const result: {
-					name: string;
-					abbreviation: string;
-					league: string;
-					division: string;
-				}[] = [];
-
+				const result: TeamSummary[] = [];
 				for (const league of Object.keys(data)) {
 					const divisions = data[league];
 					for (const division of Object.keys(divisions)) {
@@ -141,6 +141,14 @@ export class TeamService {
 	}
 
 	public refreshStandings(): Observable<AuthResponse> {
-		return this.http.post<AuthResponse>(`${this.url}/sync`, {});
+		return this.http.post<AuthResponse>(`${this.url}/sync`, {}).pipe(
+			tap(() => {
+				this.standingsCache$ = undefined;
+			})
+		);
+	}
+
+	public hydrateTeamStatistics(): Observable<AuthResponse> {
+		return this.http.post<AuthResponse>(`${this.url}/analytics/hydrate`, {});
 	}
 }

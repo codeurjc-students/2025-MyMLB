@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.naming.ServiceUnavailableException;
 
 import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
+import com.mlb.mlbportal.handler.conflict.RankingRegisterAlreadyExistsException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -109,6 +110,12 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> handleConcurrentModification(ConcurrentModificationException ex) {
         return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "The transaction could not be completed due to a simultaneous update. Please refresh the page and try again");
+    }
+
+    @ExceptionHandler(RankingRegisterAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleRankingRegisterAlreadyExists(RankingRegisterAlreadyExistsException ex) {
+        return this.buildResponse(HttpStatus.CONFLICT, ex.getMessage(), "Hydration is not possible because data has already been recorded during the selected time period");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

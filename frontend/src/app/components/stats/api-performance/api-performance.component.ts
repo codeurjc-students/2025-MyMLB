@@ -283,7 +283,7 @@ export class ApiPerformanceComponent implements OnInit {
 			},
 			error: (err) => {
 				this.error = true;
-				this.errorMessage = `Error fecthing the data: ${err.message}`;
+				this.errorMessage = `Error fecthing the data: ${err.error.message}`;
 				this.loading = false;
 			}
 		});
