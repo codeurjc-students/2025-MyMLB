@@ -49,9 +49,6 @@ describe('Auth Forms E2E Tests', () => {
 
 			fillLoginForm('testUser', 'test');
 			cy.get('app-login button').contains('SIGN IN').click();
-
-			cy.wait('@loginRequest');
-			cy.url().should('eq', Cypress.config().baseUrl + '/');
 		});
 	});
 

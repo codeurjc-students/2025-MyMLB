@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { switchMap } from 'rxjs';
 
 @Component({
 	selector: 'app-login',
@@ -16,12 +17,16 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 })
 export class LoginComponent {
 	@Output() toggleForm = new EventEmitter<void>();
+	private authService = inject(AuthService);
+	private fb = inject(FormBuilder);
+	private router = inject(Router);
+
 	public loginForm: FormGroup;
 	public errorMessage: string = "";
 	public hidePassword = true;
 
-	constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
-		this.loginForm = fb.group({
+	constructor() {
+		this.loginForm = this.fb.group({
 			username: ['', [Validators.required]],
 			password: ['', [Validators.required]]
 		});
@@ -50,9 +55,14 @@ export class LoginComponent {
 		}
 		const loginRequest = this.getLoginRequest();
 
-		this.authService.loginUser(loginRequest).subscribe({
-			next: (_) => this.router.navigate(['/']),
-			error: (_) => this.errorMessage = 'Invalid Credentials',
+		this.authService.loginUser(loginRequest).pipe(
+			switchMap(() => this.authService.getActiveUser())
+		).subscribe({
+			next: (user) => {
+				this.authService.setCurrentUser(user);
+				this.router.navigate(['/']);
+			},
+			error: () => this.errorMessage = 'Invalid Credentials'
 		});
 	}
 

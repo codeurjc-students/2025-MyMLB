@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.services.team;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -9,6 +10,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
+import com.mlb.mlbportal.mappers.DailyStandingsMapper;
+import com.mlb.mlbportal.models.DailyStandings;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
+import com.mlb.mlbportal.repositories.MatchRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +36,6 @@ import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 import com.mlb.mlbportal.repositories.StadiumRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
-import com.mlb.mlbportal.services.MatchService;
 import com.mlb.mlbportal.services.UserService;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
 
@@ -39,10 +49,12 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
-    private final MatchService matchService;
     private final UserService userService;
     private final PaginationHandlerService paginationHandlerService;
     private final StadiumRepository stadiumRepository;
+    private final MatchRepository matchRepository;
+    private final DailyStandingsRepository dailyStandingsRepository;
+    private final DailyStandingsMapper dailyStandingsMapper;
 
     @Transactional(readOnly = true)
     public Page<TeamInfoDTO> getTeams(int page, int size) {
@@ -128,6 +140,48 @@ public class TeamService {
             standings.computeIfAbsent(league, l -> new LinkedHashMap<>()).put(division, sorted);
         }
         return standings;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamDTO> getRivalTeams(String teamName) {
+        this.teamRepository.findByNameOrThrow(teamName);
+        List<Team> queryResult = this.teamRepository.findRivals(teamName);
+        return this.teamMapper.toTeamDTOList(queryResult);
+    }
+
+    @Transactional(readOnly = true)
+    public List<WinsPerRivalDTO> getWinsPerRivals(String fixedTeamName, Set<String> rivalTeamsNames) {
+        if (rivalTeamsNames == null || rivalTeamsNames.isEmpty()) {
+            throw new InvalidTypeException("The rival teams are required");
+        }
+        if (rivalTeamsNames.contains(fixedTeamName)) {
+            throw new InvalidTypeException("The rival team must differ from the current team");
+        }
+        return this.matchRepository.findWinsPerRival(fixedTeamName, rivalTeamsNames);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "runs-per-rival", key = "#teams")
+    public List<RunsStatsDTO> getRunStatsPerRival(Set<String> teams) {
+        return this.teamRepository.findRunsStats(teams);
+    }
+
+    @Transactional(readOnly = true)
+    public WinDistributionDTO getWinDistribution(String teamName) {
+        this.teamRepository.findByNameOrThrow(teamName);
+        return this.teamRepository.findWinDistribution(teamName);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "historic-ranking", key = "{#teams, #dateFrom}")
+    public Map<String, List<HistoricRankingDTO>> getHistoricRanking(Set<String> teams, LocalDate dateFrom) {
+        if (dateFrom == null) {
+            dateFrom = LocalDate.now().minusMonths(1);
+        }
+        List<DailyStandings> queryResult = this.dailyStandingsRepository.findHistoricRanking(teams, dateFrom);
+        return queryResult.stream()
+                .map(this.dailyStandingsMapper::toHistoricRankingDTO)
+                .collect(Collectors.groupingBy(HistoricRankingDTO::teamName));
     }
 
     @Transactional

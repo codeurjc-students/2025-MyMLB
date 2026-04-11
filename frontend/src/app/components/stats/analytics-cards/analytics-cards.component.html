@@ -1,31 +1,29 @@
 @for (item of data; track item.label) {
-	<div class="analytics-card-container group">
-		<div
-			class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner"
-			[ngClass]="item.iconStyles"
-		>
-			<mat-icon class="scale-110">{{ item.iconName }}</mat-icon>
-		</div>
+    <div class="analytics-card-container group flex items-center gap-4 p-4">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0"
+             [ngClass]="item.iconStyles">
+            <mat-icon class="scale-110">{{ item.iconName }}</mat-icon>
+        </div>
 
-		<div>
-			<p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ item.label }}</p>
-			<h3
-				class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r"
-				[ngClass]="item.textStyles"
-			>
-				@if (item.isRate) {
-					{{ item.value | number:'1.1-1' }}%
-				}
-				@else {
-					{{ item.value | number }}
-				}
-			</h3>
-		</div>
-	</div>
+        <div>
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ item.label }}</p>
+            <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r"
+                [ngClass]="item.textStyles">
+                {{ item.isRate ? (item.value | number:'1.1-1') + '%' : (item.value | number) }}
+            </h3>
+        </div>
+    </div>
 }
 
 <style>
-	:host {
-		display: contents;
-	}
+    :host {
+        display: contents;
+    }
+
+    .analytics-card-container {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        width: 100%;
+    }
 </style>

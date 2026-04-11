@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
 	selector: 'app-player-rankings',
@@ -34,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class PlayerRankingsComponent implements OnInit {
 	private playerService = inject(PlayerService);
 	private teamService = inject(TeamService);
+	private authService = inject(AuthService);
 	public backgroundService = inject(BackgroundColorService);
 	private route = inject(ActivatedRoute);
 
@@ -106,6 +108,8 @@ export class PlayerRankingsComponent implements OnInit {
 	public filteredLeague = '';
 	public filteredDivision = '';
 	public numberOfPlayersToShow = 5;
+
+	public currentUser$ = this.authService.currentUser$;
 
 	public loading = false;
 	public error = false;

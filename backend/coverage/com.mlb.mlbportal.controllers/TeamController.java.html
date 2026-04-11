@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeamController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">TeamController.java</span></div><h1>TeamController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
+import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +46,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TeamController {
     private final TeamService teamService;
+    private final TeamImportService teamImportService;
 
     @Operation(summary = &quot;Get all teams&quot;, description = &quot;Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.&quot;)
     @ApiResponses(value = {
@@ -45,8 +55,8 @@ public class TeamController {
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;TeamInfoDTO&gt;&gt; getAllTeams(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L48">        Page&lt;TeamInfoDTO&gt; teams = this.teamService.getTeams(page, size);</span>
-<span class="fc" id="L49">        return ResponseEntity.ok(teams);</span>
+<span class="fc" id="L58">        Page&lt;TeamInfoDTO&gt; teams = this.teamService.getTeams(page, size);</span>
+<span class="fc" id="L59">        return ResponseEntity.ok(teams);</span>
     }
 
     @Operation(summary = &quot;Get all available teams&quot;, description = &quot;Returns a list of all available teams. An available team is one whose roster is less than 24&quot;)
@@ -56,7 +66,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/available&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;TeamSummary&gt;&gt; getAvailableTeams(@RequestParam(defaultValue = &quot;0&quot;) int page, @RequestParam(defaultValue = &quot;10&quot;) int size) {
-<span class="fc" id="L59">        return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));</span>
+<span class="fc" id="L69">        return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));</span>
     }
 
     @Operation(summary = &quot;Get team standings&quot;, description = &quot;Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.&quot;)
@@ -66,9 +76,9 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/standings&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt;&gt; getStandings(Principal principal) {
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
-<span class="fc" id="L70">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings(username);</span>
-<span class="fc" id="L71">        return ResponseEntity.ok(standings);</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        String username = (principal != null) ? principal.getName() : null;</span>
+<span class="fc" id="L80">        Map&lt;League, Map&lt;Division, List&lt;TeamDTO&gt;&gt;&gt; standings = this.teamService.getStandings(username);</span>
+<span class="fc" id="L81">        return ResponseEntity.ok(standings);</span>
     }
 
     @Operation(summary = &quot;Get team info by name&quot;, description = &quot;Returns detailed information about a specific MLB team, including abbreviation, logo, league, division, total games, wins, losses, win percentage, etc.&quot;)
@@ -79,7 +89,72 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/{teamName}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;TeamInfoDTO&gt; getTeamInfo(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L82">        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));</span>
+<span class="fc" id="L92">        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));</span>
+    }
+
+    @Operation(summary = &quot;Get wins per rival&quot;, description = &quot;Calculates the number of wins for a specific team against a list of selected rivals.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved wins per rival stats&quot;, content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = WinsPerRivalDTO.class)))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team or rivals not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{teamName}/analytics/wins-per-rival&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;WinsPerRivalDTO&gt;&gt; getWinsPerRival(@PathVariable(&quot;teamName&quot;) String teamName, @RequestParam Set&lt;String&gt; rivalTeamNames) {
+<span class="fc" id="L103">        return ResponseEntity.ok(this.teamService.getWinsPerRivals(teamName, rivalTeamNames));</span>
+    }
+
+    @Operation(summary = &quot;Get run stats per rival&quot;, description = &quot;Returns scoring statistics (runs scored vs runs allowed) between the specified teams.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved run stats&quot;, content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = RunsStatsDTO.class)))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/analytics/runs-per-rival&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;RunsStatsDTO&gt;&gt; getRunsStatsPerRival(@RequestParam Set&lt;String&gt; teams) {
+<span class="fc" id="L113">        return ResponseEntity.ok(this.teamService.getRunStatsPerRival(teams));</span>
+    }
+
+    @Operation(summary = &quot;Get team win distribution&quot;, description = &quot;Returns a percentage breakdown of home vs away wins for a specific team.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved win distribution&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = WinDistributionDTO.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Team not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/{teamName}/analytics/win-distribution&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;WinDistributionDTO&gt; getWinDistribution(@PathVariable(&quot;teamName&quot;) String teamName) {
+<span class="fc" id="L124">        return ResponseEntity.ok(this.teamService.getWinDistribution(teamName));</span>
+    }
+
+    @Operation(summary = &quot;Get historic daily rankings&quot;, description = &quot;Returns a chronological map of division rankings, wins, and losses for the selected teams from a starting date.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved historic data&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = Map.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(value = &quot;/analytics/historic-ranking&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;Map&lt;String, List&lt;HistoricRankingDTO&gt;&gt;&gt; getHistoricRanking(@RequestParam Set&lt;String&gt; teams, @RequestParam(required = false)LocalDate dateFrom) {
+<span class="fc" id="L134">        return ResponseEntity.ok(this.teamService.getHistoricRanking(teams, dateFrom));</span>
+    }
+
+    @Operation(summary = &quot;Hydrate historic ranking data&quot;, description = &quot;Admin tool to manually trigger the historical data import for the current season.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Hydration process completed successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Unauthorized - Admin access required&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Error during API hydration process&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @PostMapping(value = &quot;/analytics/hydrate&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; hydrateHistoricRanking() {
+<span class="nc" id="L145">        this.teamImportService.hydrateHistoryFromStart();</span>
+<span class="nc" id="L146">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Daily Rankings Updated&quot;));</span>
+    }
+
+    @Operation(summary = &quot;Refresh current season standings&quot;, description = &quot;Triggers a manual update of the current season standings by fetching the team statistics.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;202&quot;, description = &quot;Season Standings successfully updated&quot;, content = @Content(mediaType = &quot;application/json&quot;,schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error during ranking update&quot;),
+    })
+    @PostMapping(value = &quot;/sync&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; refreshStandings() {
+<span class="fc" id="L156">        this.teamImportService.getTeamStats();</span>
+<span class="fc" id="L157">        return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Standings successfully updated!&quot;));</span>
     }
 
     @Operation(summary = &quot;Update team information&quot;, description = &quot;Updates specific fields of an MLB team identified by its name. Supports partial updates such as wins, losses, or team details.&quot;)
@@ -92,8 +167,8 @@ public class TeamController {
     @PatchMapping(value = &quot;/{teamName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateTeam(@PathVariable(&quot;teamName&quot;) String teamName,
             @RequestBody UpdateTeamRequest request) {
-<span class="fc" id="L95">        this.teamService.updateTeam(teamName, request);</span>
-<span class="fc" id="L96">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
+<span class="fc" id="L170">        this.teamService.updateTeam(teamName, request);</span>
+<span class="fc" id="L171">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

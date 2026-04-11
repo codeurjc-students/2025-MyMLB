@@ -1,5 +1,6 @@
 package com.mlb.mlbportal.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +15,13 @@ import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerSummaryDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumDTO;
 import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
+import com.mlb.mlbportal.dto.team.HistoricRankingDTO;
+import com.mlb.mlbportal.dto.team.RunsStatsDTO;
 import com.mlb.mlbportal.dto.team.TeamDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
+import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
 import com.mlb.mlbportal.dto.ticket.*;
 import com.mlb.mlbportal.dto.user.ShowUser;
 import com.mlb.mlbportal.models.Match;
@@ -129,6 +134,10 @@ public class BuildMocksFactory {
         Match match3 = new Match(teams.get(2), teams.get(0), 10, 14, fixedNow.minusMinutes(3), MatchStatus.FINISHED);
         match3.setStadium(stadiums.get(2));
         return Arrays.asList(match1, match2, match3);
+    }
+
+    public static Match buildMatch(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {
+        return new Match(awayTeam, homeTeam, awayScore, homeScore, date, status);
     }
 
     public static List<MatchDTO> buildMatchDTOMocks(List<Match> matches) {
@@ -292,5 +301,21 @@ public class BuildMocksFactory {
         APIAnalyticsDTO dto1 = new APIAnalyticsDTO(LocalDateTime.now(), TOTAL_REQUESTS1, TOTAL_ERRORS1, TOTAL_SUCCESSES1, AVG_TIME1, List.of());
         APIAnalyticsDTO dto2 = new APIAnalyticsDTO(LocalDateTime.now(), TOTAL_REQUESTS2, TOTAL_ERRORS2, TOTAL_SUCCESSES2, AVG_TIME2, List.of());
         return Arrays.asList(dto1, dto2);
+    }
+
+    public static WinsPerRivalDTO buildWinsPerRivalDTO(String rivalName, long gamesPlayed, long wins) {
+        return new WinsPerRivalDTO(rivalName, gamesPlayed, wins);
+    }
+
+    public static RunsStatsDTO buildRunStatsDTO(String teamName, int runsScored, int runsAllowed) {
+        return new RunsStatsDTO(teamName, runsScored, runsAllowed);
+    }
+
+    public static WinDistributionDTO buildWinDistributionDTO(String teamName, int homeGames, int homeWins, int roadGames, int roadWins) {
+        return new WinDistributionDTO(teamName, homeGames, homeWins, roadGames, roadWins);
+    }
+
+    public static HistoricRankingDTO buildHistoricRankingDTO(String teamName, LocalDate dateFrom, int rank, int wins, int losses) {
+        return new HistoricRankingDTO(teamName, dateFrom, rank, wins, losses);
     }
 }

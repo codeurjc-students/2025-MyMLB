@@ -118,7 +118,7 @@ export class FavTeamsAnalyticsComponent implements OnInit {
 			error: (err) => {
 				this.loading = false;
 				this.error = true;
-				this.errorMessage = `Error fetching the data: ${err.message}`;
+				this.errorMessage = `Error fetching the data: ${err.error.message}`;
 			}
 		});
 	}

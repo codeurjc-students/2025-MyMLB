@@ -1,13 +1,23 @@
 package com.mlb.mlbportal.e2e;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
+
+import com.mlb.mlbportal.models.Team;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,17 +48,36 @@ import io.restassured.http.ContentType;
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TeamControllerTest extends BaseE2ETest {
+    @Autowired
+    private TeamRepository teamRepository;
 
     @BeforeEach
     @SuppressWarnings("unused")
     void setUp() {
         cleanDatabase();
-        saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL,
+        Team team1 = saveTestTeam(TEST_TEAM1_NAME, TEST_TEAM1_ABBREVIATION, TEST_TEAM1_CITY, TEST_TEAM1_INFO, Collections.emptyList(), League.AL,
                 Division.EAST);
-        saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL,
+        Team team2 = saveTestTeam(TEST_TEAM2_NAME, TEST_TEAM2_ABBREVIATION, TEST_TEAM2_CITY, TEST_TEAM2_INFO, Collections.emptyList(), League.AL,
                 Division.EAST);
         saveTestTeam(TEST_TEAM3_NAME, TEST_TEAM3_ABBREVIATION, TEST_TEAM3_CITY, TEST_TEAM3_INFO, Collections.emptyList(), League.NL,
                 Division.CENTRAL);
+
+        team1.setHomeGamesPlayed(0);
+        team1.setHomeGamesWins(0);
+        team1.setRoadGamesPlayed(1);
+        team1.setRoadGamesWins(1);
+
+        team2.setRunsScored(3);
+        team2.setRunsAllowed(5);
+        team2.setHomeGamesPlayed(1);
+        team2.setHomeGamesWins(0);
+        team2.setRoadGamesPlayed(0);
+        team2.setRoadGamesWins(0);
+
+        this.teamRepository.saveAll(List.of(team1, team2));
+
+        saveTestMatches(team1, team2, 5, 3, LocalDateTime.now().minusDays(4), MatchStatus.FINISHED);
+        saveTestDailyStandings(team1, LocalDate.now().minusMonths(1), 1, 20, 10);
     }
 
     @Test
@@ -112,6 +141,79 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("teamStats.name", is(TEST_TEAM1_NAME))
                 .body("teamStats.abbreviation", is(TEST_TEAM1_ABBREVIATION))
                 .body("city", is(TEST_TEAM1_CITY));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/teams/{teamName}/analytics/wins-per-rival should return wins against certain rivals")
+    void testGetWinsPerRival() {
+        String url = TEAM_INFO_PATH + TEST_TEAM1_NAME + "/analytics/wins-per-rival";
+
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("rivalTeamNames", Set.of(TEST_TEAM2_NAME))
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("size()", is(1))
+                .body("[0].rivalTeamName", is(TEST_TEAM2_NAME));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/teams/analytics/runs-per-rival should return run stats for certain teams")
+    void testGetRunsStatsPerRival() {
+        String url = TEAM_INFO_PATH + "analytics/runs-per-rival";
+
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("teams", TEST_TEAM1_NAME, TEST_TEAM2_NAME)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("size()", is(2))
+                .body("teamName", hasItems(TEST_TEAM1_NAME, TEST_TEAM2_NAME));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/teams/{teamName}/analytics/win-distribution should return home and away wins")
+    void testGetWinDistribution() {
+        String url = TEAM_INFO_PATH + TEST_TEAM1_NAME + "/analytics/win-distribution";
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("teamName", is(TEST_TEAM1_NAME))
+                .body("homeGames", is(0))
+                .body("roadGames", is(1))
+                .body("roadWins", is(1))
+                .body("homeWinPct", is(0.0f))
+                .body("roadWinPct", is(1.0f));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/teams/analytics/historic-ranking should return the historic ranking of a certain team")
+    void testGetHistoricRanking() {
+        String url = TEAM_INFO_PATH + "analytics/historic-ranking";
+        String dateFrom = LocalDate.now().minusMonths(1).toString();
+
+        given()
+                .accept(ContentType.JSON)
+                .queryParam("teams", TEST_TEAM1_NAME)
+                .queryParam("dateFrom", dateFrom)
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .body("$", hasKey(TEST_TEAM1_NAME))
+                .body("'" + TEST_TEAM1_NAME + "'.size()", is(1))
+                .body("'" + TEST_TEAM1_NAME + "'[0].teamName", is(TEST_TEAM1_NAME))
+                .body("'" + TEST_TEAM1_NAME + "'[0].rank", is(1))
+                .body("'" + TEST_TEAM1_NAME + "'[0].wins", is(20))
+                .body("'" + TEST_TEAM1_NAME + "'[0].losses", is(10));
     }
 
     @Test

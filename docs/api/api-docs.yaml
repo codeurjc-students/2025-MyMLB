@@ -58,8 +58,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -74,18 +74,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -94,8 +94,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -122,8 +122,8 @@ paths:
               $ref: "#/components/schemas/EditEventRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -135,24 +135,24 @@ paths:
             number of new prices
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event or Sector Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -178,8 +178,8 @@ paths:
               $ref: "#/components/schemas/EventCreateRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -191,24 +191,24 @@ paths:
             not match the number of new prices
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Match Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -240,8 +240,8 @@ paths:
               required:
               - file
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -251,16 +251,16 @@ paths:
         "400":
           description: Invalid file format
           content: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -270,8 +270,8 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -291,8 +291,8 @@ paths:
       description: Deletes the profile picture of the current active user.
       operationId: deleteProfilePicture
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -307,24 +307,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -351,8 +351,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -367,26 +367,26 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Team not found
           content:
             application/json: {}
         "401":
           description: Unauthorized access
           content:
             application/json: {}
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Team successfully added
           content:
@@ -406,8 +406,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -422,26 +422,26 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Team not found
           content:
             application/json: {}
         "401":
           description: Unauthorized access
           content:
             application/json: {}
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Team successfully removed
           content:
@@ -477,8 +477,8 @@ paths:
               $ref: "#/components/schemas/PurchaseRequest"
         required: true
       responses:
-        "409":
-          description: Insufficient Stock
+        "422":
+          description: Invalid Credit Card Data
           content:
             application/json: {}
         "400":
@@ -489,20 +489,20 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Invalid Credit Card Data
-          content:
-            application/json: {}
         "500":
           description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             application/json: {}
         "404":
           description: Ticket Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Insufficient Stock
           content:
             application/json: {}
         "201":
@@ -511,6 +511,132 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TicketDTO"
+  /api/v1/teams/sync:
+    post:
+      tags:
+      - Teams
+      summary: Refresh current season standings
+      description: Triggers a manual update of the current season standings by fetching
+        the team statistics.
+      operationId: refreshStandings
+      responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error during ranking update
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "202":
+          description: Season Standings successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/teams/analytics/hydrate:
+    post:
+      tags:
+      - Teams
+      summary: Hydrate historic ranking data
+      description: Admin tool to manually trigger the historical data import for the
+        current season.
+      operationId: hydrateHistoricRanking
+      responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Error during API hydration process
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "200":
+          description: Hydration process completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "403":
+          description: Unauthorized - Admin access required
+          content:
+            application/json: {}
   /api/v1/support:
     post:
       tags:
@@ -525,8 +651,8 @@ paths:
               $ref: "#/components/schemas/CreateTicketRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -541,18 +667,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -561,8 +687,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -599,8 +725,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -615,18 +741,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -635,8 +761,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -663,14 +789,6 @@ paths:
               $ref: "#/components/schemas/CreateStadiumRequest"
         required: true
       responses:
-        "409":
-          description: Stadium already exists
-          content:
-            application/json: {}
-        "400":
-          description: Invalid request body or missing required fields
-          content:
-            application/json: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -679,18 +797,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid request body or missing required fields
+          content:
+            application/json: {}
         "500":
           description: Internal server error
           content:
             application/json: {}
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "401":
           description: Unauthorized
           content:
@@ -699,6 +813,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Stadium already exists
+          content:
+            application/json: {}
         "201":
           description: Stadium created successfully
           content:
@@ -720,8 +846,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -736,24 +862,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found or no pictures available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -790,8 +916,8 @@ paths:
               required:
               - file
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -802,24 +928,24 @@ paths:
           description: Invalid file format or request parameters
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -851,20 +977,16 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Cannot delete the last picture of a stadium
-          content:
-            application/json: {}
-        "400":
-          description: Bad Request
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -875,10 +997,6 @@ paths:
           description: Internal server error
           content:
             application/json: {}
-        "404":
-          description: Stadium or picture not found
-          content:
-            application/json: {}
         "401":
           description: Unauthorized
           content:
@@ -887,6 +1005,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Stadium or picture not found
+          content:
+            application/json: {}
+        "409":
+          description: Cannot delete the last picture of a stadium
+          content:
+            application/json: {}
         "200":
           description: Picture deleted successfully
           content:
@@ -918,8 +1044,8 @@ paths:
               required:
               - file
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -930,24 +1056,24 @@ paths:
           description: Invalid file format or request parameters
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -985,8 +1111,8 @@ paths:
               required:
               - file
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -996,16 +1122,16 @@ paths:
         "400":
           description: Invalid file format
           content: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1015,8 +1141,8 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1029,7 +1155,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PictureInfo"
-  /api/v1/players/refresh:
+  /api/v1/players/sync:
     post:
       tags:
       - Players
@@ -1038,8 +1164,8 @@ paths:
         latest team rosters and statistics.
       operationId: refreshPlayerRankings
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1048,14 +1174,6 @@ paths:
                   type: object
         "400":
           description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1070,14 +1188,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "401":
           description: Unauthorized
           content:
@@ -1086,36 +1196,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "200":
-          description: Player Rankings successfully updated
+        "404":
+          description: Not Found
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/AuthResponse"
-  /api/v1/players/position-players:
-    get:
-      tags:
-      - Players
-      summary: Get all position players
-      description: Returns a paginated list of all MLB position players with detailed
-        stats.
-      operationId: getAllPositionPlayers
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      responses:
+                type: object
+                additionalProperties:
+                  type: object
         "409":
           description: Conflict
           content:
@@ -1124,48 +1212,13 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of position players
+        "202":
+          description: Player Rankings successfully updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PositionPlayerDTO"
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/players/position-player:
     post:
       tags:
       - Players
@@ -1176,15 +1229,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreatePositionPlayerRequest"
+              $ref: "#/components/schemas/CreatePlayerRequestPlayerPositions"
         required: true
       responses:
-        "409":
-          description: Roster full or player already exists
-          content: {}
-        "400":
-          description: Invalid request data
-          content: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1193,8 +1240,19 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid request data
+          content: {}
         "500":
           description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1204,93 +1262,16 @@ paths:
         "404":
           description: Team not found
           content: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+        "409":
+          description: Roster full or player already exists
+          content: {}
         "201":
           description: Player successfully created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PositionPlayerDTO"
-  /api/v1/players/pitchers:
-    get:
-      tags:
-      - Players
-      summary: Get all pitchers
-      description: Returns a paginated list of all MLB pitchers with detailed stats.
-      operationId: getAllPitchers
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      responses:
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of pitchers
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PitcherDTO"
+  /api/v1/players/pitcher:
     post:
       tags:
       - Players
@@ -1301,15 +1282,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreatePitcherRequest"
+              $ref: "#/components/schemas/CreatePlayerRequestPitcherPositions"
         required: true
       responses:
-        "409":
-          description: Roster full or player already exists
-          content: {}
-        "400":
-          description: Invalid request data
-          content: {}
         "422":
           description: Unprocessable Entity
           content:
@@ -1318,8 +1293,19 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid request data
+          content: {}
         "500":
           description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1329,14 +1315,9 @@ paths:
         "404":
           description: Team not found
           content: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
+        "409":
+          description: Roster full or player already exists
+          content: {}
         "201":
           description: Player successfully created
           content:
@@ -1359,8 +1340,8 @@ paths:
           type: string
           default: today
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1375,18 +1356,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1395,8 +1376,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1423,16 +1404,6 @@ paths:
               $ref: "#/components/schemas/ResetPasswordRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Invalid or expired recovery code
         "422":
           description: Unprocessable Entity
           content:
@@ -1441,8 +1412,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid or expired recovery code
         "500":
           description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1457,8 +1438,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1488,10 +1469,6 @@ paths:
               $ref: "#/components/schemas/RegisterRequest"
         required: true
       responses:
-        "409":
-          description: User already exists in the database
-        "400":
-          description: Invalid registration data
         "422":
           description: Unprocessable Entity
           content:
@@ -1500,16 +1477,10 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid registration data
         "500":
           description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "404":
-          description: Not Found
           content:
             '*/*':
               schema:
@@ -1524,6 +1495,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: User already exists in the database
         "200":
           description: User successfully registered
           content:
@@ -1548,8 +1529,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1564,14 +1545,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal Server Error
           content:
@@ -1580,6 +1553,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "401":
+          description: Invalid or expired refresh token
         "404":
           description: Not Found
           content:
@@ -1588,8 +1563,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Invalid or expired refresh token
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Token refreshed successfully
           content:
@@ -1607,8 +1588,8 @@ paths:
       description: Clears authentication cookies and invalidates session tokens.
       operationId: logOut
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1623,16 +1604,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -1647,8 +1628,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1678,8 +1659,8 @@ paths:
               $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1694,14 +1675,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal Server Error
           content:
@@ -1710,6 +1683,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "401":
+          description: Invalid credentials
         "404":
           description: Not Found
           content:
@@ -1718,8 +1693,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Invalid credentials
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Login successful
           content:
@@ -1744,16 +1725,6 @@ paths:
               $ref: "#/components/schemas/ForgotPasswordRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Invalid email address
         "422":
           description: Unprocessable Entity
           content:
@@ -1762,6 +1733,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "400":
+          description: Invalid email address
         "500":
           description: Internal Server Error
           content:
@@ -1770,10 +1743,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: There is no user registered with this email
         "401":
           description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: There is no user registered with this email
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1797,8 +1778,8 @@ paths:
       description: Register a new visualization.
       operationId: updateVisualizations
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1813,18 +1794,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1833,8 +1814,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1855,8 +1836,8 @@ paths:
       description: Increase the number of registered users.
       operationId: updateNewUsers
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1871,18 +1852,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1891,8 +1872,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1913,8 +1894,8 @@ paths:
       description: Increase the number of deleted users.
       operationId: updateDeletedUsers
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -1929,18 +1910,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -1949,8 +1930,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -1984,20 +1965,16 @@ paths:
               $ref: "#/components/schemas/ReplyRequest"
         required: true
       responses:
-        "409":
-          description: Ticket has already been closed
-          content:
-            application/json: {}
-        "400":
-          description: Bad Request
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -2008,10 +1985,6 @@ paths:
           description: Internal server error
           content:
             application/json: {}
-        "404":
-          description: Ticket not found
-          content:
-            application/json: {}
         "401":
           description: Unauthorized
           content:
@@ -2020,6 +1993,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Ticket not found
+          content:
+            application/json: {}
+        "409":
+          description: Ticket has already been closed
+          content:
+            application/json: {}
         "200":
           description: Successfully reply to the user
           content:
@@ -2042,20 +2023,16 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Ticket has already been closed
-          content:
-            application/json: {}
-        "400":
-          description: Bad Request
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -2066,10 +2043,6 @@ paths:
           description: Internal server error
           content:
             application/json: {}
-        "404":
-          description: Ticket not found
-          content:
-            application/json: {}
         "401":
           description: Unauthorized
           content:
@@ -2078,6 +2051,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Ticket not found
+          content:
+            application/json: {}
+        "409":
+          description: Ticket has already been closed
+          content:
+            application/json: {}
         "200":
           description: Successfully closes the ticket
           content:
@@ -2107,8 +2088,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2123,18 +2104,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -2143,8 +2124,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2171,8 +2152,8 @@ paths:
               $ref: "#/components/schemas/EditProfileRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2183,26 +2164,26 @@ paths:
           description: Invalid input data
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: User not found
           content:
             application/json: {}
         "401":
           description: Unauthorized access
           content:
             application/json: {}
+        "404":
+          description: User not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Profile successfully updated
           content:
@@ -2225,8 +2206,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2241,24 +2222,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2291,8 +2272,8 @@ paths:
               $ref: "#/components/schemas/UpdateTeamRequest"
         required: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2303,24 +2284,24 @@ paths:
           description: Invalid request body or missing required fields
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2353,19 +2334,16 @@ paths:
               $ref: "#/components/schemas/EditPositionPlayerRequest"
         required: true
       responses:
-        "409":
-          description: Roster full
-          content: {}
-        "400":
-          description: Bad Request
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -2380,9 +2358,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Player not found
-          content: {}
         "401":
           description: Unauthorized
           content:
@@ -2391,6 +2366,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Player not found
+          content: {}
+        "409":
+          description: Roster full
+          content: {}
         "200":
           description: Player successfully updated
           content:
@@ -2417,19 +2398,16 @@ paths:
               $ref: "#/components/schemas/EditPitcherRequest"
         required: true
       responses:
-        "409":
-          description: Roster full
-          content: {}
-        "400":
-          description: Bad Request
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -2444,9 +2422,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "404":
-          description: Player not found
-          content: {}
         "401":
           description: Unauthorized
           content:
@@ -2455,6 +2430,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "404":
+          description: Player not found
+          content: {}
+        "409":
+          description: Roster full
+          content: {}
         "200":
           description: Player successfully updated
           content:
@@ -2470,8 +2451,8 @@ paths:
         user.
       operationId: getTickets
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2486,16 +2467,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized access
           content:
             application/json: {}
         "404":
@@ -2506,10 +2483,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized access
+        "409":
+          description: Conflict
           content:
-            application/json: {}
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Successfully retrieved tickets
           content:
@@ -2525,8 +2506,8 @@ paths:
         user.
       operationId: getUserProfile
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2541,24 +2522,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: User not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2579,8 +2560,8 @@ paths:
       description: Returns the list of favorite MLB teams for the authenticated user.
       operationId: getFavoriteTeams
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2595,16 +2576,12 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized access
           content:
             application/json: {}
         "404":
@@ -2615,10 +2592,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized access
+        "409":
+          description: Conflict
           content:
-            application/json: {}
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Successfully retrieved favorite teams
           content:
@@ -2640,8 +2621,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2656,24 +2637,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Ticket Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2701,8 +2682,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2717,24 +2698,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Ticket Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2769,8 +2750,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2785,18 +2766,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -2805,8 +2786,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2819,18 +2800,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamDTO"
-  /api/v1/teams/standings:
+  /api/v1/teams/{teamName}/analytics/wins-per-rival:
     get:
       tags:
       - Teams
-      summary: Get team standings
-      description: "Returns standings grouped by league and division, ordered by win\
-        \ percentage. Each team includes stats such as total games, wins, losses,\
-        \ win percentage, games back, and current streak."
-      operationId: getStandings
+      summary: Get wins per rival
+      description: Calculates the number of wins for a specific team against a list
+        of selected rivals.
+      operationId: getWinsPerRival
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: rivalTeamNames
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2845,8 +2839,63 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Team or rivals not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "200":
+          description: Successfully retrieved wins per rival stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WinsPerRivalDTO"
+  /api/v1/teams/{teamName}/analytics/win-distribution:
+    get:
+      tags:
+      - Teams
+      summary: Get team win distribution
+      description: Returns a percentage breakdown of home vs away wins for a specific
+        team.
+      operationId: getWinDistribution
+      parameters:
+      - name: teamName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
         "422":
           description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
           content:
             '*/*':
               schema:
@@ -2857,6 +2906,70 @@ paths:
           description: Internal server error
           content:
             application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Team not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "200":
+          description: Successfully retrieved win distribution
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WinDistributionDTO"
+  /api/v1/teams/standings:
+    get:
+      tags:
+      - Teams
+      summary: Get team standings
+      description: "Returns standings grouped by league and division, ordered by win\
+        \ percentage. Each team includes stats such as total games, wins, losses,\
+        \ win percentage, games back, and current streak."
+      operationId: getStandings
+      responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "404":
           description: Not Found
           content:
@@ -2865,8 +2978,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2903,8 +3016,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2919,18 +3032,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -2939,8 +3052,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -2953,6 +3066,150 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TeamSummary"
+  /api/v1/teams/analytics/runs-per-rival:
+    get:
+      tags:
+      - Teams
+      summary: Get run stats per rival
+      description: Returns scoring statistics (runs scored vs runs allowed) between
+        the specified teams.
+      operationId: getRunsStatsPerRival
+      parameters:
+      - name: teams
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "200":
+          description: Successfully retrieved run stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RunsStatsDTO"
+  /api/v1/teams/analytics/historic-ranking:
+    get:
+      tags:
+      - Teams
+      summary: Get historic daily rankings
+      description: "Returns a chronological map of division rankings, wins, and losses\
+        \ for the selected teams from a starting date."
+      operationId: getHistoricRanking
+      parameters:
+      - name: teams
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      - name: dateFrom
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        "200":
+          description: Successfully retrieved historic data
+          content:
+            application/json:
+              schema:
+                type: string
   /api/v1/stadiums/{name}:
     get:
       tags:
@@ -2968,8 +3225,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -2984,24 +3241,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Stadium not found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3035,8 +3292,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3051,16 +3308,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -3075,8 +3332,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3130,8 +3387,8 @@ paths:
           format: int32
           default: 0
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3143,24 +3400,24 @@ paths:
             \ or incorrect)"
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: "Invalid search type (not stadium, team, or player)"
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3182,6 +3439,21 @@ paths:
         \ players and pitchers."
       operationId: getAllPlayers
       parameters:
+      - name: playerType
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: playerName
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: teamName
+        in: query
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         required: false
@@ -3197,8 +3469,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3213,18 +3485,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -3233,35 +3505,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved list of players
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlayerDTO"
-  /api/v1/players/{name}:
-    get:
-      tags:
-      - Players
-      summary: Get player by name
-      description: Returns detailed information about a specific player identified
-        by name.
-      operationId: getPlayerByName
-      parameters:
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
         "409":
           description: Conflict
           content:
@@ -3270,40 +3513,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Player not found
-          content:
-            application/json: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "200":
-          description: Successfully retrieved player info
+          description: Successfully retrieved list of players
           content:
             application/json:
               schema:
@@ -3366,8 +3577,8 @@ paths:
           - CENTRAL
           - WEST
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3382,18 +3593,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -3402,8 +3613,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3455,8 +3666,8 @@ paths:
           - CENTRAL
           - WEST
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3471,18 +3682,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -3491,8 +3702,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3503,156 +3714,6 @@ paths:
           description: Successfully retrieved all rankings
           content:
             application/json: {}
-  /api/v1/players/position-players/{teamName}:
-    get:
-      tags:
-      - Players
-      summary: Get position players of a team
-      description: "Returns a paginated list of position players for a specific team,\
-        \ ordered alphabetically."
-      operationId: getPositionPlayersOfATeam
-      parameters:
-      - name: teamName
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      responses:
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Team not found
-          content:
-            application/json: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved position players of the team
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PositionPlayerSummaryDTO"
-  /api/v1/players/pitchers/{teamName}:
-    get:
-      tags:
-      - Players
-      summary: Get pitchers of a team
-      description: "Returns a paginated list of pitchers for a specific team, ordered\
-        \ alphabetically."
-      operationId: getPitchersOfATeam
-      parameters:
-      - name: teamName
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 10
-      responses:
-        "409":
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: Team not found
-          content:
-            application/json: {}
-        "401":
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
-        "200":
-          description: Successfully retrieved pitchers of the team
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PitcherSummaryDTO"
   /api/v1/matches/{matchId}:
     get:
       tags:
@@ -3668,8 +3729,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3684,24 +3745,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Match Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3738,8 +3799,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3754,18 +3815,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -3774,8 +3835,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3822,8 +3883,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3834,24 +3895,24 @@ paths:
           description: Invalid location parameter (must be 'home' or 'away')
           content:
             application/json: {}
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found or no matches available
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3891,8 +3952,8 @@ paths:
           type: integer
           format: int32
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3907,24 +3968,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Team not found or no matches available for the given month
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -3952,8 +4013,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -3968,24 +4029,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4012,8 +4073,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4028,24 +4089,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4087,8 +4148,8 @@ paths:
           format: int32
           default: 10
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4103,24 +4164,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4148,8 +4209,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4164,24 +4225,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4215,8 +4276,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4231,24 +4292,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Event or Sector Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4276,8 +4337,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4292,24 +4353,24 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Match Not Found
           content:
             application/json: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4330,8 +4391,8 @@ paths:
       description: Obtain details of the currently authenticated user.
       operationId: getActiveUser
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4346,14 +4407,6 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal Server Error
           content:
@@ -4362,6 +4415,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
+        "401":
+          description: User not authenticated
         "404":
           description: Not Found
           content:
@@ -4370,8 +4425,14 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: User not authenticated
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: User successfully authenticated
           content:
@@ -4404,8 +4465,8 @@ paths:
           type: string
           format: date
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4420,18 +4481,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -4440,8 +4501,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4462,8 +4523,8 @@ paths:
       description: Retrieve analytical data related to the number of fans a team has.
       operationId: getFavTeamsAnalytics
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4478,18 +4539,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -4498,8 +4559,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4526,8 +4587,8 @@ paths:
           type: string
           default: 1h
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4542,18 +4603,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -4562,8 +4623,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4584,8 +4645,8 @@ paths:
       description: Returns a list of all open tickets the admins have.
       operationId: getOpenTickets
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4600,18 +4661,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -4620,8 +4681,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4650,8 +4711,8 @@ paths:
           type: integer
           format: int64
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4666,18 +4727,18 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal server error
+          content:
+            application/json: {}
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal server error
-          content:
-            application/json: {}
         "404":
           description: Not Found
           content:
@@ -4686,8 +4747,8 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4714,8 +4775,8 @@ paths:
         schema:
           type: string
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4730,16 +4791,16 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
           content:
             '*/*':
               schema:
                 type: object
                 additionalProperties:
                   type: object
-        "500":
-          description: Internal Server Error
+        "401":
+          description: Unauthorized
           content:
             '*/*':
               schema:
@@ -4749,8 +4810,8 @@ paths:
         "404":
           description: Player not found
           content: {}
-        "401":
-          description: Unauthorized
+        "409":
+          description: Conflict
           content:
             '*/*':
               schema:
@@ -4771,8 +4832,8 @@ paths:
       description: Delete the account of the active user from the system.
       operationId: deleteAccount
       responses:
-        "409":
-          description: Conflict
+        "422":
+          description: Unprocessable Entity
           content:
             '*/*':
               schema:
@@ -4787,26 +4848,26 @@ paths:
                 type: object
                 additionalProperties:
                   type: object
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                type: object
-                additionalProperties:
-                  type: object
         "500":
           description: Internal server error
-          content:
-            application/json: {}
-        "404":
-          description: User not found
           content:
             application/json: {}
         "401":
           description: Unauthorized access
           content:
             application/json: {}
+        "404":
+          description: User not found
+          content:
+            application/json: {}
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
         "200":
           description: Account successfully removed
           content:
@@ -5022,7 +5083,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PictureInfo"
-    CreatePositionPlayerRequest:
+    CreatePlayerRequestPlayerPositions:
       type: object
       properties:
         name:
@@ -5108,7 +5169,7 @@ components:
           $ref: "#/components/schemas/PictureInfo"
         apiDataSource:
           type: boolean
-    CreatePitcherRequest:
+    CreatePlayerRequestPitcherPositions:
       type: object
       properties:
         name:
@@ -5603,6 +5664,51 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PitcherSummaryDTO"
+    WinsPerRivalDTO:
+      type: object
+      properties:
+        rivalTeamName:
+          type: string
+        gamesPlayed:
+          type: integer
+          format: int64
+        wins:
+          type: integer
+          format: int64
+    WinDistributionDTO:
+      type: object
+      properties:
+        teamName:
+          type: string
+        homeGames:
+          type: integer
+          format: int64
+        homeWins:
+          type: integer
+          format: int64
+        roadGames:
+          type: integer
+          format: int64
+        roadWins:
+          type: integer
+          format: int64
+        homeWinPct:
+          type: number
+          format: double
+        roadWinPct:
+          type: number
+          format: double
+    RunsStatsDTO:
+      type: object
+      properties:
+        teamName:
+          type: string
+        runsScored:
+          type: integer
+          format: int32
+        runsAllowed:
+          type: integer
+          format: int32
     StadiumInitDTO:
       type: object
       properties:

@@ -141,10 +141,12 @@ public class MatchImportService {
         if (this.isHomeTeamWinner(match)) {
             homeTeam.updateWins();
             awayTeam.updateLosses();
+            match.setWinnerTeam(homeTeam);
         }
         else {
             awayTeam.updateWins();
             homeTeam.updateLosses();
+            match.setWinnerTeam(awayTeam);
         }
         this.teamRepository.save(awayTeam);
         this.teamRepository.save(homeTeam);
@@ -169,6 +171,7 @@ public class MatchImportService {
             existingMatch.setHomeScore(dto.homeScore());
             existingMatch.setAwayScore(dto.awayScore());
             existingMatch.setStatus(dto.status());
+            existingMatch.setWinnerTeam(this.getWinnerTeam(dto));
             Match updated = this.matchRepository.save(existingMatch);
             return this.toMatchDTO(updated);
         }).orElseGet(() -> {
@@ -183,11 +186,23 @@ public class MatchImportService {
                     dto.date(),
                     dto.status()
             );
+            newMatch.setWinnerTeam(this.getWinnerTeam(dto));
             newMatch.setStadium(stadium);
             newMatch.setStatsApiId(dto.id());
             Match saved = this.matchRepository.save(newMatch);
             return this.toMatchDTO(saved);
         });
+    }
+
+    private Team getWinnerTeam(MatchDTO matchDTO) {
+        Team awayTeam = this.teamRepository.findByNameOrThrow(matchDTO.awayTeam().name());
+        Team homeTeam = this.teamRepository.findByNameOrThrow(matchDTO.homeTeam().name());
+        int awayScore = matchDTO.awayScore();
+        int homeScore = matchDTO.homeScore();
+        if (matchDTO.status().equals(MatchStatus.FINISHED)) {
+            return (awayScore > homeScore) ? awayTeam : homeTeam;
+        }
+        return null;
     }
 
     @SuppressWarnings("unused")

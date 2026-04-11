@@ -34,6 +34,10 @@ public class Match {
 
     private int awayScore;
 
+    @OneToOne
+    @JoinColumn(name = "winner_team_id")
+    private Team winnerTeam;
+
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     private LocalDateTime date;
 

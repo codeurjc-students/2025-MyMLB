@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatTooltip } from "@angular/material/tooltip";
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
 	selector: 'app-player-rankings-widget',
@@ -19,6 +20,7 @@ import { MatTooltip } from "@angular/material/tooltip";
 })
 export class PlayerRankingsWidgetComponent implements OnInit {
 	private playerService = inject(PlayerService);
+	private authService = inject(AuthService);
 	private router = inject(Router);
 	public Object = Object;
 
@@ -54,6 +56,7 @@ export class PlayerRankingsWidgetComponent implements OnInit {
 	};
 	public isPitcher = false;
 	public selectedStat: string = '';
+	public currentUser$ = this.authService.currentUser$;
 
 	public loading = false;
 	public error = false;

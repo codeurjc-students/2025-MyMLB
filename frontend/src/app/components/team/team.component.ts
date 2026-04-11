@@ -18,11 +18,14 @@ import { EventService } from '../../services/ticket/event.service';
 import { EventResponse } from '../../models/ticket/event.model';
 import { SuccessModalComponent } from '../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
+import { TeamTabs } from '../../models/team-tabs.model';
+import { TeamStatisticsComponent } from "./team-statistics/team-statistics.component";
+import { MatTooltip } from "@angular/material/tooltip";
 
 @Component({
 	selector: 'app-team',
 	standalone: true,
-	imports: [CommonModule, StatsPanelComponent, CalendarComponent, SuccessModalComponent, ErrorModalComponent],
+	imports: [CommonModule, StatsPanelComponent, CalendarComponent, SuccessModalComponent, ErrorModalComponent, TeamStatisticsComponent, MatTooltip],
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './team.component.html',
 })
@@ -64,6 +67,11 @@ export class TeamComponent implements OnInit {
 	public successMessage = '';
 	public errorMessage = '';
 
+	public currentUser$ = this.authService.currentUser$;
+
+	public tabs: TeamTabs[] = ['Home', 'Stats', 'Roster', 'Matches'];
+	public currentTab: TeamTabs = 'Home';
+
 	ngOnInit() {
 		this.selectedTeamService.selectedTeam$.subscribe((selectedTeam) => {
 			if (selectedTeam) {
@@ -89,9 +97,6 @@ export class TeamComponent implements OnInit {
 			}
 		});
 
-		this.authService.getActiveUser().subscribe((response) => {
-			this.isAdmin = response.roles.includes('ADMIN');
-		});
 		this.paginationHandlerService.items$.subscribe((matches) => {
 			if (matches && matches.length > 0) {
 				this.checkEventOfAMatch(matches);
@@ -238,5 +243,13 @@ export class TeamComponent implements OnInit {
 			this.error = true;
 			this.errorMessage = 'The event does not exists';
 		}
+	}
+
+	public changeTab(newTab: TeamTabs) {
+		if (this.currentTab === newTab) {
+			return;
+		}
+		this.currentTab = newTab;
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 }

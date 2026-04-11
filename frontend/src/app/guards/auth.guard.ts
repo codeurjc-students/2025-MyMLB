@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { catchError, map, of } from 'rxjs';
@@ -7,14 +7,16 @@ import { catchError, map, of } from 'rxjs';
 	providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-	constructor(private authService: AuthService, private router: Router) {}
+	private authService = inject(AuthService);
+    private router = inject(Router);
 
 	canActivate() {
 		return this.authService.getActiveUser().pipe(
 			map((user) => {
 				if (user && user.username) {
 					return true;
-				} else {
+				}
+				else {
 					this.router.navigate(['auth']);
 					return false;
 				}

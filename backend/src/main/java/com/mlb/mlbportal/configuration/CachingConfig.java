@@ -22,7 +22,9 @@ public class CachingConfig {
         cacheManager.setCaches(Arrays.asList(
                 this.buildCache("get-players", 24 * 60),
                 this.buildCache("all-stats-player-rankings", 24 * 60),
-                this.buildCache("single-stat-player-rankings", 24 * 60)
+                this.buildCache("single-stat-player-rankings", 24 * 60),
+                this.buildCache("runs-per-rival", 24 * 60),
+                this.buildCache("historic-ranking", 24 * 60)
         ));
         return cacheManager;
     }

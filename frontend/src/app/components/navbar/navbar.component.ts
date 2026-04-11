@@ -38,12 +38,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
 	public profilePicture = '';
 	public currentOpenTickets: number = 0;
 
+	public profilePicture$ = this.userService.profilePicture$;
+
 	public isMenuOpen = false;
 
 	public ngOnInit() {
 		this.authService.currentUser$.subscribe(user => {
 			this.roles = user?.roles || ['GUEST'];
 			this.username = user?.username || '';
+
+			if (!user || this.roles.includes('GUEST')) {
+				this.profilePicture = '';
+			}
+
+			if (user && !this.roles.includes('GUEST')) {
+				this.userService.getUserProfile().subscribe();
+			}
+
 			if (this.roles.includes('ADMIN')) {
 				this.pollingService.initPolling();
 			}
@@ -72,11 +83,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 				this.selectedTeamAbbr = '';
 				this.navBarStyleClass = this.navBarBackgroundColor(undefined);
 			}
-			this.cdr.detectChanges();
-		});
-
-		this.userService.profilePicture$.subscribe(url => {
-			this.profilePicture = url;
 			this.cdr.detectChanges();
 		});
 
@@ -159,9 +165,5 @@ export class NavbarComponent implements OnInit, OnDestroy {
 				this.router.navigate(['statistics']);
 				break;
 		}
-	}
-
-	public getProfilePicture() {
-		return (this.profilePicture === '') ? 'assets/account-avatar.png' : this.profilePicture;
 	}
 }

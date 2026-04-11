@@ -6,11 +6,14 @@ import { PlayerRankingsWidgetComponent } from '../../../app/components/player-ra
 import { PlayerService } from '../../../app/services/player.service';
 import { PaginatedResponse } from '../../../app/models/pagination.model';
 import { PlayerRanking } from '../../../app/models/position-player.model';
+import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../../../app/services/auth.service';
 
 describe('Player Rankings Widget Component Integration Test', () => {
     let fixture: ComponentFixture<PlayerRankingsWidgetComponent>;
     let component: PlayerRankingsWidgetComponent;
     let httpMock: HttpTestingController;
+	let authServiceMock: any;
     let router: Router;
 
     const apiUrl = '/api/v1/players';
@@ -24,10 +27,14 @@ describe('Player Rankings Widget Component Integration Test', () => {
     };
 
     beforeEach(() => {
+		authServiceMock = {
+			currentUser$: new BehaviorSubject({ username: 'test-user', roles: ['USER'] }),
+		};
         TestBed.configureTestingModule({
             imports: [PlayerRankingsWidgetComponent],
             providers: [
                 PlayerService,
+				{ provide: AuthService, useValue: authServiceMock },
                 provideHttpClient(),
                 provideHttpClientTesting(),
                 {

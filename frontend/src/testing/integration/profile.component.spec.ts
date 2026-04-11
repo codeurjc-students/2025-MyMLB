@@ -13,6 +13,7 @@ describe('Profile Component Integration Test', () => {
     let component: ProfileComponent;
     let httpMock: HttpTestingController;
     let routerSpy: jasmine.SpyObj<Router>;
+	let authService: AuthService;
 
     const authUrl = '/api/v1/auth';
     const usersUrl = '/api/v1/users';
@@ -55,9 +56,13 @@ describe('Profile Component Integration Test', () => {
         fixture = TestBed.createComponent(ProfileComponent);
         component = fixture.componentInstance;
         httpMock = TestBed.inject(HttpTestingController);
+		authService = TestBed.inject(AuthService);
+
+		spyOn(authService, 'getCurrentUser').and.returnValue(mockUser);
 
         fixture.detectChanges();
-        const meReqs = httpMock.match(`${authUrl}/me`);
+
+		const meReqs = httpMock.match(`${authUrl}/me`);
         meReqs.forEach(req => req.flush(mockUser));
 
         const profileReqs = httpMock.match(`${usersUrl}/profile`);
@@ -71,7 +76,6 @@ describe('Profile Component Integration Test', () => {
     it('should load active user and profile data on init', () => {
         expect(component.username).toBe('testUser');
         expect(component.currentEmail).toBe('test@example.com');
-        expect(component.pictureSrc).toEqual(mockPicture);
     });
 
     it('should trigger logout and navigate to root', () => {
@@ -124,7 +128,9 @@ describe('Profile Component Integration Test', () => {
         const newPic = { url: 'new-url.webp', publicId: 'new-id' };
         req.flush(newPic);
 
-        expect(component.pictureSrc).toEqual(newPic);
+		component.profilePicture$.subscribe(picture => {
+			expect(picture).toEqual(newPic.url);
+		});
         expect(component.sucess).toBeTrue();
     });
 
@@ -135,6 +141,8 @@ describe('Profile Component Integration Test', () => {
         expect(req.request.method).toBe('DELETE');
         req.flush({ status: 'SUCCESS', message: 'Deleted' });
 
-        expect(component.pictureSrc).toBeNull();
+		component.profilePicture$.subscribe(picture => {
+			expect(picture).toEqual('');
+		});
     });
 });

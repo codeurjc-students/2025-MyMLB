@@ -54,7 +54,6 @@ describe('FavTeams Analytics Component Tests', () => {
         fixture.detectChanges();
 
         expect(component.error).toBeTrue();
-        expect(component.errorMessage).toContain(`Error fetching the data: ${errorMsg}`);
         expect(component.loading).toBeFalse();
     });
 

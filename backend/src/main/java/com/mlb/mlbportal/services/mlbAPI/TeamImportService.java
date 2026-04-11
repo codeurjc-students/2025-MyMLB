@@ -10,20 +10,24 @@ import java.util.stream.Collectors;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.handler.conflict.RankingRegisterAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.mlb.mlbportal.dto.mlbapi.team.Records;
+import com.mlb.mlbportal.dto.mlbapi.team.SplitRecords;
 import com.mlb.mlbportal.dto.mlbapi.team.StandingsResponse;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamDetails;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamDetailsResponse;
 import com.mlb.mlbportal.dto.mlbapi.team.TeamRecords;
 import com.mlb.mlbportal.dto.team.TeamSummary;
+import com.mlb.mlbportal.models.DailyStandings;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import com.mlb.mlbportal.repositories.TeamRepository;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -39,6 +43,7 @@ public class TeamImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final Map<Integer, TeamSummary> cache = new HashMap<>();
     private final TeamRepository teamRepository;
+    private final DailyStandingsRepository dailyStandingsRepository;
 
     private static final Map<String, Division> TEAM_DIVISIONS = Map.ofEntries(
             Map.entry("BAL", Division.EAST),
@@ -162,34 +167,45 @@ public class TeamImportService {
 
     /**
      * Obtain the team stats from the API, and store it in the database.
+     * Also, stores the ranking data for today.
      */
     @Transactional
     @CircuitBreaker(name = "getTeamStats", fallbackMethod = "fallbackTeamStats")
     @Retry(name = "getTeamStats")
     public void getTeamStats() {
         int currentYear = LocalDate.now().getYear();
+        LocalDate today = LocalDate.now();
         String url = "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season="
                 + currentYear + "&standingsTypes=regularSeason";
 
         try {
             StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
-
             if (response == null || response.records() == null || response.records().isEmpty()) {
                 log.warn("No stats found for the {} season. Applying empty values", currentYear);
                 this.setEmptyStats();
                 return;
             }
-
             List<Team> teamsToSave = new ArrayList<>();
+            List<DailyStandings> dailyHistory = new ArrayList<>();
             for (Records records : response.records()) {
                 if (records.teamRecords() != null) {
                     for (TeamRecords teamRecord : records.teamRecords()) {
                         Team team = this.updateTeamStats(teamRecord);
                         teamsToSave.add(team);
+                        if (!this.dailyStandingsRepository.existsByTeamAndMatchDate(team, today)) {
+                            dailyHistory.add(new DailyStandings(
+                                    team,
+                                    today,
+                                    this.parseRankToInt(teamRecord.divisionRank()),
+                                    Objects.requireNonNullElse(teamRecord.wins(), 0),
+                                    Objects.requireNonNullElse(teamRecord.losses(), 0)
+                            ));
+                        }
                     }
                 }
             }
             this.teamRepository.saveAll(teamsToSave);
+            this.dailyStandingsRepository.saveAll(dailyHistory);
             log.info("Rankings and Team Stats successfully updated!");
         }
         catch (Exception e) {
@@ -206,9 +222,20 @@ public class TeamImportService {
                 Objects.requireNonNullElse(teamRecord.wins(), 0),
                 Objects.requireNonNullElse(teamRecord.losses(), 0),
                 this.parseGamesBehindAsDouble(teamRecord.divisionGamesBack()),
-                Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"),
-                teamRecord.getLastTenGames()
+                Objects.requireNonNullElse(teamRecord.runsScored(), 0),
+                Objects.requireNonNullElse(teamRecord.runsAllowed(), 0),
+                Objects.requireNonNullElse(teamRecord.runDifferential(), 0)
         );
+        team.setPct(Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"));
+        team.setLastTen(teamRecord.getLastTenGames());
+        SplitRecords homeSplits = teamRecord.getHomeSplit().orElse(new SplitRecords(0, 0, "home"));
+        SplitRecords roadSplits = teamRecord.getAwaySplit().orElse(new SplitRecords(0, 0, "away"));
+
+        team.setHomeGamesPlayed(homeSplits.getTotalGamesPlayed());
+        team.setHomeGamesWins(homeSplits.wins());
+
+        team.setRoadGamesPlayed(roadSplits.getTotalGamesPlayed());
+        team.setRoadGamesWins(roadSplits.wins());
         return team;
     }
 
@@ -232,11 +259,105 @@ public class TeamImportService {
 
     private void setEmptyStats() {
         List<Team> teams = this.teamRepository.findAll();
-        teams.forEach(team -> team.addTeamStats(0, 0, 0, 0.0, ".000", "0-0"));
+        teams.forEach(team -> {
+            team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0);
+            team.setHomeGamesPlayed(0);
+            team.setHomeGamesWins(0);
+            team.setRoadGamesPlayed(0);
+            team.setRoadGamesWins(0);
+            team.setPct(".000");
+            team.setLastTen("0-0");
+        });
         this.teamRepository.saveAll(teams);
     }
 
     public void fallbackTeamStats(Throwable throwable) {
         log.error("getTeamStats: Error fetching the team stats: {} ", throwable.getMessage());
+    }
+
+    /**
+     * Triggers a full historical data synchronization from the start of the current season to today.
+     */
+    public void hydrateHistoryFromStart() {
+        LocalDate startOfSeason = LocalDate.of(2026, 3, 25);
+        LocalDate today = LocalDate.now();
+
+        for (LocalDate date = startOfSeason; date.isBefore(today); date = date.plusDays(1)) {
+            try {
+                log.info("Updating Historic Ranking for date: {}", date);
+                this.importStatsByDate(date);
+                Thread.sleep(500);
+            }
+            catch (InterruptedException e) {
+                log.error("Error on date {}: {}", date, e.getMessage());
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
+    /**
+     * Synchronizes daily rankings from the API for a specific date.
+     *
+     * @param date the season day to fetch and persist.
+     */
+    @CircuitBreaker(name = "importStatsByDate", fallbackMethod = "fallbackHistoricRanking")
+    @Retry(name = "importStatsByDate")
+    private void importStatsByDate(LocalDate date) {
+        String url = String.format(
+                "https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=2026&date=%s",
+                date.toString()
+        );
+
+        try {
+            StandingsResponse response = this.restTemplate.getForObject(url, StandingsResponse.class);
+
+            if (response != null && response.records() != null) {
+                List<DailyStandings> dayHistory = new ArrayList<>();
+                for (Records recordDTO : response.records()) {
+                    if (recordDTO.teamRecords() == null) continue;
+
+                    for (TeamRecords teamRecord : recordDTO.teamRecords()) {
+                        this.teamRepository.findByStatsApiId(teamRecord.team().id()).ifPresent(team -> dayHistory.add(new DailyStandings(
+                                team,
+                                date,
+                                this.parseRankToInt(teamRecord.divisionRank()),
+                                teamRecord.wins(),
+                                teamRecord.losses()
+                        )));
+                    }
+                }
+                if (!dayHistory.isEmpty()) {
+                    this.dailyStandingsRepository.saveAll(dayHistory);
+                    log.info("Stored {} registers for date {}", dayHistory.size(), date);
+                }
+            }
+        }
+        catch (Exception e) {
+            log.warn("API failed for date {}", date);
+            throw new RankingRegisterAlreadyExistsException("Hydration is not possible because data has already been recorded during the selected time period");
+        }
+    }
+
+    public void fallbackHistoricRanking(LocalDate date, Throwable t) {
+        log.warn("hydrateHistoricRanking: An error occur for date {}: {}", date, t.getMessage());
+    }
+
+    /**
+     * Parse the ranking from String (API) to Integer (Application)
+     *
+     * @param value ranking value from the API.
+     * @return ranking value as Integer.
+     */
+    private int parseRankToInt(String value) {
+        if (value == null || value.isBlank()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

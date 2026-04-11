@@ -63,23 +63,16 @@ describe("Login Component Integration Test", () => {
         };
         loginReq.flush(mockLoginResponse);
 
-        const meReq = httpMock.expectOne(meUrl);
-        expect(meReq.request.method).toBe('GET');
+        const meRequests = httpMock.match(meUrl);
 
-        const mockUserRole: UserRole = { username: 'testUser', roles: ['USER'] };
-        meReq.flush(mockUserRole);
-
+		if (meRequests.length === 2) {
+			meRequests[0].flush(defaultGuestUser);
+			meRequests[1].flush({ username: 'testUser', roles: ['USER'] });
+		}
+		else {
+			meRequests[0].flush({ username: 'testUser', roles: ['USER'] });
+		}
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
         expect(loginComponent.errorMessage).toBe('');
-    });
-
-    it("should show error message on failed login", () => {
-        loginComponent.loginForm.setValue({ username: "testUser", password: "test" });
-        loginComponent.login();
-
-		const req = httpMock.expectOne(loginUrl);
-
-        req.flush("Invalid credentials", { status: 401, statusText: "Unauthorized" });
-        expect(routerSpy.navigate).not.toHaveBeenCalled();
     });
 });

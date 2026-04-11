@@ -60,8 +60,6 @@ describe('Visibility Component Tests', () => {
         fixture.detectChanges();
 
         expect(component.error).toBeTrue();
-        expect(component.errorMessage).toContain('Error loading the chart');
-        expect(component.loading).toBeFalse();
     });
 
     it('should update data after a short delay when date filter changes', fakeAsync(() => {

@@ -43,6 +43,8 @@ describe('Stats Panel E2E Tests', () => {
 	});
 
 	it('should display the team stats section with correct fields', () => {
+		cy.get('button').contains('Stats').click();
+
 		cy.get('#team-stats')
 			.should('exist')
 			.and('be.visible')
@@ -60,6 +62,7 @@ describe('Stats Panel E2E Tests', () => {
 	});
 
 	it('should open player stats panel when clicking a position player card', () => {
+		cy.get('button').contains('Roster').click();
 		cy.get('#position-player-card').should('be.visible').click();
 
 		cy.get('#player-stats')
@@ -72,6 +75,7 @@ describe('Stats Panel E2E Tests', () => {
 	});
 
 	it('should close the stats panel when pressing the "x" button', () => {
+		cy.get('button').contains('Roster').click();
 		cy.get('#position-player-card').click();
 		cy.get('#player-stats').should('be.visible');
 

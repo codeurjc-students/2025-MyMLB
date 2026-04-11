@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
 import { EditProfileRequest, Profile, User } from '../models/user.model';
 import { AuthResponse } from '../models/auth.model';
 import { TeamSummary } from '../models/team.model';
@@ -12,17 +12,32 @@ import { environment } from '../../environments/environment';
 	providedIn: "root"
 })
 export class UserService {
+	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/users`
 	private favTeamsSubject = new BehaviorSubject<TeamSummary[]>([]);
 	public favTeams$ = this.favTeamsSubject.asObservable();
 
 	private profilePictureSubject = new BehaviorSubject<string>('');
 	public profilePicture$: Observable<string> = this.profilePictureSubject.asObservable();
-
-	constructor(private http: HttpClient) {}
+	private profileCache$?: Observable<Profile>;
 
 	public getUserProfile(): Observable<Profile> {
-		return this.http.get<Profile>(`${this.apiUrl}/profile`, { withCredentials: true });
+		if (!this.profileCache$) {
+			this.profileCache$ = this.http.get<Profile>(`${this.apiUrl}/profile`, { withCredentials: true }).pipe(
+				tap(profile => {
+					if (profile.picture) {
+						this.setProfilePicture(profile.picture.url);
+					}
+				}),
+				shareReplay(1)
+			);
+		}
+		return this.profileCache$;
+	}
+
+	public clearProfileCache() {
+		this.profileCache$ = undefined;
+		this.profilePictureSubject.next('');
 	}
 
 	public editProfile(request: EditProfileRequest): Observable<User> {
@@ -32,11 +47,15 @@ export class UserService {
 	public editProfilePicture(file: File): Observable<Pictures> {
 		const formData = new FormData();
 		formData.append('file', file);
-		return this.http.post<Pictures>(`${this.apiUrl}/picture`, formData);
+		return this.http.post<Pictures>(`${this.apiUrl}/picture`, formData).pipe(
+			tap(() => this.profileCache$ = undefined)
+		);
 	}
 
 	public deleteProfilePicture(): Observable<AuthResponse> {
-		return this.http.delete<AuthResponse>(`${this.apiUrl}/picture`);
+		return this.http.delete<AuthResponse>(`${this.apiUrl}/picture`).pipe(
+			tap(() => this.profileCache$ = undefined)
+		);
 	}
 
 	public setProfilePicture(picture: string) {

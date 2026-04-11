@@ -90,7 +90,7 @@ describe('Navbar Component E2E Tests', () => {
 			cy.contains('Edit Menu').should('exist');
 			cy.contains('Create Player').should('exist');
 			cy.contains('Create Stadium').should('exist');
-			cy.contains('Statistics').should('exist');
+			cy.contains('Analytics').should('exist');
 			cy.contains('Teams').should('not.exist');
 			cy.contains('Standings').should('not.exist');
 		});

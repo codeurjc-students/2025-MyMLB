@@ -41,7 +41,7 @@
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/edit-menu'), itemsHover()]" (click)="redirect('edit-menu')">Edit Menu</a></li>
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/create-player'), itemsHover()]" (click)="redirect('create-player')">Create Player</a></li>
 				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/create-stadium'), itemsHover()]" (click)="redirect('create-stadium')">Create Stadium</a></li>
-				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/statistics'), itemsHover()]" (click)="redirect('stats')">Statistics</a></li>
+				<li><a class="nav-elems cursor-pointer" [ngClass]="[applyStyle('/statistics'), itemsHover()]" (click)="redirect('stats')">Analytics</a></li>
 			}
 			</ul>
 		</div>
@@ -79,7 +79,7 @@
 
 			<!-- Profile -->
 			<button (click)="redirect('profile')" class="flex-shrink-0">
-				<img [src]="getProfilePicture()" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
+				<img [src]="!(profilePicture$ | async) ? 'assets/account-avatar.png' : (profilePicture$ | async)" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
 			</button>
 
 			<!-- For Mobile  -->
@@ -127,7 +127,7 @@
                         <li><a (click)="isMenuOpen = false; redirect('edit-menu')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Edit Menu</a></li>
                         <li><a (click)="isMenuOpen = false; redirect('create-player')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Create Player</a></li>
                         <li><a (click)="isMenuOpen = false; redirect('create-stadium')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Create Stadium</a></li>
-                        <li><a (click)="isMenuOpen = false; redirect('coming-soon')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Statistics</a></li>
+                        <li><a (click)="isMenuOpen = false; redirect('stats')" class="block px-4 py-2 text-white hover:bg-white/10 rounded-md cursor-pointer">Analytics</a></li>
                     }
                 </ul>
             </div>

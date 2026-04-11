@@ -9,19 +9,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 <span class="fc" id="L10">public record TeamRecords(</span>
         TeamRecordsGeneralInfo team,
+        String divisionRank,
         Integer gamesPlayed,
         Integer wins,
         Integer losses,
         String winningPercentage,
         String divisionGamesBack,
+        Integer runsScored,
+        Integer runsAllowed,
+        Integer runDifferential,
         RecordsWrapper records
 ) {
     public String getLastTenGames() {
-<span class="pc bpc" id="L20" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
-<span class="nc" id="L21">            return &quot;0-0&quot;;</span>
+<span class="pc bpc" id="L24" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
+<span class="nc" id="L25">            return &quot;0-0&quot;;</span>
         }
-<span class="pc" id="L23">        return records.splitRecords().stream().filter(r -&gt; &quot;lastTen&quot;.equals(r.type()))</span>
-<span class="pc" id="L24">                .findFirst().map(sR -&gt; sR.wins() + &quot;-&quot; + sR.losses()).orElse(&quot;0-0&quot;);</span>
+<span class="pc" id="L27">        return records.splitRecords().stream().filter(r -&gt; &quot;lastTen&quot;.equals(r.type()))</span>
+<span class="pc" id="L28">                .findFirst().map(sR -&gt; sR.wins() + &quot;-&quot; + sR.losses()).orElse(&quot;0-0&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
