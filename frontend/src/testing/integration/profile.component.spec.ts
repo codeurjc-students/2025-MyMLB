@@ -76,7 +76,6 @@ describe('Profile Component Integration Test', () => {
     it('should load active user and profile data on init', () => {
         expect(component.username).toBe('testUser');
         expect(component.currentEmail).toBe('test@example.com');
-        expect(component.pictureSrc).toEqual(mockPicture);
     });
 
     it('should trigger logout and navigate to root', () => {
@@ -129,7 +128,9 @@ describe('Profile Component Integration Test', () => {
         const newPic = { url: 'new-url.webp', publicId: 'new-id' };
         req.flush(newPic);
 
-        expect(component.pictureSrc).toEqual(newPic);
+		component.profilePicture$.subscribe(picture => {
+			expect(picture).toEqual(newPic.url);
+		});
         expect(component.sucess).toBeTrue();
     });
 
@@ -140,6 +141,8 @@ describe('Profile Component Integration Test', () => {
         expect(req.request.method).toBe('DELETE');
         req.flush({ status: 'SUCCESS', message: 'Deleted' });
 
-        expect(component.pictureSrc).toBeNull();
+		component.profilePicture$.subscribe(picture => {
+			expect(picture).toEqual('');
+		});
     });
 });

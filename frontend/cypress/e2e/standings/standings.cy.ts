@@ -34,7 +34,6 @@ describe('Standings Component E2E Tests', () => {
 
 	it('should navigate to the team page after clicking on one', () => {
 		cy.intercept('GET', '**/api/v1/teams/*', { fixture: 'team-info.json' }).as('getTeam');
-    	cy.wait('@getStandings');
 
     	cy.get('table tbody tr').should('have.length.at.least', 1);
 		cy.get('table tbody tr img[alt="NYY"]').first().click();

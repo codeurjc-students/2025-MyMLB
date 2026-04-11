@@ -31,6 +31,7 @@ describe('Profile Component Tests', () => {
             'editProfile',
             'getUserProfile',
             'editProfilePicture',
+			'clearProfileCache',
             'setProfilePicture',
             'deleteProfilePicture'
         ]);
@@ -102,7 +103,6 @@ describe('Profile Component Tests', () => {
         userServiceSpy.getUserProfile.and.returnValue(of({ email: 'newEmail@gmail.com', picture: mockPicture, enableNotifications: false }));
         component['retrieveProfileData']();
         expect(component.currentEmail).toBe('newEmail@gmail.com');
-        expect(component.pictureSrc).toEqual(mockPicture);
     });
 
     it('should set error when retrieveProfileData fails', () => {
@@ -151,18 +151,7 @@ describe('Profile Component Tests', () => {
 		};
         userServiceSpy.deleteProfilePicture.and.returnValue(of(mockResponse));
         component.removeProfilePicture();
-        expect(component.pictureSrc).toBeNull();
         expect(userServiceSpy.setProfilePicture).toHaveBeenCalledWith('');
         expect(component.sucess).toBeTrue();
-    });
-
-    it('should return default avatar if pictureSrc is null', () => {
-        component.pictureSrc = null;
-        expect(component.getPictureUrl()).toBe('assets/account-avatar.png');
-    });
-
-    it('should return picture url if pictureSrc exists', () => {
-        component.pictureSrc = { publicId: 'test-123', url: 'http://test-123.png' };
-        expect(component.getPictureUrl()).toBe('http://test-123.png');
     });
 });

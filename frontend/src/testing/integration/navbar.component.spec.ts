@@ -30,7 +30,18 @@ describe('Navigation Bar Integration Tests', () => {
         clearSelectedTeam: () => {}
     };
 
-    const mockUserService = { profilePicture$: of('') };
+    const mockProfile = {
+		email: 'test@test.com',
+		picture: { url: 'assets/test-image.png' },
+		roles: ['USER']
+	};
+
+	const mockUserService = {
+		profilePicture$: of('assets/test-image.png'),
+		getUserProfile: () => of(mockProfile),
+		setProfilePicture: jasmine.createSpy('setProfilePicture'),
+		clearProfileCache: jasmine.createSpy('clearProfileCache')
+	};
     const mockSupportService = { opentTickets$: of(0) };
 	const mockPollingService = jasmine.createSpyObj('PollingService', ['initPolling', 'stopPolling']);
 

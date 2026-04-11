@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ErrorModalComponent } from "../modal/error-modal/error-modal.component";
 import { LoadingModalComponent } from "../modal/loading-modal/loading-modal.component";
-import { Pictures } from '../../models/pictures.model';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -52,7 +51,6 @@ export class ProfileComponent implements OnInit {
 	public activeAction: 'logout' | 'delete' | null = null;
 
 	public editRequest: EditProfileRequest = {};
-	public pictureSrc: Pictures | null = null;
 	public emailInput = '';
 	public passwordInput = '';
 
@@ -66,6 +64,8 @@ export class ProfileComponent implements OnInit {
 
 	public loading = false;
 	public isAdmin = false;
+
+	public profilePicture$ = this.userService.profilePicture$;
 
 	public currentYear = new Date().getFullYear();
 
@@ -83,7 +83,6 @@ export class ProfileComponent implements OnInit {
 			next: (response) => {
 				this.currentEmail = response.email;
 				this.oldEmail = response.email;
-				this.pictureSrc = response.picture;
 				this.notificationsEnabled = response.enableNotifications ?? true;
 			},
 			error: (_) => {
@@ -103,7 +102,10 @@ export class ProfileComponent implements OnInit {
 
 	public confirm() {
 		if (this.activeAction === 'logout') {
-			this.authService.logoutUser().subscribe(() => this.router.navigate(['/']));
+			this.authService.logoutUser().subscribe(() => {
+				this.userService.clearProfileCache();
+				this.router.navigate(['/']);
+			});
 		}
 
 		if (this.activeAction === 'delete') {
@@ -160,13 +162,6 @@ export class ProfileComponent implements OnInit {
 		}
 	}
 
-	public getPictureUrl() {
-		if (this.pictureSrc === null) {
-			return 'assets/account-avatar.png';
-		}
-		return this.pictureSrc.url;
-	}
-
 	private changeProfilePicture(file: File) {
 		if (file.size > this.maxPictureSize) {
 			this.error = true;
@@ -179,7 +174,6 @@ export class ProfileComponent implements OnInit {
 			next: (response) => {
 				this.sucess = true;
 				this.successMessage = 'Picture uploaded successfully';
-				this.pictureSrc = response;
 				this.userService.setProfilePicture(response.url);
 			},
 			error: (_) => {
@@ -194,7 +188,6 @@ export class ProfileComponent implements OnInit {
 			next: (_) => {
 				this.sucess = true;
 				this.successMessage = 'Profile Picture Successfully Deleted';
-				this.pictureSrc = null;
 				this.userService.setProfilePicture('');
 			},
 			error: (_) => {

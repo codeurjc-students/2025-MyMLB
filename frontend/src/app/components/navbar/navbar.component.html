@@ -79,7 +79,7 @@
 
 			<!-- Profile -->
 			<button (click)="redirect('profile')" class="flex-shrink-0">
-				<img [src]="getProfilePicture()" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
+				<img [src]="!(profilePicture$ | async) ? 'assets/account-avatar.png' : (profilePicture$ | async)" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-transparent cursor-pointer hover:border-blue-500 transition object-cover shadow-sm" alt="Avatar Profile" />
 			</button>
 
 			<!-- For Mobile  -->
