@@ -291,7 +291,8 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should throw InvalidTypeException when no rival teams are provided")
     void testGetWinsPerRivalsWithoutRivals() {
-        assertThatThrownBy(() -> this.teamService.getWinsPerRivals(TEST_TEAM1_NAME, Collections.emptySet()))
+        Set<String> emptyRivals = Collections.emptySet();
+        assertThatThrownBy(() -> teamService.getWinsPerRivals(TEST_TEAM1_NAME, emptyRivals))
                 .isInstanceOf(InvalidTypeException.class)
                 .hasMessage("The rival teams are required");
     }

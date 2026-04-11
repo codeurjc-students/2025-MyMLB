@@ -168,7 +168,7 @@ public class Team {
         this.city = city;
     }
 
-    public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, int runsScored, int runsAllowed, int runDifferential, String pct, String lastTen) {
+    public void addTeamStats(int gamesPlayed, int wins, int losses, double gamesBehind, int runsScored, int runsAllowed, int runDifferential) {
         this.totalGames = gamesPlayed;
         this.wins = wins;
         this.losses = losses;
@@ -176,8 +176,6 @@ public class Team {
         this.runsScored = runsScored;
         this.runsAllowed = runsAllowed;
         this.runDifferential = runDifferential;
-        this.pct = pct;
-        this.lastTen = lastTen;
     }
 
     public void updateWins() {

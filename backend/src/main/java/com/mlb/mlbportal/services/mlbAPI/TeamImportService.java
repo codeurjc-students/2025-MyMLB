@@ -223,10 +223,10 @@ public class TeamImportService {
                 this.parseGamesBehindAsDouble(teamRecord.divisionGamesBack()),
                 Objects.requireNonNullElse(teamRecord.runsScored(), 0),
                 Objects.requireNonNullElse(teamRecord.runsAllowed(), 0),
-                Objects.requireNonNullElse(teamRecord.runDifferential(), 0),
-                Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"),
-                teamRecord.getLastTenGames()
+                Objects.requireNonNullElse(teamRecord.runDifferential(), 0)
         );
+        team.setPct(Objects.requireNonNullElse(teamRecord.winningPercentage(), ".000"));
+        team.setLastTen(teamRecord.getLastTenGames());
         SplitRecords homeSplits = teamRecord.getHomeSplit().orElse(new SplitRecords(0, 0, "home"));
         SplitRecords roadSplits = teamRecord.getAwaySplit().orElse(new SplitRecords(0, 0, "away"));
 
@@ -259,11 +259,13 @@ public class TeamImportService {
     private void setEmptyStats() {
         List<Team> teams = this.teamRepository.findAll();
         teams.forEach(team -> {
-            team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0, ".000", "0-0");
+            team.addTeamStats(0, 0, 0, 0.0, 0, 0, 0);
             team.setHomeGamesPlayed(0);
             team.setHomeGamesWins(0);
             team.setRoadGamesPlayed(0);
             team.setRoadGamesWins(0);
+            team.setPct(".000");
+            team.setLastTen("0-0");
         });
         this.teamRepository.saveAll(teams);
     }
@@ -287,6 +289,8 @@ public class TeamImportService {
             }
             catch (InterruptedException e) {
                 log.error("Error on date {}: {}", date, e.getMessage());
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
