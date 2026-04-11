@@ -1,0 +1,1 @@
+import{_ as e}from"./chunk-U23T2MUF.js";var a=class r{constructor(){}isTeamSummary(i){return"abbreviation"in i}isTeamInfo(i){return"teamStats"in i}isStadium(i){return"openingDate"in i}isPitcher(i){return"era"in i}isPositionPlayer(i){return"ops"in i}static \u0275fac=function(t){return new(t||r)};static \u0275prov=e({token:r,factory:r.\u0275fac,providedIn:"root"})};export{a};
