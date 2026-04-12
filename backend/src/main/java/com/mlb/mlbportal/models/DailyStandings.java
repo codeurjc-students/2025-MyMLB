@@ -32,14 +32,10 @@ public class DailyStandings {
 
     private LocalDate matchDate;
     private int rank;
-    private int wins;
-    private int losses;
 
-    public DailyStandings(Team team, LocalDate date, int rank, int wins, int losses) {
+    public DailyStandings(Team team, LocalDate date, int rank) {
         this.team = team;
         this.matchDate = date;
-        this.wins = wins;
         this.rank = rank;
-        this.losses = losses;
     }
 }

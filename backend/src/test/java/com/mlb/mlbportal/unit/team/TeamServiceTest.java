@@ -348,7 +348,7 @@ class TeamServiceTest {
         Set<String> teams = Set.of(TEST_TEAM1_NAME);
         LocalDate dateFrom = LocalDate.of(2026, 3, 25);
         DailyStandings standing = new DailyStandings();
-        HistoricRankingDTO dto = BuildMocksFactory.buildHistoricRankingDTO(TEST_TEAM1_NAME, dateFrom, 1, 10, 5);
+        HistoricRankingDTO dto = BuildMocksFactory.buildHistoricRankingDTO(TEST_TEAM1_NAME, dateFrom, 1);
         List<DailyStandings> queryResult = List.of(standing);
 
         when(this.dailyStandingsRepository.findHistoricRanking(teams, dateFrom)).thenReturn(queryResult);

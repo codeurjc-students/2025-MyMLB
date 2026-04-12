@@ -196,9 +196,7 @@ public class TeamImportService {
                             dailyHistory.add(new DailyStandings(
                                     team,
                                     today,
-                                    this.parseRankToInt(teamRecord.divisionRank()),
-                                    Objects.requireNonNullElse(teamRecord.wins(), 0),
-                                    Objects.requireNonNullElse(teamRecord.losses(), 0)
+                                    this.parseRankToInt(teamRecord.divisionRank())
                             ));
                         }
                     }
@@ -321,9 +319,7 @@ public class TeamImportService {
                         this.teamRepository.findByStatsApiId(teamRecord.team().id()).ifPresent(team -> dayHistory.add(new DailyStandings(
                                 team,
                                 date,
-                                this.parseRankToInt(teamRecord.divisionRank()),
-                                teamRecord.wins(),
-                                teamRecord.losses()
+                                this.parseRankToInt(teamRecord.divisionRank())
                         )));
                     }
                 }

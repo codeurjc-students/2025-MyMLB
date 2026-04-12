@@ -315,7 +315,7 @@ public class BuildMocksFactory {
         return new WinDistributionDTO(teamName, homeGames, homeWins, roadGames, roadWins);
     }
 
-    public static HistoricRankingDTO buildHistoricRankingDTO(String teamName, LocalDate dateFrom, int rank, int wins, int losses) {
-        return new HistoricRankingDTO(teamName, dateFrom, rank, wins, losses);
+    public static HistoricRankingDTO buildHistoricRankingDTO(String teamName, LocalDate dateFrom, int rank) {
+        return new HistoricRankingDTO(teamName, dateFrom, rank);
     }
 }
