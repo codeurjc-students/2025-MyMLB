@@ -8,6 +8,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { switchMap } from 'rxjs';
+import { TeamService } from '../../services/team.service';
 
 @Component({
 	selector: 'app-login',
@@ -18,6 +19,7 @@ import { switchMap } from 'rxjs';
 export class LoginComponent {
 	@Output() toggleForm = new EventEmitter<void>();
 	private authService = inject(AuthService);
+	private teamService = inject(TeamService);
 	private fb = inject(FormBuilder);
 	private router = inject(Router);
 
@@ -60,6 +62,7 @@ export class LoginComponent {
 		).subscribe({
 			next: (user) => {
 				this.authService.setCurrentUser(user);
+				this.teamService.cleanStandingsCache();
 				this.router.navigate(['/']);
 			},
 			error: () => this.errorMessage = 'Invalid Credentials'

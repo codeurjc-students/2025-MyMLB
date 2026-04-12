@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -117,6 +118,8 @@ public class EventService {
         return newSeats;
     }
 
+    @Transactional
+    @CacheEvict(value = "get-purchase-tickets", allEntries = true)
     public EventResponseDTO editEvent(EditEventRequest request) {
         List<Long> sectorIds = request.sectorIds();
         List<Double> prices = request.prices();
@@ -139,6 +142,8 @@ public class EventService {
         return this.eventMapper.toEventResponseDto(event);
     }
 
+    @Transactional
+    @CacheEvict(value = "get-purchase-tickets", allEntries = true)
     public EventResponseDTO deleteEvent(Long eventId) {
         Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);
         this.eventRepository.delete(event);

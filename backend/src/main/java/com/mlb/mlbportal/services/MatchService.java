@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.mlb.mlbportal.handler.notFound.MatchNotFoundException;
 import com.mlb.mlbportal.services.utilities.PaginationHandlerService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -92,6 +93,7 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-home-matches", key = "{#teamName, #page, #size}")
     public Page<MatchDTO> getHomeMatches(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<Match> matches = this.matchRepository.findByHomeTeam(team);
@@ -99,6 +101,7 @@ public class MatchService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-away-matches", key = "{#teamName, #page, #size}")
     public Page<MatchDTO> getAwayMatches(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
         List<Match> matches = this.matchRepository.findByAwayTeam(team);

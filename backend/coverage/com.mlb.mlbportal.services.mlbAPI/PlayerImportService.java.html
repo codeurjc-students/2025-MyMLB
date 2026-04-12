@@ -52,7 +52,7 @@ public class PlayerImportService {
 <span class="fc bfc" id="L52" title="All 2 branches covered.">        for (Team team : teams) {</span>
 <span class="fc" id="L53">            String url = &quot;https://statsapi.mlb.com/api/v1/teams/&quot; + team.getStatsApiId() + &quot;/roster&quot;;</span>
 <span class="fc" id="L54">            RosterResponse response = this.restTemplate.getForObject(url, RosterResponse.class);</span>
-<span class="pc bpc" id="L55" title="1 of 4 branches missed.">            if (response != null &amp;&amp; response.roster() != null) {</span>
+<span class="fc bfc" id="L55" title="All 4 branches covered.">            if (response != null &amp;&amp; response.roster() != null) {</span>
 <span class="fc bfc" id="L56" title="All 2 branches covered.">                for (RosterEntry entry : response.roster()) {</span>
                     try {
 <span class="fc" id="L58">                        this.getPlayerStatsFromAPI(entry.person().id(), team);</span>

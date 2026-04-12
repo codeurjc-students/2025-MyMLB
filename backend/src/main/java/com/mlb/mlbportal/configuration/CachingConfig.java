@@ -21,6 +21,12 @@ public class CachingConfig {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(
                 // 1 Day Cache
+                this.buildCache("get-users", 24 * 60),
+                this.buildCache("get-profile", 24 * 60),
+                this.buildCache("get-fav-teams", 24 * 60),
+                this.buildCache("get-purchase-tickets", 24 * 60),
+                this.buildCache("get-home-matches", 24 * 60),
+                this.buildCache("get-away-matches", 24 * 60),
                 this.buildCache("get-players", 24 * 60),
                 this.buildCache("all-stats-player-rankings", 24 * 60),
                 this.buildCache("single-stat-player-rankings", 24 * 60),
@@ -34,7 +40,10 @@ public class CachingConfig {
                 // 1 Week Cache
                 this.buildCache("get-rivals", 168 * 60),
                 this.buildCache("get-stadiums", 168 * 60),
-                this.buildCache("get-available-stadiums", 168 * 60)
+                this.buildCache("get-available-stadiums", 168 * 60),
+                this.buildCache("search-stadium", 168 * 60),
+                this.buildCache("search-team", 168 * 60),
+                this.buildCache("search-player", 168 * 60)
         ));
         return cacheManager;
     }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,70 +36,76 @@ public class StadiumService {
     private final PaginationHandlerService paginationHandlerService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-stadiums&quot;, key = &quot;{#page, #size}&quot;)
     public Page&lt;StadiumInitDTO&gt; getAllStadiums(int page, int size) {
-<span class="fc" id="L38">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
-<span class="fc" id="L39">        Page&lt;Stadium&gt; stadiums = this.stadiumRepository.findAll(pageable);</span>
-<span class="fc" id="L40">        return stadiums.map(this.stadiumMapper::toStadiumInitDTO);</span>
+<span class="fc" id="L41">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;name&quot;));</span>
+<span class="fc" id="L42">        Page&lt;Stadium&gt; stadiums = this.stadiumRepository.findAll(pageable);</span>
+<span class="fc" id="L43">        return stadiums.map(this.stadiumMapper::toStadiumInitDTO);</span>
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-available-stadiums&quot;, key = &quot;{#page, #size}&quot;)
     public Page&lt;StadiumInitDTO&gt; getAllAvailableStadiums(int page, int size) {
-<span class="fc" id="L45">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByTeamIsNull();</span>
-<span class="fc" id="L46">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
+<span class="fc" id="L49">        List&lt;Stadium&gt; stadiums = this.stadiumRepository.findByTeamIsNull();</span>
+<span class="fc" id="L50">        return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);</span>
     }
 
     @Transactional(readOnly = true)
     public StadiumInitDTO findStadiumByName(String name) {
-<span class="fc" id="L51">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(name);</span>
-<span class="fc" id="L52">        return this.stadiumMapper.toStadiumInitDTO(stadium);</span>
+<span class="fc" id="L55">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(name);</span>
+<span class="fc" id="L56">        return this.stadiumMapper.toStadiumInitDTO(stadium);</span>
     }
 
     @Transactional(readOnly = true)
     public List&lt;PictureInfo&gt; getStadiumPictures(String stadiumName) {
-<span class="fc" id="L57">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
-<span class="fc" id="L58">        return stadium.getPictures();</span>
+<span class="fc" id="L61">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc" id="L62">        return stadium.getPictures();</span>
     }
 
     @Transactional
+    @CacheEvict(value = {&quot;get-stadiums&quot;, &quot;get-available-stadiums&quot;, &quot;get-teams&quot;, &quot;search-stadium&quot;, &quot;search-team&quot;}, allEntries = true)
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
-<span class="fc" id="L63">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc" id="L68">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
 
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (stadium.getPictures().size() &gt;= 5) {</span>
-<span class="fc" id="L66">            throw new IllegalArgumentException(&quot;Maximum amount of pictures reached&quot;);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (stadium.getPictures().size() &gt;= 5) {</span>
+<span class="fc" id="L71">            throw new IllegalArgumentException(&quot;Maximum amount of pictures reached&quot;);</span>
         }
-<span class="fc" id="L68">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L73">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
 
-<span class="fc" id="L70">        stadium.getPictures().add(pictureInfo);</span>
-<span class="fc" id="L71">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L75">        stadium.getPictures().add(pictureInfo);</span>
+<span class="fc" id="L76">        this.stadiumRepository.save(stadium);</span>
 
-<span class="fc" id="L73">        return pictureInfo;</span>
+<span class="fc" id="L78">        return pictureInfo;</span>
     }
 
     @Transactional
+    @CacheEvict(value = {&quot;get-stadiums&quot;, &quot;get-available-stadiums&quot;, &quot;get-teams&quot;, &quot;search-stadium&quot;, &quot;search-team&quot;}, allEntries = true)
     public void deletePicture(String stadiumName, String publicId) {
-<span class="fc" id="L78">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
-<span class="fc" id="L79">        stadium.getPictures().removeIf(p -&gt; publicId.equals(p.getPublicId()));</span>
-<span class="fc" id="L80">        this.stadiumRepository.save(stadium);</span>
-<span class="fc" id="L81">    }</span>
+<span class="fc" id="L84">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc" id="L85">        stadium.getPictures().removeIf(p -&gt; publicId.equals(p.getPublicId()));</span>
+<span class="fc" id="L86">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L87">    }</span>
 
     @Transactional
-    public PictureInfo editStadiumMapPicture(String stadiumNae, MultipartFile file) throws IOException {
-<span class="fc" id="L85">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumNae);</span>
-<span class="fc" id="L86">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
-<span class="fc" id="L87">        stadium.setPictureMap(pictureInfo);</span>
-<span class="fc" id="L88">        this.stadiumRepository.save(stadium);</span>
-<span class="fc" id="L89">        return pictureInfo;</span>
+    @CacheEvict(value = {&quot;get-stadiums&quot;, &quot;get-available-stadiums&quot;, &quot;search-stadium&quot;}, allEntries = true)
+    public PictureInfo editStadiumMapPicture(String stadiumName, MultipartFile file) throws IOException {
+<span class="fc" id="L92">        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);</span>
+<span class="fc" id="L93">        PictureInfo pictureInfo = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L94">        stadium.setPictureMap(pictureInfo);</span>
+<span class="fc" id="L95">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L96">        return pictureInfo;</span>
     }
 
     @Transactional
+    @CacheEvict(value = {&quot;get-stadiums&quot;, &quot;get-available-stadiums&quot;, &quot;get-teams&quot;, &quot;search-stadium&quot;, &quot;search-team&quot;}, allEntries = true)
     public StadiumDTO createStadium(CreateStadiumRequest request) {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (this.stadiumRepository.findByName(request.name()).isPresent()) {</span>
-<span class="fc" id="L95">            throw new StadiumAlreadyExistsException();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (this.stadiumRepository.findByName(request.name()).isPresent()) {</span>
+<span class="fc" id="L103">            throw new StadiumAlreadyExistsException();</span>
         }
-<span class="fc" id="L97">        StadiumDTO newStadium = new StadiumDTO(request.name(), request.openingDate(), Collections.emptyList());</span>
-<span class="fc" id="L98">        Stadium stadium = this.stadiumMapper.toDomainFromStadiumDTO(newStadium);</span>
-<span class="fc" id="L99">        this.stadiumRepository.save(stadium);</span>
-<span class="fc" id="L100">        return newStadium;</span>
+<span class="fc" id="L105">        StadiumDTO newStadium = new StadiumDTO(request.name(), request.openingDate(), Collections.emptyList());</span>
+<span class="fc" id="L106">        Stadium stadium = this.stadiumMapper.toDomainFromStadiumDTO(newStadium);</span>
+<span class="fc" id="L107">        this.stadiumRepository.save(stadium);</span>
+<span class="fc" id="L108">        return newStadium;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

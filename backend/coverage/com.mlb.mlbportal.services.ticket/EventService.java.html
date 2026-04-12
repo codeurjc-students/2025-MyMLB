@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,99 +51,103 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public Page&lt;EventResponseDTO&gt; getAllEvents(int page, int size) {
-<span class="fc" id="L53">        Pageable pageable = PageRequest.of(page, size);</span>
-<span class="fc" id="L54">        Page&lt;Event&gt; events = this.eventRepository.findAll(pageable);</span>
-<span class="fc" id="L55">        return events.map(this.eventMapper::toEventResponseDto);</span>
+<span class="fc" id="L54">        Pageable pageable = PageRequest.of(page, size);</span>
+<span class="fc" id="L55">        Page&lt;Event&gt; events = this.eventRepository.findAll(pageable);</span>
+<span class="fc" id="L56">        return events.map(this.eventMapper::toEventResponseDto);</span>
     }
 
     @Transactional(readOnly = true)
     public EventResponseDTO getEvent(Long eventId) {
-<span class="fc" id="L60">        Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
-<span class="fc" id="L61">        return this.eventMapper.toEventResponseDto(event);</span>
+<span class="fc" id="L61">        Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
+<span class="fc" id="L62">        return this.eventMapper.toEventResponseDto(event);</span>
     }
 
     @Transactional(readOnly = true)
     public List&lt;EventManagerDTO&gt; getAvailableSectors(Long eventId) {
-<span class="fc" id="L66">        this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
-<span class="fc" id="L67">        List&lt;EventManager&gt; query = this.eventManagerRepository.findAvailableSectors(eventId);</span>
-<span class="fc" id="L68">        return this.eventMapper.toListManagerDTO(query);</span>
+<span class="fc" id="L67">        this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
+<span class="fc" id="L68">        List&lt;EventManager&gt; query = this.eventManagerRepository.findAvailableSectors(eventId);</span>
+<span class="fc" id="L69">        return this.eventMapper.toListManagerDTO(query);</span>
     }
 
     @Transactional(readOnly = true)
     public List&lt;SeatDTO&gt; getAvailableSeats(Long sectorId, Long eventId) {
-<span class="fc" id="L73">        this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
-<span class="fc" id="L74">        List&lt;Seat&gt; query = this.seatRepository.findAvailableSeats(sectorId, eventId);</span>
-<span class="fc" id="L75">        return this.seatMapper.toListSeatDTO(query);</span>
+<span class="fc" id="L74">        this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
+<span class="fc" id="L75">        List&lt;Seat&gt; query = this.seatRepository.findAvailableSeats(sectorId, eventId);</span>
+<span class="fc" id="L76">        return this.seatMapper.toListSeatDTO(query);</span>
     }
 
     @Transactional(readOnly = true)
     public EventResponseDTO getEventByMatchId(Long matchId) {
-<span class="fc" id="L80">        this.matchRepository.findById(matchId).orElseThrow(MatchNotFoundException::new);</span>
-<span class="fc" id="L81">        Event event = this.eventRepository.findEventByMatchId(matchId).orElse(null);</span>
-<span class="fc" id="L82">        return this.eventMapper.toEventResponseDto(event);</span>
+<span class="fc" id="L81">        this.matchRepository.findById(matchId).orElseThrow(MatchNotFoundException::new);</span>
+<span class="fc" id="L82">        Event event = this.eventRepository.findEventByMatchId(matchId).orElse(null);</span>
+<span class="fc" id="L83">        return this.eventMapper.toEventResponseDto(event);</span>
     }
 
     @Transactional
     public EventResponseDTO createEvent(EventCreateRequest request) {
-<span class="fc" id="L87">        List&lt;Double&gt; prices = request.prices();</span>
-<span class="fc" id="L88">        List&lt;SectorCreateRequest&gt; sectors = request.sectors();</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (prices.size() != sectors.size()) {</span>
-<span class="fc" id="L90">            throw new EventRequestMissMatchException(&quot;The number of sectors selected for the creation process does not match the number of new prices&quot;);</span>
+<span class="fc" id="L88">        List&lt;Double&gt; prices = request.prices();</span>
+<span class="fc" id="L89">        List&lt;SectorCreateRequest&gt; sectors = request.sectors();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (prices.size() != sectors.size()) {</span>
+<span class="fc" id="L91">            throw new EventRequestMissMatchException(&quot;The number of sectors selected for the creation process does not match the number of new prices&quot;);</span>
         }
-<span class="fc" id="L92">        Match match = this.matchRepository.findById(request.matchId()).orElseThrow(MatchNotFoundException::new);</span>
-<span class="fc" id="L93">        Event newEvent = new Event(match);</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        for (int i = 0; i &lt; sectors.size(); i++) {</span>
-<span class="fc" id="L95">            SectorCreateRequest sector = sectors.get(i);</span>
-<span class="fc" id="L96">            Double price = prices.get(i);</span>
-<span class="fc" id="L97">            Sector newSector = new Sector(sector.name(), sector.totalCapacity(), match.getStadium());</span>
-<span class="fc" id="L98">            this.sectorRepository.save(newSector);</span>
-<span class="fc" id="L99">            List&lt;Seat&gt; newSeats = this.generateSeats(newSector);</span>
-<span class="fc" id="L100">            this.seatBatchGenerationService.batchGeneration(newSeats, newSector.getId());</span>
-<span class="fc" id="L101">            EventManager manager = new EventManager(newEvent, newSector, price);</span>
-<span class="fc" id="L102">            newEvent.addEventManager(manager);</span>
+<span class="fc" id="L93">        Match match = this.matchRepository.findById(request.matchId()).orElseThrow(MatchNotFoundException::new);</span>
+<span class="fc" id="L94">        Event newEvent = new Event(match);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (int i = 0; i &lt; sectors.size(); i++) {</span>
+<span class="fc" id="L96">            SectorCreateRequest sector = sectors.get(i);</span>
+<span class="fc" id="L97">            Double price = prices.get(i);</span>
+<span class="fc" id="L98">            Sector newSector = new Sector(sector.name(), sector.totalCapacity(), match.getStadium());</span>
+<span class="fc" id="L99">            this.sectorRepository.save(newSector);</span>
+<span class="fc" id="L100">            List&lt;Seat&gt; newSeats = this.generateSeats(newSector);</span>
+<span class="fc" id="L101">            this.seatBatchGenerationService.batchGeneration(newSeats, newSector.getId());</span>
+<span class="fc" id="L102">            EventManager manager = new EventManager(newEvent, newSector, price);</span>
+<span class="fc" id="L103">            newEvent.addEventManager(manager);</span>
         }
-<span class="fc" id="L104">        this.eventRepository.save(newEvent);</span>
-<span class="fc" id="L105">        return this.eventMapper.toEventResponseDto(newEvent);</span>
+<span class="fc" id="L105">        this.eventRepository.save(newEvent);</span>
+<span class="fc" id="L106">        return this.eventMapper.toEventResponseDto(newEvent);</span>
     }
 
     private List&lt;Seat&gt; generateSeats(Sector sector) {
-<span class="fc" id="L109">        String prefix = Arrays.stream(sector.getName().split(&quot; &quot;))</span>
-<span class="fc" id="L110">                .map(word -&gt; word.substring(0,1).toUpperCase()).collect(Collectors.joining());</span>
+<span class="fc" id="L110">        String prefix = Arrays.stream(sector.getName().split(&quot; &quot;))</span>
+<span class="fc" id="L111">                .map(word -&gt; word.substring(0,1).toUpperCase()).collect(Collectors.joining());</span>
 
-<span class="fc" id="L112">        List&lt;Seat&gt; newSeats = new ArrayList&lt;&gt;(sector.getTotalCapacity());</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        for (int i = 1; i &lt;= sector.getTotalCapacity(); i++) {</span>
-<span class="fc" id="L114">            String name = prefix + &quot;-&quot; + i;</span>
-<span class="fc" id="L115">            newSeats.add(new Seat(name, sector, false));</span>
+<span class="fc" id="L113">        List&lt;Seat&gt; newSeats = new ArrayList&lt;&gt;(sector.getTotalCapacity());</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        for (int i = 1; i &lt;= sector.getTotalCapacity(); i++) {</span>
+<span class="fc" id="L115">            String name = prefix + &quot;-&quot; + i;</span>
+<span class="fc" id="L116">            newSeats.add(new Seat(name, sector, false));</span>
         }
-<span class="fc" id="L117">        return newSeats;</span>
+<span class="fc" id="L118">        return newSeats;</span>
     }
 
+    @Transactional
+    @CacheEvict(value = &quot;get-purchase-tickets&quot;, allEntries = true)
     public EventResponseDTO editEvent(EditEventRequest request) {
-<span class="fc" id="L121">        List&lt;Long&gt; sectorIds = request.sectorIds();</span>
-<span class="fc" id="L122">        List&lt;Double&gt; prices = request.prices();</span>
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (sectorIds.size() != prices.size()) {</span>
-<span class="nc" id="L124">            throw new EventRequestMissMatchException(&quot;The number of sectors selected for editing does not match the number of new prices&quot;);</span>
+<span class="fc" id="L124">        List&lt;Long&gt; sectorIds = request.sectorIds();</span>
+<span class="fc" id="L125">        List&lt;Double&gt; prices = request.prices();</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (sectorIds.size() != prices.size()) {</span>
+<span class="nc" id="L127">            throw new EventRequestMissMatchException(&quot;The number of sectors selected for editing does not match the number of new prices&quot;);</span>
         }
-<span class="fc" id="L126">        Event event = this.eventRepository.findEventByIdOrElseThrow(request.eventId());</span>
-<span class="fc bfc" id="L127" title="All 2 branches covered.">        for (int i = 0; i &lt; sectorIds.size(); i++) {</span>
-<span class="fc" id="L128">            Long sectorId = sectorIds.get(i);</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            boolean validId = event.getEventManagers().stream().anyMatch(manager -&gt; manager.getSector().getId() == sectorId);</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (!validId) {</span>
-<span class="fc" id="L131">                throw new SectorNotFoundException(sectorId);</span>
+<span class="fc" id="L129">        Event event = this.eventRepository.findEventByIdOrElseThrow(request.eventId());</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        for (int i = 0; i &lt; sectorIds.size(); i++) {</span>
+<span class="fc" id="L131">            Long sectorId = sectorIds.get(i);</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">            boolean validId = event.getEventManagers().stream().anyMatch(manager -&gt; manager.getSector().getId() == sectorId);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">            if (!validId) {</span>
+<span class="fc" id="L134">                throw new SectorNotFoundException(sectorId);</span>
             }
-<span class="fc" id="L133">            Double newPrice = prices.get(i);</span>
-<span class="fc" id="L134">            event.getEventManagers().stream()</span>
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">                    .filter(manager -&gt; manager.getSector().getId() == sectorId)</span>
-<span class="fc" id="L136">                    .findFirst().ifPresent(manager -&gt; manager.setPrice(newPrice));</span>
+<span class="fc" id="L136">            Double newPrice = prices.get(i);</span>
+<span class="fc" id="L137">            event.getEventManagers().stream()</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                    .filter(manager -&gt; manager.getSector().getId() == sectorId)</span>
+<span class="fc" id="L139">                    .findFirst().ifPresent(manager -&gt; manager.setPrice(newPrice));</span>
         }
-<span class="fc" id="L138">        this.eventRepository.save(event);</span>
-<span class="fc" id="L139">        return this.eventMapper.toEventResponseDto(event);</span>
+<span class="fc" id="L141">        this.eventRepository.save(event);</span>
+<span class="fc" id="L142">        return this.eventMapper.toEventResponseDto(event);</span>
     }
 
+    @Transactional
+    @CacheEvict(value = &quot;get-purchase-tickets&quot;, allEntries = true)
     public EventResponseDTO deleteEvent(Long eventId) {
-<span class="fc" id="L143">        Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
-<span class="fc" id="L144">        this.eventRepository.delete(event);</span>
-<span class="fc" id="L145">        return this.eventMapper.toEventResponseDto(event);</span>
+<span class="fc" id="L148">        Event event = this.eventRepository.findEventByIdOrElseThrow(eventId);</span>
+<span class="fc" id="L149">        this.eventRepository.delete(event);</span>
+<span class="fc" id="L150">        return this.eventMapper.toEventResponseDto(event);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

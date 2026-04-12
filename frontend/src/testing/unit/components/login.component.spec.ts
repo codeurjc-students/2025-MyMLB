@@ -5,21 +5,25 @@ import { AuthService } from '../../../app/services/auth.service';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../../../app/models/auth.model';
+import { TeamService } from '../../../app/services/team.service';
 
 describe('Login Component Tests', () => {
 	let fixture: ComponentFixture<LoginComponent>;
 	let loginComponent: LoginComponent;
 	let authServiceSpy: jasmine.SpyObj<AuthService>;
+	let teamServiceSpy: jasmine.SpyObj<TeamService>;
 	let routerSpy: jasmine.SpyObj<Router>;
 
 	beforeEach(() => {
 		authServiceSpy = jasmine.createSpyObj('AuthService', ['loginUser', 'getActiveUser', 'setCurrentUser']);
+		teamServiceSpy = jasmine.createSpyObj('TeamService', ['cleanStandingsCache']);
 		routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
 		TestBed.configureTestingModule({
 			providers: [
 				FormBuilder,
 				{ provide: AuthService, useValue: authServiceSpy },
+				{ provide: TeamService, useValue: teamServiceSpy },
 				{ provide: Router, useValue: routerSpy },
 			],
 		});

@@ -43,7 +43,14 @@
             log.info("Starting synchronization of the matches status");
             try {
                 this.matchImportService.verifyMatchStatus();
-                this.cacheService.clearCaches("get-standings");
+                this.cacheService.clearCaches(
+                        "get-standings",
+                        "historic-ranking",
+                        "win-distribution",
+                        "wins-per-rivals",
+                        "get-home-matches",
+                        "get-away-matches"
+                );
             }
             catch (Exception ex) {
                 log.error("An error occur while synchronizing the matches status: {}", ex.getMessage());

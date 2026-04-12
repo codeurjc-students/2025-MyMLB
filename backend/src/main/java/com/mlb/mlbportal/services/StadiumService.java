@@ -63,7 +63,7 @@ public class StadiumService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-stadiums", "get-available-stadiums"}, allEntries = true)
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
 
@@ -79,7 +79,7 @@ public class StadiumService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-stadiums", "get-available-stadiums"}, allEntries = true)
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public void deletePicture(String stadiumName, String publicId) {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
@@ -87,7 +87,7 @@ public class StadiumService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-stadiums", "get-available-stadiums"}, allEntries = true)
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "search-stadium"}, allEntries = true)
     public PictureInfo editStadiumMapPicture(String stadiumName, MultipartFile file) throws IOException {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
@@ -97,7 +97,7 @@ public class StadiumService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-stadiums", "get-available-stadiums"}, allEntries = true)
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public StadiumDTO createStadium(CreateStadiumRequest request) {
         if (this.stadiumRepository.findByName(request.name()).isPresent()) {
             throw new StadiumAlreadyExistsException();

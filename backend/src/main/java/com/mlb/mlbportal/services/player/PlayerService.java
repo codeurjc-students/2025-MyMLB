@@ -136,7 +136,7 @@ public class PlayerService {
      * @param player to map
      * @return mapped player
      */
-    private PlayerDTO mapToDTO(Player player) {
+    public PlayerDTO mapToDTO(Player player) {
         if (player instanceof PositionPlayer pp) {
             return this.positionPlayerMapper.toPositionPlayerDTO(pp);
         }
@@ -228,7 +228,7 @@ public class PlayerService {
      * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
      */
     @Transactional
-    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings", "get-teams", "search-player"}, allEntries = true)
     public PlayerDTO createPlayer(String playerType, CreatePlayerRequest<?> request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         Player newPlayer;
@@ -255,7 +255,7 @@ public class PlayerService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings", "get-teams", "search-player"}, allEntries = true)
     public PictureInfo updatePicture(String playerName, MultipartFile file) throws IOException {
         Player player = this.playerRepository.findByNameOrThrow(playerName);
         PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
@@ -292,7 +292,7 @@ public class PlayerService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings", "get-teams", "search-player"}, allEntries = true)
     public void updatePositionPlayer(String playerName, EditPositionPlayerRequest request) {
         PositionPlayer player = this.positionPlayerRepository.findByNameOrThrow(playerName);
 
@@ -312,7 +312,7 @@ public class PlayerService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings", "get-teams", "search-player"}, allEntries = true)
     public void updatePitcher(String playerName, EditPitcherRequest request) {
         Pitcher player = this.pitcherRepository.findByNameOrThrow(playerName);
 
@@ -338,7 +338,7 @@ public class PlayerService {
      * @implNote Deleting a player means that the player has retired from the MLB
      */
     @Transactional
-    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings", "get-teams", "search-player"}, allEntries = true)
     public PlayerDTO deletePlayer(String playerName) {
         Player player = this.playerRepository.findByNameOrThrow(playerName);
         Team team = this.teamRepository.findByNameOrThrow(player.getTeam().getName());

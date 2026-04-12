@@ -22,7 +22,8 @@ public class PlayerScheduler {
         this.cacheService.clearCaches(
                 "get-players",
                 "all-stats-player-rankings",
-                "single-stat-player-rankings"
+                "single-stat-player-rankings",
+                "search-player"
         );
         log.info("Player Stats Updated. Reset Player Cache");
     }

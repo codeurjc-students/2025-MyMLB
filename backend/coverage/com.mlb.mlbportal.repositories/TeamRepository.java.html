@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.RunsStatsDTO;
+import com.mlb.mlbportal.dto.team.WinDistributionDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,13 +25,13 @@ public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
     Optional&lt;Team&gt; findByName(String name);
 
     default Team findByNameOrThrow(String name) {
-<span class="fc" id="L27">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L28">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
     }
 
     Optional&lt;Team&gt; findByStatsApiId(Long id);
 
     default Team findByStatsApiIdOrThrow(Long id) {
-<span class="nc" id="L33">        return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);</span>
+<span class="nc" id="L34">        return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);</span>
     }
 
     List&lt;Team&gt; findByNameContainingIgnoreCase(String input);
@@ -43,9 +44,15 @@ public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
     )
     List&lt;FavTeamAnalyticsDTO&gt; findAllFavoriteTeamsCounter();
 
+    @Query(&quot;SELECT t FROM Team t WHERE t.name != :teamName&quot;)
+    List&lt;Team&gt; findRivals(@Param(&quot;teamName&quot;)String teamName);
+
     @Query(&quot;SELECT new com.mlb.mlbportal.dto.team.RunsStatsDTO(t.name, t.runsScored, t.runsAllowed) &quot; +
             &quot;FROM Team t WHERE t.name IN :teams&quot;
     )
     List&lt;RunsStatsDTO&gt; findRunsStats(@Param(&quot;teams&quot;) Set&lt;String&gt; teams);
+
+    @Query(&quot;SELECT new com.mlb.mlbportal.dto.team.WinDistributionDTO(t.name, t.homeGamesPlayed, t.homeGamesWins, t.roadGamesPlayed, t.roadGamesWins) FROM Team t WHERE t.name = :team&quot;)
+    WinDistributionDTO findWinDistribution(@Param(&quot;team&quot;)String team);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

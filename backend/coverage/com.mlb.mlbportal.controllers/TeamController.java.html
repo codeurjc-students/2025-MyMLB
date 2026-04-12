@@ -92,6 +92,11 @@ public class TeamController {
 <span class="fc" id="L92">        return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));</span>
     }
 
+    @GetMapping(value = &quot;/{teamName}/rivals&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;TeamDTO&gt;&gt; getRivalTeams(@PathVariable(&quot;teamName&quot;)String teamName) {
+<span class="nc" id="L97">        return ResponseEntity.ok(this.teamService.getRivalTeams(teamName));</span>
+    }
+
     @Operation(summary = &quot;Get wins per rival&quot;, description = &quot;Calculates the number of wins for a specific team against a list of selected rivals.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved wins per rival stats&quot;, content = @Content(mediaType = &quot;application/json&quot;, array = @ArraySchema(schema = @Schema(implementation = WinsPerRivalDTO.class)))),
@@ -100,7 +105,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/{teamName}/analytics/wins-per-rival&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;WinsPerRivalDTO&gt;&gt; getWinsPerRival(@PathVariable(&quot;teamName&quot;) String teamName, @RequestParam Set&lt;String&gt; rivalTeamNames) {
-<span class="fc" id="L103">        return ResponseEntity.ok(this.teamService.getWinsPerRivals(teamName, rivalTeamNames));</span>
+<span class="fc" id="L108">        return ResponseEntity.ok(this.teamService.getWinsPerRivals(teamName, rivalTeamNames));</span>
     }
 
     @Operation(summary = &quot;Get run stats per rival&quot;, description = &quot;Returns scoring statistics (runs scored vs runs allowed) between the specified teams.&quot;)
@@ -110,7 +115,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/analytics/runs-per-rival&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;RunsStatsDTO&gt;&gt; getRunsStatsPerRival(@RequestParam Set&lt;String&gt; teams) {
-<span class="fc" id="L113">        return ResponseEntity.ok(this.teamService.getRunStatsPerRival(teams));</span>
+<span class="fc" id="L118">        return ResponseEntity.ok(this.teamService.getRunStatsPerRival(teams));</span>
     }
 
     @Operation(summary = &quot;Get team win distribution&quot;, description = &quot;Returns a percentage breakdown of home vs away wins for a specific team.&quot;)
@@ -121,7 +126,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/{teamName}/analytics/win-distribution&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;WinDistributionDTO&gt; getWinDistribution(@PathVariable(&quot;teamName&quot;) String teamName) {
-<span class="fc" id="L124">        return ResponseEntity.ok(this.teamService.getWinDistribution(teamName));</span>
+<span class="fc" id="L129">        return ResponseEntity.ok(this.teamService.getWinDistribution(teamName));</span>
     }
 
     @Operation(summary = &quot;Get historic daily rankings&quot;, description = &quot;Returns a chronological map of division rankings, wins, and losses for the selected teams from a starting date.&quot;)
@@ -131,7 +136,7 @@ public class TeamController {
     })
     @GetMapping(value = &quot;/analytics/historic-ranking&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Map&lt;String, List&lt;HistoricRankingDTO&gt;&gt;&gt; getHistoricRanking(@RequestParam Set&lt;String&gt; teams, @RequestParam(required = false)LocalDate dateFrom) {
-<span class="fc" id="L134">        return ResponseEntity.ok(this.teamService.getHistoricRanking(teams, dateFrom));</span>
+<span class="fc" id="L139">        return ResponseEntity.ok(this.teamService.getHistoricRanking(teams, dateFrom));</span>
     }
 
     @Operation(summary = &quot;Hydrate historic ranking data&quot;, description = &quot;Admin tool to manually trigger the historical data import for the current season.&quot;)
@@ -142,8 +147,8 @@ public class TeamController {
     })
     @PostMapping(value = &quot;/analytics/hydrate&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; hydrateHistoricRanking() {
-<span class="nc" id="L145">        this.teamImportService.hydrateHistoryFromStart();</span>
-<span class="nc" id="L146">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Daily Rankings Updated&quot;));</span>
+<span class="nc" id="L150">        this.teamImportService.hydrateHistoryFromStart();</span>
+<span class="nc" id="L151">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Daily Rankings Updated&quot;));</span>
     }
 
     @Operation(summary = &quot;Refresh current season standings&quot;, description = &quot;Triggers a manual update of the current season standings by fetching the team statistics.&quot;)
@@ -153,8 +158,8 @@ public class TeamController {
     })
     @PostMapping(value = &quot;/sync&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; refreshStandings() {
-<span class="fc" id="L156">        this.teamImportService.getTeamStats();</span>
-<span class="fc" id="L157">        return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Standings successfully updated!&quot;));</span>
+<span class="fc" id="L161">        this.teamImportService.getTeamStats();</span>
+<span class="fc" id="L162">        return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Standings successfully updated!&quot;));</span>
     }
 
     @Operation(summary = &quot;Update team information&quot;, description = &quot;Updates specific fields of an MLB team identified by its name. Supports partial updates such as wins, losses, or team details.&quot;)
@@ -167,8 +172,8 @@ public class TeamController {
     @PatchMapping(value = &quot;/{teamName}&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; updateTeam(@PathVariable(&quot;teamName&quot;) String teamName,
             @RequestBody UpdateTeamRequest request) {
-<span class="fc" id="L170">        this.teamService.updateTeam(teamName, request);</span>
-<span class="fc" id="L171">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
+<span class="fc" id="L175">        this.teamService.updateTeam(teamName, request);</span>
+<span class="fc" id="L176">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Team successfully updated&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

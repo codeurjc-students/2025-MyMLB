@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2026-04-08T19:23:29+0200&quot;,
+    date = &quot;2026-04-12T16:42:50+0200&quot;,
     comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.2 (GraalVM Community)&quot;
 )
 @Component
@@ -24,26 +24,22 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L24">        String teamName = null;</span>
 <span class="fc" id="L25">        LocalDate matchDate = null;</span>
 <span class="fc" id="L26">        Integer rank = null;</span>
-<span class="fc" id="L27">        Integer wins = null;</span>
-<span class="fc" id="L28">        Integer losses = null;</span>
 
-<span class="fc" id="L30">        teamName = dailyStandingsTeamName( dailyStandings );</span>
-<span class="fc" id="L31">        matchDate = dailyStandings.getMatchDate();</span>
-<span class="fc" id="L32">        rank = dailyStandings.getRank();</span>
-<span class="fc" id="L33">        wins = dailyStandings.getWins();</span>
-<span class="fc" id="L34">        losses = dailyStandings.getLosses();</span>
+<span class="fc" id="L28">        teamName = dailyStandingsTeamName( dailyStandings );</span>
+<span class="fc" id="L29">        matchDate = dailyStandings.getMatchDate();</span>
+<span class="fc" id="L30">        rank = dailyStandings.getRank();</span>
 
-<span class="fc" id="L36">        HistoricRankingDTO historicRankingDTO = new HistoricRankingDTO( teamName, matchDate, rank, wins, losses );</span>
+<span class="fc" id="L32">        HistoricRankingDTO historicRankingDTO = new HistoricRankingDTO( teamName, matchDate, rank );</span>
 
-<span class="fc" id="L38">        return historicRankingDTO;</span>
+<span class="fc" id="L34">        return historicRankingDTO;</span>
     }
 
     private String dailyStandingsTeamName(DailyStandings dailyStandings) {
-<span class="fc" id="L42">        Team team = dailyStandings.getTeam();</span>
-<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if ( team == null ) {</span>
-<span class="nc" id="L44">            return null;</span>
+<span class="fc" id="L38">        Team team = dailyStandings.getTeam();</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if ( team == null ) {</span>
+<span class="nc" id="L40">            return null;</span>
         }
-<span class="fc" id="L46">        return team.getName();</span>
+<span class="fc" id="L42">        return team.getName();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -2,6 +2,7 @@ package com.mlb.mlbportal.unit.scheduler;
 
 import com.mlb.mlbportal.schedulers.PlayerScheduler;
 import com.mlb.mlbportal.services.mlbAPI.PlayerImportService;
+import com.mlb.mlbportal.services.utilities.CacheService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,9 @@ class PlayerSchedulerTest {
     @Mock
     private PlayerImportService playerImportService;
 
+    @Mock
+    private CacheService cacheService;
+
     @InjectMocks
     private PlayerScheduler playerScheduler;
 
@@ -35,5 +39,11 @@ class PlayerSchedulerTest {
         assertThat(scheduled).isNotNull();
         assertThat(scheduled.cron()).isEqualTo("0 0 6 * * *");
         verify(this.playerImportService, times(1)).getTeamRoster();
+        verify(this.cacheService, times(1)).clearCaches(
+                "get-players",
+                "all-stats-player-rankings",
+                "single-stat-player-rankings",
+                "search-player"
+        );
     }
 }

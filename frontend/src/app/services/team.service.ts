@@ -37,6 +37,10 @@ export class TeamService {
 		return this.standingsCache$;
 	}
 
+	public cleanStandingsCache() {
+		this.standingsCache$ = undefined;
+	}
+
 	public isGoodPct(pct : string) {
 		const parseredPct = Number(pct);
 		return parseredPct >= 0.5;

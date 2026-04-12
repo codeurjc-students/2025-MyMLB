@@ -102,7 +102,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "get-standings", key = "#username")
+    @Cacheable(value = "get-standings", key = "#username != null ? #username : ''")
     public Map<League, Map<Division, List<TeamDTO>>> getStandings(String username) {
         UserEntity user = null;
         if (username != null && !username.isBlank()) {
@@ -200,7 +200,7 @@ public class TeamService {
     }
 
     @Transactional
-    @CacheEvict(value = {"get-teams", "get-standings"}, allEntries = true)
+    @CacheEvict(value = {"get-teams", "get-standings", "get-stadiums", "get-available-stadiums", "search-stadium", "search-team", "get-fav-teams"}, allEntries = true)
     public void updateTeam(String teamName, UpdateTeamRequest request) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
 

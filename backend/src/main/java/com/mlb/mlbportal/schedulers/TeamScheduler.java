@@ -25,7 +25,8 @@ public class TeamScheduler {
                 "runs-per-rival",
                 "wins-per-rivals",
                 "win-distribution",
-                "historic-ranking"
+                "historic-ranking",
+                "search-team"
         );
         log.info("Team Stats Updated. Reset Team Cache");
     }
