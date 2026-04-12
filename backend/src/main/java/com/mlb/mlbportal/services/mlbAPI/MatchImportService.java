@@ -4,6 +4,8 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -242,7 +244,8 @@ public class MatchImportService {
         int awayId = game.teams().away().team().id();
         TeamSummary home = this.teamLookupService.getTeamSummary(homeId);
         TeamSummary away = this.teamLookupService.getTeamSummary(awayId);
-        LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
+        LocalDateTime date = ZonedDateTime.parse(game.gameDate())
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid")).toLocalDateTime();
         MatchStatus status = this.mapStatus(game.status().detailedState());
         String stadiumName = game.venue().name();
         if (stadiumName.equals("Rate Field")) {
