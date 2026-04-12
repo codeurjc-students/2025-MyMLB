@@ -19,6 +19,7 @@ import com.mlb.mlbportal.mappers.DailyStandingsMapper;
 import com.mlb.mlbportal.models.DailyStandings;
 import com.mlb.mlbportal.repositories.DailyStandingsRepository;
 import com.mlb.mlbportal.repositories.MatchRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,7 @@ public class TeamService {
     private final DailyStandingsMapper dailyStandingsMapper;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-teams", key = "{#page, #size}")
     public Page<TeamInfoDTO> getTeams(int page, int size) {
         List<Team> teams = this.teamRepository.findAll();
         return this.paginationHandlerService.paginateAndMap(teams, page, size, this.teamMapper::toTeamInfoDTO);
@@ -100,6 +102,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-standings", key = "#username")
     public Map<League, Map<Division, List<TeamDTO>>> getStandings(String username) {
         UserEntity user = null;
         if (username != null && !username.isBlank()) {
@@ -143,6 +146,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-rivals", key = "#teamName")
     public List<TeamDTO> getRivalTeams(String teamName) {
         this.teamRepository.findByNameOrThrow(teamName);
         List<Team> queryResult = this.teamRepository.findRivals(teamName);
@@ -150,6 +154,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "wins-per-rivals", key = "{#fixedTeamName, #rivalTeamsNames}")
     public List<WinsPerRivalDTO> getWinsPerRivals(String fixedTeamName, Set<String> rivalTeamsNames) {
         if (rivalTeamsNames == null || rivalTeamsNames.isEmpty()) {
             throw new InvalidTypeException("The rival teams are required");
@@ -167,6 +172,7 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "win-distribution", key = "#teamName")
     public WinDistributionDTO getWinDistribution(String teamName) {
         this.teamRepository.findByNameOrThrow(teamName);
         return this.teamRepository.findWinDistribution(teamName);
@@ -194,6 +200,7 @@ public class TeamService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-teams", "get-standings"}, allEntries = true)
     public void updateTeam(String teamName, UpdateTeamRequest request) {
         Team team = this.teamRepository.findByNameOrThrow(teamName);
 

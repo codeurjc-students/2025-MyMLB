@@ -19,6 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -227,6 +228,7 @@ public class PlayerService {
      * the team may be null, which implies that the player has been sent down to the minors or designated for assignment (DFA).
      */
     @Transactional
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
     public PlayerDTO createPlayer(String playerType, CreatePlayerRequest<?> request) {
         Team team = this.playerCreationValidations(request.name(), request.teamName());
         Player newPlayer;
@@ -253,6 +255,7 @@ public class PlayerService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
     public PictureInfo updatePicture(String playerName, MultipartFile file) throws IOException {
         Player player = this.playerRepository.findByNameOrThrow(playerName);
         PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
@@ -289,6 +292,7 @@ public class PlayerService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
     public void updatePositionPlayer(String playerName, EditPositionPlayerRequest request) {
         PositionPlayer player = this.positionPlayerRepository.findByNameOrThrow(playerName);
 
@@ -308,6 +312,7 @@ public class PlayerService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
     public void updatePitcher(String playerName, EditPitcherRequest request) {
         Pitcher player = this.pitcherRepository.findByNameOrThrow(playerName);
 
@@ -333,6 +338,7 @@ public class PlayerService {
      * @implNote Deleting a player means that the player has retired from the MLB
      */
     @Transactional
+    @CacheEvict(value = {"get-players", "all-stats-player-rankings", "single-stat-player-rankings"}, allEntries = true)
     public PlayerDTO deletePlayer(String playerName) {
         Player player = this.playerRepository.findByNameOrThrow(playerName);
         Team team = this.teamRepository.findByNameOrThrow(player.getTeam().getName());
