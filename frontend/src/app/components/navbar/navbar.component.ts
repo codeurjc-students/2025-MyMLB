@@ -162,7 +162,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 				this.router.navigate(['my-tickets']);
 				break;
 			case 'stats':
-				this.router.navigate(['statistics']);
+				this.router.navigate(['analytics']);
 				break;
 		}
 	}

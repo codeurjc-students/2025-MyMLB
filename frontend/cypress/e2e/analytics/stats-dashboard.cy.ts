@@ -14,7 +14,7 @@ describe('Analytics Dashboard E2E Tests', () => {
 
 		cy.visit('/');
 		cy.wait('@getActiveUser');
-        cy.visit('/statistics');
+        cy.visit('/analytics');
     });
 
     it('should show the list of analytics options', () => {

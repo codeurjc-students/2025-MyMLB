@@ -1,0 +1,113 @@
+<div class="app-background min-h-screen text-gray-900 dark:text-white px-6 py-16 space-y-12 flex flex-col items-center">
+	<!-- Header Section -->
+	<section class="w-full max-w-7xl flex flex-col md:grid md:grid-cols-3 items-center gap-4 md:gap-0">
+        <div class="flex justify-start">
+            <app-back-to-dashboard-button (backToStatsDashboard)="goBackToDashboard()"></app-back-to-dashboard-button>
+        </div>
+
+        <div class="flex justify-center">
+            <h1 class="app-page-titles !mb-0 whitespace-nowrap">
+                Cache Management
+            </h1>
+        </div>
+        <div class="hidden md:block"></div>
+    </section>
+
+	<!-- Main Section -->
+    <section class="w-full max-w-4xl animate-fadeInUpSmooth">
+        <div class="bg-white dark:bg-gray-800/80 p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-600/10 rounded-full blur-[80px]"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[80px]"></div>
+
+			<!-- Table Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 relative z-10">
+                <div>
+                    <h2 class="text-5xl font-bold mb-6 text-blue-800 dark:text-blue-300">System Caches</h2>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium text-lg">Manually manage application caches.</p>
+                </div>
+
+				<!-- Clear All Button -->
+                <div class="flex items-center gap-3">
+                    <button (click)="clearAllCaches()" class="app-red-buttons !w-auto h-[52px] px-8 relative group shrink-0">
+						<span class="app-button-bright"></span>
+						<div class="app-button-texts flex items-center gap-2">
+							<mat-icon class="!text-xl">delete_sweep</mat-icon>
+							<span class="text-xs font-black uppercase tracking-widest text-white">Clear All</span>
+						</div>
+					</button>
+                </div>
+            </div>
+
+			<!-- Table -->
+            <div class="relative z-10 overflow-hidden rounded-[2rem] bg-gray-50/50 dark:bg-gray-900/40 border border-gray-100 dark:border-white/5 shadow-inner">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead class="bg-gray-100/50 dark:bg-black/20 text-gray-500 dark:text-slate-400 text-[10px] uppercase tracking-[0.2em]">
+                        <tr>
+                            <th class="px-8 py-5 font-black">Cache Identifier</th>
+                            <th class="px-8 py-5 text-center font-black">Quick Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                        @for (cache of caches; track cache) {
+                            <tr class="hover:bg-blue-500/5 transition-colors duration-200 group">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]"></div>
+                                        <span class="font-bold text-gray-700 dark:text-slate-100 text-lg uppercase tracking-tight">
+                                            {{ cache }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-8 py-5">
+                                    <div class="flex justify-center">
+                                        <button
+                                            (click)="clearCache(cache)"
+                                            [disabled]="loading"
+                                            class="flex cursor-pointer items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-white/5 text-gray-600 dark:text-slate-300 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 transition-all duration-300 border border-gray-200 dark:border-white/10 shadow-sm group/btn"
+										>
+                                            <span class="material-icons text-sm group-hover/btn:rotate-12 transition-transform">delete_outline</span>
+											<span class="text-[10px] font-black uppercase tracking-widest">Clear</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+						@empty {
+                            <tr>
+                                <td colspan="2" class="px-8 py-16 text-center">
+                                    <div class="flex flex-col items-center opacity-40">
+                                        <span class="material-icons text-5xl mb-3">inventory_2</span>
+                                        <p class="text-xs font-black uppercase tracking-[0.2em]">No active caches detected</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+			<!-- Table Footer -->
+            <div class="relative z-10 mt-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-slate-500 italic">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Total Registries: {{ caches.length }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+	<!-- Modals -->
+	@if (success) {
+		<app-success-modal [message]="successMessage" (continue)="success = false"></app-success-modal>
+	}
+
+    @if (error) {
+        <app-error-modal [title]="errorMessage" (cancel)="error = false"></app-error-modal>
+    }
+
+	@if (loading) {
+		<app-loading-modal [message]="'Loading...'"></app-loading-modal>
+	}
+</div>

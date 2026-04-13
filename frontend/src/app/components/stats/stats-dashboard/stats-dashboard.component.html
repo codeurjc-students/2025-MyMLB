@@ -38,4 +38,7 @@
 	@if (currentView === 'api') {
 		<app-api-performance (backToStatsDashboard)="currentView = null"></app-api-performance>
 	}
+	@if (currentView === 'cache') {
+		<app-cache (backToStatsDashboard)="currentView = null"></app-cache>
+	}
 }

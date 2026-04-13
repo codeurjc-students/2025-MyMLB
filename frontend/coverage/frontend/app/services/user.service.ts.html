@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.55% </span>
+                <span class="strong">96.96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/29</span>
+                <span class='fraction'>32/33</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">94.11% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>16/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.42% </span>
+                <span class="strong">96.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/28</span>
+                <span class='fraction'>31/32</span>
             </div>
         
             
@@ -149,7 +149,15 @@
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
 <a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -163,6 +171,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
@@ -226,10 +235,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -244,12 +258,14 @@ import { TeamSummary } from '../models/team.model';
 import { Pictures } from '../models/pictures.model';
 import { Ticket } from '../models/ticket/ticket.model';
 import { environment } from '../../environments/environment';
+import { TeamService } from './team.service';
 &nbsp;
 @Injectable({
 	providedIn: "root"
 })
 export class UserService {
 	private http = inject(HttpClient);
+	private teamService = inject(TeamService);
 	private apiUrl = `${environment.apiUrl}/users`
 	private favTeamsSubject = new BehaviorSubject&lt;TeamSummary[]&gt;([]);
 	public favTeams$ = this.favTeamsSubject.asObservable();
@@ -311,11 +327,16 @@ export class UserService {
 	}
 &nbsp;
 	public addFavTeam(team: TeamSummary): Observable&lt;AuthResponse&gt; {
-		return this.http.post&lt;AuthResponse&gt;(`${this.apiUrl}/favorites/teams/${team.name}`, {}, { withCredentials: true });
+		return this.http.post&lt;AuthResponse&gt;(`${this.apiUrl}/favorites/teams/${team.name}`, {}, { withCredentials: true }).pipe(
+			tap(() =&gt; this.teamService.cleanStandingsCache())
+		);
 	}
 &nbsp;
 	public removeFavTeam(team: TeamSummary): Observable&lt;AuthResponse&gt; {
-		return this.http.delete&lt;AuthResponse&gt;(`${this.apiUrl}/favorites/teams/${team.name}`, { withCredentials: true });
+		this.teamService.cleanStandingsCache();
+		return this.http.delete&lt;AuthResponse&gt;(`${this.apiUrl}/favorites/teams/${team.name}`, { withCredentials: true }).pipe(
+			tap(() =&gt; this.teamService.cleanStandingsCache())
+		);
 	}
 &nbsp;
 	public <span class="fstat-no" title="function not covered" >getPurchasedTickets(</span>): Observable&lt;Ticket[]&gt; {
@@ -328,7 +349,7 @@ export class UserService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-11T17:24:34.835Z
+                at 2026-04-13T22:47:38.954Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
