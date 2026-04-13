@@ -4,7 +4,6 @@
 
     import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
     import com.mlb.mlbportal.services.MatchService;
-    import com.mlb.mlbportal.services.utilities.CacheService;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.scheduling.annotation.Async;
@@ -14,25 +13,24 @@
 
     @Component
     @RequiredArgsConstructor
-<span class="fc" id="L17">    @Slf4j</span>
+<span class="fc" id="L16">    @Slf4j</span>
     public class MatchScheduler {
         private final MatchImportService matchImportService;
         private final MatchService matchService;
-        private final CacheService cacheService;
 
         @Async
         @Scheduled(cron = &quot;0 0 3 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
         public void preloadMatches() {
-<span class="fc" id="L26">            LocalDate now = LocalDate.now();</span>
-<span class="fc" id="L27">            LocalDate currentStart = now.withDayOfMonth(1);</span>
-<span class="fc" id="L28">            LocalDate currentEnd = currentStart.withDayOfMonth(currentStart.lengthOfMonth());</span>
+<span class="fc" id="L24">            LocalDate now = LocalDate.now();</span>
+<span class="fc" id="L25">            LocalDate currentStart = now.withDayOfMonth(1);</span>
+<span class="fc" id="L26">            LocalDate currentEnd = currentStart.withDayOfMonth(currentStart.lengthOfMonth());</span>
 
-<span class="fc" id="L30">            LocalDate nextStart = currentStart.plusMonths(1);</span>
-<span class="fc" id="L31">            LocalDate nextEnd = nextStart.withDayOfMonth(nextStart.lengthOfMonth());</span>
+<span class="fc" id="L28">            LocalDate nextStart = currentStart.plusMonths(1);</span>
+<span class="fc" id="L29">            LocalDate nextEnd = nextStart.withDayOfMonth(nextStart.lengthOfMonth());</span>
 
-<span class="fc" id="L33">            this.matchImportService.getOfficialMatches(currentStart, currentEnd);</span>
-<span class="fc" id="L34">            this.matchImportService.getOfficialMatches(nextStart, nextEnd);</span>
-<span class="fc" id="L35">        }</span>
+<span class="fc" id="L31">            this.matchImportService.getOfficialMatches(currentStart, currentEnd);</span>
+<span class="fc" id="L32">            this.matchImportService.getOfficialMatches(nextStart, nextEnd);</span>
+<span class="fc" id="L33">        }</span>
 
         @Async
         @Schedules({
@@ -40,27 +38,19 @@
                 @Scheduled(cron = &quot;0 */20 0-8 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
         })
         public void updateStandings() {
-<span class="fc" id="L43">            log.info(&quot;Starting synchronization of the matches status&quot;);</span>
+<span class="fc" id="L41">            log.info(&quot;Starting synchronization of the matches status&quot;);</span>
             try {
-<span class="fc" id="L45">                this.matchImportService.verifyMatchStatus();</span>
-<span class="fc" id="L46">                this.cacheService.clearCaches(</span>
-                        &quot;get-standings&quot;,
-                        &quot;historic-ranking&quot;,
-                        &quot;win-distribution&quot;,
-                        &quot;wins-per-rivals&quot;,
-                        &quot;get-home-matches&quot;,
-                        &quot;get-away-matches&quot;
-                );
+<span class="fc" id="L43">                this.matchImportService.verifyMatchStatus();</span>
             }
-<span class="nc" id="L55">            catch (Exception ex) {</span>
-<span class="nc" id="L56">                log.error(&quot;An error occur while synchronizing the matches status: {}&quot;, ex.getMessage());</span>
-<span class="fc" id="L57">            }</span>
-<span class="fc" id="L58">        }</span>
+<span class="nc" id="L45">            catch (Exception ex) {</span>
+<span class="nc" id="L46">                log.error(&quot;An error occur while synchronizing the matches status: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L47">            }</span>
+<span class="fc" id="L48">        }</span>
 
         @Async
         @Scheduled(cron = &quot;0 */10 * * * *&quot;, zone = &quot;Europe/Madrid&quot;)
         public void checkSendingEmailNotification() {
-<span class="fc" id="L63">            this.matchService.notificateMatchStart();</span>
-<span class="fc" id="L64">        }</span>
+<span class="fc" id="L53">            this.matchService.notificateMatchStart();</span>
+<span class="fc" id="L54">        }</span>
     }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

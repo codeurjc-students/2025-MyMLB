@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeamScheduler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.schedulers</a> &gt; <span class="el_source">TeamScheduler.java</span></div><h1>TeamScheduler.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.schedulers;
 
 import com.mlb.mlbportal.services.mlbAPI.TeamImportService;
-import com.mlb.mlbportal.services.utilities.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -10,25 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-<span class="fc" id="L13">@Slf4j</span>
+<span class="fc" id="L12">@Slf4j</span>
 public class TeamScheduler {
     private final TeamImportService teamImportService;
-    private final CacheService cacheService;
 
     @Async
     @Scheduled(cron = &quot;0 0 5 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void updateTeamStatsAndRankings() {
-<span class="fc" id="L21">        this.teamImportService.getTeamStats();</span>
-<span class="fc" id="L22">        this.cacheService.clearCaches(</span>
-                &quot;get-teams&quot;,
-                &quot;get-standings&quot;,
-                &quot;runs-per-rival&quot;,
-                &quot;wins-per-rivals&quot;,
-                &quot;win-distribution&quot;,
-                &quot;historic-ranking&quot;,
-                &quot;search-team&quot;
-        );
-<span class="fc" id="L31">        log.info(&quot;Team Stats Updated. Reset Team Cache&quot;);</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L19">        this.teamImportService.getTeamStats();</span>
+<span class="fc" id="L20">        log.info(&quot;Team Stats Updated. Reset Team Cache&quot;);</span>
+<span class="fc" id="L21">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

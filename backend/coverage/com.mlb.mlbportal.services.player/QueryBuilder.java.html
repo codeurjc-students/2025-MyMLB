@@ -82,8 +82,8 @@ public class QueryBuilder {
      */
     private static void buildQualifiedConditions(List&lt;String&gt; conditions, boolean isPitcher, String stat) {
 <span class="fc bfc" id="L84" title="All 2 branches covered.">        if (!isPitcher) {</span>
-            // MLB Rule (only for average, obp and slugging)&quot;
-<span class="fc bfc" id="L86" title="All 6 branches covered.">            if (&quot;average&quot;.equalsIgnoreCase(stat) || &quot;obp&quot;.equalsIgnoreCase(stat) || &quot;slugging&quot;.equalsIgnoreCase(stat)) {</span>
+            // MLB Rule (only for average, obp and slugging)
+<span class="fc bfc" id="L86" title="All 8 branches covered.">            if (&quot;average&quot;.equalsIgnoreCase(stat) || &quot;obp&quot;.equalsIgnoreCase(stat) || &quot;slugging&quot;.equalsIgnoreCase(stat) || &quot;ops&quot;.equalsIgnoreCase(stat)) {</span>
 <span class="fc" id="L87">                conditions.add(&quot;(1.0 * p.atBats + 1.0 * p.walks) &gt;= (t.totalGames * 3.1)&quot;);</span>
             }
             else {

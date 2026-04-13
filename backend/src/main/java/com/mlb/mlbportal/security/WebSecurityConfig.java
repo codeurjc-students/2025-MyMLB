@@ -132,6 +132,10 @@ public class WebSecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/v1/analytics/visibility").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/v1/analytics/fav-teams").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/v1/analytics/api-performance").hasRole("ADMIN")
+
+                    // Cache Endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/v1/cache/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/cache/**").hasRole("ADMIN")
                     
                     // API Docs Endpoints
                     .requestMatchers("/v3/api-docs*/**").permitAll()

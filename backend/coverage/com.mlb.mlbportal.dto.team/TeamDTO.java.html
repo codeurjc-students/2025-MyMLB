@@ -3,49 +3,19 @@
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
 
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 /**
  * DTO that represents the stats of a team. Used to display the team stats in the standings
  */
-<span class="fc" id="L16">public record TeamDTO(</span>
-    @NotBlank(message = &quot;The name of the team is required&quot;)
+<span class="fc" id="L9">public record TeamDTO(</span>
     String name,
-
-    @NotBlank(message = &quot;The abbreviation of the team is required&quot;)
     String abbreviation,
-
-    @NotNull(message = &quot;The team League is required&quot;)
     League league,
-
-    @NotNull(message = &quot;The team division is required&quot;)
     Division division,
-
-    @Min(value = 0, message = &quot;The amount of games cannot be negative&quot;)
-    @Max(value = 162, message = &quot;The amount of games cannot be greater than 162&quot;)
     int totalGames,
-
-    @Min(value = 0, message = &quot;Wins cannot be negative&quot;)
-    @Max(value = 162, message = &quot;The amount of wins cannot be greater than 162&quot;)
     int wins,
-
-    @Min(value = 0, message = &quot;Losses cannot be negative&quot;)
-    @Max(value = 162, message = &quot;The amount of losses cannot be greater than 162&quot;)
     int losses,
-
-    @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Winning percentage cannot be negative&quot;)
-    @DecimalMax(value = &quot;1.0&quot;, inclusive = true, message = &quot;Winning percentage cannot exceed 1.0&quot;)
     String pct,
-
-    @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Games Behind cannot be negative&quot;)
     Double gamesBehind,
-
-    @NotBlank(message = &quot;The record of the team in the last 10 games is required&quot;)
     String lastTen
 ) {}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

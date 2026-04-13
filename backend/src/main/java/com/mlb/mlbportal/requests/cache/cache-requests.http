@@ -1,0 +1,11 @@
+### Get all caches
+GET https://localhost:8443/api/v1/cache
+Accept: application/json
+
+### Delete a specific cache
+DELETE https://localhost:8443/api/v1/cache/get-users
+Accept: application/json
+
+### Delete all caches
+DELETE https://localhost:8443/api/v1/cache
+Accept: application/json
