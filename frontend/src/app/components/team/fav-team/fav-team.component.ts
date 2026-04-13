@@ -1,6 +1,6 @@
 import { TeamService } from './../../../services/team.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { RemoveConfirmationModalComponent } from '../../modal/remove-confirmation-modal/remove-confirmation-modal.component';
@@ -19,6 +19,11 @@ import { EscapeCloseDirective } from "../../../directives/escape-close.directive
 	templateUrl: './fav-team.component.html',
 })
 export class FavTeamComponent implements OnInit {
+	private userService = inject(UserService);
+	public backgroundService = inject(BackgroundColorService);
+	private teamService = inject(TeamService);
+	private authService = inject(AuthService);
+
 	public favTeams$!: Observable<TeamSummary[]>;
 	public username = '';
 	public errorMessage = '';
@@ -33,13 +38,6 @@ export class FavTeamComponent implements OnInit {
 	public currentPage = 0;
 	public isClose = false;
 	public hasMore!: boolean;
-
-	constructor(
-		private userService: UserService,
-		public backgroundService: BackgroundColorService,
-		private teamService: TeamService,
-		private authService: AuthService
-	) {}
 
 	ngOnInit() {
 		this.favTeams$ = this.userService.favTeams$;
@@ -92,11 +90,8 @@ export class FavTeamComponent implements OnInit {
 	}
 
 	public closeTeamModal = () => {
-		this.isClose = true;
-		setTimeout(() => {
-			this.addButtonClicked = false;
-			this.isClose = false;
-		}, 300);
+		this.addButtonClicked = false;
+		this.isClose = false;
 	}
 
 	// Remove Favorite Team
