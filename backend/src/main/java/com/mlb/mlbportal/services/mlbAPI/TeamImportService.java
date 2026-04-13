@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.naming.ServiceUnavailableException;
 
 import com.mlb.mlbportal.handler.conflict.RankingRegisterAlreadyExistsException;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -172,6 +173,15 @@ public class TeamImportService {
     @Transactional
     @CircuitBreaker(name = "getTeamStats", fallbackMethod = "fallbackTeamStats")
     @Retry(name = "getTeamStats")
+    @CacheEvict(value = {
+            "get-teams",
+            "get-standings",
+            "runs-per-rival",
+            "wins-per-rivals",
+            "win-distribution",
+            "historic-ranking",
+            "search-team"
+    }, allEntries = true)
     public void getTeamStats() {
         int currentYear = LocalDate.now().getYear();
         LocalDate today = LocalDate.now();

@@ -7,7 +7,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mlb.mlbportal.services.utilities.CacheService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +30,6 @@ class MatchSchedulerTest {
 
     @Mock
     private MatchService matchService;
-
-    @Mock
-    private CacheService cacheService;
 
     @InjectMocks
     private MatchScheduler matchScheduler;
@@ -77,14 +73,6 @@ class MatchSchedulerTest {
         assertThat(scheduled).hasSize(2);
         assertThat(crons).containsExactlyInAnyOrder("0 */20 19-23 * * *", "0 */20 0-8 * * *");
         verify(this.mlbImportService, times(1)).verifyMatchStatus();
-        verify(this.cacheService, times(1)).clearCaches(
-                "get-standings",
-                "historic-ranking",
-                "win-distribution",
-                "wins-per-rivals",
-                "get-home-matches",
-                "get-away-matches"
-        );
     }
 
     @Test

@@ -4,7 +4,6 @@
 
     import com.mlb.mlbportal.services.mlbAPI.MatchImportService;
     import com.mlb.mlbportal.services.MatchService;
-    import com.mlb.mlbportal.services.utilities.CacheService;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.scheduling.annotation.Async;
@@ -18,7 +17,6 @@
     public class MatchScheduler {
         private final MatchImportService matchImportService;
         private final MatchService matchService;
-        private final CacheService cacheService;
 
         @Async
         @Scheduled(cron = "0 0 3 * * *", zone = "Europe/Madrid")
@@ -43,14 +41,6 @@
             log.info("Starting synchronization of the matches status");
             try {
                 this.matchImportService.verifyMatchStatus();
-                this.cacheService.clearCaches(
-                        "get-standings",
-                        "historic-ranking",
-                        "win-distribution",
-                        "wins-per-rivals",
-                        "get-home-matches",
-                        "get-away-matches"
-                );
             }
             catch (Exception ex) {
                 log.error("An error occur while synchronizing the matches status: {}", ex.getMessage());

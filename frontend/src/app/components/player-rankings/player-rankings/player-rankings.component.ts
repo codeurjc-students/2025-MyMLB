@@ -15,6 +15,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../services/auth.service';
+import { StatsFormatterService } from '../../../services/utilities/stats-formatter.service';
 
 @Component({
 	selector: 'app-player-rankings',
@@ -37,6 +38,7 @@ export class PlayerRankingsComponent implements OnInit {
 	private teamService = inject(TeamService);
 	private authService = inject(AuthService);
 	public backgroundService = inject(BackgroundColorService);
+	public statFormatter = inject(StatsFormatterService);
 	private route = inject(ActivatedRoute);
 
 	public playerType: string = 'position';
@@ -284,21 +286,6 @@ export class PlayerRankingsComponent implements OnInit {
 
 		this.loadDashboard();
 		this.adjustTeamsToDisplay();
-	}
-
-	public statFormatter(value: number, stat: string) {
-		if (!value && value !== 0) {
-			return '-';
-		}
-		const decimalStats = ['AVG', 'OBP', 'SLG', 'OPS', 'ERA', 'WHIP'];
-		if (decimalStats.includes(stat)) {
-			const formatted = value.toFixed(3);
-			if (['AVG', 'OBP', 'SLG', 'OPS'].includes(stat)) {
-				return formatted.startsWith('0') ? formatted.substring(1) : formatted;
-			}
-			return value.toFixed(2);
-		}
-		return value.toString();
 	}
 
 	public openChart(key: string, value: string) {

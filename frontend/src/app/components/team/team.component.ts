@@ -164,10 +164,22 @@ export class TeamComponent implements OnInit {
 
 	public selectPlayer(player: Pitcher | PositionPlayer) {
 		this.selectedPlayer = player;
+		document.body.style.overflow = 'hidden';
+	}
+
+	public closeStatsModal() {
+		this.selectedPlayer = null;
+		document.body.style.overflow = 'auto';
 	}
 
 	public openCalendar() {
 		this.showCalendar = true;
+		document.body.style.overflow = 'hidden';
+	}
+
+	public closeCalendar() {
+		this.showCalendar = false;
+		document.body.style.overflow = 'auto';
 	}
 
 	private resetMatches() {

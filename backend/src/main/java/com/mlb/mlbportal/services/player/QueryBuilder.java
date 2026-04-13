@@ -82,8 +82,8 @@ public class QueryBuilder {
      */
     private static void buildQualifiedConditions(List<String> conditions, boolean isPitcher, String stat) {
         if (!isPitcher) {
-            // MLB Rule (only for average, obp and slugging)"
-            if ("average".equalsIgnoreCase(stat) || "obp".equalsIgnoreCase(stat) || "slugging".equalsIgnoreCase(stat)) {
+            // MLB Rule (only for average, obp and slugging)
+            if ("average".equalsIgnoreCase(stat) || "obp".equalsIgnoreCase(stat) || "slugging".equalsIgnoreCase(stat) || "ops".equalsIgnoreCase(stat)) {
                 conditions.add("(1.0 * p.atBats + 1.0 * p.walks) >= (t.totalGames * 3.1)");
             }
             else {

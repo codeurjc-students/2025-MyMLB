@@ -5,6 +5,7 @@ import { Pitcher } from '../../../models/pitcher.model';
 import { CommonModule } from '@angular/common';
 import { ValidationService } from '../../../services/utilities/validation.service';
 import { EscapeCloseDirective } from "../../../directives/escape-close.directive";
+import { StatsFormatterService } from '../../../services/utilities/stats-formatter.service';
 
 @Component({
 	selector: 'app-stats-panel',
@@ -21,6 +22,7 @@ export class StatsPanelComponent {
 	@Output() close = new EventEmitter<void>();
 
 	public validationService = inject(ValidationService);
+	public statFormatter = inject(StatsFormatterService);
 
 	public closePanel = () => {
 		this.close.emit();

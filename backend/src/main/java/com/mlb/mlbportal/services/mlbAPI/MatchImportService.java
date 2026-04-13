@@ -11,9 +11,11 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.services.utilities.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ public class MatchImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TeamImportService teamLookupService;
     private final TeamService teamService;
+    private final CacheService cacheService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
@@ -94,6 +97,14 @@ public class MatchImportService {
     @Transactional
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
+    @CacheEvict(value = {
+            "get-standings",
+            "historic-ranking",
+            "win-distribution",
+            "wins-per-rivals",
+            "get-home-matches",
+            "get-away-matches"
+    }, allEntries = true)
     public void verifyMatchStatus() {
         try {
             LocalDate today = LocalDate.now(this.clock);
@@ -306,6 +317,14 @@ public class MatchImportService {
     @Transactional
     public void updateSeasonMatches() {
         this.matchRepository.deleteAll();
+        this.cacheService.clearCaches(
+                "get-standings",
+                "historic-ranking",
+                "win-distribution",
+                "wins-per-rivals",
+                "get-home-matches",
+                "get-away-matches"
+        );
         this.self.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)
