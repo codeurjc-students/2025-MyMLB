@@ -33,7 +33,7 @@ html {
 }
 
 .app-page-titles {
-	@apply text-5xl md:text-6xl leading-[1.5] font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]
+	@apply text-5xl md:text-6xl leading-[1.5] font-extrabold bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-xl break-words max-w-[90vw]
 }
 
 .app-background {
@@ -117,7 +117,7 @@ html {
 }
 
 .landing-hero-title {
-	@apply text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent;
+	@apply text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent;
 }
 
 .landing-features-container {

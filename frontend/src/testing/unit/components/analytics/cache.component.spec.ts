@@ -93,7 +93,7 @@ describe('Cache Component Tests', () => {
         expect(component.loading).toBeFalse();
     });
 
-    it('should emit backToStatsDashboard when goBackToDashboard is called', () => {
+    it('should emit backToStatsDashboard', () => {
         spyOn(component.backToStatsDashboard, 'emit');
 
         component.goBackToDashboard();

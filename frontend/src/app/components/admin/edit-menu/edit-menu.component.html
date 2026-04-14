@@ -10,7 +10,7 @@
 			<div class="relative w-full md:w-auto">
 				<mat-form-field class="w-full admin-input-fields">
 					<mat-label>Type</mat-label>
-					<mat-select [(ngModel)]="searchType" placeholder="Select..." (selectionChange)="dynamicSearch()">
+					<mat-select [(ngModel)]="searchType" placeholder="Select..." (selectionChange)="dynamicSearch()" panelClass="select-panel">
 						<mat-option value="player">Player</mat-option>
 						<mat-option value="team">Team</mat-option>
 						<mat-option value="stadium">Stadium</mat-option>
@@ -23,7 +23,7 @@
 				<div class="relative w-full md:w-auto">
 					<mat-form-field class="w-full admin-input-fields">
 						<mat-label>Positions</mat-label>
-						<mat-select id="player-type" [(ngModel)]="playerType" placeholder="Player Type">
+						<mat-select id="player-type" [(ngModel)]="playerType" placeholder="Player Type" panelClass="select-panel">
 							<mat-option value="position">Position Player</mat-option>
 							<mat-option value="pitcher">Pitcher</mat-option>
 						</mat-select>
