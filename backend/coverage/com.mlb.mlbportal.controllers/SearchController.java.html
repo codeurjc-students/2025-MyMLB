@@ -46,21 +46,15 @@ public class SearchController {
 
 <span class="pc bpc" id="L47" title="2 of 4 branches missed.">        switch (type.toLowerCase()) {</span>
             case &quot;stadium&quot; -&gt; {
-<span class="fc" id="L49">                return ResponseEntity.ok(searchService.searchStadiums(query, page, size));</span>
+<span class="fc" id="L49">                return ResponseEntity.ok(this.searchService.searchStadiums(query, page, size));</span>
             }
             case &quot;team&quot; -&gt; {
-<span class="nc" id="L52">                return ResponseEntity.ok(searchService.searchTeams(query, page, size));</span>
+<span class="nc" id="L52">                return ResponseEntity.ok(this.searchService.searchTeams(query, page, size));</span>
             }
             case &quot;player&quot; -&gt; {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">                if (&quot;position&quot;.equalsIgnoreCase(playerType)) {</span>
-<span class="nc" id="L56">                    return ResponseEntity.ok(searchService.searchPositionPlayers(query, page, size));</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">                } else if (&quot;pitcher&quot;.equalsIgnoreCase(playerType)) {</span>
-<span class="nc" id="L58">                    return ResponseEntity.ok(searchService.searchPitchers(query, page, size));</span>
-                } else {
-<span class="nc" id="L60">                    throw new InvalidSearchTypeException(&quot;Missing or invalid playerType parameter&quot;);</span>
-                }
+<span class="nc" id="L55">                return ResponseEntity.ok(this.searchService.searchPlayer(type, query, page, size));</span>
             }
-<span class="fc" id="L63">            default -&gt; throw new InvalidSearchTypeException(&quot;Invalid search type: &quot; + type);</span>
+<span class="fc" id="L57">            default -&gt; throw new InvalidSearchTypeException(&quot;Invalid search type: &quot; + type);</span>
         }
     }
 }

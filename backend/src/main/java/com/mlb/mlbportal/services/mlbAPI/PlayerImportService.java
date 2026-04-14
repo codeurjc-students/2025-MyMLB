@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -46,6 +47,12 @@ public class PlayerImportService {
     @Transactional
     @CircuitBreaker(name = "playersFromStatsAPI", fallbackMethod = "fallbackGetTeamsRoster")
     @Retry(name = "playersFromStatsAPI")
+    @CacheEvict(value = {
+            "get-players",
+            "all-stats-player-rankings",
+            "single-stat-player-rankings",
+            "search-player"
+    }, allEntries = true)
     public void getTeamRoster() {
         List<Team> teams = this.teamRepository.findAll();
 

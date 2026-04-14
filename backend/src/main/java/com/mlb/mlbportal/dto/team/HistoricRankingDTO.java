@@ -5,7 +5,5 @@ import java.time.LocalDate;
 public record HistoricRankingDTO(
         String teamName,
         LocalDate matchDate,
-        Integer rank,
-        Integer wins,
-        Integer losses
+        Integer rank
 ) {}

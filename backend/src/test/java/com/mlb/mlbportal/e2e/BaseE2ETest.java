@@ -122,8 +122,8 @@ public abstract class BaseE2ETest {
         return this.teamRepository.save(team);
     }
 
-    protected DailyStandings saveTestDailyStandings(Team team, LocalDate matchDate, int rank, int wins, int losses) {
-        return this.dailyStandingsRepository.save(new DailyStandings(team, matchDate, rank, wins, losses));
+    protected DailyStandings saveTestDailyStandings(Team team, LocalDate matchDate, int rank) {
+        return this.dailyStandingsRepository.save(new DailyStandings(team, matchDate, rank));
     }
 
     protected void saveTestMatches(Team awayTeam, Team homeTeam, int awayScore, int homeScore, LocalDateTime date, MatchStatus status) {

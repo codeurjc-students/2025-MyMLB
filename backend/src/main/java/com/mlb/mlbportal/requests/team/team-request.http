@@ -1,69 +1,69 @@
 ### Get All Teams
-GET https://localhost:8443/api/v1/teams?page=0&size=10
+GET https://mlb-portal.up.railway.app/api/v1/teams?page=0&size=10
 Accept: application/json
 
 ### Get Available Teams
-GET https://localhost:8443/api/v1/teams/available?page=0&size=10
+GET https://mlb-portal.up.railway.app/api/v1/teams/available?page=0&size=10
 Accept: application/json
 
 ### Get Standings
-GET https://localhost:8443/api/v1/teams/standings
+GET https://mlb-portal.up.railway.app/api/v1/teams/standings
 Accept: application/json
 
 ### Get Team Information
-GET https://localhost:8443/api/v1/teams/New York Yankees
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees
 Accept: application/json
 
 ### Get Non Existent Team Information
-GET https://localhost:8443/api/v1/teams/Team1
+GET https://mlb-portal.up.railway.app/api/v1/teams/Team1
 Accept: application/json
 
 ### Get Rival Teams
-GET https://localhost:8443/api/v1/teams/New York Yankees/rivals
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/rivals
 Accept: application/json
 
 ### Get Wins of a Single Rival
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants
 Accept: application/json
 
 ### Get Wins of Multiple Rivals
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants, Seattle Mariners
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants, Seattle Mariners
 Accept: application/json
 
 ### Get Wins with Non Rivals
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=
 Accept: application/json
 
 ### Get Wins With Fix Team = Rival Team
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=New York Yankees
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=New York Yankees
 Accept: application/json
 
 ### Get Runs Stats
-GET https://localhost:8443/api/v1/teams/analytics/runs-per-rival?teams=New York Yankees, Houston Astros, Los Angeles Dodgers, Toronto Blue Jays
+GET https://mlb-portal.up.railway.app/api/v1/teams/analytics/runs-per-rival?teams=New York Yankees, Houston Astros, Los Angeles Dodgers, Toronto Blue Jays
 Accept: application/json
 
 ### Get Win Distribution
-GET https://localhost:8443/api/v1/teams/New York Yankees/analytics/win-distribution
+GET https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees/analytics/win-distribution
 Accept: application/json
 
 ### Temp
-POST https://localhost:8443/api/v1/teams/analytics/hydrate
+POST https://mlb-portal.up.railway.app/api/v1/teams/analytics/hydrate
 Accept: application/json
 
 ### Refresh Standings
-POST https://localhost:8443/api/v1/teams/sync
+POST https://mlb-portal.up.railway.app/api/v1/teams/sync
 Accept: application/json
 
 ### Get Historic Ranking
-GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
+GET https://mlb-portal.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
 Accept: application/json
 
 ### Get Historic Ranking
-GET https://localhost:8443/api/v1/teams/analytics/historic-ranking?teams=New York Yankees&dateFrom=2026-04-01
+GET https://mlb-portal.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees&dateFrom=2026-04-01
 Accept: application/json
 
 ### Update Team with city, championships and general information
-PATCH https://localhost:8443/api/v1/teams/New York Yankees
+PATCH https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -74,7 +74,7 @@ Content-Type: application/json
 }
 
 ### Update Team with only one field
-PATCH https://localhost:8443/api/v1/teams/New York Yankees
+PATCH https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
 
 ### Update team with an invalid stadium. An invalid stadium is one that already has a team assigned.
-PATCH https://localhost:8443/api/v1/teams/New York Yankees
+PATCH https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -90,7 +90,7 @@ Content-Type: application/json
 }
 
 ### Update Team with a non existent stadium
-PATCH https://localhost:8443/api/v1/teams/New York Yankees
+PATCH https://mlb-portal.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -98,7 +98,7 @@ Content-Type: application/json
 }
 
 ### Update a non existent Team
-PATCH https://localhost:8443/api/v1/teams/Team1
+PATCH https://mlb-portal.up.railway.app/api/v1/teams/Team1
 Content-Type: application/json
 
 {

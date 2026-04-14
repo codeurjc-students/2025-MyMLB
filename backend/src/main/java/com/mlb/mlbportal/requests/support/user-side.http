@@ -1,5 +1,5 @@
 ### Create a Ticket
-POST https://localhost:8443/api/v1/support
+POST https://mlb-portal.up.railway.app/api/v1/support
 Content-Type: application/json
 
 {

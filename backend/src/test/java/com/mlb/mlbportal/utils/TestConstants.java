@@ -51,6 +51,8 @@ public final class TestConstants {
 
     public static final String ANALYTICS_PATH = "/api/v1/analytics";
 
+    public static final String CACHE_PATH = "/api/v1/cache";
+
     public static final String SUCCESS = "SUCCESS";
 
     public static final String VALID_CODE = "1234";

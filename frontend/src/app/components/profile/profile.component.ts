@@ -104,6 +104,7 @@ export class ProfileComponent implements OnInit {
 		if (this.activeAction === 'logout') {
 			this.authService.logoutUser().subscribe(() => {
 				this.userService.clearProfileCache();
+				this.teamService.cleanStandingsCache();
 				this.router.navigate(['/']);
 			});
 		}
@@ -111,6 +112,7 @@ export class ProfileComponent implements OnInit {
 		if (this.activeAction === 'delete') {
 			this.authService.deleteAccount().subscribe(() => {
 				this.analyticsService.updateDeletedUsers().subscribe();
+				this.teamService.cleanStandingsCache();
 				this.router.navigate(['/'])
 			});
 		}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CacheController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MLBPortal</a> &gt; <a href="index.source.html" class="el_package">com.mlb.mlbportal.controllers</a> &gt; <span class="el_source">CacheController.java</span></div><h1>CacheController.java</h1><pre class="source lang-java linenums">package com.mlb.mlbportal.controllers;
+
+import com.mlb.mlbportal.security.jwt.AuthResponse;
+import com.mlb.mlbportal.services.utilities.CacheService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Tag(name = &quot;Cache Management&quot;, description = &quot;Endpoints for managing and clearing application caches&quot;)
+@RestController
+@RequestMapping(&quot;/api/v1/cache&quot;)
+@AllArgsConstructor
+public class CacheController {
+    private final CacheService cacheService;
+
+    @Operation(summary = &quot;Get all cache names&quot;, description = &quot;Retrieve a list of all active cache names managed by the application.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved cache names&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @GetMapping(produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; getCaches() {
+<span class="fc" id="L35">        return ResponseEntity.ok(this.cacheService.getCaches());</span>
+    }
+
+    @Operation(summary = &quot;Clear a specific cache&quot;, description = &quot;Clear the contents of a single cache.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully cleared the cache&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Cache not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @DeleteMapping(value = &quot;/{name}&quot;, produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; clearSingleCache(@PathVariable(&quot;name&quot;)String name) {
+<span class="fc" id="L46">        this.cacheService.clearSingleCache(name);</span>
+<span class="fc" id="L47">        String message = &quot;Cache: &quot; + name + &quot; Successfully Cleared&quot;;</span>
+<span class="fc" id="L48">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, message));</span>
+    }
+
+    @Operation(summary = &quot;Clear all caches&quot;, description = &quot;Perform a global purge of all application caches.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully cleared all caches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
+    @DeleteMapping(produces = &quot;application/json&quot;)
+    public ResponseEntity&lt;AuthResponse&gt; clearAllCaches() {
+<span class="fc" id="L58">        this.cacheService.clearAllCaches();</span>
+<span class="fc" id="L59">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;All Caches Successfully Cleared&quot;));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,7 @@ public class StadiumService {
     private final PaginationHandlerService paginationHandlerService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-stadiums", key = "{#page, #size}")
     public Page<StadiumInitDTO> getAllStadiums(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
         Page<Stadium> stadiums = this.stadiumRepository.findAll(pageable);
@@ -41,6 +44,7 @@ public class StadiumService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-available-stadiums", key = "{#page, #size}")
     public Page<StadiumInitDTO> getAllAvailableStadiums(int page, int size) {
         List<Stadium> stadiums = this.stadiumRepository.findByTeamIsNull();
         return this.paginationHandlerService.paginateAndMap(stadiums, page, size, this.stadiumMapper::toStadiumInitDTO);
@@ -59,6 +63,7 @@ public class StadiumService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public PictureInfo addPicture(String stadiumName, MultipartFile file) throws IOException {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
 
@@ -74,6 +79,7 @@ public class StadiumService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public void deletePicture(String stadiumName, String publicId) {
         Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         stadium.getPictures().removeIf(p -> publicId.equals(p.getPublicId()));
@@ -81,8 +87,9 @@ public class StadiumService {
     }
 
     @Transactional
-    public PictureInfo editStadiumMapPicture(String stadiumNae, MultipartFile file) throws IOException {
-        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumNae);
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "search-stadium"}, allEntries = true)
+    public PictureInfo editStadiumMapPicture(String stadiumName, MultipartFile file) throws IOException {
+        Stadium stadium = this.stadiumRepository.findByNameOrThrow(stadiumName);
         PictureInfo pictureInfo = this.pictureService.uploadPicture(file);
         stadium.setPictureMap(pictureInfo);
         this.stadiumRepository.save(stadium);
@@ -90,6 +97,7 @@ public class StadiumService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-stadiums", "get-available-stadiums", "get-teams", "search-stadium", "search-team"}, allEntries = true)
     public StadiumDTO createStadium(CreateStadiumRequest request) {
         if (this.stadiumRepository.findByName(request.name()).isPresent()) {
             throw new StadiumAlreadyExistsException();

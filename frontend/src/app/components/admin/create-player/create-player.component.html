@@ -63,7 +63,7 @@
                 <div class="relative w-full">
 					<mat-form-field class="w-full admin-input-fields">
 						<mat-label>Positions</mat-label>
-						<mat-select [(ngModel)]="positionInput" placeholder="Select the position...">
+						<mat-select [(ngModel)]="positionInput" placeholder="Select the position..." panelClass="select-panel">
 							@for (pos of availablePositions; track pos) {
 								<mat-option [value]="pos">{{pos}}</mat-option>
 							}

@@ -113,9 +113,7 @@ class TeamServiceIntegrationTest {
         DailyStandings historicStanding = new DailyStandings(
                 this.team1,
                 LocalDate.now().minusDays(1),
-                1,
-                TEST_TEAM1_WINS,
-                TEST_TEAM1_LOSSES
+                1
         );
         this.dailyStandingsRepository.saveAndFlush(historicStanding);
 

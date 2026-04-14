@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 	providedIn: 'root',
 })
 export class ValidationService {
-	constructor() {}
 
 	public isTeamSummary(elem: any): elem is TeamSummary {
 		return 'abbreviation' in elem;

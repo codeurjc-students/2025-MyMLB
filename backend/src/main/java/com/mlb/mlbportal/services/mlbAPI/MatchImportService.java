@@ -4,14 +4,18 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
 import javax.naming.ServiceUnavailableException;
 
+import com.mlb.mlbportal.services.utilities.CacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -42,6 +46,7 @@ public class MatchImportService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TeamImportService teamLookupService;
     private final TeamService teamService;
+    private final CacheService cacheService;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
@@ -92,6 +97,14 @@ public class MatchImportService {
     @Transactional
     @CircuitBreaker(name = "verifyMatchStatus", fallbackMethod = "fallbackVerifyStatus")
     @Retry(name = "verifyMatchStatus")
+    @CacheEvict(value = {
+            "get-standings",
+            "historic-ranking",
+            "win-distribution",
+            "wins-per-rivals",
+            "get-home-matches",
+            "get-away-matches"
+    }, allEntries = true)
     public void verifyMatchStatus() {
         try {
             LocalDate today = LocalDate.now(this.clock);
@@ -242,7 +255,8 @@ public class MatchImportService {
         int awayId = game.teams().away().team().id();
         TeamSummary home = this.teamLookupService.getTeamSummary(homeId);
         TeamSummary away = this.teamLookupService.getTeamSummary(awayId);
-        LocalDateTime date = LocalDateTime.parse(game.gameDate().replace("Z", ""));
+        LocalDateTime date = ZonedDateTime.parse(game.gameDate())
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid")).toLocalDateTime();
         MatchStatus status = this.mapStatus(game.status().detailedState());
         String stadiumName = game.venue().name();
         if (stadiumName.equals("Rate Field")) {
@@ -303,6 +317,14 @@ public class MatchImportService {
     @Transactional
     public void updateSeasonMatches() {
         this.matchRepository.deleteAll();
+        this.cacheService.clearCaches(
+                "get-standings",
+                "historic-ranking",
+                "win-distribution",
+                "wins-per-rivals",
+                "get-home-matches",
+                "get-away-matches"
+        );
         this.self.getOfficialMatches(
                 LocalDate.of(2026, Month.MARCH, 1),
                 LocalDate.of(2026, Month.OCTOBER, 20)

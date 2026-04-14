@@ -199,7 +199,7 @@
 			@if (selectedPlayer) {
 				<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
 					<div class="w-full max-w-6xl">
-						<app-stats-panel id="player-stats" [teamStats]="false" [player]="selectedPlayer" (close)="selectedPlayer = null" />
+						<app-stats-panel id="player-stats" [teamStats]="false" [player]="selectedPlayer" (close)="closeStatsModal()" />
 					</div>
 				</div>
 			}
@@ -214,7 +214,7 @@
 					<span class="app-button-texts">Show Calendar</span>
 				</button>
 				@if (showCalendar) {
-					<app-calendar [team]="team" (close)="showCalendar = false"></app-calendar>
+					<app-calendar [team]="team" (close)="closeCalendar()"></app-calendar>
 				}
 			</section>
 

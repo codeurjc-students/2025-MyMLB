@@ -29,7 +29,7 @@ describe('API Performance Analytics E2E Tests', () => {
             body: mockData
         }).as('getAnalytics');
 
-        cy.visit('/statistics');
+        cy.visit('/analytics');
         cy.contains('button', /API/i).click();
 
         cy.wait('@getAnalytics');

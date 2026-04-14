@@ -17,5 +17,6 @@ public class TeamScheduler {
     @Scheduled(cron = "0 0 5 * * *", zone = "Europe/Madrid")
     public void updateTeamStatsAndRankings() {
         this.teamImportService.getTeamStats();
+        log.info("Team Stats Updated. Reset Team Cache");
     }
 }

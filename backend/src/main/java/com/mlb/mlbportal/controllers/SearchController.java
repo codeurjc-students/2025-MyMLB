@@ -46,19 +46,13 @@ public class SearchController {
 
         switch (type.toLowerCase()) {
             case "stadium" -> {
-                return ResponseEntity.ok(searchService.searchStadiums(query, page, size));
+                return ResponseEntity.ok(this.searchService.searchStadiums(query, page, size));
             }
             case "team" -> {
-                return ResponseEntity.ok(searchService.searchTeams(query, page, size));
+                return ResponseEntity.ok(this.searchService.searchTeams(query, page, size));
             }
             case "player" -> {
-                if ("position".equalsIgnoreCase(playerType)) {
-                    return ResponseEntity.ok(searchService.searchPositionPlayers(query, page, size));
-                } else if ("pitcher".equalsIgnoreCase(playerType)) {
-                    return ResponseEntity.ok(searchService.searchPitchers(query, page, size));
-                } else {
-                    throw new InvalidSearchTypeException("Missing or invalid playerType parameter");
-                }
+                return ResponseEntity.ok(this.searchService.searchPlayer(type, query, page, size));
             }
             default -> throw new InvalidSearchTypeException("Invalid search type: " + type);
         }

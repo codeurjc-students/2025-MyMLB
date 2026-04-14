@@ -2,10 +2,10 @@
 
 <span class="fc" id="L3">public record WinDistributionDTO(</span>
         String teamName,
-        Long homeGames,
-        Long homeWins,
-        Long roadGames,
-        Long roadWins
+        Integer homeGames,
+        Integer homeWins,
+        Integer roadGames,
+        Integer roadWins
 ) {
     public Double getHomeWinPct() {
 <span class="pc bpc" id="L11" title="1 of 4 branches missed.">        if (this.homeGames == null || this.homeGames == 0) {</span>

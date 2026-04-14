@@ -15,7 +15,7 @@ describe('Standings Widget E2E Tests', () => {
 	});
 
 	it('should display league logo and division title', () => {
-		cy.get('img[alt="AL Logo"]').should('be.visible');
+		cy.get('img[alt*="AL"]').should('be.visible');
 		cy.contains('AL').should('be.visible');
 		cy.contains('East').should('be.visible');
 	});

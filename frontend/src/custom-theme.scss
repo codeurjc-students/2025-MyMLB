@@ -34,7 +34,7 @@ body {
   margin: 0;
 }
 
-/* Background color */
+/* Background color For Input Fields */
 .dark .admin-input-fields .mdc-text-field--filled {
   background-color: rgb(30, 41, 59) !important;
 }
@@ -69,7 +69,7 @@ body {
 /* Select Arrow */
 .dark .admin-input-fields .mat-mdc-select-arrow {
   color: rgba(255, 255, 255, 0.5) !important;
-  transition: transform 0.7s ease-in-out !important;
+  transition: transform 0.3s ease-in-out !important;
 }
 
 .dark .admin-input-fields .mat-mdc-select-placeholder {
@@ -107,50 +107,24 @@ body {
   color: #ffffff !important;
 }
 
-/* --- Player Rankings Widget --- */
-::ng-deep .stats-select-compact {
-  display: flex !important;
-  justify-content: center;
-  width: 120px !important;
-  margin: 0 auto !important;
-}
+/* --- Selects --- */
+.select-panel {
+  background-color: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 
-::ng-deep .stats-select-compact .mat-mdc-text-field-wrapper {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-radius: 99px !important;
-  padding: 0 16px !important;
-  height: 36px !important;
-}
+  .dark & {
+    background-color: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
-::ng-deep .stats-select-compact .mdc-line-ripple {
-  display: none !important;
-}
-
-::ng-deep .stats-select-compact .mat-mdc-form-field-flex {
-  padding-top: 0 !important;
-  height: 100% !important;
-  align-items: center !important;
-}
-
-::ng-deep .stats-select-compact .mat-mdc-form-field-infix {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  min-height: auto !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-::ng-deep .stats-select-compact .mat-mdc-form-field-subscript-wrapper {
-  display: none !important;
-}
-
-::ng-deep .stats-select-compact .mat-mdc-select-value {
-  color: #60a5fa !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  text-transform: uppercase;
-}
-
-::ng-deep .stats-select-compact .mat-mdc-select-arrow svg {
-  fill: #60a5fa !important;
+    .mat-mdc-option {
+      color: #cbd5e1 !important;
+      &:hover:not(.mdc-list-item--disabled) {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+      }
+      &.mdc-list-item--selected {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        .mdc-list-item__primary-text { color: #60a5fa !important; }
+      }
+    }
+  }
 }

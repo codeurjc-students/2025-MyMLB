@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.mlb.mlbportal.dto.ticket.TicketDTO;
 import com.mlb.mlbportal.mappers.ticket.TicketMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +56,7 @@ public class UserService {
     private final PictureService pictureService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-users", key = "{#page, #size}")
     public Page<ShowUser> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
         Page<UserEntity> users = this.userRepository.findAll(pageable);
@@ -65,6 +68,13 @@ public class UserService {
         return this.userRepository.findByUsernameOrThrow(username);
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = "get-profile", key = "#username")
+    public ProfileDTO getUserProfile(String username) {
+        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
+        return this.userMapper.toProfileDTO(user);
+    }
+
     private boolean existsUser(RegisterRequest registerRequest) {
         boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();
         boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();
@@ -72,6 +82,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-users", allEntries = true)
     public RegisterRequest createUser(RegisterRequest registerRequest) {
         if (this.existsUser(registerRequest)) {
             throw new UserAlreadyExistsException();
@@ -84,6 +95,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-users", key = "#username")
     public void deleteAccount(String username) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         this.userRepository.delete(user);
@@ -125,12 +137,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "get-fav-teams", key = "#username")
     public Set<TeamSummary> getFavTeamsOfAUser(String username) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.teamMapper.toTeamSummarySet(user.getFavTeams());
     }
 
     @Transactional
+    @CacheEvict(value = {"get-fav-teams", "get-standings"}, key = "#username")
     public void addFavTeam(String username, String teamName) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
@@ -142,6 +156,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = {"get-fav-teams", "get-standings"}, key = "#username")
     public void removeFavTeam(String username, String teamName) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
@@ -154,6 +169,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-profile", key = "#username")
     public PictureInfo changeProfilePicture(String username, MultipartFile file) throws IOException {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         PictureInfo picture = this.pictureService.uploadPicture(file);
@@ -163,6 +179,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-profile", key = "#username")
     public void deleteProfilePicture(String username) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         user.setPicture(null);
@@ -170,6 +187,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-profile", key = "#username")
     public ShowUser updateProfile(String username, EditProfileRequest request) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         boolean passwordChange = false;
@@ -191,12 +209,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileDTO getUserProfile(String username) {
-        UserEntity user = this.userRepository.findByUsernameOrThrow(username);
-        return this.userMapper.toProfileDTO(user);
-    }
-
-    @Transactional(readOnly = true)
+    @Cacheable(value = "get-purchase-tickets", key = "#username")
     public List<TicketDTO> getPurchasedTickets(String username) {
         UserEntity user = this.userRepository.findByUsernameOrThrow(username);
         return this.ticketMapper.toListTicketDTO(user.getTickets());

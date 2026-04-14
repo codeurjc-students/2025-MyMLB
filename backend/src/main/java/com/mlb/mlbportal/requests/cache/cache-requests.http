@@ -1,0 +1,11 @@
+### Get all caches
+GET https://mlb-portal.up.railway.app/api/v1/cache
+Accept: application/json
+
+### Delete a specific cache
+DELETE https://mlb-portal.up.railway.app/api/v1/cache/get-users
+Accept: application/json
+
+### Delete all caches
+DELETE https://mlb-portal.up.railway.app/api/v1/cache
+Accept: application/json

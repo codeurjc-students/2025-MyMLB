@@ -7,12 +7,14 @@ import { TeamSummary } from '../models/team.model';
 import { Pictures } from '../models/pictures.model';
 import { Ticket } from '../models/ticket/ticket.model';
 import { environment } from '../../environments/environment';
+import { TeamService } from './team.service';
 
 @Injectable({
 	providedIn: "root"
 })
 export class UserService {
 	private http = inject(HttpClient);
+	private teamService = inject(TeamService);
 	private apiUrl = `${environment.apiUrl}/users`
 	private favTeamsSubject = new BehaviorSubject<TeamSummary[]>([]);
 	public favTeams$ = this.favTeamsSubject.asObservable();
@@ -74,11 +76,16 @@ export class UserService {
 	}
 
 	public addFavTeam(team: TeamSummary): Observable<AuthResponse> {
-		return this.http.post<AuthResponse>(`${this.apiUrl}/favorites/teams/${team.name}`, {}, { withCredentials: true });
+		return this.http.post<AuthResponse>(`${this.apiUrl}/favorites/teams/${team.name}`, {}, { withCredentials: true }).pipe(
+			tap(() => this.teamService.cleanStandingsCache())
+		);
 	}
 
 	public removeFavTeam(team: TeamSummary): Observable<AuthResponse> {
-		return this.http.delete<AuthResponse>(`${this.apiUrl}/favorites/teams/${team.name}`, { withCredentials: true });
+		this.teamService.cleanStandingsCache();
+		return this.http.delete<AuthResponse>(`${this.apiUrl}/favorites/teams/${team.name}`, { withCredentials: true }).pipe(
+			tap(() => this.teamService.cleanStandingsCache())
+		);
 	}
 
 	public getPurchasedTickets(): Observable<Ticket[]> {

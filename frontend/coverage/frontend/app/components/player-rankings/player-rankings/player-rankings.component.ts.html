@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.03% </span>
+                <span class="strong">71.81% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>85/118</span>
+                <span class='fraction'>79/110</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.42% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/19</span>
+                <span class='fraction'>9/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.37% </span>
+                <span class="strong">58.06% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>19/32</span>
+                <span class='fraction'>18/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.92% </span>
+                <span class="strong">71.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>82/114</span>
+                <span class='fraction'>76/106</span>
             </div>
         
             
@@ -413,20 +413,8 @@
 <a name='L348'></a><a href='#L348'>348</a>
 <a name='L349'></a><a href='#L349'>349</a>
 <a name='L350'></a><a href='#L350'>350</a>
-<a name='L351'></a><a href='#L351'>351</a>
-<a name='L352'></a><a href='#L352'>352</a>
-<a name='L353'></a><a href='#L353'>353</a>
-<a name='L354'></a><a href='#L354'>354</a>
-<a name='L355'></a><a href='#L355'>355</a>
-<a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a>
-<a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L351'></a><a href='#L351'>351</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -461,6 +449,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -715,21 +704,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -806,6 +780,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../services/auth.service';
+import { StatsFormatterService } from '../../../services/utilities/stats-formatter.service';
 &nbsp;
 @Component({
 	selector: 'app-player-rankings',
@@ -828,6 +803,7 @@ export class PlayerRankingsComponent implements OnInit {
 	private teamService = inject(TeamService);
 	private authService = inject(AuthService);
 	public backgroundService = inject(BackgroundColorService);
+	public statFormatter = inject(StatsFormatterService);
 	private route = inject(ActivatedRoute);
 &nbsp;
 	public playerType: string = 'position';
@@ -1077,21 +1053,6 @@ export class PlayerRankingsComponent implements OnInit {
 		this.adjustTeamsToDisplay();
 	}
 &nbsp;
-	public statFormatter(value: number, stat: string) {
-		<span class="missing-if-branch" title="if path not taken" >I</span>if (!value &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >value !== 0)</span> {
-<span class="cstat-no" title="statement not covered" >			return '-';</span>
-		}
-		const decimalStats = ['AVG', 'OBP', 'SLG', 'OPS', 'ERA', 'WHIP'];
-		if (decimalStats.includes(stat)) {
-			const formatted = value.toFixed(3);
-			if (['AVG', 'OBP', 'SLG', 'OPS'].includes(stat)) {
-				return formatted.startsWith('0') ? formatted.substring(1) : <span class="branch-1 cbranch-no" title="branch not covered" >formatted;</span>
-			}
-<span class="cstat-no" title="statement not covered" >			return value.toFixed(2);</span>
-		}
-		return value.toString();
-	}
-&nbsp;
 	public <span class="fstat-no" title="function not covered" >openChart(</span>key: string, value: string) {
 <span class="cstat-no" title="statement not covered" >		this.selectedRankingForChart = { key, value };</span>
 <span class="cstat-no" title="statement not covered" >		document.body.style.overflow = 'hidden'; </span>// Disable background scroll
@@ -1159,7 +1120,7 @@ export class PlayerRankingsComponent implements OnInit {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-11T17:24:34.835Z
+                at 2026-04-13T22:47:38.954Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

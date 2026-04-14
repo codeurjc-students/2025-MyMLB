@@ -10,12 +10,14 @@ import { Stadium } from '../../../models/stadium.model';
 import { TeamSummary } from '../../../models/team.model';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { ValidationService } from '../../../services/utilities/validation.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-select-element-modal',
 	standalone: true,
-	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [CommonModule],
+	changeDetection: ChangeDetectionStrategy.Default,
+	imports: [CommonModule, MatIconModule, MatTooltipModule],
 	templateUrl: './select-element-modal.component.html',
 })
 export class SelectElementModalComponent {

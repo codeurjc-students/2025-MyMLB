@@ -109,7 +109,7 @@ class MatchImportServiceTest {
         String expectedStadiumName = this.mockStadiums.getFirst().getName();
         Venue venue = new Venue(1, expectedStadiumName);
 
-        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00", status, teams, venue);
+        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00Z", status, teams, venue);
         ScheduleResponse scheduleResponse = new ScheduleResponse(List.of(new DateEntry(List.of(gameEntry))));
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(scheduleResponse);
@@ -150,7 +150,7 @@ class MatchImportServiceTest {
         Status status = new Status("Final");
         Venue venue = new Venue(1, STADIUM1_NAME);
 
-        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00", status, teams, venue);
+        GameEntry gameEntry = new GameEntry(1L, "2026-03-01T18:05:00Z", status, teams, venue);
         DateEntry dateEntry = new DateEntry(List.of(gameEntry));
 
         return new ScheduleResponse(List.of(dateEntry));
@@ -222,7 +222,6 @@ class MatchImportServiceTest {
         existingMatch.setAwayScore(1);
 
         when(this.restTemplate.getForObject(anyString(), eq(ScheduleResponse.class))).thenReturn(this.buildResponse());
-        when(this.teamLookupService.getTeamSummary(anyInt())).thenReturn(this.mockTeamSummaries.getFirst());
         when(this.matchRepository.findByStatsApiId(any())).thenReturn(Optional.of(existingMatch));
 
         this.mlbImportService.verifyMatchStatus();

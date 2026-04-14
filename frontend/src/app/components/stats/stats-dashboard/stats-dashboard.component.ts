@@ -4,12 +4,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { VisibilityComponent } from "../visibility/visibility.component";
 import { FavTeamsAnalyticsComponent } from "../fav-teams-analytics/fav-teams-analytics.component";
 import { ApiPerformanceComponent } from "../api-performance/api-performance.component";
+import { CacheComponent } from "../cache/cache.component";
 
-type StatsView = 'visibility' | 'activity' | 'favTeams' | 'api' | null;
+type StatsView = 'visibility' | 'activity' | 'favTeams' | 'api' | 'cache' | null;
 
 @Component({
 	selector: 'app-stats-dashboard',
-	imports: [CommonModule, MatIconModule, VisibilityComponent, FavTeamsAnalyticsComponent, ApiPerformanceComponent],
+	imports: [CommonModule, MatIconModule, VisibilityComponent, FavTeamsAnalyticsComponent, ApiPerformanceComponent, CacheComponent],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './stats-dashboard.component.html'
@@ -41,6 +42,14 @@ export class StatsDashboardComponent {
 			iconStyles: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400',
 			arrowStyles: 'group-hover:text-cyan-500',
 			view: 'favTeams'
+		},
+		{
+			label: 'Caches',
+			subtitle: 'Manually restore the active caches of the application',
+			iconName: 'storage',
+			iconStyles: 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400',
+			arrowStyles: 'group-hover:text-violet-500',
+			view: 'cache'
 		}
 	];
 

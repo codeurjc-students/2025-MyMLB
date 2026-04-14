@@ -38,7 +38,7 @@ describe('Profile Component Tests', () => {
 
 		const statsServiceMock = jasmine.createSpyObj('StatsService', ['updateDeletedUsers']);
 		const matchServiceMock = jasmine.createSpyObj('MatchService', ['refreshMatches']);
-		const teamServiceMock = jasmine.createSpyObj('TeamService', ['hydrateTeamStatistics']);
+		const teamServiceMock = jasmine.createSpyObj('TeamService', ['hydrateTeamStatistics', 'cleanStandingsCache']);
         const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
         TestBed.configureTestingModule({

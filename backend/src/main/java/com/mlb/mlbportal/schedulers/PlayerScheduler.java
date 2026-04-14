@@ -17,5 +17,6 @@ public class PlayerScheduler {
     @Scheduled(cron = "0 0 6 * * *", zone = "Europe/Madrid")
     public void updateRostersAndPlayerStats() {
         this.playerImportService.getTeamRoster();
+        log.info("Player Stats Updated. Reset Player Cache");
     }
 }

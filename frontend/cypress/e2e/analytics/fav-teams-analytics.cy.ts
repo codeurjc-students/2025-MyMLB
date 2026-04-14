@@ -24,7 +24,7 @@ describe('Fav Teams Analytics E2E Tests', () => {
 			}
         }).as('getAnalytics');
 
-		cy.visit('/statistics');
+		cy.visit('/analytics');
         cy.contains('button', /Favorite/i).click();
         cy.wait('@getAnalytics');
 	});

@@ -10,10 +10,6 @@ import java.util.Set;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
-
-import com.mlb.mlbportal.models.Team;
-import com.mlb.mlbportal.models.enums.MatchStatus;
-import com.mlb.mlbportal.repositories.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.enums.Division;
 import com.mlb.mlbportal.models.enums.League;
+import com.mlb.mlbportal.models.enums.MatchStatus;
+import com.mlb.mlbportal.repositories.TeamRepository;
 import static com.mlb.mlbportal.utils.TestConstants.ALL_TEAMS_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.STANDINGS_PATH;
 import static com.mlb.mlbportal.utils.TestConstants.SUCCESS;
@@ -77,7 +76,7 @@ class TeamControllerTest extends BaseE2ETest {
         this.teamRepository.saveAll(List.of(team1, team2));
 
         saveTestMatches(team1, team2, 5, 3, LocalDateTime.now().minusDays(4), MatchStatus.FINISHED);
-        saveTestDailyStandings(team1, LocalDate.now().minusMonths(1), 1, 20, 10);
+        saveTestDailyStandings(team1, LocalDate.now().minusMonths(1), 1);
     }
 
     @Test
@@ -211,9 +210,7 @@ class TeamControllerTest extends BaseE2ETest {
                 .body("$", hasKey(TEST_TEAM1_NAME))
                 .body("'" + TEST_TEAM1_NAME + "'.size()", is(1))
                 .body("'" + TEST_TEAM1_NAME + "'[0].teamName", is(TEST_TEAM1_NAME))
-                .body("'" + TEST_TEAM1_NAME + "'[0].rank", is(1))
-                .body("'" + TEST_TEAM1_NAME + "'[0].wins", is(20))
-                .body("'" + TEST_TEAM1_NAME + "'[0].losses", is(10));
+                .body("'" + TEST_TEAM1_NAME + "'[0].rank", is(1));
     }
 
     @Test

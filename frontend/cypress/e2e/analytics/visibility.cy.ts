@@ -23,7 +23,7 @@ describe('Visibility Analytics E2E Tests', () => {
             ]
         }).as('getAnalytics');
 
-		cy.visit('/statistics');
+		cy.visit('/analytics');
         cy.contains('button', /Visibility/i).click();
         cy.wait('@getAnalytics');
     });

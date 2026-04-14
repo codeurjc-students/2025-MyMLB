@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { MatchService } from '../../../services/match.service';
 import { ShowMatch } from '../../../models/match.model';
 import { TeamInfo } from '../../../models/team.model';
@@ -18,6 +18,9 @@ export class CalendarComponent implements OnInit {
 	@Input() team!: TeamInfo;
 	@Output() close = new EventEmitter<void>();
 
+	private matchService = inject(MatchService);
+	public backgroundService = inject(BackgroundColorService);
+
 	public viewDate: Date = new Date();
 	public errorMessage = '';
 
@@ -26,11 +29,6 @@ export class CalendarComponent implements OnInit {
 	public showMatchInfo = false;
 	public selectedMatch!: ShowMatch;
 	public isHomeMatch = false;
-
-	constructor(
-		private matchService: MatchService,
-		public backgroundService: BackgroundColorService
-	) {}
 
 	ngOnInit() {
 		this.loadMatchesForMonth(this.viewDate);
@@ -106,11 +104,17 @@ export class CalendarComponent implements OnInit {
 	public openMatchInfoModal(match: ShowMatch) {
 		this.selectedMatch = match;
 		this.showMatchInfo = true;
+		document.body.style.overflow = 'hidden';
 
 		const homeName = this.selectedMatch?.homeTeam?.name;
 		const teamName = this.team?.teamStats?.name;
 
 		this.isHomeMatch = homeName === teamName;
+	}
+
+	public closeMatchInfoModal() {
+		this.showMatchInfo = false;
+		document.body.style.overflow = 'auto';
 	}
 
 	public getLogoPath(match: ShowMatch): string {

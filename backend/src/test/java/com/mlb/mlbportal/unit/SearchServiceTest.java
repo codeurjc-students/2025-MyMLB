@@ -3,6 +3,10 @@ package com.mlb.mlbportal.unit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.mlb.mlbportal.dto.player.PlayerDTO;
+import com.mlb.mlbportal.models.player.Player;
+import com.mlb.mlbportal.services.player.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +26,6 @@ import com.mlb.mlbportal.dto.stadium.StadiumInitDTO;
 import com.mlb.mlbportal.dto.team.TeamInfoDTO;
 import com.mlb.mlbportal.mappers.StadiumMapper;
 import com.mlb.mlbportal.mappers.TeamMapper;
-import com.mlb.mlbportal.mappers.player.PitcherMapper;
-import com.mlb.mlbportal.mappers.player.PositionPlayerMapper;
 import com.mlb.mlbportal.models.Stadium;
 import com.mlb.mlbportal.models.Team;
 import com.mlb.mlbportal.models.player.Pitcher;
@@ -59,10 +61,7 @@ class SearchServiceTest {
     private TeamMapper teamMapper;
 
     @Mock
-    private PositionPlayerMapper positionPlayerMapper;
-
-    @Mock
-    private PitcherMapper pitcherMapper;
+    private PlayerService playerService;
 
     @InjectMocks
     private SearchService searchService;
@@ -130,13 +129,13 @@ class SearchServiceTest {
     void testSearchPositionPlayer() {
         Page<PositionPlayer> mockPage = new PageImpl<>(this.positionPlayers, PageRequest.of(0, 10), this.positionPlayers.size());
         when(this.positionPlayerRepository.findByNameContainingIgnoreCase(eq("pl"), any(Pageable.class))).thenReturn(mockPage);
-        when(this.positionPlayerMapper.toPositionPlayerDTO(any(PositionPlayer.class))).thenAnswer(invocation -> {
+        when(this.playerService.mapToDTO(any(Player.class))).thenAnswer(invocation -> {
             PositionPlayer mockPlayer = invocation.getArgument(0);
             int index = this.positionPlayers.indexOf(mockPlayer);
             return this.positionPlayerDtos.get(index);
         });
 
-        Page<PositionPlayerDTO> result = this.searchService.searchPositionPlayers("pl", 0, 10);
+        Page<PlayerDTO> result = this.searchService.searchPlayer("position", "pl", 0, 10);
 
         assertThat(result.getContent()).hasSize(2).containsExactlyElementsOf(this.positionPlayerDtos);
         assertThat(result.getTotalElements()).isEqualTo(2);
@@ -147,13 +146,13 @@ class SearchServiceTest {
     void testSearchPitcher() {
         Page<Pitcher> mockPage = new PageImpl<>(this.pitchers, PageRequest.of(0, 10), this.pitchers.size());
         when(this.pitcherRepository.findByNameContainingIgnoreCase(eq("pl"), any(Pageable.class))).thenReturn(mockPage);
-        when(this.pitcherMapper.toPitcherDTO(any(Pitcher.class))).thenAnswer(invocation -> {
+        when(this.playerService.mapToDTO(any(Player.class))).thenAnswer(invocation -> {
             Pitcher mockPlayer = invocation.getArgument(0);
             int index = this.pitchers.indexOf(mockPlayer);
             return this.pitcherDtos.get(index);
         });
 
-        Page<PitcherDTO> result = this.searchService.searchPitchers("pl", 0, 10);
+        Page<PlayerDTO> result = this.searchService.searchPlayer("pitcher", "pl", 0, 10);
 
         assertThat(result.getContent()).hasSize(1).containsExactlyElementsOf(this.pitcherDtos);
         assertThat(result.getTotalElements()).isEqualTo(1);

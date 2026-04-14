@@ -6,8 +6,10 @@ package com.mlb.mlbportal.dto.mlbapi.team;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Optional;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L10">public record TeamRecords(</span>
+<span class="fc" id="L12">public record TeamRecords(</span>
         TeamRecordsGeneralInfo team,
         String divisionRank,
         Integer gamesPlayed,
@@ -20,12 +22,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
         Integer runDifferential,
         RecordsWrapper records
 ) {
-    public String getLastTenGames() {
-<span class="pc bpc" id="L24" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
-<span class="nc" id="L25">            return &quot;0-0&quot;;</span>
+    public Optional&lt;SplitRecords&gt; getHomeSplit() {
+<span class="pc bpc" id="L26" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
+<span class="nc" id="L27">            return Optional.empty();</span>
         }
-<span class="pc" id="L27">        return records.splitRecords().stream().filter(r -&gt; &quot;lastTen&quot;.equals(r.type()))</span>
-<span class="pc" id="L28">                .findFirst().map(sR -&gt; sR.wins() + &quot;-&quot; + sR.losses()).orElse(&quot;0-0&quot;);</span>
+<span class="pc" id="L29">        return records.splitRecords().stream().filter(r -&gt; &quot;home&quot;.equals(r.type())).findFirst();</span>
+    }
+
+    public Optional&lt;SplitRecords&gt; getAwaySplit() {
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
+<span class="nc" id="L34">            return Optional.empty();</span>
+        }
+<span class="pc" id="L36">        return records.splitRecords().stream().filter(r -&gt; &quot;away&quot;.equals(r.type())).findFirst();</span>
+    }
+
+    public String getLastTenGames() {
+<span class="pc bpc" id="L40" title="2 of 4 branches missed.">        if (records == null || records.splitRecords() == null) {</span>
+<span class="nc" id="L41">            return &quot;0-0&quot;;</span>
+        }
+<span class="pc" id="L43">        return records.splitRecords().stream().filter(r -&gt; &quot;lastTen&quot;.equals(r.type()))</span>
+<span class="pc" id="L44">                .findFirst().map(sR -&gt; sR.wins() + &quot;-&quot; + sR.losses()).orElse(&quot;0-0&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -17,6 +17,7 @@ public class TeamScheduler {
     @Scheduled(cron = &quot;0 0 5 * * *&quot;, zone = &quot;Europe/Madrid&quot;)
     public void updateTeamStatsAndRankings() {
 <span class="fc" id="L19">        this.teamImportService.getTeamStats();</span>
-<span class="fc" id="L20">    }</span>
+<span class="fc" id="L20">        log.info(&quot;Team Stats Updated. Reset Team Cache&quot;);</span>
+<span class="fc" id="L21">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -12,7 +12,7 @@
 				<div class="w-full md:w-auto md:min-w-[280px] flex items-start gap-2">
 					<mat-form-field matTooltip="Filter by rivals of the selected league" matTooltipPosition="above" appearance="fill" class="flex-grow admin-input-fields !pb-0">
 						<mat-label>League</mat-label>
-						<mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)">
+						<mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)" panelClass="select-panel">
 							@for (league of availableLeagues; track league) {
 								<mat-option [value]="league">{{ league }}</mat-option>
 							}
@@ -34,7 +34,7 @@
 				<div class="w-full md:w-auto md:min-w-[280px] flex items-start gap-2">
 					<mat-form-field matTooltip="Filter by rivals of the selected division" matTooltipPosition="above" appearance="fill" class="flex-grow admin-input-fields !pb-0">
 						<mat-label>Division</mat-label>
-						<mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)">
+						<mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)" panelClass="select-panel">
 							@for (division of availableDivisions; track division) {
 								<mat-option [value]="division">{{ division }}</mat-option>
 							}
@@ -54,7 +54,7 @@
 				<div class="w-full md:w-72">
 					<mat-form-field appearance="fill" class="w-full admin-input-fields !pb-0">
 						<mat-label>Add Rival to Compare</mat-label>
-						<mat-select #selectRival (selectionChange)="onRivalTeamSelected($event.value)">
+						<mat-select #selectRival (selectionChange)="onRivalTeamSelected($event.value)" panelClass="select-panel">
 							@for (team of displayedTeams; track team.name) {
 								<mat-option [value]="team.name">
 									<div class="flex items-center gap-3">

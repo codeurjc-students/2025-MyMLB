@@ -5,6 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +65,7 @@ public class TicketService {
     }
 
     @Transactional
+    @CacheEvict(value = "get-purchase-tickets", key = "#username")
     public Page<TicketDTO> purchaseTicket(String username, PurchaseRequest request, int page, int size) {
         this.validateRequest(request);
 

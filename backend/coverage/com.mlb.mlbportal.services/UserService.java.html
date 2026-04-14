@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.mlb.mlbportal.dto.ticket.TicketDTO;
 import com.mlb.mlbportal.mappers.ticket.TicketMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,152 +56,163 @@ public class UserService {
     private final PictureService pictureService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-users&quot;, key = &quot;{#page, #size}&quot;)
     public Page&lt;ShowUser&gt; getAllUsers(int page, int size) {
-<span class="fc" id="L58">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;username&quot;));</span>
-<span class="fc" id="L59">        Page&lt;UserEntity&gt; users = this.userRepository.findAll(pageable);</span>
-<span class="fc" id="L60">        return users.map(this.userMapper::toShowUser);</span>
+<span class="fc" id="L61">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;username&quot;));</span>
+<span class="fc" id="L62">        Page&lt;UserEntity&gt; users = this.userRepository.findAll(pageable);</span>
+<span class="fc" id="L63">        return users.map(this.userMapper::toShowUser);</span>
     }
 
     @Transactional(readOnly = true)
     public UserEntity getUser(String username) {
-<span class="fc" id="L65">        return this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L68">        return this.userRepository.findByUsernameOrThrow(username);</span>
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-profile&quot;, key = &quot;#username&quot;)
+    public ProfileDTO getUserProfile(String username) {
+<span class="fc" id="L74">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L75">        return this.userMapper.toProfileDTO(user);</span>
     }
 
     private boolean existsUser(RegisterRequest registerRequest) {
-<span class="fc" id="L69">        boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();</span>
-<span class="fc" id="L70">        boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();</span>
-<span class="pc bpc" id="L71" title="1 of 4 branches missed.">        return usernameValidation || emailValidation; </span>
+<span class="fc" id="L79">        boolean usernameValidation = this.userRepository.findByUsername(registerRequest.username()).isPresent();</span>
+<span class="fc" id="L80">        boolean emailValidation = this.userRepository.findByEmail(registerRequest.email()).isPresent();</span>
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">        return usernameValidation || emailValidation; </span>
     }
 
     @Transactional
+    @CacheEvict(value = &quot;get-users&quot;, allEntries = true)
     public RegisterRequest createUser(RegisterRequest registerRequest) {
-<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (this.existsUser(registerRequest)) {</span>
-<span class="fc" id="L77">            throw new UserAlreadyExistsException();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (this.existsUser(registerRequest)) {</span>
+<span class="fc" id="L88">            throw new UserAlreadyExistsException();</span>
         }
-<span class="fc" id="L79">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
-<span class="fc" id="L80">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
-<span class="fc" id="L81">        newUser.getRoles().add(&quot;USER&quot;);</span>
-<span class="fc" id="L82">        this.userRepository.save(newUser);</span>
-<span class="fc" id="L83">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
+<span class="fc" id="L90">        String encodedPassword = this.passwordEncoder.encode(registerRequest.password());</span>
+<span class="fc" id="L91">        UserEntity newUser = new UserEntity(registerRequest.email(), registerRequest.username(), encodedPassword);</span>
+<span class="fc" id="L92">        newUser.getRoles().add(&quot;USER&quot;);</span>
+<span class="fc" id="L93">        this.userRepository.save(newUser);</span>
+<span class="fc" id="L94">        return this.authenticationMapper.toRegisterRequest(newUser);</span>
     }
 
     @Transactional
+    @CacheEvict(value = &quot;get-users&quot;, key = &quot;#username&quot;)
     public void deleteAccount(String username) {
-<span class="fc" id="L88">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L89">        this.userRepository.delete(user);</span>
-<span class="fc" id="L90">    }</span>
+<span class="fc" id="L100">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L101">        this.userRepository.delete(user);</span>
+<span class="fc" id="L102">    }</span>
 
     @Transactional
     public boolean resetPassword(String code, String newPassword) {
-<span class="fc" id="L94">        Optional&lt;PasswordResetToken&gt; optReset = this.emailService.getCode(code);</span>
+<span class="fc" id="L106">        Optional&lt;PasswordResetToken&gt; optReset = this.emailService.getCode(code);</span>
 
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (optReset.isEmpty()) {</span>
-<span class="fc" id="L97">            return false;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (optReset.isEmpty()) {</span>
+<span class="fc" id="L109">            return false;</span>
         }
         
-<span class="fc" id="L100">        PasswordResetToken passwordReset = optReset.get();</span>
-<span class="fc" id="L101">        UserEntity user = passwordReset.getUser();</span>
-<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (user == null) {</span>
-<span class="fc" id="L103">            this.emailService.deleteToken(passwordReset);</span>
-<span class="fc" id="L104">            return false;</span>
+<span class="fc" id="L112">        PasswordResetToken passwordReset = optReset.get();</span>
+<span class="fc" id="L113">        UserEntity user = passwordReset.getUser();</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L115">            this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L116">            return false;</span>
         }
         
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {</span>
-<span class="nc" id="L108">            passwordReset.getUser().setResetToken(null);</span>
-<span class="nc" id="L109">            this.emailService.deleteToken(passwordReset);</span>
-<span class="nc" id="L110">            return false;</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {</span>
+<span class="nc" id="L120">            passwordReset.getUser().setResetToken(null);</span>
+<span class="nc" id="L121">            this.emailService.deleteToken(passwordReset);</span>
+<span class="nc" id="L122">            return false;</span>
         }
 
-<span class="fc" id="L113">        user.setPassword(this.passwordEncoder.encode(newPassword));</span>
-<span class="fc" id="L114">        this.userRepository.save(user);</span>
+<span class="fc" id="L125">        user.setPassword(this.passwordEncoder.encode(newPassword));</span>
+<span class="fc" id="L126">        this.userRepository.save(user);</span>
 
-<span class="fc" id="L116">        user.setResetToken(null);</span>
-<span class="fc" id="L117">        this.emailService.deleteToken(passwordReset);</span>
-<span class="fc" id="L118">        return true;</span>
+<span class="fc" id="L128">        user.setResetToken(null);</span>
+<span class="fc" id="L129">        this.emailService.deleteToken(passwordReset);</span>
+<span class="fc" id="L130">        return true;</span>
     }
 
     @Transactional(readOnly = true)
     public UserRole getUserRole(String username) {
-<span class="fc" id="L123">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L124">        return this.authenticationMapper.toUserRole(user);</span>
-    }
-
-    @Transactional(readOnly = true)
-    public Set&lt;TeamSummary&gt; getFavTeamsOfAUser(String username) {
-<span class="fc" id="L129">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L130">        return this.teamMapper.toTeamSummarySet(user.getFavTeams());</span>
-    }
-
-    @Transactional
-    public void addFavTeam(String username, String teamName) {
 <span class="fc" id="L135">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L136">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (!user.getFavTeams().add(team)) {</span>
-<span class="fc" id="L138">            throw new TeamAlreadyExistsException();</span>
-        }
-<span class="fc" id="L140">        this.userRepository.save(user);</span>
-<span class="fc" id="L141">        team.getFavoritedByUsers().add(user);</span>
-<span class="fc" id="L142">    }</span>
+<span class="fc" id="L136">        return this.authenticationMapper.toUserRole(user);</span>
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-fav-teams&quot;, key = &quot;#username&quot;)
+    public Set&lt;TeamSummary&gt; getFavTeamsOfAUser(String username) {
+<span class="fc" id="L142">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L143">        return this.teamMapper.toTeamSummarySet(user.getFavTeams());</span>
+    }
 
     @Transactional
+    @CacheEvict(value = {&quot;get-fav-teams&quot;, &quot;get-standings&quot;}, key = &quot;#username&quot;)
+    public void addFavTeam(String username, String teamName) {
+<span class="fc" id="L149">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L150">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (!user.getFavTeams().add(team)) {</span>
+<span class="fc" id="L152">            throw new TeamAlreadyExistsException();</span>
+        }
+<span class="fc" id="L154">        this.userRepository.save(user);</span>
+<span class="fc" id="L155">        team.getFavoritedByUsers().add(user);</span>
+<span class="fc" id="L156">    }</span>
+
+    @Transactional
+    @CacheEvict(value = {&quot;get-fav-teams&quot;, &quot;get-standings&quot;}, key = &quot;#username&quot;)
     public void removeFavTeam(String username, String teamName) {
-<span class="fc" id="L146">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L147">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (!user.getFavTeams().contains(team)) {</span>
-<span class="fc" id="L149">            throw new TeamNotFoundException();</span>
+<span class="fc" id="L161">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L162">        Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (!user.getFavTeams().contains(team)) {</span>
+<span class="fc" id="L164">            throw new TeamNotFoundException();</span>
         }
-<span class="fc" id="L151">        user.getFavTeams().remove(team);</span>
-<span class="fc" id="L152">        this.userRepository.save(user);</span>
-<span class="fc" id="L153">        team.getFavoritedByUsers().remove(user);</span>
-<span class="fc" id="L154">    }</span>
+<span class="fc" id="L166">        user.getFavTeams().remove(team);</span>
+<span class="fc" id="L167">        this.userRepository.save(user);</span>
+<span class="fc" id="L168">        team.getFavoritedByUsers().remove(user);</span>
+<span class="fc" id="L169">    }</span>
 
     @Transactional
+    @CacheEvict(value = &quot;get-profile&quot;, key = &quot;#username&quot;)
     public PictureInfo changeProfilePicture(String username, MultipartFile file) throws IOException {
-<span class="fc" id="L158">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L159">        PictureInfo picture = this.pictureService.uploadPicture(file);</span>
-<span class="fc" id="L160">        user.setPicture(picture);</span>
-<span class="fc" id="L161">        this.userRepository.save(user);</span>
-<span class="fc" id="L162">        return picture;</span>
-    }
-
-    @Transactional
-    public void deleteProfilePicture(String username) {
-<span class="fc" id="L167">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L168">        user.setPicture(null);</span>
-<span class="fc" id="L169">        this.userRepository.save(user);</span>
-<span class="fc" id="L170">    }</span>
-
-    @Transactional
-    public ShowUser updateProfile(String username, EditProfileRequest request) {
 <span class="fc" id="L174">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L175">        boolean passwordChange = false;</span>
-<span class="fc" id="L176">        String oldEmail = user.getEmail();</span>
-<span class="pc bpc" id="L177" title="2 of 4 branches missed.">        if (request.email() != null &amp;&amp; !request.email().isEmpty()) {</span>
-<span class="fc" id="L178">            user.setEmail(request.email());</span>
-        }
-<span class="pc bpc" id="L180" title="2 of 4 branches missed.">        if (request.password() != null &amp;&amp; !request.password().isEmpty()) {</span>
-<span class="fc" id="L181">            user.setPassword(this.passwordEncoder.encode(request.password()));</span>
-<span class="fc" id="L182">            passwordChange = true;</span>
-        }
-<span class="fc" id="L184">        user.setEnableNotifications(request.enableNotifications());</span>
-<span class="fc" id="L185">        this.userRepository.save(user);</span>
+<span class="fc" id="L175">        PictureInfo picture = this.pictureService.uploadPicture(file);</span>
+<span class="fc" id="L176">        user.setPicture(picture);</span>
+<span class="fc" id="L177">        this.userRepository.save(user);</span>
+<span class="fc" id="L178">        return picture;</span>
+    }
 
-<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (user.isEnableNotifications()) {</span>
-<span class="fc" id="L188">            this.emailService.sendProfileChangeNotification(user.getUsername(), oldEmail, user.getEmail(), passwordChange);</span>
+    @Transactional
+    @CacheEvict(value = &quot;get-profile&quot;, key = &quot;#username&quot;)
+    public void deleteProfilePicture(String username) {
+<span class="fc" id="L184">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L185">        user.setPicture(null);</span>
+<span class="fc" id="L186">        this.userRepository.save(user);</span>
+<span class="fc" id="L187">    }</span>
+
+    @Transactional
+    @CacheEvict(value = &quot;get-profile&quot;, key = &quot;#username&quot;)
+    public ShowUser updateProfile(String username, EditProfileRequest request) {
+<span class="fc" id="L192">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L193">        boolean passwordChange = false;</span>
+<span class="fc" id="L194">        String oldEmail = user.getEmail();</span>
+<span class="pc bpc" id="L195" title="2 of 4 branches missed.">        if (request.email() != null &amp;&amp; !request.email().isEmpty()) {</span>
+<span class="fc" id="L196">            user.setEmail(request.email());</span>
         }
-<span class="fc" id="L190">        return this.userMapper.toShowUser(user);</span>
+<span class="pc bpc" id="L198" title="2 of 4 branches missed.">        if (request.password() != null &amp;&amp; !request.password().isEmpty()) {</span>
+<span class="fc" id="L199">            user.setPassword(this.passwordEncoder.encode(request.password()));</span>
+<span class="fc" id="L200">            passwordChange = true;</span>
+        }
+<span class="fc" id="L202">        user.setEnableNotifications(request.enableNotifications());</span>
+<span class="fc" id="L203">        this.userRepository.save(user);</span>
+
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (user.isEnableNotifications()) {</span>
+<span class="fc" id="L206">            this.emailService.sendProfileChangeNotification(user.getUsername(), oldEmail, user.getEmail(), passwordChange);</span>
+        }
+<span class="fc" id="L208">        return this.userMapper.toShowUser(user);</span>
     }
 
     @Transactional(readOnly = true)
-    public ProfileDTO getUserProfile(String username) {
-<span class="fc" id="L195">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L196">        return this.userMapper.toProfileDTO(user);</span>
-    }
-
-    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;get-purchase-tickets&quot;, key = &quot;#username&quot;)
     public List&lt;TicketDTO&gt; getPurchasedTickets(String username) {
-<span class="fc" id="L201">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
-<span class="fc" id="L202">        return this.ticketMapper.toListTicketDTO(user.getTickets());</span>
+<span class="fc" id="L214">        UserEntity user = this.userRepository.findByUsernameOrThrow(username);</span>
+<span class="fc" id="L215">        return this.ticketMapper.toListTicketDTO(user.getTickets());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

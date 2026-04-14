@@ -140,19 +140,19 @@
 					</div>
 					<div>
 						<p class="text-sm text-gray-500 dark:text-gray-400">Average</p>
-						<p class="text-xl font-bold">{{ player.average }}</p>
+						<p class="text-xl font-bold">{{ statFormatter.formatter(player.average, 'AVG') }}</p>
 					</div>
 					<div>
 						<p class="text-sm text-gray-500 dark:text-gray-400">OBP</p>
-						<p class="text-xl font-bold">{{ player.obp }}</p>
+						<p class="text-xl font-bold">{{ statFormatter.formatter(player.obp, 'OBP') }}</p>
 					</div>
 					<div>
 						<p class="text-sm text-gray-500 dark:text-gray-400">Slugging</p>
-						<p class="text-xl font-bold">{{ player.slugging }}</p>
+						<p class="text-xl font-bold">{{ statFormatter.formatter(player.slugging, 'SLG') }}</p>
 					</div>
 					<div>
 						<p class="text-sm text-gray-500 dark:text-gray-400">OPS</p>
-						<p class="text-xl font-bold">{{ player.ops }}</p>
+						<p class="text-xl font-bold">{{ statFormatter.formatter(player.ops, 'OPS') }}</p>
 					</div>
 				}
 				@else {
@@ -171,7 +171,7 @@
 						</div>
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">ERA</p>
-							<p class="text-xl font-bold">{{ player.era }}</p>
+							<p class="text-xl font-bold">{{ statFormatter.formatter(player.era, 'ERA') }}</p>
 						</div>
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">Innings Pitched</p>
@@ -199,7 +199,7 @@
 						</div>
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">WHIP</p>
-							<p class="text-xl font-bold">{{ player.whip }}</p>
+							<p class="text-xl font-bold">{{ statFormatter.formatter(player.whip, 'WHIP') }}</p>
 						</div>
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-400">Saves</p>

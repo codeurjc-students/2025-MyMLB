@@ -28,7 +28,7 @@
         <div class="w-full md:w-40 flex-shrink-0">
             <mat-form-field appearance="fill" class="w-full admin-input-fields">
                 <mat-label>Template</mat-label>
-                <mat-select [(value)]="playerType" (selectionChange)="onTemplateChange($event.value)">
+                <mat-select [(value)]="playerType" (selectionChange)="onTemplateChange($event.value)" panelClass="select-panel">
                     @for (type of availablePlayerTypes; track type.value) {
                         <mat-option [value]="type.value">
                             {{ type.label }}
@@ -42,7 +42,7 @@
         <div class="w-full md:w-40 flex-shrink-0">
             <mat-form-field appearance="fill" class="w-full admin-input-fields">
                 <mat-label>League</mat-label>
-                <mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)">
+                <mat-select [(value)]="filteredLeague" (selectionChange)="onLeagueFilterChange($event.value)" panelClass="select-panel">
                     <mat-option value="">All Leagues</mat-option>
                     @for (league of availableLeagues; track league) {
                         <mat-option [value]="league">{{ league }}</mat-option>
@@ -55,7 +55,7 @@
         <div class="w-full md:w-48 flex-shrink-0">
             <mat-form-field appearance="fill" class="w-full admin-input-fields">
                 <mat-label>Division</mat-label>
-                <mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)">
+                <mat-select [(value)]="filteredDivision" (selectionChange)="onDivisionFilterChange($event.value)" panelClass="select-panel">
                     <mat-option value="">All Divisions</mat-option>
                     @for (div of availableDivisions; track div) {
                         <mat-option [value]="div">{{ div }}</mat-option>
@@ -68,7 +68,7 @@
         <div class="flex-grow min-w-0">
             <mat-form-field appearance="fill" class="w-full admin-input-fields">
                 <mat-label>Teams</mat-label>
-                <mat-select (selectionChange)="onTeamFilterChange($event.value)" #teamSelect panelClass="hide-selected-checkbox-panel">
+                <mat-select (selectionChange)="onTeamFilterChange($event.value)" #teamSelect panelClass="select-panel">
                     <mat-select-trigger>
                         <div class="flex flex-wrap gap-1 py-1">
                             @for (team of filteredTeams; track team) {
@@ -187,7 +187,7 @@
 
                                             <td class="px-3 py-3 text-right">
                                                 <span class="text-sm font-black text-black dark:text-white px-2 py-1 rounded bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600">
-                                                    {{ statFormatter(player.stat, stat.key) }}
+                                                    {{ statFormatter.formatter(player.stat, stat.key) }}
                                                 </span>
                                             </td>
                                         </tr>
