@@ -1,23 +1,23 @@
 ### Obtain Visibility Analytics whithin a date range
-GET https://localhost:8443/api/v1/analytics/visibility?dateFrom=2026-03-19&dateTo=2026-03-21
+GET https://mlb-portal.up.railway.app/api/v1/analytics/visibility?dateFrom=2026-03-19&dateTo=2026-03-21
 Accept:application/json
 
 ### Obtain Favorite Teams with their fans Analytics
-GET https://localhost:8443/api/v1/analytics/fav-teams
+GET https://mlb-portal.up.railway.app/api/v1/analytics/fav-teams
 Accept: application/json
 
 ### Obtain API Performance Analytics (1 hour)
-GET https://localhost:8443/api/v1/analytics/api-performance
+GET https://mlb-portal.up.railway.app/api/v1/analytics/api-performance
 Accept: application/json
 
 ### Obtain API Performance Analytics (1 day)
-GET https://localhost:8443/api/v1/analytics/api-performance?dateRange=1d
+GET https://mlb-portal.up.railway.app/api/v1/analytics/api-performance?dateRange=1d
 Accept: application/json
 
 ### Obtain API Performance Analytics (1 week)
-GET https://localhost:8443/api/v1/analytics/api-performance?dateRange=1w
+GET https://mlb-portal.up.railway.app/api/v1/analytics/api-performance?dateRange=1w
 Accept: application/json
 
 ### Obtain API Performance Analytics (1 month)
-GET https://localhost:8443/api/v1/analytics/api-performance?dateRange=1w
+GET https://mlb-portal.up.railway.app/api/v1/analytics/api-performance?dateRange=1w
 Accept: application/json

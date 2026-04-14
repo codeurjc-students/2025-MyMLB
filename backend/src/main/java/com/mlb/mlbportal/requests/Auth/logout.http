@@ -1,2 +1,2 @@
 ### Logout the Authenticated User
-POST https://localhost:8443/api/v1/auth/logout
+POST https://mlb-portal.up.railway.app/api/v1/auth/logout

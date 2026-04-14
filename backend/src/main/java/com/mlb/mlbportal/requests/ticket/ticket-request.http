@@ -1,9 +1,9 @@
 ### Get Ticket
-GET https://localhost:8443/api/v1/tickets/1
+GET https://mlb-portal.up.railway.app/api/v1/tickets/1
 Accept: application/json
 
 ### Purchase a Ticket Correctly
-POST https://localhost:8443/api/v1/tickets
+POST https://mlb-portal.up.railway.app/api/v1/tickets
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### Purchase a Ticket with different number of seats than tickets wanted
-POST https://localhost:8443/api/v1/tickets
+POST https://mlb-portal.up.railway.app/api/v1/tickets
 Content-Type: application/json
 
 {
@@ -44,7 +44,7 @@ Content-Type: application/json
 }
 
 ### Purchase a Ticket Invalid
-POST https://localhost:8443/api/v1/tickets
+POST https://mlb-portal.up.railway.app/api/v1/tickets
 Content-Type: application/json
 
 {
