@@ -272,15 +272,46 @@
 
 Below is the relational diagram illustrating all the entities and their relationships within the application.
 
-
 ```mermaid
 erDiagram
+  APIPERFORMANCE {
+    long id
+    LocalDateTime timeStamp
+    long totalRequests
+    long totalErrors
+    long totalSuccesses
+    double averageResponseTime
+    List_Endpoint mostDemandedEndpoints
+  }
+
+  ENDPOINT {
+    long id
+    String uri
+    long count
+  }
+
+  VISIBILITYSTATS {
+    LocalDate date
+    long visualizations
+    long newUsers
+    long deletedUsers
+  }
+
+  DAILYSTANDINGS {
+    Long id
+    Team team
+    LocalDate matchDate
+    int rank
+  }
+
   MATCH {
     long id
+    long statsApiId
     Team homeTeam
     Team awayTeam
     int homeScore
     int awayScore
+    Team winnerTeam
     LocalDateTime date
     Stadium stadium
     MatchStatus status
@@ -311,10 +342,12 @@ erDiagram
 
   PLAYER {
     long id
+    int statsApiId
     String name
     int playerNumber
     Team team
     PictureInfo picture
+    boolean apiDataSource
   }
 
   POSITIONPLAYER {
@@ -344,7 +377,7 @@ erDiagram
   }
 
   SUPPORTMESSAGE {
-    UUID id
+    Long id
     SupportTicket supportTicket
     String senderEmail
     String body
@@ -353,7 +386,7 @@ erDiagram
   }
 
   SUPPORTTICKET {
-    UUID id
+    Long id
     String subject
     String userEmail
     SupportTicketStatus status
@@ -364,14 +397,22 @@ erDiagram
 
   TEAM {
     long id
+    long statsApiId
     String name
     String abbreviation
     int totalGames
     int wins
     int losses
-    double pct
+    String pct
     double gamesBehind
     String lastTen
+    int runsScored
+    int runsAllowed
+    int runDifferential
+    int homeGamesPlayed
+    int homeGamesWins
+    int roadGamesPlayed
+    int roadGamesWins
     String teamLogo
     String city
     String generalInfo
@@ -396,6 +437,7 @@ erDiagram
     long id
     Event event
     Sector sector
+    List_Ticket tickets
     double price
     int availability
   }
@@ -438,7 +480,10 @@ erDiagram
     List_Ticket tickets
   }
 
+  APIPERFORMANCE ||--o{ ENDPOINT : ""
+  DAILYSTANDINGS }o--|| TEAM : ""
   MATCH }o--|| TEAM : ""
+  MATCH ||--|| TEAM : ""
   MATCH }o--|| STADIUM : ""
   PASSWORDRESETTOKEN ||--|| USERENTITY : ""
   PLAYER }o--|| TEAM : ""
@@ -451,8 +496,8 @@ erDiagram
   EVENT ||--|| MATCH : ""
   EVENT ||--o{ EVENTMANAGER : ""
   EVENTMANAGER }o--|| SECTOR : ""
+  EVENTMANAGER ||--o{ TICKET : ""
   SEAT }o--|| SECTOR : ""
-  TICKET }o--|| EVENTMANAGER : ""
   TICKET }o--|| USERENTITY : ""
   TICKET ||--|| SEAT : ""
 ```
