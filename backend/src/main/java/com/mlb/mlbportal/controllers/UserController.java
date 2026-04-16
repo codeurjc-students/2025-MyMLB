@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@Tag(name = "Users", description = "Endpoints related to Diamond Analytics users")
+@Tag(name = "Users", description = "Endpoints related to Diamond Insights users")
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {

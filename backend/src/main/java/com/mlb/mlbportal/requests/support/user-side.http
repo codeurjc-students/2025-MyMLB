@@ -1,5 +1,5 @@
 ### Create a Ticket
-POST https://diamond-analytics.up.railway.app/api/v1/support
+POST https://diamond-insights.up.railway.app/api/v1/support
 Content-Type: application/json
 
 {

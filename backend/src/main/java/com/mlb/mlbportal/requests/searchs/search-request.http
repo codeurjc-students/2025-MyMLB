@@ -1,15 +1,15 @@
 ### Search for a Stadium
-GET https://diamond-analytics.up.railway.app/api/v1/searchs/stadium?query=Fen&page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/searchs/stadium?query=Fen&page=0&size=10
 Content-Type: application/json
 
 ### Search for a Team
-GET https://diamond-analytics.up.railway.app/api/v1/searchs/team?query=Yank&page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/searchs/team?query=Yank&page=0&size=10
 Content-Type: application/json
 
 ### Search for a PositionPlayer
-GET https://diamond-analytics.up.railway.app/api/v1/searchs/player?query=A&playerType=position&page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/searchs/player?query=A&playerType=position&page=0&size=10
 Content-Type: application/json
 
 ### Search for a Pitcher
-GET https://diamond-analytics.up.railway.app/api/v1/searchs/player?query=max&playerType=pitcher&page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/searchs/player?query=max&playerType=pitcher&page=0&size=10
 Content-Type: application/json

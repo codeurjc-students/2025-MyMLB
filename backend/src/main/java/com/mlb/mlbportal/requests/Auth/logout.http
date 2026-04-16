@@ -1,2 +1,2 @@
 ### Logout the Authenticated User
-POST https://diamond-analytics.up.railway.app/api/v1/auth/logout
+POST https://diamond-insights.up.railway.app/api/v1/auth/logout
