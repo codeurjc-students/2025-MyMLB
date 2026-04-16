@@ -1,13 +1,13 @@
 ### Obtain all Tickets.
-GET https://mlb-portal.up.railway.app/api/v1/admin/support/tickets
+GET https://diamond-analytics.up.railway.app/api/v1/admin/support/tickets
 Accept: application/json
 
 ### Retrieve the entire conversation between the user and the admin of a given ticket
-GET https://mlb-portal.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/conversation
+GET https://diamond-analytics.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/conversation
 Accept: application/json
 
 ### Answer to a certain ticket
-POST https://mlb-portal.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/reply
+POST https://diamond-analytics.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/reply
 Content-Type: application/json
 
 {
@@ -16,5 +16,5 @@ Content-Type: application/json
 }
 
 ### Close a ticket
-POST https://mlb-portal.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/close
+POST https://diamond-analytics.up.railway.app/api/v1/admin/support/tickets/8b3c9f1e-xxxx-xxxx-xxxx-xxxxxxxxxxxx/close
 Accept: application/json

@@ -1,5 +1,5 @@
 ### Login
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### Login
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Login with new user
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### Login
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 }
 
 ### Login with wrong password
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -44,7 +44,7 @@ Content-Type: application/json
 }
 
 ### Login with wrong username
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -53,7 +53,7 @@ Content-Type: application/json
 }
 
 ### Login with invalid fields
-POST https://mlb-portal.up.railway.app/api/v1/auth/login
+POST https://diamond-analytics.up.railway.app/api/v1/auth/login
 Content-Type: application/json
 
 {

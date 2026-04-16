@@ -1,43 +1,43 @@
 ### Get All Players
-GET https://mlb-portal.up.railway.app/api/v1/players?page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?page=0&size=10
 Accept: application/json
 
 ### Get All Position Players
-GET https://mlb-portal.up.railway.app/api/v1/players?playerType=position&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerType=position&page=0&size=10
 Accept: application/json
 
 ### Get All Pitchers
-GET https://mlb-portal.up.railway.app/api/v1/players?playerType=pitcher&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerType=pitcher&page=0&size=10
 Accept: application/json
 
 ### Get Player by Name
-GET https://mlb-portal.up.railway.app/api/v1/players?playerName=Aaron Judge&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerName=Aaron Judge&page=0&size=10
 Accept: application/json
 
 ### Get Non Existent Player
-GET https://mlb-portal.up.railway.app/api/v1/players?playerName=Player&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerName=Player&page=0&size=10
 Accept: application/json
 
 ### Get Position Players of a Team
-GET https://mlb-portal.up.railway.app/api/v1/players?playerType=position&teamName=New York Yankees&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerType=position&teamName=New York Yankees&page=0&size=10
 Accept: application/json
 
 ### Get Position Players of a Non Existent Team
-GET https://mlb-portal.up.railway.app/api/v1/players?playerType=position&teamName=Team1&page=0&size=10
+GET https://diamond-analytics.up.railway.app/api/v1/players?playerType=position&teamName=Team1&page=0&size=10
 Accept: application/json
 
 ### Get Top Position Players based on Average
-GET https://mlb-portal.up.railway.app/api/v1/players/rankings?playerType=position&stat=average
+GET https://diamond-analytics.up.railway.app/api/v1/players/rankings?playerType=position&stat=average
 Accept: application/json
 
 ### Get Top Position Players based on Home Runs of the New York Yankees
-GET https://mlb-portal.up.railway.app/api/v1/players/rankings?playerType=position&stat=homeRuns&teamNames=New York Yankees
+GET https://diamond-analytics.up.railway.app/api/v1/players/rankings?playerType=position&stat=homeRuns&teamNames=New York Yankees
 Accept: application/json
 
 ### Get Top Position Players based on Average of the American League
-GET https://mlb-portal.up.railway.app/api/v1/players/rankings?playerType=position&stat=average&league=AL
+GET https://diamond-analytics.up.railway.app/api/v1/players/rankings?playerType=position&stat=average&league=AL
 Accept: application/json
 
 ### Get All Stats Rankings for position Players
-GET https://mlb-portal.up.railway.app/api/v1/players/rankings/all?playerType=position
+GET https://diamond-analytics.up.railway.app/api/v1/players/rankings/all?playerType=position
 Accept: application/json

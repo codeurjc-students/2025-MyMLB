@@ -61,7 +61,7 @@ public class TicketController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("MLB_Portal_Ticket.pdf").build());
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("Diamond_Analytics_Ticket.pdf").build());
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 
