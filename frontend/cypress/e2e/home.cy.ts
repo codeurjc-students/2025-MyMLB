@@ -9,7 +9,7 @@ describe('Landing Page E2E Tests', () => {
 
 	it('should render hero section with title, description and CTA', () => {
 		cy.get('.landing-hero-container').should('be.visible');
-		cy.contains('Welcome to MLB Portal!').should('be.visible');
+		cy.contains('Welcome to Diamond Analytics!').should('be.visible');
 		cy.contains('Track team standings, stats, and streaks across all divisions').should(
 			'be.visible'
 		);
