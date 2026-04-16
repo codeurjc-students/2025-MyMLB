@@ -1,69 +1,69 @@
 ### Get All Teams
-GET https://diamond-analytics.up.railway.app/api/v1/teams?page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/teams?page=0&size=10
 Accept: application/json
 
 ### Get Available Teams
-GET https://diamond-analytics.up.railway.app/api/v1/teams/available?page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/teams/available?page=0&size=10
 Accept: application/json
 
 ### Get Standings
-GET https://diamond-analytics.up.railway.app/api/v1/teams/standings
+GET https://diamond-insights.up.railway.app/api/v1/teams/standings
 Accept: application/json
 
 ### Get Team Information
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees
 Accept: application/json
 
 ### Get Non Existent Team Information
-GET https://diamond-analytics.up.railway.app/api/v1/teams/Team1
+GET https://diamond-insights.up.railway.app/api/v1/teams/Team1
 Accept: application/json
 
 ### Get Rival Teams
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/rivals
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/rivals
 Accept: application/json
 
 ### Get Wins of a Single Rival
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants
 Accept: application/json
 
 ### Get Wins of Multiple Rivals
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants, Seattle Mariners
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=San Francisco Giants, Seattle Mariners
 Accept: application/json
 
 ### Get Wins with Non Rivals
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=
 Accept: application/json
 
 ### Get Wins With Fix Team = Rival Team
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=New York Yankees
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/analytics/wins-per-rival?rivalTeamNames=New York Yankees
 Accept: application/json
 
 ### Get Runs Stats
-GET https://diamond-analytics.up.railway.app/api/v1/teams/analytics/runs-per-rival?teams=New York Yankees, Houston Astros, Los Angeles Dodgers, Toronto Blue Jays
+GET https://diamond-insights.up.railway.app/api/v1/teams/analytics/runs-per-rival?teams=New York Yankees, Houston Astros, Los Angeles Dodgers, Toronto Blue Jays
 Accept: application/json
 
 ### Get Win Distribution
-GET https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees/analytics/win-distribution
+GET https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees/analytics/win-distribution
 Accept: application/json
 
 ### Temp
-POST https://diamond-analytics.up.railway.app/api/v1/teams/analytics/hydrate
+POST https://diamond-insights.up.railway.app/api/v1/teams/analytics/hydrate
 Accept: application/json
 
 ### Refresh Standings
-POST https://diamond-analytics.up.railway.app/api/v1/teams/sync
+POST https://diamond-insights.up.railway.app/api/v1/teams/sync
 Accept: application/json
 
 ### Get Historic Ranking
-GET https://diamond-analytics.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
+GET https://diamond-insights.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees, Boston Red Sox, Los Angeles Dodgers
 Accept: application/json
 
 ### Get Historic Ranking
-GET https://diamond-analytics.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees&dateFrom=2026-04-01
+GET https://diamond-insights.up.railway.app/api/v1/teams/analytics/historic-ranking?teams=New York Yankees&dateFrom=2026-04-01
 Accept: application/json
 
 ### Update Team with city, championships and general information
-PATCH https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees
+PATCH https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -74,7 +74,7 @@ Content-Type: application/json
 }
 
 ### Update Team with only one field
-PATCH https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees
+PATCH https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
 
 ### Update team with an invalid stadium. An invalid stadium is one that already has a team assigned.
-PATCH https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees
+PATCH https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -90,7 +90,7 @@ Content-Type: application/json
 }
 
 ### Update Team with a non existent stadium
-PATCH https://diamond-analytics.up.railway.app/api/v1/teams/New York Yankees
+PATCH https://diamond-insights.up.railway.app/api/v1/teams/New York Yankees
 Content-Type: application/json
 
 {
@@ -98,7 +98,7 @@ Content-Type: application/json
 }
 
 ### Update a non existent Team
-PATCH https://diamond-analytics.up.railway.app/api/v1/teams/Team1
+PATCH https://diamond-insights.up.railway.app/api/v1/teams/Team1
 Content-Type: application/json
 
 {

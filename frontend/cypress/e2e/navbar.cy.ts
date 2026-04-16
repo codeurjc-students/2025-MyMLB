@@ -18,8 +18,8 @@ describe('Navbar Component E2E Tests', () => {
 
 	it('renders logo and title correctly', () => {
 		cy.get('header nav').should('exist');
-		cy.get('img[alt="Diamond Analytics Logo"]').should('be.visible');
-		cy.contains('Diamond Analytics').should('be.visible');
+		cy.get('img[alt="Diamond Insights Logo"]').should('be.visible');
+		cy.contains('Diamond Insights').should('be.visible');
 	});
 
 	it('shows Home link and navigates correctly', () => {

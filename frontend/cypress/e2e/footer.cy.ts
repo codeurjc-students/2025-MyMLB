@@ -6,7 +6,7 @@ describe('Footer E2E Tests', () => {
     });
 
     it('should display footer branding and open support modal', () => {
-        cy.contains('Diamond Analytics').should('be.visible');
+        cy.contains('Diamond Insights').should('be.visible');
         cy.contains('Insights for the Modern Fan').should('be.visible');
 
         cy.contains('button', 'Contact Support').should('be.visible');

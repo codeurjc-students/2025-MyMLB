@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Teams", description = "Endpoints related to MLB teams, standings, and current season stattistics")
+@Tag(name = "Teams", description = "Endpoints related to MLB teams, standings, and current season statistics")
 @RestController
 @RequestMapping("/api/v1/teams")
 @AllArgsConstructor

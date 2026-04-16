@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Support } from "../support/support.component";
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'app-footer',
-	imports: [Support],
+	imports: [Support, MatIconModule],
 	standalone: true,
 	templateUrl: './footer.component.html',
 })

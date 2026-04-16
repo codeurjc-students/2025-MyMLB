@@ -94,7 +94,7 @@ public class PdfGeneratorService {
 
         // Main Title
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 40, BLUE);
-        Paragraph title = new Paragraph("DIAMOND ANALYTICS", titleFont);
+        Paragraph title = new Paragraph("DIAMOND INSIGHTS", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         pdf.add(title);
 

@@ -1,33 +1,33 @@
 ### Get All Users
-GET https://diamond-analytics.up.railway.app/api/v1/users?page=0&size=10
+GET https://diamond-insights.up.railway.app/api/v1/users?page=0&size=10
 Accept: application/json
 
 ### Get User's Profile
-GET https://diamond-analytics.up.railway.app/api/v1/users/profile
+GET https://diamond-insights.up.railway.app/api/v1/users/profile
 Accept: application/json
 
 ### Get Favorite Teams of a User
-GET https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams
+GET https://diamond-insights.up.railway.app/api/v1/users/favorites/teams
 Accept: application/json
 
 ### Get Purchased Tickets of a User
-GET https://diamond-analytics.up.railway.app/api/v1/users/tickets
+GET https://diamond-insights.up.railway.app/api/v1/users/tickets
 Accept: application/json
 
 ### Add a Favorite Team
-POST https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams/New York Yankees
+POST https://diamond-insights.up.railway.app/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json
 
 ### Add a Favorite Team
-POST https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams/Los Angeles Dodgers
+POST https://diamond-insights.up.railway.app/api/v1/users/favorites/teams/Los Angeles Dodgers
 Accept: application/json
 
 ### Add a Favorite Team
-POST https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams/Team1
+POST https://diamond-insights.up.railway.app/api/v1/users/favorites/teams/Team1
 Accept: application/json
 
 ### Edit all fields of the user's profile
-PATCH https://diamond-analytics.up.railway.app/api/v1/users
+PATCH https://diamond-insights.up.railway.app/api/v1/users
 Content-Type: application/json
 
 {
@@ -37,7 +37,7 @@ Content-Type: application/json
 }
 
 ### Edit only one field of the user's profile
-PATCH https://diamond-analytics.up.railway.app/api/v1/users
+PATCH https://diamond-insights.up.railway.app/api/v1/users
 Content-Type: application/json
 
 {
@@ -45,7 +45,7 @@ Content-Type: application/json
 }
 
 ### Edit profile with invalid email pattern
-PATCH https://diamond-analytics.up.railway.app/api/v1/users
+PATCH https://diamond-insights.up.railway.app/api/v1/users
 Content-Type: application/json
 
 {
@@ -54,7 +54,7 @@ Content-Type: application/json
 }
 
 ### Upload a new Profile Picture
-POST https://diamond-analytics.up.railway.app/api/v1/users/picture
+POST https://diamond-insights.up.railway.app/api/v1/users/picture
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -65,16 +65,16 @@ Content-Type: image/png
 --WebAppBoundary--
 
 ### Remove the current Profile Picture
-DELETE https://diamond-analytics.up.railway.app/api/v1/users/picture
+DELETE https://diamond-insights.up.railway.app/api/v1/users/picture
 
 ### Remove a Favorite Team
-DELETE https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams/New York Yankees
+DELETE https://diamond-insights.up.railway.app/api/v1/users/favorites/teams/New York Yankees
 Accept: application/json
 
 ### Remove a Favorite Team
-DELETE https://diamond-analytics.up.railway.app/api/v1/users/favorites/teams/Detroit Tigers
+DELETE https://diamond-insights.up.railway.app/api/v1/users/favorites/teams/Detroit Tigers
 Accept: application/json
 
 ### Delete the User's Account
-DELETE https://diamond-analytics.up.railway.app/api/v1/users
+DELETE https://diamond-insights.up.railway.app/api/v1/users
 Accept: application/json
