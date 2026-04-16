@@ -1,4 +1,4 @@
-# MLB Portal
+# Diamond Insights
 
 ## 🧾 Table of Contents
 - [Authors](./docs/Authors.md)
