@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Tickets", description = "Operations for ticket purchasing, inventory management, and digital ticket retrieval")
+@Tag(name = "Tickets", description = "Endpoints related to the operations for ticket purchasing, inventory management, and digital ticket retrieval")
 @RestController
 @RequestMapping("/api/v1/tickets")
 @RequiredArgsConstructor
@@ -41,6 +41,7 @@ public class TicketController {
     @Operation(summary = "Get a certain ticket", description = "Return the ticket whose ID is provided")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Ticket Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -52,6 +53,7 @@ public class TicketController {
     @Operation(summary = "Download the ticket pdf", description = "Download the pdf with the ticket information.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "PDF successfully downloaded", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Ticket Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -61,14 +63,14 @@ public class TicketController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("MLB_Portal_Ticket.pdf").build());
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("Diamond_Analytics_Ticket.pdf").build());
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 
     @Operation(summary = "Purchase ticket(s)", description = "Allows the user to purchase one or more tickets")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully purchased and created the ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketDTO.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Ticket Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "Insufficient Stock", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "422", description = "Invalid Credit Card Data", content = @Content(mediaType = "application/json")),

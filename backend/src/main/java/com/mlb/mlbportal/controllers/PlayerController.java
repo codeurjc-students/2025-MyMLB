@@ -44,7 +44,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Players", description = "Operations related to MLB players, including position players and pitchers")
+@Tag(name = "Players", description = "Endpoints related to MLB players (position players and pitchers), including statistics and rankings")
 @RestController
 @RequestMapping("/api/v1/players")
 @AllArgsConstructor
@@ -52,7 +52,7 @@ public class PlayerController {
     private final PlayerService playerService;
     private final PlayerImportService playerImportService;
 
-    @Operation(summary = "Get all players", description = "Returns a paginated list of all MLB players, including both position players and pitchers.")
+    @Operation(summary = "Get all players", description = "Returns a paginated list of all players, including both position players and pitchers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of players", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -104,10 +104,11 @@ public class PlayerController {
         return ResponseEntity.ok(this.playerService.getAllStatsRankings(playerType, teamNames, league, division));
     }
 
-    @Operation(summary = "Create a position player", description = "Creates a new MLB position player and assigns them to a team.")
+    @Operation(summary = "Create a position player", description = "Creates a new position player and assigns them to a team.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Player successfully created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PositionPlayerDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Roster full or player already exists", content = @Content)
     })
@@ -122,10 +123,11 @@ public class PlayerController {
         return ResponseEntity.created(location).body(player);
     }
 
-    @Operation(summary = "Create a pitcher", description = "Creates a new MLB pitcher and assigns them to a team.")
+    @Operation(summary = "Create a pitcher", description = "Creates a new pitcher and assigns them to a team.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Player successfully created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PitcherDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Roster full or player already exists", content = @Content)
     })
@@ -143,6 +145,7 @@ public class PlayerController {
     @Operation(summary = "Upload player picture", description = "Uploads or updates the profile picture of a specific player.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture successfully uploaded", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid file format", content = @Content)
     })
@@ -154,6 +157,7 @@ public class PlayerController {
     @Operation(summary = "Refresh player rankings", description = "Triggers a manual update of the player rankings by fetching the latest team rosters and statistics.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Player Rankings successfully updated", content = @Content(mediaType = "application/json",schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error during ranking update"),
     })
     @PostMapping(value = "/sync", produces = "application/json")
@@ -165,6 +169,7 @@ public class PlayerController {
     @Operation(summary = "Update position player", description = "Partially updates the stats or team assignment of a position player.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Player successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Roster full", content = @Content)
     })
@@ -178,6 +183,7 @@ public class PlayerController {
     @Operation(summary = "Update pitcher", description = "Partially updates the stats or team assignment of a pitcher.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Player successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Roster full", content = @Content)
     })
@@ -191,6 +197,7 @@ public class PlayerController {
     @Operation(summary = "Delete player", description = "Deletes a player by name and returns their details.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Player successfully deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PlayerDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Player not found", content = @Content)
     })
     @DeleteMapping(value = "/{playerName}", produces = "application/json")

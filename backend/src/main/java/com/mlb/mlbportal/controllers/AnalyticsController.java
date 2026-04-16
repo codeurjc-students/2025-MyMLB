@@ -31,6 +31,7 @@ public class AnalyticsController {
     @Operation(summary = "Return Visibility Analytics", description = "Retrieve the visibility analytics of the application within a period of time.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VisibilityStats.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/visibility", produces = "application/json")
@@ -41,6 +42,7 @@ public class AnalyticsController {
     @Operation(summary = "Increase Visualizations", description = "Register a new visualization.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully update the visualizations", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @PostMapping(value = "/visibility/visualizations", produces = "application/json")
@@ -52,6 +54,7 @@ public class AnalyticsController {
     @Operation(summary = "Increase New Users", description = "Increase the number of registered users.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully update the number of registered users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @PostMapping(value = "/visibility/registrations", produces = "application/json")
@@ -63,6 +66,7 @@ public class AnalyticsController {
     @Operation(summary = "Increase Deleted Users", description = "Increase the number of deleted users.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully update the number of deleted users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @PostMapping(value = "/visibility/losses", produces = "application/json")
@@ -76,6 +80,7 @@ public class AnalyticsController {
     @Operation(summary = "Return Favorite Team Analytics", description = "Retrieve analytical data related to the number of fans a team has.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the analytics", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/fav-teams", produces = "application/json")
@@ -85,9 +90,10 @@ public class AnalyticsController {
 
     // --------- API Analytics ----------------------------------
 
-    @Operation(summary = "Return API Performance Analytics", description = "Retrieve real-time API performance metrics, including total requests, error counts, and average response times.")
+    @Operation(summary = "Return API Performance Analytics", description = "Retrieve real time API performance metrics, including total requests, error counts, and average response times.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieve the analytics", content = @Content(mediaType = "application/json", schema = @Schema(implementation = APIAnalyticsDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/api-performance", produces = "application/json")

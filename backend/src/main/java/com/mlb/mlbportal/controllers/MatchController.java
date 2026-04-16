@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Matches", description = "Operations related to the matches")
+@Tag(name = "Matches", description = "Endpoints related to the matches of the current MLB season")
 @RestController
 @RequestMapping("/api/v1/matches")
 @AllArgsConstructor
@@ -102,6 +102,7 @@ public class MatchController {
 	@Operation(summary = "Synchronize Matches", description = "Synchronize the matches of the full current season or just today ones.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "202", description = "Matches Successfully refreshed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
 	})
 	@PostMapping(value = "/sync", produces = "application/json")

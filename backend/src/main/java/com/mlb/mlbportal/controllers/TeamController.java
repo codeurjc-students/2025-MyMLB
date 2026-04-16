@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Teams", description = "Operations related to MLB teams and standings")
+@Tag(name = "Teams", description = "Endpoints related to MLB teams, standings, and current season stattistics")
 @RestController
 @RequestMapping("/api/v1/teams")
 @AllArgsConstructor
@@ -48,7 +48,7 @@ public class TeamController {
     private final TeamService teamService;
     private final TeamImportService teamImportService;
 
-    @Operation(summary = "Get all teams", description = "Returns a list of all MLB teams with calculated stats, including wins, losses, total games, and win percentage.")
+    @Operation(summary = "Get all teams", description = "Returns a list of all teams with calculated stats, including wins, losses, total games, and win percentage.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of teams", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -69,7 +69,7 @@ public class TeamController {
         return ResponseEntity.ok(this.teamService.getAvailableTeams(page, size));
     }
 
-    @Operation(summary = "Get team standings", description = "Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and current streak.")
+    @Operation(summary = "Get team standings", description = "Returns standings grouped by league and division, ordered by win percentage. Each team includes stats such as total games, wins, losses, win percentage, games back, and last 10 games.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved standings", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDTO.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -81,7 +81,7 @@ public class TeamController {
         return ResponseEntity.ok(standings);
     }
 
-    @Operation(summary = "Get team info by name", description = "Returns detailed information about a specific MLB team, including abbreviation, logo, league, division, total games, wins, losses, win percentage, etc.")
+    @Operation(summary = "Get team info by name", description = "Returns detailed information about a specific team, including abbreviation, logo, league, division, total games, etc.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved team info", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamInfoDTO.class))),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
@@ -92,6 +92,12 @@ public class TeamController {
         return ResponseEntity.ok(this.teamService.getTeamInfo(teamName));
     }
 
+    @Operation(summary = "Get rivals of a team", description = "Returns the rivals of a certain team.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the rivals", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamInfoDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/{teamName}/rivals", produces = "application/json")
     public ResponseEntity<List<TeamDTO>> getRivalTeams(@PathVariable("teamName")String teamName) {
         return ResponseEntity.ok(this.teamService.getRivalTeams(teamName));
@@ -142,6 +148,7 @@ public class TeamController {
     @Operation(summary = "Hydrate historic ranking data", description = "Admin tool to manually trigger the historical data import for the current season.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Hydration process completed successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Unauthorized - Admin access required", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Error during API hydration process", content = @Content(mediaType = "application/json"))
     })
@@ -166,6 +173,7 @@ public class TeamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Team successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Team not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })

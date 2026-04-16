@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-@Tag(name = &quot;Matches&quot;, description = &quot;Operations related to the matches&quot;)
+@Tag(name = &quot;Matches&quot;, description = &quot;Endpoints related to the matches of the current MLB season&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/matches&quot;)
 @AllArgsConstructor
@@ -102,25 +102,26 @@ public class MatchController {
 	@Operation(summary = &quot;Synchronize Matches&quot;, description = &quot;Synchronize the matches of the full current season or just today ones.&quot;)
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = &quot;202&quot;, description = &quot;Matches Successfully refreshed&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+			@ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
 			@ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
 	})
 	@PostMapping(value = &quot;/sync&quot;, produces = &quot;application/json&quot;)
 	public ResponseEntity&lt;AuthResponse&gt; refreshSeasonMatches(@RequestParam(defaultValue = &quot;today&quot;)String scope, Authentication auth) {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">		if (&quot;season&quot;.equalsIgnoreCase(scope)) {</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">			if (auth == null) {</span>
-<span class="nc" id="L111">				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, &quot;Access denied&quot;));</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		if (&quot;season&quot;.equalsIgnoreCase(scope)) {</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">			if (auth == null) {</span>
+<span class="nc" id="L112">				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, &quot;Access denied&quot;));</span>
 			}
-<span class="nc" id="L113">			boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;));</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">			if (!isAdmin) {</span>
-<span class="nc" id="L115">				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, &quot;Access denied&quot;));</span>
+<span class="nc" id="L114">			boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;));</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">			if (!isAdmin) {</span>
+<span class="nc" id="L116">				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(AuthResponse.Status.FAILURE, &quot;Access denied&quot;));</span>
 			}
-<span class="nc" id="L117">			this.matchImportService.updateSeasonMatches();</span>
-<span class="nc" id="L118">		}</span>
+<span class="nc" id="L118">			this.matchImportService.updateSeasonMatches();</span>
+<span class="nc" id="L119">		}</span>
 		else {
-<span class="fc" id="L120">			this.matchImportService.verifyMatchStatus();</span>
+<span class="fc" id="L121">			this.matchImportService.verifyMatchStatus();</span>
 		}
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">		String message = (&quot;season&quot;.equalsIgnoreCase(scope)) ? &quot;Matches Successfully Synchronized for the current season&quot; : &quot;Matches Successfully Synchronized for the current day&quot;;</span>
-<span class="fc" id="L123">		return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, message));</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">		String message = (&quot;season&quot;.equalsIgnoreCase(scope)) ? &quot;Matches Successfully Synchronized for the current season&quot; : &quot;Matches Successfully Synchronized for the current day&quot;;</span>
+<span class="fc" id="L124">		return ResponseEntity.accepted().body(new AuthResponse(AuthResponse.Status.SUCCESS, message));</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

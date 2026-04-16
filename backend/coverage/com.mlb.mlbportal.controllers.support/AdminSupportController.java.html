@@ -35,46 +35,50 @@ public class AdminSupportController {
     @Operation(summary = &quot;Get all open tickets&quot;, description = &quot;Returns a list of all open tickets the admins have.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the list of open tickets&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;SupportTicketDTO&gt;&gt; getOpenTickets() {
-<span class="fc" id="L42">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
+<span class="fc" id="L43">        return ResponseEntity.ok(this.supportService.getOpenTickets());</span>
     }
 
     @Operation(summary = &quot;Get the conversation of a given ticket&quot;, description = &quot;Returns all messages between the admin and the user of a certain ticket.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the conversation&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{ticketId}/conversation&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;SupportMessageDTO&gt;&gt; getConversation(@PathVariable(&quot;ticketId&quot;) Long ticketId) {
-<span class="fc" id="L52">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
+<span class="fc" id="L54">        return ResponseEntity.ok(this.supportService.getConversation(ticketId));</span>
     }
 
     @Operation(summary = &quot;Reply to a given ticket&quot;, description = &quot;Allows the admins to answer a ticket from the user.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully reply to the user&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SupportMessageDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Ticket has already been closed&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(value = &quot;/{ticketId}/reply&quot;, consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;SupportMessageDTO&gt; reply(@PathVariable(&quot;ticketId&quot;)Long ticketId, @RequestBody ReplyRequest request) throws MessagingException {
-<span class="fc" id="L64">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
+<span class="fc" id="L67">        return ResponseEntity.ok(this.supportService.reply(ticketId, request));</span>
     }
 
     @Operation(summary = &quot;Close the given ticket&quot;, description = &quot;Allows the admins to close the given ticket, ending the issue of the user.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully closes the ticket&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Ticket has already been closed&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(value = &quot;/{ticketId}/close&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; closeTicket(@PathVariable(&quot;ticketId&quot;)Long ticketId) {
-<span class="fc" id="L76">        this.supportService.closeTicket(ticketId);</span>
-<span class="fc" id="L77">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
+<span class="fc" id="L80">        this.supportService.closeTicket(ticketId);</span>
+<span class="fc" id="L81">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;Ticket Successfully Closed&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

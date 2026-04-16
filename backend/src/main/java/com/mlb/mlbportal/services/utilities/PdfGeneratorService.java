@@ -82,7 +82,7 @@ public class PdfGeneratorService {
             URL imageUrl = getClass().getResource(LOGO_PATH);
             if (imageUrl != null) {
                 Image logo = Image.getInstance(imageUrl);
-                logo.scaleToFit(200, 200);
+                logo.scaleToFit(220, 220);
                 logo.setAlignment(Element.ALIGN_CENTER);
                 pdf.add(logo);
             }
@@ -94,7 +94,7 @@ public class PdfGeneratorService {
 
         // Main Title
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 40, BLUE);
-        Paragraph title = new Paragraph("MLB PORTAL", titleFont);
+        Paragraph title = new Paragraph("DIAMOND ANALYTICS", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         pdf.add(title);
 
@@ -191,7 +191,7 @@ public class PdfGeneratorService {
                 URL imageUrl = PdfGeneratorService.class.getResource(LOGO_PATH);
                 if (imageUrl != null) {
                     this.headerLogo = Image.getInstance(imageUrl);
-                    this.headerLogo.scaleToFit(30, 30);
+                    this.headerLogo.scaleToFit(40, 40);
                 }
             }
             catch (BadElementException | IOException ex) {
@@ -212,7 +212,7 @@ public class PdfGeneratorService {
 
                     // Text align to the right
                     ColumnText.showTextAligned(cb, Element.ALIGN_RIGHT,
-                            new Phrase("TICKETS - MLB PORTAL", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BLUE)),
+                            new Phrase("TICKETS - DIAMOND ANALYTICS", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BLUE)),
                             writer.getPageSize().getRight() - 36, writer.getPageSize().getTop() - 35, 0);
 
                     // Horizontal delimiter

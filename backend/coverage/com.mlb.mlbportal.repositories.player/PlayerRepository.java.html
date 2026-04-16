@@ -6,6 +6,7 @@ import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
 import com.mlb.mlbportal.models.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,12 +14,14 @@ import com.mlb.mlbportal.models.player.Player;
 
 @Repository
 public interface PlayerRepository extends JpaRepository&lt;Player, Long&gt; {
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     Optional&lt;Player&gt; findByName(String name);
 
     default Player findByNameOrThrow(String name) {
-<span class="fc" id="L19">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
+<span class="fc" id="L21">        return this.findByName(name).orElseThrow(PlayerNotFoundException::new);</span>
     }
 
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     Page&lt;Player&gt; findByTeamOrderByNameAsc(Team team, Pageable pageable);
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@Tag(name = "Users", description = "Operations related to MLB Portal users and their favorite teams")
+@Tag(name = "Users", description = "Endpoints related to Diamond Analytics users")
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -49,6 +49,7 @@ public class UserController {
     @Operation(summary = "Get all users", description = "Returns a list of all registered users in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShowUser.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
@@ -59,6 +60,7 @@ public class UserController {
     @Operation(summary = "Get the profile of the active user", description = "Retrieves the information displayed at the profile of the active user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProfileDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -70,7 +72,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUserProfile(principal.getName()));
     }
 
-    @Operation(summary = "Get favorite teams of a user", description = "Returns the list of favorite MLB teams for the authenticated user.")
+    @Operation(summary = "Get favorite teams of a user", description = "Returns the list of favorite MLB teams for the active user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved favorite teams", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamSummary.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
@@ -81,7 +83,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getFavTeamsOfAUser(principal.getName()));
     }
 
-    @Operation(summary = "Get purchased tickets of a user", description = "Returns the list of the purchased tickets of the authenticated user.")
+    @Operation(summary = "Get purchased tickets of a user", description = "Returns the list of the purchased tickets of the active user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketDTO.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
@@ -92,7 +94,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getPurchasedTickets(principal.getName()));
     }
 
-    @Operation(summary = "Edit the authenticated user's profile", description = "Updates the profile of the authenticated user, allowing them to modify their email and password.")
+    @Operation(summary = "Edit the active user's profile", description = "Updates the profile of the active user, allowing them to modify their email and password.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Profile successfully updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShowUser.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(mediaType = "application/json")),
@@ -108,6 +110,7 @@ public class UserController {
     @Operation(summary = "Upload a new profile picture", description = "Uploads or updates the profile picture of the active user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture successfully uploaded", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Player not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid file format", content = @Content)
     })
@@ -119,6 +122,7 @@ public class UserController {
     @Operation(summary = "Delete the profile picture", description = "Deletes the profile picture of the current active user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -128,7 +132,7 @@ public class UserController {
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Picture Deleted"));
     }
 
-    @Operation(summary = "Add a favorite team", description = "Adds a team to the authenticated user's list of favorites.")
+    @Operation(summary = "Add a favorite team", description = "Adds a team to the active user's list of favorites.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Team successfully added", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
@@ -142,7 +146,7 @@ public class UserController {
         return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, "Team Succesfullly Added"));
     }
 
-    @Operation(summary = "Remove a favorite team", description = "Removes a team from the authenticated user's list of favorites.")
+    @Operation(summary = "Remove a favorite team", description = "Removes a team from the active user's list of favorites.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Team successfully removed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),

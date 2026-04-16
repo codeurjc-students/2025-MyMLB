@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = &quot;Events&quot;, description = &quot;Operations for managing match events, including seating, pricing, and sector configurations&quot;)
+@Tag(name = &quot;Events&quot;, description = &quot;Endpoints related to the operations for managing match events, including seating, pricing, and sector configurations&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/events&quot;)
 @RequiredArgsConstructor
@@ -45,108 +45,117 @@ public class EventController {
     @Operation(summary = &quot;Return all active events&quot;, description = &quot;Retrieve all active events&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the events&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;EventResponseDTO&gt;&gt; getAllEvents(@RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L52">        return ResponseEntity.ok(this.eventService.getAllEvents(page, size));</span>
+<span class="fc" id="L53">        return ResponseEntity.ok(this.eventService.getAllEvents(page, size));</span>
     }
 
     @Operation(summary = &quot;Return a certain event&quot;, description = &quot;Return the event whose ID is provided&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{eventId}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; getEvent(@PathVariable(&quot;eventId&quot;)Long eventId) {
-<span class="fc" id="L63">        return ResponseEntity.ok(this.eventService.getEvent(eventId));</span>
+<span class="fc" id="L65">        return ResponseEntity.ok(this.eventService.getEvent(eventId));</span>
     }
 
     @Operation(summary = &quot;Return available sectors of an event&quot;, description = &quot;Retrieve all the available sectors of the given event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the sectors&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventManagerDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{eventId}/sectors&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;EventManagerDTO&gt;&gt; getAvailableSectors(@PathVariable(&quot;eventId&quot;)Long eventId) {
-<span class="fc" id="L74">        return ResponseEntity.ok(this.eventService.getAvailableSectors(eventId));</span>
+<span class="fc" id="L77">        return ResponseEntity.ok(this.eventService.getAvailableSectors(eventId));</span>
     }
 
     @Operation(summary = &quot;Return available seats of an event&quot;, description = &quot;Retrieve all the available seats of a given sector and event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the seats&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = SeatDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event or Sector Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{eventId}/sector/{sectorId}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;SeatDTO&gt;&gt; getAvailableSeats(@PathVariable(&quot;eventId&quot;)Long eventId,
                                                            @PathVariable(&quot;sectorId&quot;)Long sectorId) {
-<span class="fc" id="L86">        return ResponseEntity.ok(this.eventService.getAvailableSeats(sectorId, eventId));</span>
+<span class="fc" id="L90">        return ResponseEntity.ok(this.eventService.getAvailableSeats(sectorId, eventId));</span>
     }
 
     @Operation(summary = &quot;Return the event of a certain match&quot;, description = &quot;Returns the event belonging to the match whose ID is provided&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Match Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/match/{matchId}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; getEventByMatchId(@PathVariable(&quot;matchId&quot;)Long matchId) {
-<span class="fc" id="L97">        return ResponseEntity.ok(this.eventService.getEventByMatchId(matchId));</span>
+<span class="fc" id="L102">        return ResponseEntity.ok(this.eventService.getEventByMatchId(matchId));</span>
     }
 
     @Operation(summary = &quot;Get all sold tickets of an event&quot;, description = &quot;Retrieves all sold tickets of a certain event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the tickets&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TicketDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{eventId}/tickets&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;TicketDTO&gt;&gt; getTicketsOfEvent(@PathVariable(&quot;eventId&quot;)Long eventId, @RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L108">        return ResponseEntity.ok(this.ticketService.getTicketsOfEvent(eventId, page, size));</span>
+<span class="fc" id="L114">        return ResponseEntity.ok(this.ticketService.getTicketsOfEvent(eventId, page, size));</span>
     }
 
     @Operation(summary = &quot;Creates an Event&quot;, description = &quot;Allows the admins to create an event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successfully created the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;The number of sectors selected for the creation process does not match the number of new prices&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Match Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; createEvent(@Valid @RequestBody EventCreateRequest request) {
-<span class="fc" id="L120">        EventResponseDTO response = this.eventService.createEvent(request);</span>
+<span class="fc" id="L127">        EventResponseDTO response = this.eventService.createEvent(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L122">                .fromCurrentRequest()</span>
-<span class="fc" id="L123">                .path(&quot;/{eventId}&quot;)</span>
-<span class="fc" id="L124">                .buildAndExpand(response.id())</span>
-<span class="fc" id="L125">                .toUri();</span>
-<span class="fc" id="L126">        return ResponseEntity.created(location).body(response);</span>
+<span class="fc" id="L129">                .fromCurrentRequest()</span>
+<span class="fc" id="L130">                .path(&quot;/{eventId}&quot;)</span>
+<span class="fc" id="L131">                .buildAndExpand(response.id())</span>
+<span class="fc" id="L132">                .toUri();</span>
+<span class="fc" id="L133">        return ResponseEntity.created(location).body(response);</span>
     }
 
     @Operation(summary = &quot;Edit an Event&quot;, description = &quot;Allows the admins to edit the prices of the sectors within a given event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully modified the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;The number of sectors selected for editing does not match the number of new prices&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event or Sector Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PutMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; editEvent(@Valid @RequestBody EditEventRequest request) {
-<span class="fc" id="L138">        return ResponseEntity.ok(this.eventService.editEvent(request));</span>
+<span class="fc" id="L146">        return ResponseEntity.ok(this.eventService.editEvent(request));</span>
     }
 
     @Operation(summary = &quot;Delete an Event&quot;, description = &quot;Allows the admins to delete the given event&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully deleted the event&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Event Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @DeleteMapping(value = &quot;/{eventId}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;EventResponseDTO&gt; deleteEvent(@PathVariable(&quot;eventId&quot;)Long eventId) {
-<span class="fc" id="L149">        return ResponseEntity.ok(this.eventService.deleteEvent(eventId));</span>
+<span class="fc" id="L158">        return ResponseEntity.ok(this.eventService.deleteEvent(eventId));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.mlb.mlbportal.handler.notFound.StadiumNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +15,20 @@ import com.mlb.mlbportal.models.Stadium;
 @Repository
 public interface StadiumRepository extends JpaRepository&lt;Stadium, Long&gt; {
     @Override
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     Page&lt;Stadium&gt; findAll(Pageable pageable);
 
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     Optional&lt;Stadium&gt; findByName(String name);
+
     default Stadium findByNameOrThrow(String name) {
-<span class="fc" id="L21">        return this.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
+<span class="fc" id="L25">        return this.findByName(name).orElseThrow(StadiumNotFoundException::new);</span>
     }
+
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     List&lt;Stadium&gt; findByNameContainingIgnoreCase(String input);
+
+    @EntityGraph(attributePaths = {&quot;team&quot;})
     List&lt;Stadium&gt; findByTeamIsNull();
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -49,7 +49,7 @@ public class UserEntity {
 <span class="pc" id="L49">    @ElementCollection(fetch= FetchType.EAGER)</span>
     private List&lt;String&gt; roles = new LinkedList&lt;&gt;();
 
-<span class="pc" id="L52">    @OneToMany(mappedBy = &quot;owner&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+<span class="pc" id="L52">    @OneToMany(mappedBy = &quot;owner&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)</span>
     private List&lt;Ticket&gt; tickets = new LinkedList&lt;&gt;();
 
     @PreRemove

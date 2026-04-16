@@ -157,7 +157,7 @@ class TicketControllerTest extends BaseE2ETest {
                 .then()
                 .statusCode(200)
                 .header("Content-Disposition", containsString("attachment"))
-                .header("Content-Disposition", containsString("MLB_Portal_Ticket.pdf"))
+                .header("Content-Disposition", containsString("Diamond_Analytics_Ticket.pdf"))
                 .extract()
                 .asByteArray();
 

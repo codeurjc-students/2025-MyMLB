@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.mlb.mlbportal.dto.team.WinsPerRivalDTO;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,16 +17,22 @@ import com.mlb.mlbportal.models.Team;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findByDateBetween(LocalDateTime start, LocalDateTime end);
 
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     Optional<Match> findByStatsApiId(Long id);
 
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(Team homeTeam, Team awayTeam);
 
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findByHomeTeam(Team homeTeam);
 
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findByAwayTeam(Team awayTeam);
 
+    @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findByHomeTeamOrAwayTeamAndDateBetween(Team home, Team away, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT new com.mlb.mlbportal.dto.team.WinsPerRivalDTO(" +

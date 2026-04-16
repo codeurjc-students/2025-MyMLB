@@ -28,35 +28,38 @@ public class CacheController {
     @Operation(summary = &quot;Get all cache names&quot;, description = &quot;Retrieve a list of all active cache names managed by the application.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved cache names&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;String&gt;&gt; getCaches() {
-<span class="fc" id="L35">        return ResponseEntity.ok(this.cacheService.getCaches());</span>
+<span class="fc" id="L36">        return ResponseEntity.ok(this.cacheService.getCaches());</span>
     }
 
     @Operation(summary = &quot;Clear a specific cache&quot;, description = &quot;Clear the contents of a single cache.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully cleared the cache&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Cache not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @DeleteMapping(value = &quot;/{name}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; clearSingleCache(@PathVariable(&quot;name&quot;)String name) {
-<span class="fc" id="L46">        this.cacheService.clearSingleCache(name);</span>
-<span class="fc" id="L47">        String message = &quot;Cache: &quot; + name + &quot; Successfully Cleared&quot;;</span>
-<span class="fc" id="L48">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, message));</span>
+<span class="fc" id="L48">        this.cacheService.clearSingleCache(name);</span>
+<span class="fc" id="L49">        String message = &quot;Cache: &quot; + name + &quot; Successfully Cleared&quot;;</span>
+<span class="fc" id="L50">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, message));</span>
     }
 
     @Operation(summary = &quot;Clear all caches&quot;, description = &quot;Perform a global purge of all application caches.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully cleared all caches&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @DeleteMapping(produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; clearAllCaches() {
-<span class="fc" id="L58">        this.cacheService.clearAllCaches();</span>
-<span class="fc" id="L59">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;All Caches Successfully Cleared&quot;));</span>
+<span class="fc" id="L61">        this.cacheService.clearAllCaches();</span>
+<span class="fc" id="L62">        return ResponseEntity.ok(new AuthResponse(AuthResponse.Status.SUCCESS, &quot;All Caches Successfully Cleared&quot;));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
