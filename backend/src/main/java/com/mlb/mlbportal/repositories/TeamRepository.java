@@ -8,6 +8,7 @@ import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.RunsStatsDTO;
 import com.mlb.mlbportal.dto.team.WinDistributionDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,20 +21,24 @@ import com.mlb.mlbportal.models.enums.League;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+    @EntityGraph(attributePaths = {"stadium"})
     List<Team> findByLeagueAndDivision(League league, Division division);
 
+    @EntityGraph(attributePaths = {"stadium"})
     Optional<Team> findByName(String name);
 
     default Team findByNameOrThrow(String name) {
         return this.findByName(name).orElseThrow(TeamNotFoundException::new);
     }
 
+    @EntityGraph(attributePaths = {"stadium"})
     Optional<Team> findByStatsApiId(Long id);
 
     default Team findByStatsApiIdOrThrow(Long id) {
         return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);
     }
 
+    @EntityGraph(attributePaths = {"stadium"})
     List<Team> findByNameContainingIgnoreCase(String input);
 
     @Query("SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) < 24")
