@@ -28,6 +28,7 @@ public class CacheController {
     @Operation(summary = "Get all cache names", description = "Retrieve a list of all active cache names managed by the application.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved cache names", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
@@ -38,6 +39,7 @@ public class CacheController {
     @Operation(summary = "Clear a specific cache", description = "Clear the contents of a single cache.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully cleared the cache", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Cache not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -51,6 +53,7 @@ public class CacheController {
     @Operation(summary = "Clear all caches", description = "Perform a global purge of all application caches.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully cleared all caches", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping(produces = "application/json")

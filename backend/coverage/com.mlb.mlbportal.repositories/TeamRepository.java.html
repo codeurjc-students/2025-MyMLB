@@ -8,6 +8,7 @@ import com.mlb.mlbportal.dto.team.FavTeamAnalyticsDTO;
 import com.mlb.mlbportal.dto.team.RunsStatsDTO;
 import com.mlb.mlbportal.dto.team.WinDistributionDTO;
 import com.mlb.mlbportal.handler.notFound.TeamNotFoundException;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,20 +21,24 @@ import com.mlb.mlbportal.models.enums.League;
 @Repository
 public interface TeamRepository extends JpaRepository&lt;Team, Long&gt; {
 
+    @EntityGraph(attributePaths = {&quot;stadium&quot;})
     List&lt;Team&gt; findByLeagueAndDivision(League league, Division division);
 
+    @EntityGraph(attributePaths = {&quot;stadium&quot;})
     Optional&lt;Team&gt; findByName(String name);
 
     default Team findByNameOrThrow(String name) {
-<span class="fc" id="L28">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
+<span class="fc" id="L31">        return this.findByName(name).orElseThrow(TeamNotFoundException::new);</span>
     }
 
+    @EntityGraph(attributePaths = {&quot;stadium&quot;})
     Optional&lt;Team&gt; findByStatsApiId(Long id);
 
     default Team findByStatsApiIdOrThrow(Long id) {
-<span class="nc" id="L34">        return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);</span>
+<span class="nc" id="L38">        return this.findByStatsApiId(id).orElseThrow(TeamNotFoundException::new);</span>
     }
 
+    @EntityGraph(attributePaths = {&quot;stadium&quot;})
     List&lt;Team&gt; findByNameContainingIgnoreCase(String input);
 
     @Query(&quot;SELECT t FROM Team t WHERE (SIZE(t.positionPlayers) + SIZE(t.pitchers)) &lt; 24&quot;)

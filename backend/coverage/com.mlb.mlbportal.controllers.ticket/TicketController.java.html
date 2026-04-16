@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = &quot;Tickets&quot;, description = &quot;Operations for ticket purchasing, inventory management, and digital ticket retrieval&quot;)
+@Tag(name = &quot;Tickets&quot;, description = &quot;Endpoints related to the operations for ticket purchasing, inventory management, and digital ticket retrieval&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/tickets&quot;)
 @RequiredArgsConstructor
@@ -41,34 +41,36 @@ public class TicketController {
     @Operation(summary = &quot;Get a certain ticket&quot;, description = &quot;Return the ticket whose ID is provided&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved the ticket&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TicketDTO.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{ticketId}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;TicketDTO&gt; getTicket(@PathVariable(&quot;ticketId&quot;)Long ticketId) {
-<span class="fc" id="L49">        return ResponseEntity.ok(this.ticketService.getTicket(ticketId));</span>
+<span class="fc" id="L50">        return ResponseEntity.ok(this.ticketService.getTicket(ticketId));</span>
     }
 
     @Operation(summary = &quot;Download the ticket pdf&quot;, description = &quot;Download the pdf with the ticket information.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;PDF successfully downloaded&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @GetMapping(value = &quot;/{ticketId}/download&quot;, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity&lt;byte[]&gt; downloadPdf(@PathVariable(&quot;ticketId&quot;)Long ticketId) {
-<span class="fc" id="L60">        byte[] pdf = this.ticketService.getTicketPdf(ticketId);</span>
+<span class="fc" id="L62">        byte[] pdf = this.ticketService.getTicketPdf(ticketId);</span>
 
-<span class="fc" id="L62">        HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L63">        headers.setContentType(MediaType.APPLICATION_PDF);</span>
-<span class="fc" id="L64">        headers.setContentDisposition(ContentDisposition.builder(&quot;attachment&quot;).filename(&quot;MLB_Portal_Ticket.pdf&quot;).build());</span>
-<span class="fc" id="L65">        return new ResponseEntity&lt;&gt;(pdf, headers, HttpStatus.OK);</span>
+<span class="fc" id="L64">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L65">        headers.setContentType(MediaType.APPLICATION_PDF);</span>
+<span class="fc" id="L66">        headers.setContentDisposition(ContentDisposition.builder(&quot;attachment&quot;).filename(&quot;Diamond_Analytics_Ticket.pdf&quot;).build());</span>
+<span class="fc" id="L67">        return new ResponseEntity&lt;&gt;(pdf, headers, HttpStatus.OK);</span>
     }
 
     @Operation(summary = &quot;Purchase ticket(s)&quot;, description = &quot;Allows the user to purchase one or more tickets&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successfully purchased and created the ticket&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = TicketDTO.class))),
-            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Ticket Not Found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Insufficient Stock&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;422&quot;, description = &quot;Invalid Credit Card Data&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
@@ -76,14 +78,14 @@ public class TicketController {
     })
     @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;TicketDTO&gt;&gt; purchaseTicket(Principal principal, @Valid @RequestBody PurchaseRequest request, @RequestParam(defaultValue = &quot;0&quot;)int page, @RequestParam(defaultValue = &quot;10&quot;)int size) {
-<span class="fc" id="L79">        Page&lt;TicketDTO&gt; newTickets = this.ticketService.purchaseTicket(principal.getName(), request, page, size);</span>
+<span class="fc" id="L81">        Page&lt;TicketDTO&gt; newTickets = this.ticketService.purchaseTicket(principal.getName(), request, page, size);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L81">                .fromCurrentRequest()</span>
-<span class="fc" id="L82">                .path(&quot;/{ticketId}&quot;)</span>
-<span class="fc" id="L83">                .buildAndExpand(newTickets.getContent().getFirst().id())</span>
-<span class="fc" id="L84">                .toUri();</span>
+<span class="fc" id="L83">                .fromCurrentRequest()</span>
+<span class="fc" id="L84">                .path(&quot;/{ticketId}&quot;)</span>
+<span class="fc" id="L85">                .buildAndExpand(newTickets.getContent().getFirst().id())</span>
+<span class="fc" id="L86">                .toUri();</span>
 
-<span class="fc" id="L86">        return ResponseEntity.created(location).body(newTickets);</span>
+<span class="fc" id="L88">        return ResponseEntity.created(location).body(newTickets);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

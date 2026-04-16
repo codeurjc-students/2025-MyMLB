@@ -40,7 +40,7 @@ MLBPortal,com.mlb.mlbportal.handler.conflict,PlayerAlreadyExistsException,0,4,0,
 MLBPortal,com.mlb.mlbportal.handler.conflict,SupportTicketAlreadyIsClosedException,0,4,0,0,0,2,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models,Stadium,309,850,83,139,10,10,71,81,6,35
 MLBPortal,com.mlb.mlbportal.models,Team,623,2168,165,327,11,69,141,198,13,80
-MLBPortal,com.mlb.mlbportal.models,UserEntity,290,1086,89,153,6,24,77,93,6,43
+MLBPortal,com.mlb.mlbportal.models,UserEntity,290,1086,88,154,6,24,76,94,6,43
 MLBPortal,com.mlb.mlbportal.models,PasswordResetToken,115,238,14,26,0,5,15,31,5,21
 MLBPortal,com.mlb.mlbportal.models,Match,210,492,41,59,0,8,39,49,4,34
 MLBPortal,com.mlb.mlbportal.models,DailyStandings,122,190,16,18,0,5,18,25,6,20
@@ -194,7 +194,7 @@ MLBPortal,com.mlb.mlbportal.dto.mlbapi.team,TeamSide,0,9,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.dto.mlbapi.team,MatchTeams,0,9,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.models.analytics,APIPerformance,144,483,41,59,0,11,39,48,4,33
 MLBPortal,com.mlb.mlbportal.models.analytics,VisibilityStats,103,191,15,19,0,0,16,26,4,21
-MLBPortal,com.mlb.mlbportal.models.analytics,Endpoint,135,116,17,11,0,0,18,19,7,16
+MLBPortal,com.mlb.mlbportal.models.analytics,Endpoint,138,113,19,9,0,0,21,16,8,15
 MLBPortal,com.mlb.mlbportal.dto.match,MatchDTO,0,27,0,0,0,1,0,1,0,1
 MLBPortal,com.mlb.mlbportal.controllers,CacheController,0,29,0,0,0,6,0,3,0,3
 MLBPortal,com.mlb.mlbportal.controllers,AnalyticsController,0,48,0,0,0,9,0,6,0,6

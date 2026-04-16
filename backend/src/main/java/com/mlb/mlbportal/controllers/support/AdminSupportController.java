@@ -35,6 +35,7 @@ public class AdminSupportController {
     @Operation(summary = "Get all open tickets", description = "Returns a list of all open tickets the admins have.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of open tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
@@ -45,6 +46,7 @@ public class AdminSupportController {
     @Operation(summary = "Get the conversation of a given ticket", description = "Returns all messages between the admin and the user of a certain ticket.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the conversation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(value = "/{ticketId}/conversation", produces = "application/json")
@@ -55,6 +57,7 @@ public class AdminSupportController {
     @Operation(summary = "Reply to a given ticket", description = "Allows the admins to answer a ticket from the user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully reply to the user", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SupportMessageDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Ticket not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "Ticket has already been closed", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
@@ -67,6 +70,7 @@ public class AdminSupportController {
     @Operation(summary = "Close the given ticket", description = "Allows the admins to close the given ticket, ending the issue of the user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully closes the ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Ticket not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "Ticket has already been closed", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))

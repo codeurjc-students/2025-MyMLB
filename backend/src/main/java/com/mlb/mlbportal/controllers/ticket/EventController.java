@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Events", description = "Operations for managing match events, including seating, pricing, and sector configurations")
+@Tag(name = "Events", description = "Endpoints related to the operations for managing match events, including seating, pricing, and sector configurations")
 @RestController
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
@@ -45,6 +45,7 @@ public class EventController {
     @Operation(summary = "Return all active events", description = "Retrieve all active events")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the events", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping(produces = "application/json")
@@ -55,6 +56,7 @@ public class EventController {
     @Operation(summary = "Return a certain event", description = "Return the event whose ID is provided")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -66,6 +68,7 @@ public class EventController {
     @Operation(summary = "Return available sectors of an event", description = "Retrieve all the available sectors of the given event")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the sectors", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventManagerDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -77,6 +80,7 @@ public class EventController {
     @Operation(summary = "Return available seats of an event", description = "Retrieve all the available seats of a given sector and event")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the seats", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeatDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event or Sector Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -89,6 +93,7 @@ public class EventController {
     @Operation(summary = "Return the event of a certain match", description = "Returns the event belonging to the match whose ID is provided")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Match Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -100,6 +105,7 @@ public class EventController {
     @Operation(summary = "Get all sold tickets of an event", description = "Retrieves all sold tickets of a certain event")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the tickets", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -112,6 +118,7 @@ public class EventController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully created the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "The number of sectors selected for the creation process does not match the number of new prices", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Match Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -130,6 +137,7 @@ public class EventController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully modified the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "The number of sectors selected for editing does not match the number of new prices", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event or Sector Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -141,6 +149,7 @@ public class EventController {
     @Operation(summary = "Delete an Event", description = "Allows the admins to delete the given event")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted the event", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Event Not Found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })

@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Stadiums", description = "Operations related to MLB stadiums")
+@Tag(name = "Stadiums", description = "Endpoints related to MLB stadiums")
 @RestController
 @RequestMapping("/api/v1/stadiums")
 @AllArgsConstructor
@@ -55,6 +55,11 @@ public class StadiumController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get available stadiums", description = "Returns a list of all available stadiums. An available stadium is one that does not have any associated team.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of stadiums", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StadiumInitDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
+    })
     @GetMapping(value = "/available", produces = "application/json")
     public ResponseEntity<Page<StadiumInitDTO>> getAllAvailableStadiums(
             @RequestParam(defaultValue = "0") int page,
@@ -64,7 +69,7 @@ public class StadiumController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Get stadium by name", description = "Returns basic information about a specific MLB stadium identified by its name.")
+    @Operation(summary = "Get stadium by name", description = "Returns basic information about a specific stadium identified by its name.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved stadium info", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StadiumInitDTO.class))),
             @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
@@ -75,7 +80,7 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));
     }
 
-    @Operation(summary = "Get stadium pictures", description = "Retrieves all pictures associated with a specific MLB stadium identified by its name.")
+    @Operation(summary = "Get stadium pictures", description = "Retrieves all pictures associated with a specific stadium identified by its name.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved stadium pictures", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = "404", description = "Stadium not found or no pictures available", content = @Content(mediaType = "application/json")),
@@ -86,10 +91,11 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));
     }
 
-    @Operation(summary = "Upload stadium picture", description = "Uploads a new picture for a specific MLB stadium.")
+    @Operation(summary = "Upload stadium picture", description = "Uploads a new picture for a specific stadium.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture uploaded successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = "400", description = "Invalid file format or request parameters", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -99,10 +105,11 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));
     }
 
-    @Operation(summary = "Update stadium map picture", description = "Updates the stadium map picture for a specific MLB stadium.")
+    @Operation(summary = "Update stadium map picture", description = "Updates the stadium map picture for a specific stadium.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture uploaded successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = "400", description = "Invalid file format or request parameters", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Stadium not found", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
@@ -111,11 +118,11 @@ public class StadiumController {
         return ResponseEntity.ok(this.stadiumService.editStadiumMapPicture(stadiumName, file));
     }
 
-    @Operation(summary = "Delete stadium picture", description = "Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.")
+    @Operation(summary = "Delete stadium picture", description = "Deletes a picture from a specific stadium using its public identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Picture deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Stadium or picture not found", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "409", description = "Cannot delete the last picture of a stadium", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping(value = "/{stadiumName}/pictures", produces = "application/json")
@@ -125,11 +132,11 @@ public class StadiumController {
         return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, "Picture deleted"));
     }
 
-    @Operation(summary = "Create a new stadium", description = "Creates a new MLB stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.")
+    @Operation(summary = "Create a new stadium", description = "Creates a new stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Stadium created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StadiumDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "Stadium already exists", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })

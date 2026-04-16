@@ -19,14 +19,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
-@Tag(name = &quot;Search&quot;, description = &quot;Operations related to searching stadiums, teams, and players&quot;)
+@Tag(name = &quot;Search&quot;, description = &quot;Endpoints related to searching stadiums, teams, and players&quot;)
 @RestController
 @RequestMapping(&quot;api/v1/searchs&quot;)
 @AllArgsConstructor
 public class SearchController {
     private final SearchService searchService;
 
-    @Operation(summary = &quot;Search entities&quot;, description = &quot;Performs a search across MLB entities based on the provided type. &quot;
+    @Operation(summary = &quot;Search entities&quot;, description = &quot;Performs a search across Diamond Analytics entities based on the provided type. &quot;
             +
             &quot;Supported types are: 'stadium', 'team', and 'player'. &quot; +
             &quot;When searching for players, the 'playerType' parameter must be specified as either 'position' or 'pitcher'. &quot;

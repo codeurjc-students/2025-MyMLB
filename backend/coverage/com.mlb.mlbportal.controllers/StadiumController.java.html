@@ -34,7 +34,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = &quot;Stadiums&quot;, description = &quot;Operations related to MLB stadiums&quot;)
+@Tag(name = &quot;Stadiums&quot;, description = &quot;Endpoints related to MLB stadiums&quot;)
 @RestController
 @RequestMapping(&quot;/api/v1/stadiums&quot;)
 @AllArgsConstructor
@@ -55,16 +55,21 @@ public class StadiumController {
 <span class="fc" id="L55">        return ResponseEntity.ok(response);</span>
     }
 
+    @Operation(summary = &quot;Get available stadiums&quot;, description = &quot;Returns a list of all available stadiums. An available stadium is one that does not have any associated team.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved list of stadiums&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumInitDTO.class))),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
+    })
     @GetMapping(value = &quot;/available&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;Page&lt;StadiumInitDTO&gt;&gt; getAllAvailableStadiums(
             @RequestParam(defaultValue = &quot;0&quot;) int page,
             @RequestParam(defaultValue = &quot;10&quot;) int size) {
 
-<span class="fc" id="L63">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllAvailableStadiums(page, size);</span>
-<span class="fc" id="L64">        return ResponseEntity.ok(response);</span>
+<span class="fc" id="L68">        Page&lt;StadiumInitDTO&gt; response = this.stadiumService.getAllAvailableStadiums(page, size);</span>
+<span class="fc" id="L69">        return ResponseEntity.ok(response);</span>
     }
 
-    @Operation(summary = &quot;Get stadium by name&quot;, description = &quot;Returns basic information about a specific MLB stadium identified by its name.&quot;)
+    @Operation(summary = &quot;Get stadium by name&quot;, description = &quot;Returns basic information about a specific stadium identified by its name.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved stadium info&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumInitDTO.class))),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
@@ -72,10 +77,10 @@ public class StadiumController {
     })
     @GetMapping(value = &quot;/{name}&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;StadiumInitDTO&gt; getStadiumByName(@PathVariable(&quot;name&quot;) String name) {
-<span class="fc" id="L75">        return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));</span>
+<span class="fc" id="L80">        return ResponseEntity.ok(this.stadiumService.findStadiumByName(name));</span>
     }
 
-    @Operation(summary = &quot;Get stadium pictures&quot;, description = &quot;Retrieves all pictures associated with a specific MLB stadium identified by its name.&quot;)
+    @Operation(summary = &quot;Get stadium pictures&quot;, description = &quot;Retrieves all pictures associated with a specific stadium identified by its name.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully retrieved stadium pictures&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found or no pictures available&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
@@ -83,65 +88,67 @@ public class StadiumController {
     })
     @GetMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;List&lt;PictureInfo&gt;&gt; getStadiumPictures(@PathVariable(&quot;stadiumName&quot;) String stadiumName) {
-<span class="fc" id="L86">        return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));</span>
+<span class="fc" id="L91">        return ResponseEntity.ok(this.stadiumService.getStadiumPictures(stadiumName));</span>
     }
 
-    @Operation(summary = &quot;Upload stadium picture&quot;, description = &quot;Uploads a new picture for a specific MLB stadium.&quot;)
+    @Operation(summary = &quot;Upload stadium picture&quot;, description = &quot;Uploads a new picture for a specific stadium.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture uploaded successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid file format or request parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(value = &quot;/{stadiumName}/pictures&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; uploadPicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;file&quot;) MultipartFile picturePath) throws IOException {
-<span class="fc" id="L99">        return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));</span>
+<span class="fc" id="L105">        return ResponseEntity.ok(this.stadiumService.addPicture(stadiumName, picturePath));</span>
     }
 
-    @Operation(summary = &quot;Update stadium map picture&quot;, description = &quot;Updates the stadium map picture for a specific MLB stadium.&quot;)
+    @Operation(summary = &quot;Update stadium map picture&quot;, description = &quot;Updates the stadium map picture for a specific stadium.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture uploaded successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PictureInfo.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid file format or request parameters&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(value = &quot;/{stadiumName}/pictures/map&quot;, consumes = &quot;multipart/form-data&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;PictureInfo&gt; updateStadiumMapPicture(@PathVariable(&quot;stadiumName&quot;)String stadiumName, @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
-<span class="fc" id="L111">        return ResponseEntity.ok(this.stadiumService.editStadiumMapPicture(stadiumName, file));</span>
+<span class="fc" id="L118">        return ResponseEntity.ok(this.stadiumService.editStadiumMapPicture(stadiumName, file));</span>
     }
 
-    @Operation(summary = &quot;Delete stadium picture&quot;, description = &quot;Deletes a picture from a specific MLB stadium using its public identifier. At least one picture must remain.&quot;)
+    @Operation(summary = &quot;Delete stadium picture&quot;, description = &quot;Deletes a picture from a specific stadium using its public identifier.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Picture deleted successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Stadium or picture not found&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
-            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot delete the last picture of a stadium&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @DeleteMapping(value = &quot;/{stadiumName}/pictures&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;AuthResponse&gt; deletePicture(@PathVariable(&quot;stadiumName&quot;) String stadiumName,
             @RequestParam(&quot;publicId&quot;) String publicId) {
-<span class="fc" id="L124">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
-<span class="fc" id="L125">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
+<span class="fc" id="L131">        this.stadiumService.deletePicture(stadiumName, publicId);</span>
+<span class="fc" id="L132">        return ResponseEntity.ok(new AuthResponse(Status.SUCCESS, &quot;Picture deleted&quot;));</span>
     }
 
-    @Operation(summary = &quot;Create a new stadium&quot;, description = &quot;Creates a new MLB stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.&quot;)
+    @Operation(summary = &quot;Create a new stadium&quot;, description = &quot;Creates a new stadium with the provided name and opening date. If the stadium already exists, a conflict error will be returned.&quot;)
     @ApiResponses(value = {
             @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Stadium created successfully&quot;, content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = StadiumDTO.class))),
             @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request body or missing required fields&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
-            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request body or missing required fields&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Unauthorized access&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Stadium already exists&quot;, content = @Content(mediaType = &quot;application/json&quot;)),
             @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content(mediaType = &quot;application/json&quot;))
     })
     @PostMapping(consumes = &quot;application/json&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;StadiumDTO&gt; createStadium(@Valid @RequestBody CreateStadiumRequest request) {
-<span class="fc" id="L138">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
+<span class="fc" id="L145">        StadiumDTO newStadium = this.stadiumService.createStadium(request);</span>
         URI location = ServletUriComponentsBuilder
-<span class="fc" id="L140">                .fromCurrentRequest()</span>
-<span class="fc" id="L141">                .path(&quot;/{name}&quot;)</span>
-<span class="fc" id="L142">                .buildAndExpand(newStadium.name())</span>
-<span class="fc" id="L143">                .toUri();</span>
-<span class="fc" id="L144">        return ResponseEntity.created(location).body(newStadium);</span>
+<span class="fc" id="L147">                .fromCurrentRequest()</span>
+<span class="fc" id="L148">                .path(&quot;/{name}&quot;)</span>
+<span class="fc" id="L149">                .buildAndExpand(newStadium.name())</span>
+<span class="fc" id="L150">                .toUri();</span>
+<span class="fc" id="L151">        return ResponseEntity.created(location).body(newStadium);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

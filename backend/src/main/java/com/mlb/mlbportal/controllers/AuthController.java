@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Authentication", description = "Endpoints related to user authentication")
+@Tag(name = "Authentication", description = "Endpoints related to user authentication in the application")
 @RestController
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
