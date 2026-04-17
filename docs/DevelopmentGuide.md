@@ -51,6 +51,10 @@ As it can be seen, the architecture of the application is `monolithic` divided i
       <td>Database</td>
       <td>PostgreSQL</td>
     </tr>
+     <tr>
+      <td>Local Caching</td>
+      <td>Caffeine</td>
+    </tr>
     <tr>
       <td>Languages</td>
       <td>Java, SQL, TypeScript and JavaScript</td>
@@ -89,7 +93,7 @@ As it can be seen, the architecture of the application is `monolithic` divided i
   </tr>
     <tr>
       <td>Metrics and Analytics</td>
-      <td>Grafana</td>
+      <td>Actuator, Grafana</td>
     </tr>
   </tbody>
 </table>
@@ -145,9 +149,8 @@ Here are the configured profiles:
 
 - **Test:** Exclusive profile for testing; this disables all application security (SSL) to prevent problems in integration and e2e testing in the CI pipeline. This is configured in the [application-test.properties](../backend/src/test/resources/application-test.properties).
 - **Prod:** Main and stable profile of the application using a `PostgreSQL` DB for real data persistency and used to deploy the application. This is configured in the [application-prod.properties](../backend/src/main/resources/application-prod.properties).
-- **Dev:** Profile used during the development of any feature or bugfix, using a in-memory DB (H2) for more simplicity. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
+- **Dev:** Profile used during the development of any feature or bugfix, using a `PostgreSQL` DB for real data persistency in local developments. This is configured in the [application-dev.properties](../backend/src/main/resources/application-dev.properties).
 - **Docker:** Profile only used for the running of the application in an containerized environment. It uses a `PostgreSQL` DB with the `postgres:16` docker image. This is configured in the [application-docker.properties](../backend/src/main/resources/application-docker.properties).
-- **Local-prod:** Equivalent to `prod` but for the local environment for a quick local deployment. This is configured in the [application-docker-prod.properties](../backend/src/main/resources/application-local-prod.properties).
 
 All common application settings are stored in the file [application.properties](../backend/src/main/resources/application.properties).
 
@@ -155,9 +158,8 @@ All common application settings are stored in the file [application.properties](
 flowchart LR
     A(Test) -- "Testing Environment" --> H[(H2 in memory DB)]
     B(Prod) -- "Production Environment" --> P[(PostgreSQL)]
-    C(Dev) -- "Development Environment" --> H
+    C(Dev) -- "Development Environment" --> P
     D(Docker) -- "Containerized Environment" --> P
-    E(Local-prod) -- "Local Production Environment" --> P
 ````
 
 ---
@@ -192,9 +194,7 @@ The deployment of the application is divided into three different proceses:
 ### 📡 REST API
 The backend exposes a `REST API` as communication method with the frontend.
 - This API have been decoumented using `OPEN API (Swagger)`.
-- OpenAPI documentation can be accessible without executing the application in a static HTML file format.
-
-👉 [View REST API Documentation](./api)
+- The documenation can be accessible through this [link](https://diamond-insights.up.railway.app/swagger-ui/index.html).
 
 ### 🧠 Backend Structure
 The following diagrams illustrates the backend structure, showing each layer of the `hexagonal architecture`, and how they interact between each other.
@@ -277,7 +277,7 @@ Each model wraps different `types` that are used throughout the frontend. These 
     </tr>
   <tr>
     <td>Team</td>
-    <td>Team, TeamSumary, TeamInfo, UpdateTeamRequest</td>
+    <td>Team, TeamSumary, TeamInfo, UpdateTeamRequest, RunStats, WinDistribution, HistoricRanking</td>
   </tr>
   <tr>
     <td>Match</td>
@@ -285,7 +285,7 @@ Each model wraps different `types` that are used throughout the frontend. These 
   </tr>
   <tr>
     <td>PositionPlayer</td>
-    <td>PositionPlayer, PositionPlayerGlobal, CreatePlayerRequest, EditPositionPlayerRequest</td>
+    <td>PositionPlayer, PositionPlayerGlobal, CreatePlayerRequest, EditPositionPlayerRequest, PlayerRanking</td>
   </tr>
   <tr>
     <td>Pitcher</td>
@@ -319,16 +319,12 @@ Each model wraps different `types` that are used throughout the frontend. These 
     <td>Ticket</td>
     <td>Ticket, PurchaseRequest</td>
   </tr>
+    <tr>
+      <td>Analytics</td>
+      <td>VisibilityStats, EndpointAnalytics, APIAnalytics, TimeRange, AnalyticsCards</td>
+    </tr>
   </tbody>
 </table>
-
-### 🧱 Project Architecture
-The following diagram illustrates the project architecture, showing how each component is connected and interacts with the others. It provides a clearer understanding of the overall structure of the application.
-
-![Project Diagram](../images/diagrams/ProjectDiagram.png)
-
-> [!NOTE]
-> In case you want to interact with the diagram, you can access it directly through the [GitDiagram website](https://gitdiagram.com/codeurjc-students/2025-MyMLB).
 
 ---
 ## 🧪 Quality Control
