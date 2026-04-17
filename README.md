@@ -415,14 +415,45 @@ To create an event the admins must enter the amount of sectors it will have, the
 
 To see this features in action, check the video below that shows the current state of the application:
 
-
 https://github.com/user-attachments/assets/295069c7-43db-4cad-8354-9c7e52c04933
 
-For the next and final version of the application will include the remaining functionalities that belong to the `Statistics` section for the admins.
+For the next and final version of the application will include the remaining functionalities that belong to the `Analytics` section for the admins.
 
 ---
 
 ## 🔴 1.0 Version
+The 1.0 and final version of the application, was focus on the development of the advanced features, which were the most related to analytical data, these are:
+
+### Application Analytics
+This brand new section of the application that can be found in the `Analytics` section, allows admins to analyze analytical data of the application, These includes:
+
+- **Visibility Stats:** It models data related to the application's growth, specifically graphing the number of views, new users, and users lost by the application on a daily basis. The time interval can be customized to the user's preference.
+- **API Performance:** Charts showing successful vs. unsuccessful requests, total number of requests and daily latency, and the 5 most consumed endpoints by users. The time interval in which this data is represented can be the last hour, day, week, or month.
+- **Cache Management:** The backend uses multiple caches to improve response times and reduce database access. Administrators can manually restore these caches if outdated data is present.
+- **Most Selected Teams as Favorites:** Model those teams that have been most frequently selected as favorites by users.
+
+Furthermore, to enhance this analytical scope, the application now includes a `Grafana dashboard` displaying more detailed analytical data on system performance. This dashboard can be accessed by clicking [here](https://diamond-insights-grafana.up.railway.app).
+
+> [!NOTE]
+> For more information regarding Grafana, read more about in the `Development Guide` section
+
+### Player Rankings
+With the start of the 2026 season and player statistics being daily updated, the app now includes the ability to view player rankings for each statistic.
+This feature is accessible from the main menu as a widget, allowing users to filter by the specific metric, or from the navigation bar in the brand new `Top Players` section, where users can apply multiple filters, such as league, division, and teams, allowing the users to narrow down the players displayed according to it's preferences.
+Additionally, each ranking offers the option to view the information graphically by clicking the button in the upper right corner.
+
+### Team Statistics
+As a result of this feature, the team page has a new design. Now, the information is divided in sections (Home, Stats, Roster, and Matches), with the purpose of improving the user experience, avoiding a very extense page.
+
+This new feature, that can be found in the `Stats` section, allows the users to view more detailed statistical information about the selected team, such as the team's position in its division over time, the distribution of wins (home and away wins), total runs scored and allowed, and record compared to selected opponents.
+
+All this information (except for the win distribution) can be compared to other teams, which can be manually selected or through filters. This way, users can compare the performance of the selected team against teams in its own division, league, or stronger opponents.
+
+To see this features in action, check the video below that shows the current state of the application:
+
+TBD
+
+---
 
 ## 📜 License
 This project follows the Apache 2.0 license regulations. For more information you can consult it [here](./LICENSE).

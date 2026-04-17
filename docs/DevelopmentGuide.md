@@ -212,7 +212,13 @@ The following diagrams illustrates the backend structure, showing each layer of 
 </p>
 
 <p align="center">
+  <img src="../images/diagrams/v1.0/backend/AnalyticsBack.jpg" width="40%"/>
+  <img src="../images/diagrams/v1.0/backend/TeamStatsBack.jpg" width="40%"/>
+</p>
+
+<p align="center">
   <img src="../images/diagrams/v0.2/backend/ContactSupport.jpg" width="40%"/>
+  <img src="../images/diagrams/v1.0/backend/PlayerRankingsBack.jpg" width="40%"/>
 </p>
 
 ### 🌐 Frontend Structure
@@ -224,7 +230,7 @@ The following diagrams illustrates the frontend structure, showing each layer of
 <p align="center">
   <img src="../images/diagrams/v0.2/frontend/Auth.jpg" width="40%"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="../images/diagrams/v0.2/frontend/Navbar.jpg" width="40%"/>
+  <img src="../images/diagrams/v1.0/frontend/PlayerRankingsFront.jpg" width="40%"/>
 </p>
 
 <p align="center">
@@ -243,6 +249,15 @@ The following diagrams illustrates the frontend structure, showing each layer of
   <img src="../images/diagrams/v0.2/frontend/Match.jpg" width="40%"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="../images/diagrams/v0.2/frontend/Profile.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v1.0/frontend/AnalyticsFront.jpg" width="40%"/>
+  <img src="../images/diagrams/v0.2/frontend/Navbar.jpg" width="40%"/>
+</p>
+
+<p align="center">
+  <img src="../images/diagrams/v1.0/frontend/TeamStatsfront.jpg" width="40%"/>
 </p>
 
 Each model wraps different `types` that are used throughout the frontend. These are as follows:
