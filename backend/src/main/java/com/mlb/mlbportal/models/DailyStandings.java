@@ -27,7 +27,7 @@ public class DailyStandings {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "daily_ranking_id")
+    @JoinColumn(name = "team_id")
     private Team team;
 
     private LocalDate matchDate;
