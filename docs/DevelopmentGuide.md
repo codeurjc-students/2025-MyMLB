@@ -12,7 +12,7 @@
 - [Development Process](#-development-process)
 
 ## 📖 Introduction
-The MLB Portal application is built with a `SPA (Single Page Application)` architecture on the client side (frontend). A `SPA` is a web application which only loads a single HTML file and updates the content dynamically using JavaScript instead of loading entire pages from the server. This SPA was developed using `Angular 20`.
+The Diamond Insights application is built with a `SPA (Single Page Application)` architecture on the client side (frontend). A `SPA` is a web application which only loads a single HTML file and updates the content dynamically using JavaScript instead of loading entire pages from the server. This SPA was developed using `Angular 20`.
 
 On the server side of the application (backend), it was developed with `Spring Boot`, providing a `REST API` as the communciation method between the server and the client.
 
@@ -475,14 +475,32 @@ docker compose -f oci://fonssi29/mlb-portal-compose:tag up
 
 ---
 ## 📊 Grafana
-TBD
-[https://mlb-portal-grafana.up.railway.app/?orgId=1&from=now-6h&to=now&timezone=browser](https://mlb-portal-grafana.up.railway.app/?orgId=1&from=now-6h&to=now&timezone=browser)
-Mencionar:
-- Motivo
-- Config
-- Prometheus
-- Dashboards
-- Etc
+Grafana is a platform dedicated to data analysis, through interactive dashboards that facilitate visualization and analysis.
+To improve the analytical scope of the application, a dashboard was created to monitorize the backend system providing multiple type of analytics such as JVM, garbage collector, buffer pools, classloading, among others.
+
+However, Grafana cannot function independently; it needs a source from which to extract all these metrics. This is where `Prometheus`, a `Time Series Database (TSDB)`, comes in. 
+Unlike a traditional database, a `TSDB` focuses on obtaining statistical data or metrics that change over time (historical data). With this combination, Grafana has everything it needs to function, thus forming the `Grafana Stack`. This stack is also one of the most popular for working with this analytical tool.
+
+To implement all of this, a folder named `grafana-stack` was created in the root of the repository, which contains all the configuration files necessary for the stack to function correctly. The functionality is divided in two, configuration of `Prometheus` and of `Grafana`:
+
+### Prometehus Configuration
+Located in the `prometheus` folder, it contains the `prometheus.yml` file, which tells Prometheus where to get its data. In this case, the data provider is the `Spring Actuator`, and to access this data from the Actuator, you connect to the application container's internal network. The other file you'll find is a `Dockerfile`, which allows Railway to create the container for the production environment.
+
+### Grafana Configuration
+In the other part of the folder, you'll find the `grafana` folder, which contains all the necessary configuration for Grafana to function. This folder is a bit more complex than the Prometheus one, as it not only has its own configuration settings but also those related to setting up the data source. It's divided as follows:
+- **Provisioning Folder:** Contains the datasource and dasboards configurations.
+  - **Datasources Folder:** It contains a `datasource.yml` file that configures Prometheus as the data provider, connecting Grafana to the Prometheus container's internal network.
+  - **Dashboards Folder:** Contains two files: `dashboard-config.yml` which manages the required configuration of the dashboards (in this case only one). And `Diamond-Insights-Analytics.json` which stores a backup of the dashboard data.
+- **Dockerfile:** Same as Prometheus, needed for the container creation in Railway.
+
+### Deployment
+To allow administrators to access this stack at any time, it was also deployed using Railway. Two containers were created, one for Prometheus and one for Grafana, based on each service's Dockerfile. Finally, the dashboard can be accessed via this [link](https://diamond-insights-grafana.up.railway.app) using the following credentials:
+ ```bash
+username: admin
+password: admin
+```
+
+METER FOTO DEL STACK Y DEL DASHBOARD
 
 ---
 ## 🔄 Development Process
