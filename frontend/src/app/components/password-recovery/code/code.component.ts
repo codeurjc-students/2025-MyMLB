@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -8,13 +8,16 @@ import { CommonModule } from '@angular/common';
 	imports: [ReactiveFormsModule, CommonModule],
 	templateUrl: './code.component.html'
 })
-export class CodePhaseComponent {
+export class CodePhaseComponent implements OnInit {
 	@Output() codeConfirmed = new EventEmitter<string>();
-	public codeForm: FormGroup;
+
+	private fb = inject(FormBuilder);
+
+	public codeForm!: FormGroup;
 	public errorMessage = '';
 
-	constructor(private fb: FormBuilder) {
-		this.codeForm = fb.group({
+	ngOnInit(): void {
+		this.codeForm = this.fb.group({
 			firstDigit: ['', [Validators.required, Validators.pattern(/^\d$/)]],
 			secondDigit: ['', [Validators.required, Validators.pattern(/^\d$/)]],
 			thirdDigit: ['', [Validators.required, Validators.pattern(/^\d$/)]],

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoginComponent } from "../login/login.component";
 import { RegisterComponent } from '../register/register.component';
@@ -10,9 +10,8 @@ import { RegisterComponent } from '../register/register.component';
 	templateUrl: './auth.component.html',
 })
 export class AuthComponent implements OnInit {
+	private route = inject(ActivatedRoute);
 	public loginForm = true;
-
-	constructor(private route: ActivatedRoute) {}
 
 	ngOnInit(): void {
 		this.route.queryParams.subscribe(params => {

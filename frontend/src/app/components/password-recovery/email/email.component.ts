@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ForgotPasswordRequest } from '../../../models/auth.model';
@@ -12,13 +12,17 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 	imports: [ReactiveFormsModule, CommonModule, MatInputModule, MatFormFieldModule],
 	templateUrl: './email.component.html',
 })
-export class EmailPhaseComponent {
+export class EmailPhaseComponent implements OnInit {
 	@Output() emailSent = new EventEmitter<void>();
-	public emailForm: FormGroup;
+
+	private fb = inject(FormBuilder);
+	private authService = inject(AuthService);
+
+	public emailForm!: FormGroup;
 	public errorMessage = '';
 
-	constructor(private fb: FormBuilder, private authService: AuthService) {
-		this.emailForm = fb.group({
+	ngOnInit(): void {
+		this.emailForm = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
 		});
 	}

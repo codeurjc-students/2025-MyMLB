@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
@@ -26,6 +26,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 	templateUrl: './create-stadium.component.html',
 })
 export class CreateStadiumComponent {
+	private stadiumService = inject(StadiumService);
+	private router = inject(Router);
+
 	public nameInput = '';
 	public openingDateInput: number | undefined = undefined;
 
@@ -34,8 +37,6 @@ export class CreateStadiumComponent {
 
 	public successMessage = '';
 	public errorMessage = '';
-
-	constructor(private stadiumService: StadiumService, private router: Router) {}
 
 	private buildRequest(): CreateStadiumRequest {
 		return {

@@ -1,7 +1,7 @@
 import { PlayerService } from './../../../services/player.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { SuccessModalComponent } from '../../modal/success-modal/success-modal.component';
 import { ErrorModalComponent } from '../../modal/error-modal/error-modal.component';
 import { SelectElementModalComponent } from '../../modal/select-element-modal/select-element-modal.component';
@@ -37,6 +37,11 @@ import {MatSelectModule} from '@angular/material/select';
 ],
 })
 export class CreatePlayerComponent implements OnInit {
+	private playerService = inject(PlayerService);
+	private teamService = inject(TeamService);
+	public paginationService = inject(PaginationService<TeamSummary>);
+	private router = inject(Router);
+
 	public nameInput = '';
 	public playerNumberInput: number | undefined = undefined;
 	public teamNameInput = '';
@@ -74,8 +79,6 @@ export class CreatePlayerComponent implements OnInit {
   	private readonly positionPlayerPositions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'] as const;
 
 	public isPositionInputOpen = false;
-
-	constructor(private playerService: PlayerService, private teamService: TeamService, public paginationService: PaginationService<TeamSummary>, private router: Router) {}
 
 	private buildRequest(): CreatePlayerRequest {
 		return {

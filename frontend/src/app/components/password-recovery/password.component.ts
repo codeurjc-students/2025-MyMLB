@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
 import { EmailPhaseComponent } from './email/email.component';
 import { CodePhaseComponent } from './code/code.component';
 import { PasswordPhaseComponent } from './new-password/new-password.component';
@@ -14,8 +13,6 @@ import { CommonModule } from '@angular/common';
 export class PasswordComponent {
 	public currentStep: 'email' | 'code' | 'password' = 'email';
 	public recoveryCode: string = '';
-
-	constructor(private router: Router) {}
 
 	public handleEmailSent() {
 		this.currentStep = 'code';

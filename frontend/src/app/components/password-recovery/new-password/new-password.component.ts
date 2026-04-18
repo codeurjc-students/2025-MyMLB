@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ResetPasswordRequest } from '../../../models/auth.model';
@@ -13,16 +13,21 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 	imports: [ReactiveFormsModule, CommonModule, RouterLink, MatInputModule, MatFormFieldModule],
 	templateUrl: './new-password.component.html',
 })
-export class PasswordPhaseComponent {
+export class PasswordPhaseComponent implements OnInit {
 	@Input() code: string = '';
 	@Output() passwordReset = new EventEmitter<void>();
-	public passwordForm: FormGroup;
+
+	private fb = inject(FormBuilder);
+	private authService = inject(AuthService);
+	private router = inject(Router);
+
+	public passwordForm!: FormGroup;
 	public errorMessage = '';
 	public successMessage = '';
 	public showSuccess = false;
 
-	constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-		this.passwordForm = fb.group({
+	ngOnInit(): void {
+		this.passwordForm = this.fb.group({
 			newPassword: ['', [Validators.required]],
 		});
 	}
