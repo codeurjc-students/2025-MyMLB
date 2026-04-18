@@ -21,8 +21,12 @@
   - [Notifications via Email](#notifications-via-email)
   - [Contact Support via Email](#contact-support-via-email)
 - [Advanced Features](#-advanced-features)
-  - [User's Favourite Teams Statistics](#users-favourite-teams-statistics)
-  - [Ticket Selling per Team Statistics](#ticket-selling-per-team-statistics)
+  - [Application Visibility Analytics](#application-visibility-analytics)
+  - [API Performance Analytics](#api-performance-analytics)
+  - [Cache Management](#cache-management)
+  - [User's Favorite Teams Statistics](#users-favorite-teams-statistics)
+  - [Player Rankings](#player-rankings)
+  - [Team Statistics](#team-statistics)
 
 ## 🟢 Basic Features
 **These features were included in version 0.1.**
@@ -445,38 +449,130 @@
 ---
 ## 🔴 Advanced Features
 
-### User's Favourite Teams Statistics
+### Application Visibility Analytics
 **As a:** Admin.
 
-**I want to:** See the statistics about which teams are most frequently selected as "favourite" for the users.
+**I want to:** See the analytics related to the application growth rate.
+
+**So that:** I can identify the visibility level of the application, as well as new users and those who have been lost.
+
+#### Acceptance Criteria
+- An admin-only section must be available to display this data.
+- The data will be display through a line chart (historic data).
+- The chart must update dynamically for each visit to the application, registration and account deleted.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the data updates accordingly.
+
+---
+
+### API Performance Analytics
+**As a:** Admin.
+
+**I want to:** See the performance of the API.
+
+**So that:** I can identify the total request made, sucess rate and most demanded endpoints by the users.
+
+#### Acceptance Criteria
+- An admin-only section must be available to display this data.
+- The data will be display through several charts:
+  - Line chart (historic data) for total requests and latency per day.
+  - Pie chart for sucess vs error requests.
+  - Horizontal bar chart for most demanded endpoints (top 5).
+- The data must be obtained from the Spring Actuator.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that the data displays correctly.
+- Verify that the data is displayed correctly according to the specified date range.
+
+---
+
+### Cache Management
+**As a:** Admin.
+
+**I want to:** Implement a cache system in the backend.
+
+**So that:** Response times and database accesses are reduced. Furthermore, allows manual restoration of the cache state if there is undated data.
+
+#### Acceptance Criteria
+- An admin-only section must be available to display this data.
+- The cache system is going to be implemented with the library `Caffeine`.
+
+#### Tests
+- Verify that this section is only visible to admins.
+- Verify that all the system caches are correctly displayed.
+- Verify that the clearing of a cache is done accordingly.
+
+---
+
+### User's Favorite Teams Statistics
+**As a:** Admin.
+
+**I want to:** See the statistics about which teams are most frequently selected as "favorite" for the users.
 
 **So that:** I can identify which teams are the most beloved according to the users.
 
 #### Acceptance Criteria
 - An admin-only section must be available to display this data.
 - The data will be display through a horizontal bar chart.
-- The chart must update dynamically based on the user´s preferences.
+- The chart must update dynamically based on the user's preferences.
 
 #### Tests
 - Verify that this section is only visible to admins.
-- Verify that the data updates when the users modify their favoruite teams.
+- Verify that the data updates when the users modify their favorite teams.
 
 ---
-### Ticket Selling per Team Statistics
-**As a:** Admin.
 
-**I want to:** See the statistics about which teams have sold the most tickets.
+### Player Rankings
+**As a:** Anonymous user.
 
-**So that:** I can identify which teams are the most entertaining and interesting to watch according to the users.
+**I want to:** See rankings of player of every stat for the current season.
+
+**So that:** I can compare the performance of some players with the rest of the league or based on the filters applied.
 
 #### Acceptance Criteria
-- An admin-only section must be available to display this data.
-- The data will be display through a bar chart.
-- The chart must update dynamically as ticket sales occur.
+- The rankings should allows filters, such as:
+  - Stat
+  - Teams
+  - League
+  - Division
+- The rankings can also be displayed as a bar chart.
 
 #### Tests
-- Verify that this section is only visible to admins.
-- Verify that the data updates when the users purchases tickets.
+- Verify the filters works accordingly.
+- Verify the stats corresponds to the correct type of player (position or pitcher).
+- Verify the data displayed in the bar chart is correct.
+
+---
+
+### Team Statistics
+**As a:** Anonymous user.
+
+**I want to:** See detailed statistics for a certain team, and compare it to another ones.
+
+**So that:** I can compare the performance of the team with the rest of the league or based on the filters applied.
+
+#### Acceptance Criteria
+- It should allows filters, such as:
+  - Teams
+  - League
+  - Division
+  - Teams over .500 winning percentage (50%)
+- The data will be display through several charts:
+  - Line chart (historic data) for division rank of the team through the season.
+  - Pie chart for win distribution and wins agains certain rivals.
+  - Horizontal bar chart for allowed and scored runs.
+
+#### Tests
+- Verify the filters works accordingly.
+- Verify the charts displays the data correctly.
+- Verify the rival teams are correctly displayed.
+- Verify that the rivals teams do not have duplicate teams.
+- Verify that the rival teams does not contains the base team.
+
+---
 
 ---
 [👈 Return to README](../README.md)
