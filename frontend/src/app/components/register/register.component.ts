@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { RegisterRequest } from '../../models/auth.model';
@@ -14,20 +14,21 @@ import { AnalyticsService } from '../../services/analytics.service';
 	imports: [ReactiveFormsModule, CommonModule, MatTooltip, MatInputModule, MatFormFieldModule],
 	templateUrl: './register.component.html'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 	@Output() toggleForm = new EventEmitter<void>();
 
 	private authService = inject(AuthService);
 	private analyticsService = inject(AnalyticsService);
+	private fb = inject(FormBuilder);
 
-	public registerForm: FormGroup;
+	public registerForm!: FormGroup;
 	public errorMessage = "";
 	public successMessage = "";
 	public showSuccess = false;
 	public hidePassword = true;
 
-	constructor(private fb: FormBuilder) {
-		this.registerForm = fb.group({
+	ngOnInit(): void {
+		this.registerForm = this.fb.group({
 			email: ['', [Validators.required, Validators.email]],
 			username: ['', [Validators.required]],
 			password: ['', [Validators.required]]

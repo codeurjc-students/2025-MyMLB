@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Pictures } from '../models/pictures.model';
 import { AuthResponse } from '../models/auth.model';
@@ -11,9 +11,8 @@ import { environment } from '../../environments/environment';
 	providedIn: 'root',
 })
 export class StadiumService {
+	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/stadiums`;
-
-	constructor(private http: HttpClient) {}
 
 	public getAvailableStadiums(page: number, size: number):Observable<PaginatedResponse<Stadium>> {
 		return this.http.get<PaginatedResponse<Stadium>>(`${this.apiUrl}/available?page=${page}&size=${size}`);

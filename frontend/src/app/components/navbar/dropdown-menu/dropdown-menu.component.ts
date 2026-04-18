@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { TeamService } from '../../../services/team.service';
 import { BackgroundColorService } from '../../../services/background-color.service';
 import { TeamInfo, TeamSummary } from '../../../models/team.model';
@@ -12,11 +12,11 @@ import { CommonModule } from '@angular/common';
 	templateUrl: './dropdown-menu.component.html',
 })
 export class DropdownMenuComponent implements OnInit {
+	private teamService = inject(TeamService);
+	public backgroundService = inject(BackgroundColorService);
 	public errorMessage = '';
 	public teams: TeamSummary[] = [];
 	public teamInfoResponse: TeamInfo | null = null;
-
-	constructor(private teamService: TeamService, public backgroundService: BackgroundColorService,) {}
 
 	ngOnInit() {
 		this.teamService.getTeamsNamesAndAbbr().subscribe({

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EscapeCloseDirective } from '../../../directives/escape-close.directive';
 
 @Component({
@@ -9,13 +9,13 @@ import { EscapeCloseDirective } from '../../../directives/escape-close.directive
 	changeDetection: ChangeDetectionStrategy.Default,
 	templateUrl: './error-modal.component.html',
 })
-export class ErrorModalComponent {
+export class ErrorModalComponent implements OnInit {
 	@Input() title = '';
 	@Output() cancel = new EventEmitter<void>();
 
 	public isClosing = false;
 
-	constructor() {
+	ngOnInit(): void {
 		this.handleCancel = this.handleCancel.bind(this);
 	}
 

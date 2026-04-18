@@ -18,11 +18,11 @@ export class MatchMiniatureComponent {
 	@Input() homeMatch!: boolean;
 	@Output() close = new EventEmitter<boolean>();
 
+	public backgroundService = inject(BackgroundColorService);
+
 	private router = inject(Router);
 
 	public isClose = false;
-
-	constructor(public backgroundService: BackgroundColorService) {}
 
 	public closeMatchMiniature = () => {
 		this.isClose = true;

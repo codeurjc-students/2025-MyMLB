@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,18 +16,18 @@ import { TeamService } from '../../services/team.service';
 	imports: [ReactiveFormsModule, CommonModule, MatTooltip, MatInputModule, MatFormFieldModule],
 	templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 	@Output() toggleForm = new EventEmitter<void>();
 	private authService = inject(AuthService);
 	private teamService = inject(TeamService);
 	private fb = inject(FormBuilder);
 	private router = inject(Router);
 
-	public loginForm: FormGroup;
+	public loginForm!: FormGroup;
 	public errorMessage: string = "";
 	public hidePassword = true;
 
-	constructor() {
+	ngOnInit(): void {
 		this.loginForm = this.fb.group({
 			username: ['', [Validators.required]],
 			password: ['', [Validators.required]]

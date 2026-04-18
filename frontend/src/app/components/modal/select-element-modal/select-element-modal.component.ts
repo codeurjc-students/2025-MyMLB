@@ -3,6 +3,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
+	inject,
 	Input,
 	Output,
 } from '@angular/core';
@@ -31,7 +32,9 @@ export class SelectElementModalComponent {
 	@Output() loadNextPageFunction = new EventEmitter<void>();
 	@Output() closeModal = new EventEmitter<void>();
 
-	constructor(public backgroundService: BackgroundColorService, public validationService: ValidationService) {}
+	public backgroundService = inject(BackgroundColorService);
+	public validationService = inject(ValidationService);
+
 
 	public selectElement(elem: Stadium | TeamSummary) {
 		this.select.emit(elem);

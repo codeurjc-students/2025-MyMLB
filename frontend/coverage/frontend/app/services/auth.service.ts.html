@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.75% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>24/29</span>
+                <span class='fraction'>27/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.14% </span>
+                <span class="strong">89.65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/28</span>
+                <span class='fraction'>26/29</span>
             </div>
         
             
@@ -163,12 +163,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -202,6 +203,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,11 +214,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -236,13 +240,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest, UserRole } from '../models/auth.model';
 import { environment } from '../../environments/environment';
@@ -251,13 +251,14 @@ import { environment } from '../../environments/environment';
 	providedIn: 'root',
 })
 export class AuthService {
+	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/auth`;
 &nbsp;
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 	private currentUserSubject = new BehaviorSubject&lt;UserRole&gt;(this.defaultGuestUser);
 	public currentUser$ = this.currentUserSubject.asObservable();
 &nbsp;
-	constructor(private http: HttpClient) {
+	constructor() {
 		this.fetchInitialUserStatus();
 	}
 &nbsp;
@@ -290,6 +291,7 @@ export class AuthService {
 			.post&lt;AuthResponse&gt;(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
 			.pipe(
 				tap(() =&gt; {
+					localStorage.setItem('lastActive', Date.now().toString());
 					this.getActiveUser().subscribe((user) =&gt; this.currentUserSubject.next(user));
 				})
 			);
@@ -300,12 +302,14 @@ export class AuthService {
 	}
 &nbsp;
 	public logoutUser(): Observable&lt;AuthResponse&gt; {
+		localStorage.removeItem('lastActive');
 		return this.http
 			.post&lt;AuthResponse&gt;(`${this.apiUrl}/logout`, {}, { withCredentials: true })
 			.pipe(tap(() =&gt; this.currentUserSubject.next(this.defaultGuestUser)));
 	}
 &nbsp;
 	public deleteAccount(): Observable&lt;AuthResponse&gt; {
+		localStorage.removeItem('lastActive');
 		return this.http.delete&lt;AuthResponse&gt;(this.apiUrl, { withCredentials: true})
 			.pipe(tap(() =&gt; this.currentUserSubject.next(this.defaultGuestUser)));
 	}
@@ -324,11 +328,7 @@ export class AuthService {
 &nbsp;
 	public <span class="fstat-no" title="function not covered" >handleSessionExpired(</span>): void {
 <span class="cstat-no" title="statement not covered" >		this.currentUserSubject.next(this.defaultGuestUser);</span>
-<span class="cstat-no" title="statement not covered" >		if (window.location.pathname.includes('/edit-menu')) {</span>
-<span class="cstat-no" title="statement not covered" >			window.location.href = '/error';</span>
-		} else {
-<span class="cstat-no" title="statement not covered" >			window.location.href = '/auth';</span>
-		}
+<span class="cstat-no" title="statement not covered" >		window.location.href = '/auth';</span>
 	}
 }</pre></td></tr></table></pre>
 
@@ -337,7 +337,7 @@ export class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-13T22:47:38.954Z
+                at 2026-04-18T21:00:41.504Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest, UserRole } from '../models/auth.model';
 import { environment } from '../../environments/environment';
@@ -8,13 +8,14 @@ import { environment } from '../../environments/environment';
 	providedIn: 'root',
 })
 export class AuthService {
+	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiUrl}/auth`;
 
 	private defaultGuestUser: UserRole = { username: '', roles: ['GUEST'] };
 	private currentUserSubject = new BehaviorSubject<UserRole>(this.defaultGuestUser);
 	public currentUser$ = this.currentUserSubject.asObservable();
 
-	constructor(private http: HttpClient) {
+	constructor() {
 		this.fetchInitialUserStatus();
 	}
 
@@ -47,6 +48,7 @@ export class AuthService {
 			.post<AuthResponse>(`${this.apiUrl}/login`, loginRequest, { withCredentials: true })
 			.pipe(
 				tap(() => {
+					localStorage.setItem('lastActive', Date.now().toString());
 					this.getActiveUser().subscribe((user) => this.currentUserSubject.next(user));
 				})
 			);
@@ -57,12 +59,14 @@ export class AuthService {
 	}
 
 	public logoutUser(): Observable<AuthResponse> {
+		localStorage.removeItem('lastActive');
 		return this.http
 			.post<AuthResponse>(`${this.apiUrl}/logout`, {}, { withCredentials: true })
 			.pipe(tap(() => this.currentUserSubject.next(this.defaultGuestUser)));
 	}
 
 	public deleteAccount(): Observable<AuthResponse> {
+		localStorage.removeItem('lastActive');
 		return this.http.delete<AuthResponse>(this.apiUrl, { withCredentials: true})
 			.pipe(tap(() => this.currentUserSubject.next(this.defaultGuestUser)));
 	}
@@ -81,10 +85,6 @@ export class AuthService {
 
 	public handleSessionExpired(): void {
 		this.currentUserSubject.next(this.defaultGuestUser);
-		if (window.location.pathname.includes('/edit-menu')) {
-			window.location.href = '/error';
-		} else {
-			window.location.href = '/auth';
-		}
+		window.location.href = '/auth';
 	}
 }
