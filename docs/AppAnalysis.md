@@ -24,6 +24,10 @@
 - PasswordResetToken
 - SupportMessage
 - SupportTicket
+- DailyStandings
+- APIPerformance
+- Endpoint
+- VisibilityStats
 
 > [!IMPORTANT]
 > `Player` apart of being a current entity is also an `abstrac class`, from which the entities `PositionPlayer` and `Pitcher` inherit.
@@ -139,7 +143,7 @@
   </tbody>
 </table>
 
-### Event
+### ✨ Event
 <table>
   <thead>
     <th>Related with...</th>
@@ -157,7 +161,7 @@
   </tbody>
 </table>
 
-### EventManager
+### 📋 EventManager
 <table>
   <thead>
     <th>Related with...</th>
@@ -175,7 +179,7 @@
   </thead>
 </table>
 
-### Sector
+### 📍 Sector
 <table>
   <thead>
     <th>Related with...</th>
@@ -193,7 +197,7 @@
   </tbody>
 </table>
 
-### Seat
+### 🪑 Seat
 <table>
   <thead>
     <th>Related with...</th>
@@ -242,7 +246,7 @@
     </tr>
 </table>
 
-### SupportMessage
+### 💬 SupportMessage
 <table>
   <thead>
     <th>Related with...</th>
@@ -256,7 +260,7 @@
   </tbody>
 </table>
 
-### SupportTicket
+### 🔧 SupportTicket
 <table>
   <thead>
     <th>Related with...</th>
@@ -266,6 +270,62 @@
     <tr>
       <td>SupportMessage</td>
       <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### 🏆 DailyStandings
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Team</td>
+      <td>N..1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 📉 APIPerformance
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Endpoint</td>
+      <td>1..N</td>
+    </tr>
+  </tbody>
+</table>
+
+### 🚪 Endpoint
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+### 👁️ VisibilityStats
+<table>
+  <thead>
+    <th>Related with...</th>
+    <th>Cardinality</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>-</td>
     </tr>
   </tbody>
 </table>
@@ -506,13 +566,18 @@ erDiagram
 
 ## 🔒 Type of Users and Browsing Permissions
 ### 🕵️‍♂️ Anonymous User
-- See the general information provided by the application.
+- Access the following pages:
+  - Standings.
+  - Player Rankings.
+  - Teams 
+- Contact Support.
+- Refresh season standings.
 
 ### 🧑‍💻 Registered User
-- See both general and personalized information provided by the application.
+- Same actions as an anoymous user.
 - Access its profile settings.
 - Delete Account.
-- Add/Remove a team from the favourite list.
+- Add/Remove a team from the favorite list.
 - Buy tickets for a game.
 - Cancel ticket purchase.
 - Receive notifications via email.
@@ -523,10 +588,13 @@ erDiagram
 - Edit player information.
 - Edit stadium information.
 - Add/Modify tickets.
-- Create and Edit a Game.
-- Update Game score.
-- User´s favourite teams statistics.
-- Ticket selling per team statistics.
+- Application Analytics Section:
+  - Visibility Analytics.
+  - API Performance Analytics
+  - Cache Management
+  - User's favorite teams Analytics.
+- Refresh player rankings.
+- Refresh matches of the current season. 
 
 ---
 
@@ -541,33 +609,24 @@ erDiagram
 ## 📊 Charts
 <table>
   <thead>
-    <th>Chart Topic</th>
     <th>Type of Chart</th>
+    <th>Chart Topics</th>
   </thead>
   <tbody>
     <tr>
-      <td>Standings (Dynamic)</td>
-      <td>Table</td>
-    </tr>
-    <tr>
-      <td>Last 10 Games of a Team</td>
       <td>Line</td>
+      <td>Visibility Analytics, Requests and Latency per day (API Performance), Team Historic Ranking (Team Statistics)</td>
     </tr>
     <tr>
-      <td>Ticket Selling for Each Team</td>
       <td>Bar</td>
+      <td>Player Rankings, Runs Scored/Allowed of a team (Team Statistics), Most Demanded Endpoints (API Performance), Favorite Teams per User</td>
     </tr>
     <tr>
-      <td>User's Favorite Teams</td>
-      <td>Horizontal Bar</td>
+      <td>Pie</td>
+      <td>Successful vs Failed Requests (API Performance), Win Distribution and Wins per Rival (Team Statistics)</td>
     </tr>
   </tbody>
 </table>
-
-> [!NOTE]
-> The information described above is subject to change. Both the chart types and topics may be updated as needed.
-
----
 
 ### 📚 Library To Use
 Since the front-end will be develop using `Angular`, the library chosen for creating all the charts will be `ng2-charts`, which is a wrapper for the popular chart library `Chart.js`.
@@ -585,6 +644,13 @@ To complete this operation, the system integrates `Java Mail Sender` for notific
 The application provides users with the option to purchase tickets for different matches. To make a more realistic system, each stadium has their own sectos and seats, with each sector having their own price, this means that the amount of sectors, seats, prices can vary depending on the stadium and on the event aswell. This was done thanks to the `EventManager` entity wich is the entity in charge of manage this dynamic information for each event.
 
 Concurrency problems, like seats being taken while a payment is in progress, are handled through strict database access control. The system manages simultaneous queries to prevent data inconsistencies and ensures that users are successfully notified if their selection is no longer available.
+
+### Player Rankings
+The application allows users to view player rankings for each statistic of the current season (for both pitchers and position players). This feature includes a vast variety of filters that allows users to refine their search.
+
+Since the statistic provided by the user changes dynamically, and the tables used to extract the data also changes because they depended on the selected player type, a traditional database query could not be executed due to the query dynamic behavior. Therefore, the query was constructed manually, inserting the corresponding data for each case, the desired statistic, and the active filters. Once the query was complete, it was executed using the `EntityManager`.
+
+The EntityManager is the main JPA interface that acts as an intermediary between the Spring (Java) application and the database.
 
 ---
 [👈 Return to README](../README.md)
