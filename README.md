@@ -437,10 +437,25 @@ Furthermore, to enhance this analytical scope, the application now includes a `G
 > [!NOTE]
 > For more information regarding Grafana, read more about in the `Development Guide` section
 
+<p align="center">
+  <img src="images/features/admin/Visibility.png" width="40%" />
+  <img src="images/features/admin/API.png" width="40%" />
+</p>
+
+<p align="center">
+  <img src="images/features/admin/Cache.png" width="40%" />
+  <img src="images/features/admin/FavTeams.png" width="40%" />
+</p>
+
 ### Player Rankings
 With the start of the 2026 season and player statistics being daily updated, the app now includes the ability to view player rankings for each statistic.
 This feature is accessible from the main menu as a widget, allowing users to filter by the specific metric, or from the navigation bar in the brand new `Top Players` section, where users can apply multiple filters, such as league, division, and teams, allowing the users to narrow down the players displayed according to it's preferences.
 Additionally, each ranking offers the option to view the information graphically by clicking the button in the upper right corner.
+
+<p align="center">
+  <img src="images/features/common/PlayerRankings.png" width="40%" />
+  <img src="images/features/common/PlayerRankingsChart.png" width="40%" />
+</p>
 
 ### Team Statistics
 As a result of this feature, the team page has a new design. Now, the information is divided in sections (Home, Stats, Roster, and Matches), with the purpose of improving the user experience, avoiding a very extense page.
@@ -448,6 +463,8 @@ As a result of this feature, the team page has a new design. Now, the informatio
 This new feature, that can be found in the `Stats` section, allows the users to view more detailed statistical information about the selected team, such as the team's position in its division over time, the distribution of wins (home and away wins), total runs scored and allowed, and record compared to selected opponents.
 
 All this information (except for the win distribution) can be compared to other teams, which can be manually selected or through filters. This way, users can compare the performance of the selected team against teams in its own division, league, or stronger opponents.
+
+![Team Stats](images/features/common/TeamStats.png)
 
 To see this features in action, check the video below that shows the current state of the application:
 
