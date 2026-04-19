@@ -32,34 +32,26 @@
 			</div>
 		}
 		@else {
-			<div
-				class="max-w-4xl mx-auto mb-8 animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-3xl"></div>
+			<div class="max-w-4xl mx-auto mb-8 animate-pulse bg-gray-200 dark:bg-gray-700 h-24 rounded-3xl"></div>
 		}
 
-		<div
-			class="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth"
-			style="animation-delay: 0.1s"
-		>
+		<div class="mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/20 animate-fadeInUpSmooth" style="animation-delay: 0.1s">
 			<div class="flex flex-col md:flex-row justify-between items-center gap-4">
-				<h2
-					class="text-3xl font-black text-gray-800 dark:text-white tracking-tight uppercase"
-				>
-					Create New <span class="text-indigo-600 dark:text-sky-400">Event</span>
+				<h2 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight">
+					<span class="text-blue-800 dark:text-blue-300">Create New Event</span>
 				</h2>
 				<div class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl">
-					<span class="text-sm font-bold text-indigo-600 dark:text-indigo-400 italic"
-						>Match ID: #{{ matchInfo?.id }}</span
-					>
+					<span class="text-sm font-bold text-indigo-600 dark:text-indigo-400 italic">
+						Match ID: #{{ matchInfo?.id }}
+					</span>
 				</div>
 			</div>
 		</div>
 
-		<div
-			class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden"
-		>
+		<div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
 			<div class="mb-10">
 				<label class="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">
-					How many sectors will this event have?
+					Please enter the number of sectors for this event
 				</label>
 				<div class="relative flex items-center">
 					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

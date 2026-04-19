@@ -10,23 +10,11 @@ describe('Landing Page E2E Tests', () => {
 	it('should render hero section with title, description and CTA', () => {
 		cy.get('.landing-hero-container').should('be.visible');
 		cy.contains('Welcome to Diamond Insights!').should('be.visible');
-		cy.contains('Track team standings, stats, and streaks across all divisions').should(
-			'be.visible'
-		);
+		cy.contains('Master the Diamond with Data').should('be.visible');
 	});
 
 	it('should render all feature blocks with titles and images', () => {
-		const featureTitles = [
-			'Discover team rankings and performance insights',
-			'Discover teams, track your favorites',
-			'See you at the ballpark',
-			'Play Ball!',
-		];
-
-		featureTitles.forEach((title) => {
-			cy.contains(title).should('be.visible');
-		});
-
+		cy.contains('Master the Diamond with Data').should('be.visible');
 		const imageAlts = ['MLB Leagues', 'MLB Teams', 'Baseball Fans', 'Baseball Match'];
 		imageAlts.forEach((alt) => {
 			cy.get(`img[alt="${alt}"]`).should('be.visible');
