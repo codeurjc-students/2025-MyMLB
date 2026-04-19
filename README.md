@@ -468,7 +468,7 @@ All this information (except for the win distribution) can be compared to other 
 
 To see this features in action, check the video below that shows the current state of the application:
 
-TBD
+https://github.com/user-attachments/assets/2ee1b59c-4964-4494-8d24-9a334026b11c
 
 ---
 
