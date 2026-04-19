@@ -1,4 +1,4 @@
-<div class="app-background min-h-screen text-white px-6 py-12 space-y-10 flex flex-col items-center">
+<div class="app-background min-h-screen px-6 py-12 space-y-10 flex flex-col items-center">
     <!-- Header Section -->
 	<section class="w-full max-w-7xl flex justify-between items-start p-8 rounded-[2rem] border backdrop-blur-sm transition-colors bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-white/5">
 		<div class="mt-2.5">
@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="flex flex-col items-center">
-			<h1 class="app-page-titles !mb-4 text-gray-900 dark:text-white">API Analytics</h1>
+			<h1 class="app-page-titles !mb-4">API Analytics</h1>
 			<div class="flex p-1 rounded-xl shadow-inner border transition-colors
 						bg-white border-gray-200
 						dark:bg-black/40 dark:border-white/10">
@@ -49,7 +49,7 @@
 		<!-- Health Rate Chart -->
 		<div class="lg:col-span-1 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl flex flex-col">
 			<div class="flex justify-between items-center mb-6">
-				<h2 class="text-xl font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
+				<h2 class="text-2xl font-black tracking-tighter text-emerald-500 flex items-center gap-2">
 					<mat-icon>security</mat-icon> Health Ratio
 				</h2>
 				<mat-checkbox
@@ -74,14 +74,14 @@
 		<!-- Performance Chart -->
 		<div class="lg:col-span-2 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl">
 			<div class="flex justify-between items-center mb-6">
-				<h2 class="text-xl font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
+				<h2 class="text-2xl font-black tracking-tighter text-indigo-500 flex items-center gap-2">
 					<mat-icon>timeline</mat-icon> Performance History
 				</h2>
 				<mat-checkbox
 					[(ngModel)]="selectedChartsToDownload.perfChart"
 					(change)="updateAllSelectedState()"
 					class="download-checkbox">
-					<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					<span class="text-[9px] font-bold tracking-widest text-gray-500">Include in Export</span>
 				</mat-checkbox>
 			</div>
 			<div class="relative h-[350px]">
@@ -98,7 +98,7 @@
 		<!-- Endpoints Chart -->
 		<div class="lg:col-span-3 bg-white dark:bg-gray-800/60 p-8 rounded-[2.5rem] border border-white/10 shadow-xl">
 			<div class="flex justify-between items-center mb-8">
-				<h2 class="text-xl font-black uppercase tracking-tighter text-purple-500 flex items-center gap-2">
+				<h2 class="text-2xl font-black tracking-tighter text-purple-500 flex items-center gap-2">
 					<mat-icon>hub</mat-icon> Endpoint Traffic Usage
 				</h2>
 				<div class="flex items-center gap-6">
