@@ -494,13 +494,18 @@ In the other part of the folder, you'll find the `grafana` folder, which contain
 - **Dockerfile:** Same as Prometheus, needed for the container creation in Railway.
 
 ### Deployment
-To allow administrators to access this stack at any time, it was also deployed using Railway. Two containers were created, one for Prometheus and one for Grafana, based on each service's Dockerfile. Finally, the dashboard can be accessed via this [link](https://diamond-insights-grafana.up.railway.app) using the following credentials:
+To allow admins to access this stack at any time, it was also deployed using Railway. Two containers were created, one for Prometheus and one for Grafana, based on each service's Dockerfile. Finally, the dashboard can be accessed via this [link](https://diamond-insights-grafana.up.railway.app) using the following credentials:
  ```bash
 username: admin
 password: admin
 ```
 
-METER FOTO DEL STACK Y DEL DASHBOARD
+This is what the Grafana Stack deployment map looks like:
+![Grafana Stack Deployment Map](../images/other/GrafanaStack.png)
+
+Finally, the `Diamond Insights Analytics` dashboard will be visible in the home page or by clicking the `Dashboards` section in the menu located in the left side of the screen.
+![Grafana Dashboard](../images/other/GrafanaDashboard.png)
+
 
 ---
 ## 🔄 Development Process
