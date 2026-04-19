@@ -277,7 +277,10 @@ SPRING_MAIL_PROPERTIES_MAIL_SMTP_SOCKETFACTORY_CLASS="javax.net.ssl.SSLSocketFac
 
 If everything is correctly configured, the application should be deployed after a few minutes.
 
-![Deployment Map](../images/other/Deploy.png)
+![Application Stack Deployment Map](../images/other/Deploy.png)
+
+Finally, by combining the application stack with the Grafana stack, the deployment map looks like this:
+![Deployment Map](../images/other/DeployMap.png)
 
 ---
 
