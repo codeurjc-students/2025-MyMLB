@@ -373,11 +373,11 @@ You can create a release directly from GitHub, the only thing yo need to do is g
 
 **Features Developed:** The features developed on this version were the intermediate ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
-Application deployed on the `Railway cloud servers` and available at [https://2025-mymlb-production-a771.up.railway.app/](https://2025-mymlb-production-a771.up.railway.app/)
+Application deployed on the `Railway cloud servers` and available at [https://diamond-insights.up.railway.app](https://diamond-insights.up.railway.app)
 
 
 ### 1.0 Version Release
-**Date of Release:** TBD
+**Date of Release:** April 20
 
 **Features Developed:** The features developed on this version were the advanced ones, which you can find in the [User Stories Section](https://github.com/codeurjc-students/2025-MyMLB/blob/main/docs/UserStories.md).
 
