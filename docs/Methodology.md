@@ -57,12 +57,12 @@ The intermediate features will be implemented along with their corresponding aut
 
 **Due Date:** April 15
 
-**Real End Date:** TBD
+**Real End Date:** April 20
 
 The advanced features will be implemented along with their corresponding automated tests, and the application will also be packaged. At this stage, the application will be complete and the 1.0 version will be released.
 
 ## 📄 Phase 6: Report
-**Start Date:** TBD
+**Start Date:** April 21
 
 **Due Date:** May 15
 
