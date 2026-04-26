@@ -52,9 +52,6 @@ describe('Favorite Team Component E2E Tests', () => {
 			cy.get('button').contains('Add Favorite Team').click();
 
 			cy.wait('@getTeams');
-
-			cy.wait('@getTeams');
-
 			cy.get('app-select-element-modal').within(() => {
 				cy.get('h2').should('contain.text', 'Select a Team');
 				cy.get('ul li button').should('have.length.greaterThan', 0);

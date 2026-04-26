@@ -71,9 +71,9 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/matches/teamName/{teamName}?location=home should return home matches")
+    @DisplayName("GET /api/v1/matches/team/{teamName}?location=home should return home matches")
     void testGetHomeMatchesWithLocationParam() {
-        String url = MATCHES_PATH + "teamName/" + TEST_TEAM1_NAME + "?location=home";
+        String url = MATCHES_PATH + "team/" + TEST_TEAM1_NAME + "?location=home";
 
         given()
                 .accept(ContentType.JSON)
@@ -86,9 +86,9 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/matches/teamName/{teamName}?location=away should return away matches")
+    @DisplayName("GET /api/v1/matches/team/{teamName}?location=away should return away matches")
     void testGetAwayMatchesWithLocationParam() {
-        String url = MATCHES_PATH + "teamName/" + TEST_TEAM1_NAME + "?location=away";
+        String url = MATCHES_PATH + "team/" + TEST_TEAM1_NAME + "?location=away";
 
         given()
                 .accept(ContentType.JSON)
@@ -114,13 +114,13 @@ class MatchControllerTest extends BaseE2ETest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/matches/team/{teamName}?year=YYYY&month=MM should return all matches of the team in that month")
+    @DisplayName("GET /api/v1/matches/team/{teamName}/calendar?year=YYYY&month=MM should return all matches of the team in that month")
     void testGetMatchesOfTeamByMonth() {
         LocalDateTime now = LocalDateTime.now();
         int year = now.getYear();
         int month = now.getMonthValue();
 
-        String url = MATCHES_PATH + "team/" + TEST_TEAM1_NAME + "?year=" + year + "&month=" + month;
+        String url = MATCHES_PATH + "team/" + TEST_TEAM1_NAME + "/calendar?year=" + year + "&month=" + month;
 
         given()
                 .accept(ContentType.JSON)

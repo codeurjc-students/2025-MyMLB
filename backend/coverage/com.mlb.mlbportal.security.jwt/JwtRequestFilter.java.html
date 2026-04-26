@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,31 +16,38 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-	private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-	private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-<span class="fc" id="L24">	public JwtRequestFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {</span>
-<span class="fc" id="L25">		this.userDetailsService = userDetailsService;</span>
-<span class="fc" id="L26">		this.jwtTokenProvider = jwtTokenProvider;</span>
-<span class="fc" id="L27">	}</span>
+<span class="fc" id="L23">    public JwtRequestFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {</span>
+<span class="fc" id="L24">        this.userDetailsService = userDetailsService;</span>
+<span class="fc" id="L25">        this.jwtTokenProvider = jwtTokenProvider;</span>
+<span class="fc" id="L26">    }</span>
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-		try {
-<span class="nc" id="L34">			var claims = jwtTokenProvider.validateToken(request, true);</span>
-<span class="nc" id="L35">			var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());</span>
+        try {
+<span class="nc" id="L33">            var claims = this.jwtTokenProvider.validateToken(request, true);</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">            if (claims != null &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == null) {</span>
+<span class="nc" id="L35">                String username = claims.getSubject();</span>
+<span class="nc" id="L36">                var userDetails = this.userDetailsService.loadUserByUsername(username);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (userDetails != null) {</span>
+<span class="nc" id="L38">                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());</span>
+<span class="nc" id="L39">                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);</span>
+<span class="nc" id="L40">                    this.jwtTokenProvider.addJwtCookie(response, userDetails);</span>
+                }
+            }
+        }
+<span class="fc" id="L44">        catch (IllegalArgumentException ignored) {</span>
 
-<span class="nc" id="L37">			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(</span>
-<span class="nc" id="L38">						userDetails, null, userDetails.getAuthorities());</span>
-				
-<span class="nc" id="L40">			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));</span>
-<span class="nc" id="L41">			SecurityContextHolder.getContext().setAuthentication(authentication);</span>
-<span class="fc" id="L42">		} catch (Exception ex) {</span>
-<span class="nc" id="L43">		}</span>
-<span class="fc" id="L44">		filterChain.doFilter(request, response);</span>
-<span class="fc" id="L45">	}</span>
+        }
+<span class="nc" id="L47">        catch (Exception ex) {</span>
+<span class="nc" id="L48">            SecurityContextHolder.clearContext();</span>
+<span class="pc" id="L49">        }</span>
+<span class="fc" id="L50">        filterChain.doFilter(request, response);</span>
+<span class="fc" id="L51">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
