@@ -68,7 +68,7 @@ describe('Match Service Tests', () => {
 			expect(data[1].status).toBe('SCHEDULED');
 		});
 
-		const req = httpMock.expectOne(`${service['apiUrl']}/team/${teamName}?year=${year}&month=${month}`);
+		const req = httpMock.expectOne(`${service['apiUrl']}/team/${teamName}/calendar?year=${year}&month=${month}`);
 		expect(req.request.method).toBe('GET');
 		req.flush(mockHomeMatches);
 	});

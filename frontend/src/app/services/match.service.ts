@@ -22,11 +22,11 @@ export class MatchService {
 	}
 
 	public getMatchesOfATeam(teamName: string | undefined, type: 'home' | 'away', page: number, size: number): Observable<PaginatedResponse<ShowMatch>> {
-		return this.http.get<PaginatedResponse<ShowMatch>>(`${this.apiUrl}/teamName/${teamName}?location=${type}&page=${page}&size=${size}`);
+		return this.http.get<PaginatedResponse<ShowMatch>>(`${this.apiUrl}/team/${teamName}?location=${type}&page=${page}&size=${size}`);
 	}
 
 	public getMatchesOfTeamByMonth(teamName: string, year: number, month: number): Observable<ShowMatch[]> {
-		return this.http.get<ShowMatch[]>(`${this.apiUrl}/team/${teamName}?year=${year}&month=${month}`);
+		return this.http.get<ShowMatch[]>(`${this.apiUrl}/team/${teamName}/calendar?year=${year}&month=${month}`);
 	}
 
 	public refreshMatches(scope: string): Observable<AuthResponse> {
