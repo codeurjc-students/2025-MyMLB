@@ -1,6 +1,10 @@
 package com.mlb.mlbportal.services;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 
@@ -96,7 +100,8 @@ public class MatchService {
     @Cacheable(value = "get-home-matches", key = "{#teamName, #page, #size}")
     public Page<MatchDTO> getHomeMatches(String teamName, int page, int size) {
         Team team = this.teamRepository.findByName(teamName).orElseThrow(TeamNotFoundException::new);
-        List<Match> matches = this.matchRepository.findByHomeTeam(team);
+        LocalDateTime today = LocalDateTime.now(this.clock);
+        List<Match> matches = this.matchRepository.findByHomeTeamAndDateGreaterThanEqualOrderByDateAsc(team, today);
         return this.paginationHandlerService.paginateAndMap(matches, page, size, this.matchMapper::toMatchDTO);
     }
 
