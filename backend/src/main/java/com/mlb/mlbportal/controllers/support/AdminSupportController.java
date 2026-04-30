@@ -45,7 +45,7 @@ public class AdminSupportController {
 
     @Operation(summary = "Get the conversation of a given ticket", description = "Returns all messages between the admin and the user of a certain ticket.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved the conversation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SupportTicketDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the conversation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SupportMessageDTO.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json"))
     })

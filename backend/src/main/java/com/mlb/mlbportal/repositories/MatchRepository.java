@@ -27,7 +27,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     List<Match> findTop10ByHomeTeamOrAwayTeamOrderByDateDesc(Team homeTeam, Team awayTeam);
 
     @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
-    List<Match> findByHomeTeam(Team homeTeam);
+    List<Match> findByHomeTeamAndDateGreaterThanEqualOrderByDateAsc(Team homeTeam, LocalDateTime date);
 
     @EntityGraph(attributePaths = {"homeTeam", "awayTeam", "winnerTeam", "stadium"})
     List<Match> findByAwayTeam(Team awayTeam);
@@ -36,9 +36,9 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     List<Match> findByHomeTeamOrAwayTeamAndDateBetween(Team home, Team away, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT new com.mlb.mlbportal.dto.team.WinsPerRivalDTO(" +
-            "  CASE WHEN m.homeTeam.name = :fixedTeam THEN m.awayTeam.name ELSE m.homeTeam.name END, " +
-            "  COUNT(m), " + // Total Games Played
-            "  SUM(CASE WHEN m.winnerTeam.name = :fixedTeam THEN 1L ELSE 0L END)" + // Wins
+            "CASE WHEN m.homeTeam.name = :fixedTeam THEN m.awayTeam.name ELSE m.homeTeam.name END, " +
+            "COUNT(m), " + // Total Games Played
+            "SUM(CASE WHEN m.winnerTeam.name = :fixedTeam THEN 1L ELSE 0L END)" + // Wins
             ") " +
             "FROM Match m " +
             "WHERE (m.homeTeam.name = :fixedTeam OR m.awayTeam.name = :fixedTeam) " +

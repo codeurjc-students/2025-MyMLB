@@ -184,12 +184,17 @@ class MatchServiceTest {
         List<MatchDTO> homeMatchesDTO = BuildMocksFactory.buildMatchDTOMocks(homeMatches);
         Page<MatchDTO> mockPage = new PageImpl<>(homeMatchesDTO, PageRequest.of(0, 10), homeMatchesDTO.size());
 
+        when(this.clock.instant()).thenReturn(this.fixedNow.atZone(ZoneId.systemDefault()).toInstant());
+        when(this.clock.getZone()).thenReturn(ZoneId.systemDefault());
         when(this.teamRepository.findByName(TEST_TEAM2_NAME)).thenReturn(Optional.of(team1));
-        when(this.matchRepository.findByHomeTeam(team1)).thenReturn(homeMatches);
+        when(this.matchRepository.findByHomeTeamAndDateGreaterThanEqualOrderByDateAsc(eq(team1), eq(this.fixedNow)))
+                .thenReturn(homeMatches);
+
         doReturn(mockPage).when(this.paginationHandlerService)
                 .paginateAndMap(eq(homeMatches), eq(0), eq(10), any());
 
         Page<MatchDTO> result = this.matchService.getHomeMatches(TEST_TEAM2_NAME, 0, 10);
+
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
