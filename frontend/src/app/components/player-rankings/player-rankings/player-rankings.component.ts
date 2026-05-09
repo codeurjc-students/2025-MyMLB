@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -188,6 +188,7 @@ export class PlayerRankingsComponent implements OnInit {
 
 	public activeCharts = new Set<string>();
 	public selectedRankingForChart: { key: string, value: string } | null = null;
+	public currentChartData: ChartData<'bar'> = { labels: [], datasets: [] };
 
 	ngOnInit() {
 		this.route.queryParams.subscribe((param) => {
@@ -294,33 +295,30 @@ export class PlayerRankingsComponent implements OnInit {
 
 	public openChart(key: string, value: string) {
 		this.selectedRankingForChart = { key, value };
+		this.updateCurrentChartData(value);
 		document.body.style.overflow = 'hidden'; // Disable background scroll
+	}
+
+	public updateCurrentChartData(statKey: string) {
+		const players = this.rankings[statKey] || [];
+		const playersToDisplay = players.slice(0, this.numberOfPlayersToShow);
+
+		this.currentChartData = {
+			labels: playersToDisplay.map(player => player.name.split(' ').pop()),
+			datasets: [{
+				data: playersToDisplay.map(player => player.stat),
+				label: this.selectedRankingForChart?.key || '',
+				backgroundColor: '#6366F1',
+				hoverBackgroundColor: '#4F46E5',
+				borderRadius: 6,
+				barThickness: 30
+			}]
+		};
 	}
 
 	public closeChart() {
 		this.selectedRankingForChart = null;
 		document.body.style.overflow = 'auto'; // Enable Scroll
-	}
-
-	public getChartData(statKey: string): ChartData<'bar'> {
-		if (!this.rankings || !this.rankings[statKey]) {
-        	return { labels: [], datasets: [] };
-    	}
-		const players = this.rankings[statKey] || [];
-		const playersToDisplay = players.slice(0, this.numberOfPlayersToShow);
-		return {
-			labels: playersToDisplay.map(player => player.name.split(' ').pop()),
-			datasets: [
-				{
-					data: playersToDisplay.map(player => player.stat),
-					label: this.selectedRankingForChart?.key || '',
-					backgroundColor: '#6366F1',
-					hoverBackgroundColor: '#4F46E5',
-					borderRadius: 6,
-					barThickness: 30
-				}
-			]
-		};
 	}
 
 	public toggleChart(statKey: string) {

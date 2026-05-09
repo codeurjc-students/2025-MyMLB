@@ -418,7 +418,8 @@ export class ApiPerformanceComponent implements OnInit {
 				zip.file(`${chart.name}.png`, base64Data, { base64: true });
 			}
 		}
-		await this.exportService.downloadZip(zip, downloadDate);
+		const zipName = `API_Analytics_${downloadDate}.zip`;
+		await this.exportService.downloadZip(zip, zipName);
 	}
 
 	/**

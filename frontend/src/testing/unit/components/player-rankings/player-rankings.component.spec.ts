@@ -107,10 +107,10 @@ describe('Player Rankings Component Tests', () => {
         component.rankings = mockRankingsResponse;
         component.numberOfPlayersToShow = 1;
 
-        const chartData = component.getChartData('average');
+        component.updateCurrentChartData('average');
 
-        expect(chartData.labels).toEqual(['Judge']);
-        expect(chartData.datasets[0].data).toEqual([0.311]);
+        expect(component.currentChartData.labels).toEqual(['Judge']);
+        expect(component.currentChartData.datasets[0].data).toEqual([0.311]);
     });
 
     it('should refresh the dashboard successfully', () => {
