@@ -93,6 +93,19 @@
 			</button>
 		</div>
 
+		<!-- Download Block -->
+		<div class="flex justify-end gap-4 mt-1.5">
+			<mat-checkbox
+				class="download-checkbox"
+				[checked]="allChartsSelected"
+				(change)="toggleSelectedCharts()">
+				<span class="text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-400">
+					Select All
+				</span>
+			</mat-checkbox>
+			<app-donwload-button (downloadFunc)="downloadChartAsPNG()"></app-donwload-button>
+		</div>
+
 		<!-- Selected Rivals Badges -->
 		@if (selectedRivalsAbbreviation.length > 0) {
 			<div class="w-full flex flex-wrap items-center gap-3 pt-3 border-t border-gray-200 dark:border-white/5">
@@ -146,6 +159,13 @@
                 </div>
 
 				<div class="flex items-center gap-2">
+					<mat-checkbox
+						[(ngModel)]="selectedChartsToDownload.historicChart"
+						(change)="updateAllSelectedState()"
+						class="download-checkbox">
+						<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					</mat-checkbox>
+
 					<div class="relative group" matTooltip="Select the start date of the chart" matTooltipPosition="above">
 						<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 scale-75">
 							<mat-icon class="text-sm scale-75">calendar_today</mat-icon>
@@ -177,14 +197,30 @@
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
 			<!-- Chart Header -->
 			<div class="mb-8">
-				<h2 class="text-lg font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
-					<mat-icon>donut_large</mat-icon> Win Distribution
-				</h2>
-				<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Home vs Away performance split</p>
+				<div class="flex justify-between items-center mb-1">
+					<h2 class="text-lg font-black uppercase tracking-tighter text-indigo-500 flex items-center gap-2">
+						<mat-icon>donut_large</mat-icon> Win Distribution
+					</h2>
+
+					<mat-checkbox
+						[(ngModel)]="selectedChartsToDownload.winDistributionChart"
+						(change)="updateAllSelectedState()"
+						class="download-checkbox">
+						<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					</mat-checkbox>
+				</div>
+				<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">
+					Home vs Away performance split
+				</p>
 			</div>
 
 			<div class="relative flex-grow">
-				<canvas baseChart [data]="winDistributionChartData" [options]="winDistributionPieOptions" type="pie"></canvas>
+				<canvas
+					baseChart #winDistributionChart="base-chart"
+					[data]="winDistributionChartData"
+					[options]="winDistributionPieOptions"
+					type="pie">
+				</canvas>
 			</div>
 		</div>
 
@@ -192,9 +228,17 @@
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <!-- Chart Header -->
 			<div class="mb-6 shrink-0">
-				<h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
-                    <mat-icon>groups</mat-icon> Wins vs Rivals
-                </h2>
+				<div class="flex justify-between items-center mb-1">
+					<h2 class="text-lg font-black uppercase tracking-tighter text-rose-500 flex items-center gap-2">
+						<mat-icon>groups</mat-icon> Wins vs Rivals
+					</h2>
+					<mat-checkbox
+						[(ngModel)]="selectedChartsToDownload.winPerRivalsChart"
+						(change)="updateAllSelectedState()"
+						class="download-checkbox">
+						<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					</mat-checkbox>
+				</div>
 				<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Series record against selected rivals</p>
 			</div>
 
@@ -213,7 +257,12 @@
 					</div>
 				}
 				@else {
-					<canvas baseChart [data]="winsPerRivalsChartData" [options]="winsPerRivalsPieOptions" type="pie"></canvas>
+					<canvas
+						baseChart #winPerRivalsChart="base-chart"
+						[data]="winsPerRivalsChartData"
+						[options]="winsPerRivalsPieOptions"
+						type="pie">
+					</canvas>
 				}
             </div>
         </div>
@@ -221,25 +270,43 @@
 		<!-- Runs Stats Chart -->
         <div class="bg-white dark:bg-gray-800/60 p-6 rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-xl flex flex-col h-[480px]">
             <!-- Chart Header -->
-			<div class="flex justify-between items-center mb-6">
+			<div class="flex justify-between items-start mb-6">
+				<!-- Left Side: Title and subtitle -->
 				<div>
-					<h2 class="text-lg font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2">
+					<h2 class="text-lg font-black uppercase tracking-tighter text-emerald-500 flex items-center gap-2 mb-1">
 						<mat-icon>bar_chart</mat-icon> Runs Analysis
 					</h2>
-					<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">Offensive and defensive scoring metrics</p>
+					<p class="text-gray-500 dark:text-gray-400 font-medium text-sm">
+						Offensive and defensive scoring metrics
+					</p>
 				</div>
 
-				<button (click)="toggleRunStatsChartDataset()"
-					[matTooltip]="scoredRunsDataSet ? 'Switch to Runs Allowed' : 'Switch to Runs Scored'"
-					matTooltipPosition="above"
-                    class="flex items-center gap-2 cursor-pointer bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-emerald-500 transition-all">
-                    <mat-icon class="!w-4 !h-4 !text-base">{{ scoredRunsDataSet ? 'insights' : 'analytics' }}</mat-icon>
-                    {{ scoredRunsDataSet ? 'Scored' : 'Allowed' }}
-                </button>
+				<!-- Right Side: Donwload checkobox and run toggle button -->
+				<div class="flex items-center gap-6">
+					<mat-checkbox
+						[(ngModel)]="selectedChartsToDownload.runStatsChart"
+						(change)="updateAllSelectedState()"
+						class="download-checkbox">
+						<span class="text-[9px] font-bold uppercase tracking-widest text-gray-500">Include in Export</span>
+					</mat-checkbox>
+
+					<button (click)="toggleRunStatsChartDataset()"
+						[matTooltip]="scoredRunsDataSet ? 'Switch to Runs Allowed' : 'Switch to Runs Scored'"
+						matTooltipPosition="above"
+						class="flex items-center gap-2 cursor-pointer bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-emerald-500 transition-all hover:bg-emerald-500/20">
+						<mat-icon class="!w-4 !h-4 !text-base">{{ scoredRunsDataSet ? 'insights' : 'analytics' }}</mat-icon>
+						{{ scoredRunsDataSet ? 'Scored' : 'Allowed' }}
+					</button>
+				</div>
 			</div>
 
             <div class="relative flex-grow">
-                <canvas baseChart [data]="runStatsChartData" [options]="barOptions" type="bar"></canvas>
+                <canvas
+					baseChart #runStatsChart="base-chart"
+					[data]="runStatsChartData"
+					[options]="barOptions"
+					type="bar">
+				</canvas>
             </div>
         </div>
     </main>
