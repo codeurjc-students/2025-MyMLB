@@ -702,7 +702,8 @@ export class TeamStatisticsComponent implements OnInit, OnChanges {
 				zip.file(`${chart.name}.png`, base64Data, { base64: true });
 			}
 		}
-		await this.exportService.downloadZip(zip, downloadDate);
+		const zipName = `Team_Stats_${downloadDate}.zip`;
+		await this.exportService.downloadZip(zip, zipName);
 	}
 
 	/**

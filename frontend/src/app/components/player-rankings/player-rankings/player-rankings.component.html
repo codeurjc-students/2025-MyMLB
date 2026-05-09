@@ -235,7 +235,7 @@
 			<!-- Chart -->
 			<div class="p-6 h-[400px] sm:h-[500px] bg-white dark:bg-gray-900">
 				<canvas baseChart
-					[data]="getChartData(selectedRankingForChart.value)"
+					[data]="currentChartData"
 					[options]="barChartOptions"
 					[type]="'bar'">
 				</canvas>
