@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../services/auth.service';
 import { StatsFormatterService } from '../../../services/utilities/stats-formatter.service';
+import { ExportService } from '../../../services/utilities/export.service';
 
 @Component({
 	selector: 'app-player-rankings',
@@ -37,6 +38,7 @@ export class PlayerRankingsComponent implements OnInit {
 	private playerService = inject(PlayerService);
 	private teamService = inject(TeamService);
 	private authService = inject(AuthService);
+	private exportService = inject(ExportService);
 	public backgroundService = inject(BackgroundColorService);
 	public statFormatter = inject(StatsFormatterService);
 	private route = inject(ActivatedRoute);
@@ -181,6 +183,8 @@ export class PlayerRankingsComponent implements OnInit {
 	};
 
 	public barChartType: ChartType = 'bar';
+
+	@ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
 	public activeCharts = new Set<string>();
 	public selectedRankingForChart: { key: string, value: string } | null = null;
@@ -347,5 +351,15 @@ export class PlayerRankingsComponent implements OnInit {
 				this.errorMessage = `An error occur updating the dashboard: ${err.message}`;
 			}
 		});
+	}
+
+	public downloadChartAsPNG() {
+		const canvas = this.chart?.chart?.canvas;
+		if (canvas) {
+			const date = new Date().toISOString().split('T')[0];
+			const chartName = this.completeStatName[this.selectedRankingForChart!.key];
+			const fileName = `${chartName}_Ranking_${date}`;
+			this.exportService.downloadPNG(canvas, fileName);
+		}
 	}
 }

@@ -206,32 +206,45 @@
 @if (selectedRankingForChart) {
     <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
         <div class="absolute cursor-pointer inset-0 bg-black/80 backdrop-blur-md" (click)="closeChart()"></div>
-
         <div class="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-white/10 overflow-hidden animate-in zoom-in-95 duration-300 z-[10000]">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800">
-                <div class="w-10"></div>
-                <div class="flex-grow text-center">
-                    <h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
-                        {{ completeStatName[selectedRankingForChart.key] }} Leaders
-                    </h2>
-                    <p class="text-sm text-gray-500 text-center">Top {{ numberOfPlayersToShow }} Players</p>
-                </div>
-                <button (click)="closeChart()" class="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-red-500 transition-colors cursor-pointer">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
+			<div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800">
+				<div class="flex-1"></div>
 
-            <div class="p-6 h-[400px] sm:h-[500px] bg-white dark:bg-gray-900">
-                <canvas baseChart
-                    [data]="getChartData(selectedRankingForChart.value)"
-                    [options]="barChartOptions"
-                    [type]="'bar'">
-                </canvas>
-            </div>
+				<!-- Title and Subtitle -->
+				<div class="flex-[2] text-center">
+					<h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+						{{ completeStatName[selectedRankingForChart.key] }} Leaders
+					</h2>
+					<p class="text-sm text-gray-500">Top {{ numberOfPlayersToShow }} Players</p>
+				</div>
 
-            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 text-center text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-                Official data for the 2026 MLB season  • Last Update: {{ getCurrentDate() }}
-            </div>
-        </div>
+				<!-- Download and Close Button -->
+				<div class="flex-1 flex justify-end items-center gap-3">
+					<button (click)="downloadChartAsPNG()"
+							class="app-success-button !p-0 !w-10 !h-10 shrink-0">
+						<mat-icon class="!text-xl">download</mat-icon>
+					</button>
+
+					<button (click)="closeChart()"
+							class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-red-500 transition-colors cursor-pointer shrink-0">
+						<mat-icon class="!text-xl">close</mat-icon>
+					</button>
+				</div>
+			</div>
+
+			<!-- Chart -->
+			<div class="p-6 h-[400px] sm:h-[500px] bg-white dark:bg-gray-900">
+				<canvas baseChart
+					[data]="getChartData(selectedRankingForChart.value)"
+					[options]="barChartOptions"
+					[type]="'bar'">
+				</canvas>
+			</div>
+
+			<!-- Footer -->
+			<div class="bg-gray-50 dark:bg-gray-800/50 p-4 text-center text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+				Official data for the 2026 MLB season  • Last Update: {{ getCurrentDate() }}
+			</div>
+		</div>
     </div>
 }
