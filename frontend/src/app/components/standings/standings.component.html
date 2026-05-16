@@ -42,7 +42,7 @@
 							<th class="px-1 py-3 text-center font-semibold text-xl w-[50px]">Team</th>
 							@for (header of headers; track header.stat) {
 								<th class="px-1 py-3 text-center font-semibold text-xl w-[100px]">
-									<div class="flex items-center justify-center gap-1">
+									<div class="flex items-center justify-center gap-1 hover:cursor-help" [matTooltip]="header.description" matTooltipPosition="above">
 										{{ header.stat }}
 									</div>
 								</th>

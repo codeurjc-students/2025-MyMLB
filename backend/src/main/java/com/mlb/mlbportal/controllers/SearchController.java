@@ -52,7 +52,7 @@ public class SearchController {
                 return ResponseEntity.ok(this.searchService.searchTeams(query, page, size));
             }
             case "player" -> {
-                return ResponseEntity.ok(this.searchService.searchPlayer(type, query, page, size));
+                return ResponseEntity.ok(this.searchService.searchPlayer(playerType, query, page, size));
             }
             default -> throw new InvalidSearchTypeException("Invalid search type: " + type);
         }
