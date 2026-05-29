@@ -45,7 +45,9 @@ The platform also has administrator users, responsible for the internal manageme
 
 The main objective of this app is to offer baseball fans a comprehensive and up-to-date space to follow MLB and the performance of their favorite teams throughout the season.
 
-The official report of this project can be access by clicking [here](TFG_GII_AlfonsoRodríguezGutt_DiamondInsights.pdf).
+The official report for this project can be accessed by clicking [here](TFG_GII_AlfonsoRodríguezGutt_DiamondInsights.pdf).
+
+The `Overleaf` project is also accessible through this [link](https://www.overleaf.com/project/69e7336d997bec41e993da72).
 
 ## 🔀 Page Layouts and Navigation
 
