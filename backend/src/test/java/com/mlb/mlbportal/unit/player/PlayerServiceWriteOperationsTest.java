@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,10 +116,21 @@ class PlayerServiceWriteOperationsTest {
             else {
                 Team team = new Team();
                 team.setName(request.teamName());
-
                 if (description.contains("Roster Full")) {
-                    team.setPositionPlayers(new ArrayList<>(Arrays.asList(new PositionPlayer[12])));
-                    team.setPitchers(new ArrayList<>(Arrays.asList(new Pitcher[12])));
+                    team.setPositionPlayers(
+                            IntStream.range(0, 12).mapToObj(i -> {
+                                PositionPlayer pp = new PositionPlayer();
+                                pp.setTeam(team);
+                                return pp;
+                            }).collect(Collectors.toList())
+                    );
+                    team.setPitchers(
+                            IntStream.range(0, 12).mapToObj(i -> {
+                                Pitcher p = new Pitcher();
+                                p.setTeam(team);
+                                return p;
+                            }).collect(Collectors.toList())
+                    );
                 }
                 when(this.teamRepository.findByNameOrThrow(anyString())).thenReturn(team);
             }
