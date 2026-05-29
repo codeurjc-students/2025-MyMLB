@@ -45,7 +45,7 @@ The platform also has administrator users, responsible for the internal manageme
 
 The main objective of this app is to offer baseball fans a comprehensive and up-to-date space to follow MLB and the performance of their favorite teams throughout the season.
 
-At this time, the functional and technical objectives are only defined but not implemented.
+The official report of this project can be access by clicking [here](TFG_GII_AlfonsoRodríguezGutt_DiamondInsights.pdf).
 
 ## 🔀 Page Layouts and Navigation
 
