@@ -188,11 +188,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
@@ -361,6 +356,17 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>3.2.5</version>
+			    <configuration>
+			        <argLine>
+			            -XX:+EnableDynamicAgentLoading
+			            -Djdk.instrument.traceUsage
+			        </argLine>
+			    </configuration>
+			</plugin>
         </plugins>
     </build>
 
